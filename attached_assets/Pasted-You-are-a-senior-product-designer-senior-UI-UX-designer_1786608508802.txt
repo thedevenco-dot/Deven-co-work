@@ -1,0 +1,1539 @@
+You are a senior product designer, senior UI/UX designer, conversion-rate optimization specialist, and senior frontend engineer.
+
+Your task is to design and build a COMPLETE PRODUCTION-READY WEBSITE for:
+
+BRAND:
+Deven Cowork
+
+LOCATION:
+City Centre, Raipur, Chhattisgarh, India
+
+BUSINESS:
+A premium coworking and growth workspace providing dedicated desks, private cabins, team spaces, meeting rooms, virtual office services, and a professional content studio.
+
+PRIMARY BUSINESS GOAL:
+Generate qualified leads and physical visits to the coworking space.
+
+PRIMARY CONVERSION:
+"Book a Free Tour"
+
+SECONDARY CONVERSIONS:
+- WhatsApp enquiry
+- Call
+- Day Pass
+- Virtual Office enquiry
+- Enterprise / Team enquiry
+
+IMPORTANT:
+Do NOT create a generic coworking website.
+Do NOT copy the visual style of WeWork or other generic coworking templates.
+The website must feel like a premium modern business club / growth workspace with a strong editorial and architectural visual language.
+
+==================================================
+1. DESIGN DIRECTION
+==================================================
+
+The website must be DARK MODE ONLY.
+
+Do NOT add a light/dark mode toggle.
+
+The entire visual system must be designed around:
+
+BLACK:
+#000000
+
+LIGHT GREY:
+#F1F1F1
+
+YELLOW:
+#F8BC06
+
+Supporting UI neutrals may be used where necessary:
+
+#FFFFFF — primary text
+#1A1A1A — elevated surfaces
+#2A2A2A — borders/dividers
+#A3A3A3 — muted text
+
+COLOR PHILOSOPHY:
+
+BLACK = authority / premium / foundation
+GREY = secondary surfaces / information
+YELLOW = action / energy / important information
+WHITE = readability
+
+Do NOT overuse yellow.
+
+Yellow should feel like a signal:
+- CTA buttons
+- important numbers
+- active states
+- pricing highlights
+- small accents
+- important labels
+
+Do NOT use:
+- gradients
+- excessive glassmorphism
+- neon effects
+- random blobs
+- excessive shadows
+- excessive rounded cards
+- generic SaaS aesthetics
+- excessive 3D
+- stock-photo-looking imagery
+- fake urgency
+- unnecessary animations
+
+The design should feel:
+
+BOLD
+PREMIUM
+ARCHITECTURAL
+EDITORIAL
+MINIMAL
+HUMAN
+CONVERSION-FOCUSED
+
+==================================================
+2. TYPOGRAPHY
+==================================================
+
+Use:
+
+Sora:
+- Display
+- H1
+- H2
+- H3
+- pricing numbers
+- important statistics
+- navigation emphasis
+
+Inter:
+- body
+- forms
+- buttons
+- captions
+- FAQ
+- utility text
+
+Typography should be highly readable.
+
+Desktop:
+
+Display: 64–80px
+H1: 56px
+H2: 48px
+H3: 32px
+H4: 24px
+Body Large: 20px
+Body: 16–18px
+Small: 14px
+Caption: 12px
+
+Mobile:
+
+Display: 44px
+H1: 40px
+H2: 32px
+H3: 26px
+Body: 16px minimum
+
+Use strong typographic hierarchy.
+
+Headlines should be short, confident and outcome-focused.
+
+Avoid generic marketing copy such as:
+"Work. Connect. Grow."
+
+Prefer concise, specific messaging.
+
+==================================================
+3. VISUAL LANGUAGE
+==================================================
+
+Think:
+
+PREMIUM BUSINESS CLUB
++
+MODERN COWORKING
++
+STARTUP CULTURE
++
+EDITORIAL DESIGN
+
+Use:
+
+- large typography
+- asymmetrical layouts
+- strong grids
+- editorial image compositions
+- large real workspace photography
+- thin borders
+- numbered sections
+- large statistics
+- generous whitespace
+- subtle motion
+- strong black surfaces
+- yellow accents
+
+Use section labels like:
+
+01 / THE SPACE
+02 / THE OFFER
+03 / THE STUDIO
+04 / THE COMMUNITY
+
+Use uppercase eyebrow labels with letter spacing.
+
+==================================================
+4. RESPONSIVE DESIGN
+==================================================
+
+The website MUST be mobile-first.
+
+Design for:
+
+360px
+390px
+768px
+1024px
+1440px+
+
+The majority of users are expected to access the website from mobile devices.
+
+Do NOT simply shrink the desktop layout.
+
+The mobile layout must have intentional content hierarchy and reordering.
+
+Minimum mobile requirements:
+
+- body text 16px
+- touch targets at least 44px
+- readable buttons
+- no horizontal overflow
+- no tiny navigation
+- no inaccessible forms
+- no elements overlapping the browser UI
+
+Test at:
+
+360px
+390px
+412px
+768px
+1024px
+1440px
+
+==================================================
+5. SITE ARCHITECTURE
+==================================================
+
+Create these main pages:
+
+1. Home
+2. Plans
+3. Teams & Cabins
+4. Virtual Office
+5. Studio
+6. Meeting Rooms
+7. Gallery
+8. About
+9. Contact
+
+Conversion landing pages:
+
+10. Founding Member
+11. Enterprise
+12. Day Pass
+
+Future SEO pages should be architecturally possible but do not need to be fully built unless content is available.
+
+==================================================
+6. NAVIGATION
+==================================================
+
+Desktop navigation:
+
+DEVEN
+
+Plans
+Teams
+Studio
+Gallery
+About
+
+RIGHT SIDE:
+Book a Free Tour
+
+Navigation should be minimal.
+
+Do not overload the navbar.
+
+Desktop sticky navigation should transition smoothly when scrolling.
+
+Initial state:
+transparent / contextual
+
+Scrolled state:
+#000000 background
+white text
+yellow CTA
+
+Mobile:
+
+DEVEN
+Menu icon
+
+Mobile menu:
+
+Plans
+Teams
+Studio
+Gallery
+About
+Contact
+
+Book a Free Tour
+
+Keep the navigation simple.
+
+==================================================
+7. PRIMARY CTA
+==================================================
+
+Use ONE primary CTA consistently throughout the website:
+
+"Book a Free Tour"
+
+Do not randomly change it to:
+
+Get Started
+Join Now
+Book Now
+Contact Us
+
+Consistency is important.
+
+Primary CTA:
+
+Background:
+#F8BC06
+
+Text:
+#000000
+
+Height:
+48–52px
+
+Radius:
+8px
+
+Font:
+Inter/Sora medium or semibold
+
+Include subtle arrow:
+
+→
+
+Hover:
+Yellow transitions toward white with black text OR a subtle dark hover treatment.
+
+Do not use excessive button animation.
+
+==================================================
+8. HOMEPAGE
+==================================================
+
+Build the homepage as the primary conversion experience.
+
+The user must understand within seconds:
+
+WHAT Deven Cowork is
+WHERE it is
+WHO it is for
+WHY it is different
+WHAT they should do next
+
+Homepage structure:
+
+--------------------------------
+01. HERO
+--------------------------------
+
+Full-width premium hero.
+
+Dark black background.
+
+Use large real workspace image/video.
+
+Hero headline direction:
+
+"A workspace built for people building something."
+
+Supporting copy should communicate:
+
+- coworking
+- dedicated desks
+- private cabins
+- studio
+- growth ecosystem
+- City Centre, Raipur
+
+Primary CTA:
+
+Book a Free Tour
+
+Secondary low-friction option:
+
+WhatsApp
+
+Include trust/stat strip:
+
+60 seats
+7-day trial
+24/7 access
+City Centre, Raipur
+
+Use real values only where confirmed.
+
+Do NOT invent business facts.
+
+--------------------------------
+02. TRUST / CREDIBILITY
+--------------------------------
+
+Show:
+
+Google rating if available
+member logos if available
+founder credibility
+real testimonials
+
+Do not fabricate reviews.
+
+If actual data is unavailable, use tasteful placeholders clearly marked for replacement.
+
+--------------------------------
+03. THE PROBLEM
+--------------------------------
+
+Do NOT write generic coworking copy.
+
+Focus on real problems:
+
+Working from home distractions
+Unprofessional client meetings
+No dedicated business environment
+Limited space for growing teams
+Poor separation between work and personal life
+
+Use strong editorial typography.
+
+--------------------------------
+04. THE REFRAME
+--------------------------------
+
+Dark high-impact section.
+
+Headline direction:
+
+"This isn't just a coworking space."
+
+Explain the Deven difference:
+
+WORKSPACE
++
+STUDIO
++
+GROWTH
+
+This is one of the strongest differentiators.
+
+--------------------------------
+05. SPACE SHOWCASE
+--------------------------------
+
+Use large real photography.
+
+Show:
+
+- main workspace
+- dedicated desks
+- private cabins
+- meeting rooms
+- coffee area
+- studio
+- reception
+
+Do NOT use generic stock imagery.
+
+Build an editorial masonry/gallery composition.
+
+Captions should communicate useful information rather than generic adjectives.
+
+--------------------------------
+06. THE OFFER
+--------------------------------
+
+Headline:
+
+"Your desk comes with more than a desk."
+
+Show the actual benefits included with membership.
+
+Examples:
+
+Dedicated workspace
+High-speed internet
+Meeting room access
+Coffee
+Content studio access
+Professional content support
+Growth sessions
+Business address where applicable
+
+Do not invent inclusions.
+
+Only display confirmed business offerings.
+
+--------------------------------
+07. STUDIO
+--------------------------------
+
+Give the content studio significant visual importance.
+
+Headline direction:
+
+"Your workspace should help your business get seen."
+
+Show:
+
+- studio
+- content creation
+- reels
+- professional photography/video
+- member content benefits if actually included
+
+Use a short video if available.
+
+--------------------------------
+08. PRICING
+--------------------------------
+
+Transparent pricing.
+
+Create pricing cards for:
+
+Hot Desk
+Dedicated Desk
+Private Cabin
+
+Use actual approved prices.
+
+Do NOT invent pricing.
+
+Show:
+
+monthly
+quarterly
+annual
+
+If discounts are available, communicate actual savings.
+
+Highlight the recommended plan.
+
+On mobile:
+recommended plan should appear first.
+
+--------------------------------
+09. ENTERPRISE ENTRY POINT
+--------------------------------
+
+Create a clear but secondary section:
+
+"Building a team in Raipur?"
+
+For:
+
+10–20 seat teams
+corporate teams
+consulting teams
+regional offices
+growing companies
+
+CTA:
+
+Explore Team Spaces
+
+Do not let enterprise content dominate the retail homepage.
+
+--------------------------------
+10. SOCIAL PROOF
+--------------------------------
+
+Use real:
+
+member testimonials
+member photos
+company names
+Google reviews
+
+Do not fabricate testimonials.
+
+Each testimonial should ideally have:
+
+photo
+full name
+company
+role
+
+--------------------------------
+11. 7-DAY TRIAL / GUARANTEE
+--------------------------------
+
+High-impact section.
+
+Headline:
+
+"Try it for 7 days."
+
+Supporting copy:
+
+No card.
+No unnecessary commitment.
+
+Use only the actual approved trial policy.
+
+CTA:
+
+Book a Free Tour
+
+--------------------------------
+12. SCARCITY
+--------------------------------
+
+Only use real scarcity.
+
+Example:
+
+17 / 25
+Founding Member seats taken
+
+NEVER create:
+
+fake countdowns
+fake timers
+fake seat numbers
+fake urgency
+
+If real data is unavailable, omit the component.
+
+--------------------------------
+13. FAQ
+--------------------------------
+
+Answer real purchase objections.
+
+Examples:
+
+Is there a lock-in?
+Can I leave after two months?
+Is parking available?
+Can clients visit?
+Can I use the business address?
+What happens during a power outage?
+What is included?
+What isn't included?
+What are the working hours?
+
+Use accordion interaction.
+
+--------------------------------
+14. LOCATION
+--------------------------------
+
+Show:
+
+Map
+Address
+Landmark
+Parking information
+Nearby accessibility
+Travel information
+
+Do not invent landmarks or travel times.
+
+--------------------------------
+15. FINAL CTA
+--------------------------------
+
+Large black/yellow conversion section.
+
+Headline:
+
+"Ready to see it?"
+
+CTA:
+
+Book a Free Tour
+
+Secondary:
+
+WhatsApp us
+
+==================================================
+9. PLANS PAGE
+==================================================
+
+Purpose:
+Help users compare options and make a decision.
+
+Structure:
+
+Hero
+Pricing comparison
+Plan details
+What's included
+What's not included
+Workspace photos
+7-day trial
+FAQ
+Book a Free Tour
+
+Make this page highly scannable.
+
+==================================================
+10. TEAMS & CABINS PAGE
+==================================================
+
+This page should feel more corporate than the homepage.
+
+Target:
+
+10–20 seat teams
+corporate teams
+PMU teams
+consulting teams
+regional offices
+local scale-ups
+
+Focus on:
+
+capacity
+privacy
+internet
+power backup
+security
+CCTV
+housekeeping
+meeting rooms
+visitor management
+GST invoicing
+operational reliability
+commercial flexibility
+
+Use:
+
+floor plans
+workspace photography
+capacity information
+configuration examples
+
+CTA:
+
+Request a Proposal
+
+Secondary:
+
+Book a Site Visit
+
+Do NOT use fake specifications.
+
+==================================================
+11. VIRTUAL OFFICE PAGE
+==================================================
+
+Focus on:
+
+professional business address
+GST-related use where applicable
+mail handling
+business presence
+registration support where actually offered
+
+CTA:
+
+Get Your Business Address
+
+==================================================
+12. STUDIO PAGE
+==================================================
+
+Treat the studio as a standalone product.
+
+Sections:
+
+Hero
+Studio video
+What it is
+Equipment
+Use cases
+Member benefits
+Portfolio/reels
+External booking
+Pricing
+FAQ
+Book Studio
+
+Use real assets where available.
+
+==================================================
+13. MEETING ROOMS PAGE
+==================================================
+
+Make it practical.
+
+Show:
+
+room types
+capacity
+pricing
+hourly booking
+equipment
+Wi-Fi
+screen
+whiteboard
+coffee
+availability
+photos
+
+Primary CTA:
+
+Check Availability
+
+==================================================
+14. GALLERY PAGE
+==================================================
+
+Make this highly visual.
+
+Do not make it look like a generic image grid.
+
+Use:
+
+editorial masonry layout desktop
+horizontal swipe gallery mobile
+full-width photography
+people working
+workspace details
+studio
+cabins
+meeting rooms
+reception
+events
+
+Use actual Deven images.
+
+==================================================
+15. ABOUT PAGE
+==================================================
+
+Focus on:
+
+Why Deven exists
+Why this workspace was created
+Founder story
+Raipur
+Vision
+Deven ecosystem
+
+Use real founder images.
+
+Tone:
+human
+confident
+specific
+
+Avoid corporate fluff.
+
+==================================================
+16. CONTACT PAGE
+==================================================
+
+Show:
+
+Address
+Map
+Phone
+WhatsApp
+Email
+Working hours
+
+Primary CTA:
+
+Book a Free Tour
+
+Make contact information immediately accessible.
+
+==================================================
+17. FOUNDING MEMBER LANDING PAGE
+==================================================
+
+This is a high-conversion landing page.
+
+Do NOT use normal website navigation.
+
+Only:
+
+Deven logo
+Call / WhatsApp
+primary CTA
+
+Structure:
+
+Hero
+Trust
+Problem
+Reframe
+Offer stack
+Space
+Studio
+Pricing
+Social proof
+7-day trial
+Real scarcity
+FAQ
+Location
+Booking form
+
+Primary CTA throughout:
+
+Book a Free Tour
+
+Remove unnecessary navigation exits.
+
+==================================================
+18. ENTERPRISE LANDING PAGE
+==================================================
+
+Completely different visual tone.
+
+More corporate.
+More structured.
+More evidence-driven.
+
+Focus on:
+
+team capacity
+private spaces
+operational reliability
+infrastructure
+security
+meeting rooms
+flexibility
+commercial terms
+floor plans
+response time
+
+CTA:
+
+Request a Proposal
+
+Form should be short.
+
+Do not use fake urgency.
+
+==================================================
+19. DAY PASS LANDING PAGE
+==================================================
+
+Short conversion-focused page.
+
+Hero
+What's included
+Workspace photos
+Who it's for
+Location
+Hours
+Booking/payment
+Upgrade-to-membership offer
+
+Use actual approved pricing only.
+
+==================================================
+20. FORMS
+==================================================
+
+Primary tour form should have maximum four fields:
+
+Name
+Phone
+Seats required
+Preferred day
+
+Do NOT create long forms.
+
+Every form must have:
+
+default
+focus
+filled
+loading
+error
+success
+
+After successful submission:
+
+Show clear confirmation.
+
+If CRM/webhook integration is available, submit lead data there.
+
+==================================================
+21. WHATSAPP
+==================================================
+
+Add a WhatsApp conversion option on every major page.
+
+Desktop:
+floating bottom-right
+
+Mobile:
+thumb-accessible
+
+Do not obstruct:
+
+forms
+CTA
+footer
+navigation
+
+WhatsApp messages should be contextual.
+
+Examples:
+
+Homepage:
+"Hi, I'd like to know more about Deven Cowork."
+
+Enterprise:
+"Hi, I'm looking for workspace for a team."
+
+Day Pass:
+"Hi, I'd like to book a day pass."
+
+==================================================
+22. COMPONENT SYSTEM
+==================================================
+
+Build reusable components.
+
+Components:
+
+Navbar
+MobileNavbar
+Footer
+Button
+PrimaryButton
+SecondaryButton
+TextButton
+WhatsAppButton
+Hero
+SectionHeader
+Stats
+PricingCard
+FeatureBlock
+WorkspaceCard
+TestimonialCard
+Gallery
+VideoBlock
+FAQ
+Location
+TourForm
+EnterpriseForm
+CTASection
+GuaranteeSection
+ScarcitySection
+Toast
+Modal
+LoadingState
+ErrorState
+SuccessState
+
+Do NOT duplicate components unnecessarily.
+
+Use reusable props/data.
+
+==================================================
+23. DESIGN TOKENS
+==================================================
+
+Create centralized design tokens.
+
+Colors:
+
+--black: #000000
+--yellow: #F8BC06
+--grey: #F1F1F1
+--white: #FFFFFF
+--surface: #1A1A1A
+--border: #2A2A2A
+--muted: #A3A3A3
+
+Spacing:
+
+4
+8
+12
+16
+24
+32
+40
+48
+64
+80
+96
+120
+160
+
+Radius:
+
+0
+4
+8
+12
+9999
+
+Do not scatter arbitrary values throughout the codebase.
+
+==================================================
+24. ANIMATION
+==================================================
+
+Use subtle motion.
+
+Good:
+
+fade
+slide
+image reveal
+button arrow movement
+sticky navbar transition
+gallery interaction
+pricing toggle
+
+Avoid:
+
+scroll hijacking
+heavy parallax
+3D backgrounds
+cursor effects
+huge WebGL
+long page intro
+excessive animations
+
+Respect:
+
+prefers-reduced-motion
+
+Animations must never negatively impact performance.
+
+==================================================
+25. PERFORMANCE
+==================================================
+
+Production-ready performance is mandatory.
+
+Optimize:
+
+images
+fonts
+JavaScript
+CSS
+video
+lazy loading
+code splitting
+
+Use:
+
+WebP/AVIF where appropriate.
+
+Lazy load below-the-fold media.
+
+Do not load large videos immediately unless required.
+
+Hero video should have an optimized poster/static image fallback.
+
+Avoid unnecessary dependencies.
+
+Target:
+
+excellent Lighthouse performance
+excellent accessibility
+excellent SEO
+excellent best practices
+
+==================================================
+26. SEO
+==================================================
+
+Every page needs:
+
+unique title
+meta description
+canonical
+Open Graph metadata
+proper H1
+semantic heading hierarchy
+alt text
+structured internal links
+
+Add structured data where appropriate:
+
+LocalBusiness
+Organization
+FAQPage where appropriate
+
+Primary local SEO context:
+
+Deven Cowork
+Coworking space
+Raipur
+Chhattisgarh
+City Centre
+
+Do not keyword stuff.
+
+==================================================
+27. ACCESSIBILITY
+==================================================
+
+Must support:
+
+keyboard navigation
+focus states
+screen readers
+semantic HTML
+ARIA where necessary
+accessible forms
+proper labels
+alt text
+sufficient contrast
+reduced motion
+
+Buttons and interactive elements:
+minimum 44px touch target.
+
+==================================================
+28. ANALYTICS
+==================================================
+
+Prepare the architecture for:
+
+Google Analytics 4
+Google Tag Manager
+Google Search Console
+Meta Pixel
+Microsoft Clarity or equivalent
+
+Track:
+
+tour_form_submit
+whatsapp_click
+call_click
+daypass_click
+enterprise_form_submit
+virtualoffice_form_submit
+pricing_interaction
+gallery_interaction
+
+Do not send duplicate events.
+
+==================================================
+29. TECHNICAL ARCHITECTURE
+==================================================
+
+Use a production-quality frontend architecture.
+
+Preferred:
+
+React
+TypeScript
+Tailwind CSS or a clean equivalent
+Reusable component architecture
+
+Use clean separation between:
+
+components
+pages
+data
+utilities
+styles
+assets
+integrations
+
+Do not put the entire website in one giant component.
+
+Create structured data/configuration for:
+
+navigation
+pricing
+features
+FAQs
+testimonials
+workspace types
+CTAs
+
+This will make the website easy to maintain.
+
+==================================================
+30. CONTENT RULE
+==================================================
+
+VERY IMPORTANT:
+
+Do NOT invent:
+
+prices
+reviews
+member names
+companies
+Google ratings
+seat availability
+facilities
+opening hours
+address details
+GST claims
+parking information
+trial conditions
+business claims
+
+If information is missing, create clearly identifiable placeholders such as:
+
+[ADD APPROVED PRICE]
+[ADD GOOGLE RATING]
+[ADD ACTUAL ADDRESS]
+[ADD TESTIMONIAL]
+[ADD WORKSPACE IMAGE]
+
+Do not silently fabricate business information.
+
+==================================================
+31. IMAGE PLACEHOLDERS
+==================================================
+
+Until actual Deven photography is supplied, create structured image placeholders with meaningful filenames:
+
+/assets/hero-workspace.webp
+/assets/workspace-main.webp
+/assets/dedicated-desk.webp
+/assets/private-cabin.webp
+/assets/meeting-room.webp
+/assets/studio.webp
+/assets/coffee-area.webp
+/assets/reception.webp
+/assets/founder.webp
+/assets/member-01.webp
+
+Make replacing images later extremely easy.
+
+Do NOT use random stock images just to fill space.
+
+==================================================
+32. CONVERSION UX
+==================================================
+
+The website must always answer:
+
+What is Deven Cowork?
+Who is it for?
+Where is it?
+What does it cost?
+Why should I trust it?
+What makes it different?
+What should I do next?
+
+Primary funnel:
+
+Traffic
+↓
+Homepage / Landing Page
+↓
+Understand offer
+↓
+See real space
+↓
+Trust
+↓
+Pricing
+↓
+Risk reversal
+↓
+Book Free Tour
+↓
+CRM
+↓
+Tour
+↓
+Trial
+↓
+Membership
+
+The website should optimize for physical tour bookings rather than simply collecting generic contact forms.
+
+==================================================
+33. UX PRINCIPLES
+==================================================
+
+Follow these principles:
+
+1. Clarity over decoration.
+2. Conversion over vanity.
+3. Real proof over marketing claims.
+4. Photography over stock imagery.
+5. Mobile-first.
+6. One primary CTA.
+7. Transparent pricing.
+8. Short forms.
+9. Strong hierarchy.
+10. Fast performance.
+11. Accessibility is mandatory.
+12. No fake urgency.
+13. No unnecessary features.
+14. No generic coworking template design.
+
+==================================================
+34. FOOTER
+==================================================
+
+Footer should include:
+
+Deven Cowork
+Short description
+Navigation
+Plans
+Teams
+Studio
+Gallery
+About
+Contact
+WhatsApp
+Phone
+Email
+Address
+Social links
+Privacy Policy
+Terms
+Refund/Cancellation
+
+Keep it clean.
+
+==================================================
+35. FINAL QUALITY BAR
+==================================================
+
+Before considering the project complete, perform a complete production QA pass.
+
+Check:
+
+- responsive layouts
+- 360px mobile
+- 390px mobile
+- tablet
+- desktop
+- navigation
+- forms
+- CTA links
+- WhatsApp
+- phone links
+- email links
+- pricing
+- FAQ
+- gallery
+- image loading
+- video loading
+- keyboard navigation
+- focus states
+- accessibility
+- SEO metadata
+- structured data
+- performance
+- console errors
+- broken links
+- overflow
+- layout shifts
+
+Fix issues instead of simply reporting them.
+
+==================================================
+36. IMPORTANT IMPLEMENTATION INSTRUCTION
+==================================================
+
+DO NOT generate the entire website as a single pass of generic UI.
+
+Build it systematically:
+
+PHASE 1:
+Set up architecture and design tokens.
+
+PHASE 2:
+Build reusable components.
+
+PHASE 3:
+Build homepage.
+
+PHASE 4:
+Build internal pages.
+
+PHASE 5:
+Build conversion landing pages.
+
+PHASE 6:
+Implement responsive behavior.
+
+PHASE 7:
+Implement forms/integrations.
+
+PHASE 8:
+Implement SEO/accessibility.
+
+PHASE 9:
+Optimize performance.
+
+PHASE 10:
+Run full QA and fix issues.
+
+After each phase, inspect the implementation and improve it.
+
+Do not stop at a visually impressive prototype.
+
+The final result must be a maintainable, responsive, accessible, fast, conversion-focused production website.
+
+==================================================
+FINAL CREATIVE DIRECTION
+==================================================
+
+The website should feel like:
+
+"Someone serious about their business works here."
+
+Not:
+
+"Here's another coworking office."
+
+Use the brand palette aggressively but intelligently:
+
+BLACK
+WHITE
+#F1F1F1
+#F8BC06
+
+Use typography and photography as the main visual elements.
+
+Make the site feel premium without making it visually complicated.
+
+Make it modern without following generic SaaS trends.
+
+Make it conversion-focused without feeling like an aggressive sales funnel.
+
+Make every section earn its place.
