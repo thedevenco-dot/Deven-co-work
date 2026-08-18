@@ -1,0 +1,159 @@
+# Deven Cowork — Pre-Launch Pre-Booking Landing Page
+## AI Build Prompt
+
+Paste this into your AI builder (Antigravity / Stitch / Replit Agent) to reframe the existing landing page into a pre-launch pre-booking page.
+
+---
+
+## CONTEXT FOR THE AI
+
+You are rebuilding the landing page for **Deven Cowork**, a 50-seat premium coworking space opening soon in City Centre, Raipur, Chhattisgarh. The space is **not open yet** — this page exists to convert early interest into **reserved, deposit-backed pre-bookings** before launch day, so the space opens already full or close to full.
+
+This is NOT a "book a tour" page. It is a "reserve your seat before we open" page. Every section, headline and CTA must reflect that the doors aren't open yet — this is the founding batch, and being early is the entire value proposition.
+
+**Critical rules to bake into copy, pricing logic and the booking form:**
+- Total capacity: **50 seats**
+- Maximum **7 seats per client / founder / company** — no single business can block-book the whole space. State this plainly wherever seat count is discussed (pricing, FAQ, form) so multi-seat enquirers know the ceiling upfront instead of finding out after submitting.
+- This is a **pre-booking**, not a completed sale — frame it as "reserve with a refundable deposit," not "buy now."
+- Once the space opens, every member gets a **2-day free trial**, then a **7-day "love it or leave it" window with a 100% refund** if they walk away — no conditions, no fine print. This is the single strongest trust asset on the page and should headline the risk reversal section, not the deposit-refund line alone.
+
+---
+
+## BRAND SYSTEM (carry over, do not redesign)
+- Primary brand colour: **#FFC247** (amber/yellow) — reserved exclusively for CTA buttons and one accent use per section, nowhere else
+- Base: dark **#0D0D0D**
+- Typography: **Bebas Neue** for display/headlines, **DM Sans** for body
+- Mobile-first: 80–90% of traffic will be mid-range Android on 4G. Design the mobile stack first, desktop is the adaptation.
+- No stock photography. If final space photography isn't ready yet, use render/concept images or in-progress build photos labelled honestly ("Space currently being finished — here's a preview") rather than pretending it's complete.
+- One CTA button colour, used nowhere else on the page. CTA text must be a first-person action verb: "Reserve My Seat" — never "Submit," "Learn More," or "Enquire Now."
+- Maximum 4 form fields: Name, Phone, Seats needed (dropdown capped at 7), Preferred plan (Hot Desk / Dedicated Desk / Cabin / Virtual Office)
+
+---
+
+## PAGE STRUCTURE — BUILD IN THIS ORDER
+
+### 1. Sticky Header
+Logo (left) · Phone number, tappable (right) · CTA button "Reserve My Seat"
+No full navigation menu — this is a landing page, not the main site. Every link is an exit.
+
+### 2. Hero
+**Job:** In under 5 seconds — what this is, where it is, that it opens soon, what it costs, and how to reserve.
+- Headline formula: Outcome + Price + Constraint + Pre-launch framing
+  - e.g. *"Raipur's most beautiful office. Opening soon. First 50 seats — reserve yours now."*
+- Sub-headline: one sentence stating the location, the studio/growth differentiator, and the seat cap
+  - e.g. *"A dedicated desk in the centre of the city, with a content studio and growth team attached. Only 50 seats total, maximum 7 per business."*
+- Primary CTA: "Reserve My Seat"
+- Trust strip under the button: *"2-day free trial · 7-day 100% refund · Refundable deposit · Opening [Month]"*
+- Visual: hero render/progress photo or looping build-progress clip, muted, static-image fallback on slow connections. CTA must be visible without scrolling on a 360px viewport.
+
+### 3. Trust Bar
+"Built by DEVEN — the agency behind [X] Raipur brands" line · Founder names/photos · Location line with a recognisable landmark · Opening timeline stated plainly (e.g. "Opening [Month Year]")
+Since there's no live GMB review history yet, lead with **founder and agency credibility**, not review counts.
+
+### 4. Problem — Named, Not Invented
+Three short, specific pain blocks (not generic):
+1. A client asks where your office is — and you change the subject.
+2. Your best work happens between a doorbell, a delivery and the television in the next room.
+3. You look smaller on a video call than your business actually is.
+Keep brief — over-agitation reads as manipulation.
+
+### 5. The Reframe
+Headline: *"This is not a coworking space."*
+Body: position Deven Cowork as a workspace + content studio + growth team, not a chair rental. Give this section visual weight — dark background, generous spacing. This is the strategic centre of the page.
+
+### 6. Why Reserve Before We Open
+**New section specific to pre-launch.** Explain what early reservers get that later joiners won't:
+- Founding pricing locked for as long as they stay, even after rates rise post-launch
+- First choice of desk / cabin location once the space opens
+- Priority studio booking slots in month one
+- Refundable deposit — no risk in reserving early
+Frame this as the entire reason to act now instead of waiting for the doors to open.
+
+### 7. The Offer Stack
+Two-column table: inclusion (left) → rupee value (right). Total value at bottom, actual price beneath it.
+Include: Dedicated desk 24×7 access · Unlimited Coffee Lab · Meeting room hours/month · Monthly studio reel · GMB setup · Monthly growth session · GST business address · Raipur Founders feature · Member network
+Bold the 3 items no competitor offers.
+
+### 8. Space Preview
+Renders / build-progress photography with honest captions (carry information, not adjectives — "Third-floor windows on two sides" beats "beautiful light"). If real photos aren't ready, say so once, briefly, then move on — don't dwell on it.
+CTA immediately below this section.
+
+### 9. The Differentiator — Studio & Growth
+Own section, not a bullet. What a member gets monthly from the content studio + growth session. Frame as an outcome the buyer already wants but hasn't solved.
+
+### 10. Pricing & Seat Reservation
+Three columns: Hot Desk / Dedicated Desk (highlighted, "Most Popular") / Private Cabin. Monthly/quarterly/annual toggle. Show annual saving in rupees, not percentage.
+**Directly beneath the pricing table, state the seat rule clearly:**
+> *"50 seats total for our founding batch. Maximum 7 seats per client or founder — this keeps the space diverse and every member gets real access to the community, not just a desk."*
+This must appear here and again in the FAQ and the booking form, not buried in one place.
+
+### 11. Risk Reversal
+This section carries two stacked guarantees — lead with the trial/refund policy, since it's the stronger, more concrete promise; the deposit-refund line supports it underneath.
+> *"2 days, free. Then 7 days to decide — love it or leave it, 100% refunded."*
+> *"Walk in for your first two days at no cost. Keep working here for a week. If Deven Cowork isn't the best place you've worked in Raipur, leave — and get every rupee back. No conditions, no fine print."*
+
+Beneath that, restate the pre-launch deposit guarantee for reservers:
+> *"Reserving now? Your deposit is fully refundable if you change your mind before we open, or if your 7-day trial doesn't work out once we do."*
+
+Full-width band, high contrast, impossible to scroll past. This section should do more conversion work than any other block on the page — give it generous space.
+
+### 12. Scarcity & Urgency
+- Seats remaining out of 50 (real, honestly updated — never a fake counter)
+- The 7-seat-per-client cap restated as a reason to reserve now rather than assume you can add seats later
+- Opening date / deadline for founding pricing
+> *"23 of 50 founding seats reserved. Founding pricing disappears the day we open."*
+Never use a countdown timer that resets.
+
+### 13. FAQ — Objection Handling
+Accordion, FAQ schema. Must include pre-launch-specific questions:
+- When exactly do you open?
+- Is my deposit really refundable, and how do I get it back?
+- Can my company reserve more than 7 seats?
+- What happens to my price if I reserve now vs. after launch?
+- Is there a lock-in period once we open?
+- Can I use this address for GST registration?
+- What if the opening date shifts?
+- Do I get to choose my desk/cabin, or is it assigned?
+- How does the 2-day free trial actually work — do I pay anything upfront?
+- If I take the 7-day refund, do I get my reservation deposit back too, or just the membership fee?
+- Is there a catch to the "love it or leave it" refund — do I need a reason?
+Plus the standard operational ones (parking, hours, meeting rooms).
+
+### 14. Location Proof
+Map embed · drive times from known landmarks · exterior/build-progress photo · parking detail.
+
+### 15. Final CTA
+Offer restated in 3 lines · Reservation form (Name, Phone, Seats needed [capped at 7], Preferred plan) · WhatsApp alternative button · Phone number.
+Directly under the seats field, a one-line reminder: *"Maximum 7 seats per business."*
+Form fully visible without a click-through popup.
+
+---
+
+## COPY RULES
+- Same CTA text everywhere: **"Reserve My Seat"**
+- State the low commitment beside the button: "refundable," "2 minutes," "no card required upfront" (adjust based on actual deposit mechanics)
+- A CTA block after every third section
+- Never use "Learn More," "Click Here," "Enquire Now," or "Get Started"
+- Every claim gets visible evidence beside it — a render, a founder photo, a number. No unsupported claims.
+- Real scarcity only — 50 is a physical fact, 7-per-client is a real policy. State both plainly and never inflate or fake either number.
+
+## TECHNICAL / CONVERSION NON-NEGOTIABLES
+- Floating WhatsApp button, bottom-right, every screen, thumb-reachable, pre-filled message referencing pre-booking
+- Sticky header CTA visible on scroll, mobile and desktop
+- Form submits to CRM via webhook with an instant WhatsApp/SMS auto-reply within 60 seconds
+- Thank-you page confirms: seat reserved pending deposit / deposit received, next steps, expected opening date
+- Mobile load under 3 seconds on simulated 4G, tap targets 44px minimum, body text 16px minimum, no horizontal scroll
+- No fake urgency, no member login portal, no online membership checkout (deposit collection only, full membership payment happens closer to/at opening)
+
+---
+
+## WHAT NOT TO BUILD IN THIS PASS
+- Real-time seat availability map
+- Multi-language toggle
+- Full membership checkout (deposit/reservation only)
+- Elaborate animations that slow mid-range Android load times
+- A live chat bot — WhatsApp is the chat channel
+
+---
+
+**Deliverable:** a single-page, mobile-first pre-launch landing page following the 15 sections above, using the brand system, with the 50-seat / 7-seat-per-client rule surfaced in pricing, scarcity, FAQ and the booking form.
