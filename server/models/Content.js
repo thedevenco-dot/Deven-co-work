@@ -105,6 +105,26 @@ const contentSchema = new mongoose.Schema(
           { main: 'Central Raipur Location', sub: 'City Centre' },
         ],
       },
+      // Floating info cards on hero image (e.g. "50 / FOUNDING SEATS")
+      floatingStats: {
+        type: [
+          {
+            value: { type: String, default: '' },
+            label: { type: String, default: '' },
+          },
+        ],
+        default: [
+          { value: '50', label: 'Founding Seats' },
+          { value: '₹1,000', label: 'Refundable Deposit' },
+        ],
+      },
+      // Bottom metadata strip items
+      metaItems: {
+        type: [String],
+        default: ['RAIPUR', 'VIP ESTATE', '50 SEATS', 'FRI — SAT FREE TRIAL'],
+      },
+      // Words to highlight in yellow (comma-separated)
+      highlightWords: { type: String, default: '' },
     },
 
     // ─── PROBLEM ──────────────────────────────────────────────────────────────
@@ -112,6 +132,9 @@ const contentSchema = new mongoose.Schema(
       headline: { type: String, default: 'Still Working From Your Dining Table, a Noisy Café, or a Cramped Office?' },
       body: { type: String, default: "You've outgrown working from home. The wifi drops during client calls. There's nowhere professional to host a meeting. And every \"coworking space\" you've seen in Raipur feels like a leftover office with some beanbags thrown in.\n\nYou didn't start your business to work like this." },
       imageUrl: { type: mongoose.Schema.Types.Mixed, default: '' },
+      // Overlapping quote card on the image
+      quoteText: { type: String, default: "You're not lazy. Your environment is holding you back." },
+      quoteAuthor: { type: String, default: '' },
       blocks: {
         type: [
           {
@@ -154,15 +177,18 @@ const contentSchema = new mongoose.Schema(
           {
             image: { type: mongoose.Schema.Types.Mixed, default: '' },
             label: { type: String, default: '' },
+            caption: { type: String, default: '' },
+            // 'large' | 'medium' | 'small' — hints for masonry layout
+            size: { type: String, default: 'medium' },
           },
         ],
         default: [
-          { image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80', label: 'MAIN AREA' },
-          { image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=400&q=80', label: 'PODCAST DESK' },
-          { image: 'https://images.unsplash.com/photo-1517502884422-41eaaced0168?auto=format&fit=crop&w=400&q=80', label: 'MEETING ROOM' },
-          { image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80', label: 'CAFE LOBBY' },
-          { image: 'https://images.unsplash.com/photo-1530745342582-0795f23ec976?auto=format&fit=crop&w=600&q=80', label: 'GREEN ZONE' },
-          { image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80', label: 'TECH LOUNGE' },
+          { image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80', label: 'MAIN AREA', caption: 'The main workspace floor', size: 'large' },
+          { image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=400&q=80', label: 'PODCAST DESK', caption: 'Content studio setup', size: 'small' },
+          { image: 'https://images.unsplash.com/photo-1517502884422-41eaaced0168?auto=format&fit=crop&w=400&q=80', label: 'MEETING ROOM', caption: 'Private meeting space', size: 'small' },
+          { image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80', label: 'CAFE LOBBY', caption: 'Coffee bar & lounge', size: 'medium' },
+          { image: 'https://images.unsplash.com/photo-1530745342582-0795f23ec976?auto=format&fit=crop&w=600&q=80', label: 'GREEN ZONE', caption: 'Natural light workspace', size: 'medium' },
+          { image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80', label: 'TECH LOUNGE', caption: 'Tech & collaboration zone', size: 'medium' },
         ],
       },
       blocks: {
@@ -275,9 +301,13 @@ const contentSchema = new mongoose.Schema(
         type: [
           {
             title: { type: String, default: '' },
+            description: { type: String, default: '' },
             value: { type: Number, default: 0 },
             displayValue: { type: String, default: '' },
             visible: { type: Boolean, default: true },
+            // Highlighted state — used for total/founding price rows
+            highlighted: { type: Boolean, default: false },
+            icon: { type: String, default: '' },
           },
         ],
         default: [],

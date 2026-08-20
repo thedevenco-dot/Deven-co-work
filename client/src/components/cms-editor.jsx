@@ -569,6 +569,54 @@ export default function CmsEditor({
             )}
           />
         </FieldGroup>
+
+        <FieldGroup title="Hero Floating Stat Cards">
+          <p className="text-xs text-[#A3A3A3]">Small floating cards shown over the hero (e.g., "50 / Founding Seats").</p>
+          <RepeatableBlock
+            items={cmsDraft.hero?.floatingStats || []}
+            {...nested('hero', 'floatingStats', { value: '', label: '' })}
+            itemLabel="Stat Card"
+            addLabel="Add Stat Card"
+            emptyLabel="No floating stat cards added."
+            renderItem={(stat, idx) => (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Value (large, bold)">
+                  <TextInput
+                    value={stat.value || ''}
+                    onChange={(e) => onNestedChange('hero', 'floatingStats', idx, 'value', e.target.value)}
+                    placeholder="50"
+                  />
+                </Field>
+                <Field label="Label (small, muted)">
+                  <TextInput
+                    value={stat.label || ''}
+                    onChange={(e) => onNestedChange('hero', 'floatingStats', idx, 'label', e.target.value)}
+                    placeholder="Founding Seats"
+                  />
+                </Field>
+              </div>
+            )}
+          />
+        </FieldGroup>
+
+        <FieldGroup title="Bottom Metadata Strip">
+          <p className="text-xs text-[#A3A3A3]">Small items shown in the metadata bar at the very bottom of the hero.</p>
+          <Field label="Meta items (one per line)">
+            <TextArea
+              value={(cmsDraft.hero?.metaItems || []).join('\n')}
+              onChange={(e) => onFieldChange('hero', 'metaItems', e.target.value.split('\n').filter(Boolean))}
+              rows={4}
+              placeholder={"RAIPUR\nVIP ESTATE\n50 SEATS\nFRI — SAT FREE TRIAL"}
+            />
+          </Field>
+          <Field label="Highlight words (comma-separated)">
+            <TextInput
+              value={cmsDraft.hero?.highlightWords || ''}
+              onChange={(e) => onFieldChange('hero', 'highlightWords', e.target.value)}
+              placeholder="beautiful, premium"
+            />
+          </Field>
+        </FieldGroup>
       </SectionPanel>
 
       {/* ── 02. PROBLEM ─────────────────────────────────────────────────────── */}
@@ -593,6 +641,23 @@ export default function CmsEditor({
             onChange={(e) => onFieldChange('problem', 'imageUrl', e.target.value)}
             onUpload={(e) => onUpload('problem', 'imageUrl', e)}
           />
+          <div className="grid gap-4 sm:grid-cols-2 pt-1">
+            <Field label="Quote card text (overlaps the image)">
+              <TextArea
+                value={cmsDraft.problem?.quoteText || ''}
+                onChange={(e) => onFieldChange('problem', 'quoteText', e.target.value)}
+                rows={2}
+                placeholder="You're not lazy. Your environment is holding you back."
+              />
+            </Field>
+            <Field label="Quote author (optional)">
+              <TextInput
+                value={cmsDraft.problem?.quoteAuthor || ''}
+                onChange={(e) => onFieldChange('problem', 'quoteAuthor', e.target.value)}
+                placeholder="— Deven Co-Work"
+              />
+            </Field>
+          </div>
         </FieldGroup>
 
         <FieldGroup title="Problem Points">
@@ -716,6 +781,24 @@ export default function CmsEditor({
                     onChange={(e) => onNestedChange('guide', 'gallery', idx, 'label', e.target.value)}
                     placeholder="MAIN AREA"
                   />
+                </Field>
+                <Field label="Caption text (hover reveal)">
+                  <TextInput
+                    value={item.caption || ''}
+                    onChange={(e) => onNestedChange('guide', 'gallery', idx, 'caption', e.target.value)}
+                    placeholder="The main workspace floor"
+                  />
+                </Field>
+                <Field label="Size hint">
+                  <select
+                    value={item.size || 'medium'}
+                    onChange={(e) => onNestedChange('guide', 'gallery', idx, 'size', e.target.value)}
+                    className="w-full min-h-[44px] border border-[#242424] bg-[#0A0A0A] text-white px-3 py-2 text-sm focus:outline-none focus:border-[#F8BC06]"
+                  >
+                    <option value="large">Large (left column, tall)</option>
+                    <option value="medium">Medium</option>
+                    <option value="small">Small</option>
+                  </select>
                 </Field>
               </div>
             )}
@@ -928,14 +1011,26 @@ export default function CmsEditor({
                       placeholder="10000"
                     />
                   </Field>
-                  <div className="flex items-end pb-2">
+                <div className="flex items-end pb-2 gap-8">
                     <Toggle
                       checked={item.visible !== false}
                       onChange={(v) => onNestedChange('valueStack', 'valueItems', idx, 'visible', v)}
                       label="Visible on site"
                     />
+                    <Toggle
+                      checked={!!item.highlighted}
+                      onChange={(v) => onNestedChange('valueStack', 'valueItems', idx, 'highlighted', v)}
+                      label="Highlighted row (yellow)"
+                    />
                   </div>
                 </div>
+                <Field label="Extended description (optional)">
+                  <TextInput
+                    value={item.description || ''}
+                    onChange={(e) => onNestedChange('valueStack', 'valueItems', idx, 'description', e.target.value)}
+                    placeholder="Optional short description..."
+                  />
+                </Field>
               </div>
             )}
           />

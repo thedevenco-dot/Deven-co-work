@@ -350,7 +350,7 @@ function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange }) {
 }
 
 // ─── SEO EDITOR ───────────────────────────────────────────────────────────────
-function SEOEditor({ cmsDraft, onFieldChange }) {
+function SEOEditor({ cmsDraft, onFieldChange, onUpload }) {
   if (!cmsDraft) return null;
   const seo = cmsDraft.seo || {};
 
@@ -379,7 +379,7 @@ function SEOEditor({ cmsDraft, onFieldChange }) {
           label="OG Image (1200×630 recommended)"
           value={seo.ogImage}
           onChange={(e) => onFieldChange('seo', 'ogImage', e.target.value)}
-          onUpload={(e) => handleCMSImageUpload('seo', 'ogImage', e)}
+          onUpload={(e) => onUpload?.('seo', 'ogImage', e)}
         />
       </SectionCard>
 
@@ -394,7 +394,7 @@ function SEOEditor({ cmsDraft, onFieldChange }) {
           label="Twitter Image"
           value={seo.twitterImage}
           onChange={(e) => onFieldChange('seo', 'twitterImage', e.target.value)}
-          onUpload={(e) => handleCMSImageUpload('seo', 'twitterImage', e)}
+          onUpload={(e) => onUpload?.('seo', 'twitterImage', e)}
         />
       </SectionCard>
     </div>
@@ -402,7 +402,7 @@ function SEOEditor({ cmsDraft, onFieldChange }) {
 }
 
 // ─── GLOBAL SETTINGS EDITOR ───────────────────────────────────────────────────
-function GlobalSettingsEditor({ cmsDraft, onFieldChange }) {
+function GlobalSettingsEditor({ cmsDraft, onFieldChange, onUpload }) {
   if (!cmsDraft) return null;
   const gs = cmsDraft.globalSettings || {};
 
@@ -420,19 +420,21 @@ function GlobalSettingsEditor({ cmsDraft, onFieldChange }) {
             label="Logo Asset"
             value={gs.logo}
             onChange={(e) => onFieldChange('globalSettings', 'logo', e.target.value)}
-            onUpload={(e) => handleCMSImageUpload('globalSettings', 'logo', e)}
+            onUpload={(e) => onUpload?.('globalSettings', 'logo', e)}
+            accept="image/*"
           />
           <MediaField
-            label="Favicon Asset (ICO / PNG)"
+            label="Favicon Asset (PNG / ICO / SVG)"
             value={gs.favicon}
             onChange={(e) => onFieldChange('globalSettings', 'favicon', e.target.value)}
-            onUpload={(e) => handleCMSImageUpload('globalSettings', 'favicon', e)}
+            onUpload={(e) => onUpload?.('globalSettings', 'favicon', e)}
+            accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml,image/ico,image/jpeg,image/webp,.ico,.png,.svg"
           />
           <MediaField
             label="OG / Social Sharing Image"
             value={gs.ogImage}
             onChange={(e) => onFieldChange('globalSettings', 'ogImage', e.target.value)}
-            onUpload={(e) => handleCMSImageUpload('globalSettings', 'ogImage', e)}
+            onUpload={(e) => onUpload?.('globalSettings', 'ogImage', e)}
           />
         </div>
       </SectionCard>
@@ -1241,7 +1243,11 @@ export default function AdminDashboard() {
                 {cmsLoading ? (
                   <div className="py-20 text-center text-[#A3A3A3] animate-pulse">Loading...</div>
                 ) : cmsDraft ? (
-                  <GlobalSettingsEditor cmsDraft={cmsDraft} onFieldChange={handleCMSFieldChange} />
+                  <GlobalSettingsEditor
+                    cmsDraft={cmsDraft}
+                    onFieldChange={handleCMSFieldChange}
+                    onUpload={handleCMSImageUpload}
+                  />
                 ) : (
                   <button onClick={fetchCMSContent} className="button button-primary">Load CMS Data</button>
                 )}
@@ -1256,7 +1262,11 @@ export default function AdminDashboard() {
                 {cmsLoading ? (
                   <div className="py-20 text-center text-[#A3A3A3] animate-pulse">Loading...</div>
                 ) : cmsDraft ? (
-                  <SEOEditor cmsDraft={cmsDraft} onFieldChange={handleCMSFieldChange} />
+                  <SEOEditor
+                    cmsDraft={cmsDraft}
+                    onFieldChange={handleCMSFieldChange}
+                    onUpload={handleCMSImageUpload}
+                  />
                 ) : (
                   <button onClick={fetchCMSContent} className="button button-primary">Load CMS Data</button>
                 )}

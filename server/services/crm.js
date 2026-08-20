@@ -52,7 +52,7 @@ export async function pushToCRM(doc, stage = 'New Lead') {
     });
 
     if (response.ok) {
-      console.log(`CRM Webhook successfully delivered for reservation ${reservation._id}`);
+      console.log(`CRM Webhook successfully delivered for ${doc._id || doc.type || 'lead'}`);
       return { success: true };
     } else {
       const errorText = await response.text();
