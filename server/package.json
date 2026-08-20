@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.0",
+    "cloudinary": "^2.10.1",
+    "cors": "^2.8.5",
+    "deven-cowork-workspace": "file:..",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.0",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.0",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
