@@ -1542,8 +1542,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
           </RevealOnScroll>
 
           {/* Right: Form */}
-          <RevealOnScroll delay={0.1} className="space-y-5">
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <RevealOnScroll delay={0.1} className="space-y-5 min-w-0 w-full overflow-hidden">
+            <form className="space-y-4 w-full min-w-0" onSubmit={(e) => e.preventDefault()}>
               {/* Honeypot */}
               <input type="text" name="email_confirm" style={{ display: 'none' }} tabIndex={-1} autoComplete="off"
                 onChange={(e) => update('email_confirm', e.target.value)} value={form.email_confirm || ''} />
