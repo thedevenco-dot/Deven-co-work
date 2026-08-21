@@ -83,8 +83,11 @@ export async function saveDraftContent(req, res) {
     delete updateData.createdAt;
     delete updateData.updatedAt;
 
-    // Direct Mongoose document update
+    // Assign updates and explicitly mark every modified section as changed.
+    // Mongoose does NOT auto-detect changes inside Mixed-type fields (e.g. hero.videoUrl
+    // stored as a Cloudinary object), so we must call markModified for each key.
     Object.assign(draft, updateData);
+    Object.keys(updateData).forEach((key) => draft.markModified(key));
     await draft.save();
 
     res.json({
@@ -118,7 +121,10 @@ export async function publishContent(req, res) {
     delete draftObj.updatedAt;
     delete draftObj.__v;
 
+    // Assign and explicitly mark every key as modified so Mongoose persists
+    // Mixed-type nested fields (e.g. hero.videoUrl as a Cloudinary object).
     Object.assign(published, draftObj);
+    Object.keys(draftObj).forEach((key) => published.markModified(key));
     await published.save();
 
     res.json({

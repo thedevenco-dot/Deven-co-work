@@ -355,8 +355,8 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
           </div>
 
           {/* Interactive Layout Section */}
-          <div className="relative border border-[#1A1A1A] bg-[#050505] p-3 rounded overflow-x-auto select-none">
-            <div className="min-w-[550px] space-y-5">
+          <div className="relative border border-[#1A1A1A] bg-[#050505] p-3 rounded select-none overflow-x-auto">
+            <div className="min-w-0 w-full space-y-5" style={{ minWidth: zoomView === 'all' ? '520px' : undefined }}>
               
               {/* TOP ROW: Stage / Screen Area */}
               {(zoomView === 'all') && (
@@ -369,7 +369,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
               )}
 
               {/* MIDDLE ROW: Hot Desks T2/T3 & Dedicated Desks T4/T5/T6 */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Hot Desk Tables */}
                 {(zoomView === 'all' || zoomView === 't2-t3') && (
                   <div className="space-y-2">
@@ -396,7 +396,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
 
               {/* BOTTOM ROW: Coffee Lab, Main Entry, Emergency Exit & T7 */}
               {(zoomView === 'all' || zoomView === 't7') && (
-                <div className="grid grid-cols-[1fr_1.5fr] gap-4 pt-3 border-t border-[#151515] items-start">
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.5fr] gap-4 pt-3 border-t border-[#151515] items-start">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="border border-[#22c55e]/20 bg-[#22c55e]/5 p-2 rounded h-20 flex flex-col justify-center text-center">
                       <span className="font-display text-[10px] text-[#22c55e] font-bold uppercase tracking-wider">Coffee Lab</span>
