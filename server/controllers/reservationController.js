@@ -1,9 +1,9 @@
+import mongoose from 'mongoose';
+import WorkspaceConfig from '../models/WorkspaceConfig.js';
 import crypto from 'crypto';
 import Reservation from '../models/Reservation.js';
 import Seat from '../models/Seat.js';
-import Lead from '../models/Lead.js';
 import Content from '../models/Content.js';
-import { pushToCRM } from '../services/crm.js';
 import { broadcast } from '../socket.js';
 
 /**
@@ -35,11 +35,17 @@ export async function getSeats(req, res) {
       });
     }
 
+    let workspaceConfig = await WorkspaceConfig.findOne();
+    if (!workspaceConfig) {
+      workspaceConfig = await WorkspaceConfig.create({});
+    }
+
     const seats = await Seat.find({}).sort({ zone: 1, label: 1 });
     res.json({
       success: true,
       count: seats.length,
       data: seats,
+      seatDepositAmount: workspaceConfig.refundableSeatDeposit || 1000,
     });
   } catch (error) {
     res.status(500).json({
@@ -97,91 +103,96 @@ export async function createReservation(req, res) {
 
     const now = new Date();
 
-    // 1. Eager release of expired locks before validating availability
+    // Eager release of expired locks
     const expiredHolds = await Seat.find({
       status: 'held',
       heldUntil: { $lt: now }
     });
 
     if (expiredHolds.length > 0) {
-      console.log(`[Cleaner] Releasing ${expiredHolds.length} expired seat holds before checkout verification.`);
       const seatIds = expiredHolds.map(s => s._id);
       await Seat.updateMany(
         { _id: { $in: seatIds } },
         { status: 'available', heldUntil: null, heldBy: null }
       );
-      
       broadcast({
         type: 'SEAT_UPDATE',
         seats: expiredHolds.map(s => ({ ...s.toObject(), status: 'available', heldUntil: null, heldBy: null }))
       });
     }
 
-    // Debug logging for request
-    console.log(`[Reservation Request] Checking availability for: ${seatNumbers.join(', ')}`);
+    // Capacity Validation
+    let workspaceConfig = await WorkspaceConfig.findOne();
+    if (!workspaceConfig) {
+      workspaceConfig = await WorkspaceConfig.create({});
+    }
 
-    // 2. Verify seat availability atomically (grouped in $and to prevent duplicate $or keys bug)
-    const reservedSeats = await Seat.find({
-      $and: [
-        { $or: conditions },
-        {
-          $or: [
-            { status: 'reserved' },
-            { isStaff: true },
-            { status: 'held', heldUntil: { $gte: now } }
+    const activeBookings = await Reservation.countDocuments({ leadStatus: 'CONFIRMED', requestType: 'seat_reservation' });
+    const activeHoldsCount = await Seat.countDocuments({ status: 'held', heldUntil: { $gte: now } });
+    const adminBlockedSeats = await Seat.countDocuments({ status: { $in: ['blocked', 'maintenance'] } });
+    const availableCapacity = workspaceConfig.totalCapacity - activeBookings - activeHoldsCount - adminBlockedSeats;
+
+    if (conditions.length > 0 && availableCapacity < conditions.length) {
+      return res.status(400).json({ success: false, message: 'Workspace capacity reached. Cannot reserve these seats.' });
+    }
+
+    const reservationId = new mongoose.Types.ObjectId();
+    const heldUntil = new Date(Date.now() + (workspaceConfig.holdDurationMinutes * 60 * 1000));
+
+    // Atomic Seat Locking
+    if (conditions.length > 0) {
+      const updateResult = await Seat.updateMany(
+        { 
+          $or: conditions,
+          $nor: [
+             { status: { $in: ['reserved', 'blocked', 'maintenance'] } },
+             { status: 'held', heldUntil: { $gte: now } }
           ]
-        }
-      ]
-    });
+        },
+        { status: 'held', heldBy: reservationId, heldUntil }
+      );
 
-    if (reservedSeats.length > 0) {
-      reservedSeats.forEach((s) => {
-        console.warn(`[Rejected Seat] ${s.zone}-${s.label} | Status: ${s.status} | HeldUntil: ${s.heldUntil} | HeldBy: ${s.heldBy} | isStaff: ${s.isStaff}`);
-      });
-
-      const labels = reservedSeats.map((s) => `${s.zone}-${s.label}`).join(', ');
-      res.status(400).json({
-        success: false,
-        message: `These seats are no longer available: ${labels}`,
-      });
-      return;
+      // Rollback if we didn't lock exactly the number of seats requested (Race Condition protection)
+      if (updateResult.modifiedCount !== conditions.length) {
+         // Release any seats that WERE locked by this request
+         await Seat.updateMany(
+            { heldBy: reservationId },
+            { status: 'available', heldBy: null, heldUntil: null }
+         );
+         return res.status(400).json({ success: false, message: 'One or more of these seats were just taken. Please select another seat.' });
+      }
     }
 
     // Fetch dynamic joining date from Content settings or default
     const content = await Content.findOne({ key: 'draft' });
     const jDate = content?.reservation?.joiningDate || '15 September 2026';
 
-    const amount = (Array.isArray(seatNumbers) && seatNumbers.length > 0) ? seatNumbers.length * 1000 : 0;
+    const seatDepositAmount = workspaceConfig.refundableSeatDeposit || 1000;
+    const amount = (Array.isArray(seatNumbers) && seatNumbers.length > 0) ? seatNumbers.length * seatDepositAmount : 0;
 
     // Create Pending Reservation in DB
     const reservation = new Reservation({
+      _id: reservationId,
       name: name.trim(),
       phone: phone.trim(),
       email: email.trim(),
       company: (company || '').trim(),
       joiningDate: jDate,
       seatNumbers,
+      requestType: 'seat_reservation',
       plan,
       amount,
-      paymentStatus: amount > 0 ? 'pending' : 'n/a',
-      status: amount > 0 ? 'new' : 'confirmed',
+      seatDepositAmount,
+      paymentStatus: amount > 0 ? 'PENDING' : 'N/A',
+      leadStatus: amount > 0 ? 'PAYMENT_PENDING' : 'CONFIRMED',
       utmSource: utmSource || '',
       utmMedium: utmMedium || '',
       utmCampaign: utmCampaign || '',
     });
 
-    // Enforce 5-minute Seat Hold in database (only if seats selected)
-    if (conditions.length > 0) {
-      const heldUntil = new Date(Date.now() + 5 * 60 * 1000); // 5 min hold
-      await Seat.updateMany(
-        { $or: conditions },
-        { status: 'held', heldBy: reservation._id, heldUntil }
-      );
-    }
-
     // Save Reservation Order
-    const rpKeyId = process.env.RAZORPAY_KEY_ID;
-    const rpKeySecret = process.env.RAZORPAY_KEY_SECRET;
+    const rpKeyId = (process.env.RAZORPAY_KEY_ID || '').trim();
+    const rpKeySecret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
 
     let razorpayOrder = null;
 
@@ -231,8 +242,8 @@ export async function createReservation(req, res) {
     }
     // If amount is zero, skip Razorpay creation entirely and mark reservation confirmed
     if (amount === 0) {
-      reservation.paymentStatus = 'n/a';
-      reservation.status = 'confirmed';
+      reservation.paymentStatus = 'N/A';
+      reservation.leadStatus = 'CONFIRMED';
     }
 
     await reservation.save();
@@ -245,13 +256,6 @@ export async function createReservation(req, res) {
         seats: updatedSeats
       });
     }
-
-    // Push Incomplete Lead to CRM
-    const syncRes = await pushToCRM(reservation, 'New Lead');
-    reservation.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-    reservation.crmSyncError = syncRes.error || '';
-    reservation.crmStage = 'New Lead';
-    await reservation.save();
 
     // Broadcast new lead notify to admin panel
     broadcast({
@@ -292,7 +296,7 @@ export async function confirmReservation(req, res) {
       return;
     }
 
-    const rpKeySecret = process.env.RAZORPAY_KEY_SECRET;
+    const rpKeySecret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
 
     if (rpKeySecret && razorpaySignature && reservation.razorpayOrderId) {
       // Live HMAC SHA256 validation
@@ -314,8 +318,8 @@ export async function confirmReservation(req, res) {
     }
 
     // Update Reservation details
-    reservation.paymentStatus = 'confirmed';
-    reservation.status = 'confirmed';
+    reservation.paymentStatus = 'PAID';
+    reservation.leadStatus = 'CONFIRMED';
     reservation.razorpayPaymentId = razorpayPaymentId || 'pay_mock_confirmed';
     reservation.razorpaySignature = razorpaySignature || 'sig_mock_confirmed';
     await reservation.save();
@@ -346,16 +350,9 @@ export async function confirmReservation(req, res) {
     broadcast({
       type: 'PAYMENT_UPDATE',
       leadId: reservation._id,
-      paymentStatus: 'confirmed',
-      status: 'confirmed'
+      paymentStatus: 'PAID',
+      leadStatus: 'CONFIRMED'
     });
-
-    // Push Confirmed Handoff to CRM
-    const syncRes = await pushToCRM(reservation, 'Reservation Confirmed');
-    reservation.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-    reservation.crmSyncError = syncRes.error || '';
-    reservation.crmStage = 'Reservation Confirmed';
-    await reservation.save();
 
     res.json({
       success: true,
@@ -390,7 +387,7 @@ export async function failReservation(req, res) {
     }
 
     // Update payment status
-    reservation.paymentStatus = 'failed';
+    reservation.paymentStatus = 'FAILED';
     await reservation.save();
 
     const parsedSeats = reservation.seatNumbers.map((s) => {
@@ -417,16 +414,9 @@ export async function failReservation(req, res) {
     broadcast({
       type: 'PAYMENT_UPDATE',
       leadId: reservation._id,
-      paymentStatus: 'failed',
-      status: reservation.status
+      paymentStatus: 'FAILED',
+      leadStatus: reservation.leadStatus
     });
-
-    // Push Incomplete checkout lead update to CRM
-    const syncRes = await pushToCRM(reservation, 'Contacted');
-    reservation.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-    reservation.crmSyncError = syncRes.error || '';
-    reservation.crmStage = 'Contacted';
-    await reservation.save();
 
     res.json({
       success: true,
@@ -448,29 +438,11 @@ export async function failReservation(req, res) {
 export async function getReservations(req, res) {
   try {
     const reservations = await Reservation.find({}).sort({ createdAt: -1 });
-    const leads = await Lead.find({}).sort({ createdAt: -1 });
-
-    // Map leads to look like reservations in the table grid
-    const mappedLeads = leads.map((l) => {
-      const obj = l.toObject();
-      return {
-        ...obj,
-        seatNumbers: [],
-        plan: obj.type === 'FREE_TRIAL' ? 'Free Trial' : 'WhatsApp Inquiry',
-        amount: 0,
-        paymentStatus: 'n/a',
-        isLead: true,
-      };
-    });
-
-    const combined = [...reservations, ...mappedLeads].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
 
     res.json({
       success: true,
-      count: combined.length,
-      data: combined,
+      count: reservations.length,
+      data: reservations,
     });
   } catch (error) {
     res.status(500).json({
@@ -487,34 +459,29 @@ export async function getReservations(req, res) {
  */
 export async function updateReservation(req, res) {
   const { id } = req.params;
-  const { status, paymentStatus, notes, refundType } = req.body;
+  const { leadStatus, paymentStatus, notes, followUpDate, refundType } = req.body;
 
   try {
     let doc = await Reservation.findById(id);
-    let isLead = false;
 
     if (!doc) {
-      doc = await Lead.findById(id);
-      if (!doc) {
-        res.status(404).json({ success: false, message: 'Reservation or Lead not found' });
-        return;
-      }
-      isLead = true;
+      res.status(404).json({ success: false, message: 'Reservation not found' });
+      return;
     }
 
-    if (status !== undefined) doc.status = status;
+    if (leadStatus !== undefined) doc.leadStatus = leadStatus;
     if (notes !== undefined) doc.notes = notes;
+    if (followUpDate !== undefined) doc.followUpDate = followUpDate;
 
-    if (!isLead) {
-      if (paymentStatus !== undefined) doc.paymentStatus = paymentStatus;
-      if (refundType !== undefined) doc.refundType = refundType;
+    if (paymentStatus !== undefined) doc.paymentStatus = paymentStatus;
+    if (refundType !== undefined) doc.refundType = refundType;
 
-      // Handle manual cancellation or refund state to release seats
-      const isCancelledOrRefunded =
-        ['cancelled', 'refunded'].includes(doc.status) ||
-        ['refunded'].includes(doc.paymentStatus);
+    // Handle manual cancellation or refund state to release seats
+    const isCancelledOrRefunded =
+      ['CANCELLED', 'REFUNDED', 'LOST'].includes(doc.leadStatus) ||
+      ['REFUNDED'].includes(doc.paymentStatus);
 
-      if (isCancelledOrRefunded) {
+    if (isCancelledOrRefunded) {
         const seatsToRelease = await Seat.find({ reservationId: doc._id });
         if (seatsToRelease.length > 0) {
           await Seat.updateMany(
@@ -528,11 +495,10 @@ export async function updateReservation(req, res) {
           });
         }
 
-        if (!doc.refundedAt && doc.status === 'refunded') {
+        if (!doc.refundedAt && doc.leadStatus === 'REFUNDED') {
           doc.refundedAt = new Date();
         }
       }
-    }
 
     await doc.save();
 
@@ -540,21 +506,9 @@ export async function updateReservation(req, res) {
     broadcast({
       type: 'PAYMENT_UPDATE',
       leadId: doc._id,
-      paymentStatus: isLead ? 'n/a' : doc.paymentStatus,
-      status: doc.status
+      paymentStatus: doc.paymentStatus,
+      leadStatus: doc.leadStatus
     });
-
-    // Trigger Zoho Sync for Status Update
-    let syncStage = 'New Lead';
-    if (doc.status === 'contacted') syncStage = 'Contacted';
-    if (doc.status === 'confirmed') syncStage = 'Reservation Confirmed';
-    if (doc.status === 'cancelled' || doc.status === 'refunded') syncStage = 'Cancelled';
-
-    const syncRes = await pushToCRM(doc, syncStage);
-    doc.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-    doc.crmSyncError = syncRes.error || '';
-    doc.crmStage = syncStage;
-    await doc.save();
 
     res.json({
       success: true,
@@ -569,58 +523,7 @@ export async function updateReservation(req, res) {
   }
 }
 
-/**
- * @desc    Manual Force Retry of Zoho Bigin CRM Sync
- * @route   POST /api/reservations/:id/sync
- * @access  Private (Admin Only)
- */
-export async function retryCRMSync(req, res) {
-  const { id } = req.params;
 
-  try {
-    let doc = await Reservation.findById(id);
-    let isLead = false;
-
-    if (!doc) {
-      doc = await Lead.findById(id);
-      if (!doc) {
-        res.status(404).json({ success: false, message: 'Reservation or Lead not found' });
-        return;
-      }
-      isLead = true;
-    }
-
-    let syncStage = doc.crmStage || 'New Lead';
-    if (doc.status === 'contacted') syncStage = 'Contacted';
-    if (doc.status === 'confirmed') syncStage = 'Reservation Confirmed';
-    if (doc.status === 'cancelled' || doc.status === 'refunded') syncStage = 'Cancelled';
-
-    const syncRes = await pushToCRM(doc, syncStage);
-    doc.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-    doc.crmSyncError = syncRes.error || '';
-    doc.crmStage = syncStage;
-    await doc.save();
-
-    if (syncRes.success) {
-      res.json({
-        success: true,
-        message: 'CRM Sync successfully completed',
-        data: doc,
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        message: `CRM Sync failed: ${syncRes.error}`,
-        data: doc,
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Server error while retrying CRM sync',
-    });
-  }
-}
 
 /**
  * @desc    Manually update a seat's availability status
@@ -752,13 +655,32 @@ export async function createFreeTrial(req, res) {
 
     const { startDate, endDate } = getNextTrialDates(trialSettings.days);
 
-    const lead = new Lead({
+    let workspaceConfig = await WorkspaceConfig.findOne();
+    if (!workspaceConfig) workspaceConfig = await WorkspaceConfig.create({});
+    
+    if (startDate) {
+      const dayOfWeek = startDate.toLocaleString('en-US', { weekday: 'long' });
+      const trialLimits = workspaceConfig.freeTrialCapacity;
+      const limit = trialLimits ? trialLimits.get(dayOfWeek) || 10 : 10;
+      
+      const existingTrials = await Reservation.countDocuments({
+        requestType: 'free_trial',
+        trialStartDate: startDate
+      });
+      
+      if (existingTrials >= limit) {
+        return res.status(400).json({ success: false, message: `Free trial capacity for upcoming ${dayOfWeek} has been reached. Please check back later.` });
+      }
+    }
+
+    const lead = new Reservation({
       name: name.trim(),
       phone: phone.trim(),
       email: email.trim(),
       company: (company || '').trim(),
-      type: 'FREE_TRIAL',
-      status: 'new',
+      requestType: 'free_trial',
+      leadStatus: 'TRIAL',
+      paymentStatus: 'N/A',
       trialStartDate: startDate,
       trialEndDate: endDate,
       utmSource: utmSource || '',
@@ -768,23 +690,10 @@ export async function createFreeTrial(req, res) {
 
     await lead.save();
 
-    // Sync Zoho CRM Webhook
-    const syncRes = await pushToCRM(lead, 'New Lead');
-    lead.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-    lead.crmSyncError = syncRes.error || '';
-    await lead.save();
-
     // Notify admin dashboard
     broadcast({
       type: 'NEW_LEAD',
-      lead: {
-        ...lead.toObject(),
-        seatNumbers: [],
-        plan: 'Free Trial',
-        amount: 0,
-        paymentStatus: 'n/a',
-        isLead: true,
-      }
+      lead: lead
     });
 
     res.status(201).json({
@@ -809,13 +718,14 @@ export async function createWhatsAppLead(req, res) {
   const { name, phone, email, company, utmSource, utmMedium, utmCampaign } = req.body;
 
   try {
-    const lead = new Lead({
+    const lead = new Reservation({
       name: (name || 'WhatsApp Visitor').trim(),
       phone: (phone || 'N/A').trim(),
       email: (email || 'N/A').trim(),
       company: (company || '').trim(),
-      type: 'WHATSAPP_INQUIRY',
-      status: 'new',
+      requestType: 'whatsapp',
+      leadStatus: 'NEW',
+      paymentStatus: 'N/A',
       utmSource: utmSource || '',
       utmMedium: utmMedium || '',
       utmCampaign: utmCampaign || '',
@@ -823,23 +733,10 @@ export async function createWhatsAppLead(req, res) {
 
     await lead.save();
 
-    // Sync Zoho CRM Webhook
-    const syncRes = await pushToCRM(lead, 'New Lead');
-    lead.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-    lead.crmSyncError = syncRes.error || '';
-    await lead.save();
-
     // Notify admin dashboard
     broadcast({
       type: 'NEW_LEAD',
-      lead: {
-        ...lead.toObject(),
-        seatNumbers: [],
-        plan: 'WhatsApp Inquiry',
-        amount: 0,
-        paymentStatus: 'n/a',
-        isLead: true,
-      }
+      lead: lead
     });
 
     res.status(201).json({

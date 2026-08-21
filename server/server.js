@@ -6,8 +6,14 @@ import User from './models/User.js';
 import Seat from './models/Seat.js';
 import { initWebSocket, broadcast } from './socket.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Load environmental variables
-dotenv.config({ path: '../.env' }); // Look for .env in the parent root directory
+dotenv.config({ path: path.resolve(__dirname, '../.env') }); // Look for .env in the parent root directory
 
 const PORT = process.env.PORT || 5000;
 
@@ -26,10 +32,18 @@ async function seedAdminUser() {
       await User.create({
         username: adminUsername,
         password: adminPassword,
+        role: 'SUPER_ADMIN',
       });
       console.log('Admin user successfully seeded.');
     } else {
-      console.log(`Admin user "${adminUsername}" already exists.`);
+      const isMatch = await existingUser.matchPassword(adminPassword);
+      if (!isMatch) {
+        existingUser.password = adminPassword;
+        await existingUser.save();
+        console.log(`Admin user "${adminUsername}" password has been updated from environment variables.`);
+      } else {
+        console.log(`Admin user "${adminUsername}" already exists and password is up to date.`);
+      }
     }
   } catch (error) {
     console.error(`Failed to seed admin user: ${error.message}`);
@@ -42,8 +56,8 @@ async function seedAdminUser() {
 async function seedSeats() {
   try {
     const seatCount = await Seat.countDocuments({});
-    if (seatCount !== 59) {
-      console.log('Seeding new 59 seats and cabins layout...');
+    if (seatCount !== 56) {
+      console.log('Seeding new 56 seats layout...');
       
       try {
         await Seat.collection.drop();
@@ -58,10 +72,7 @@ async function seedSeats() {
         { name: 'T4', type: 'Dedicated Desk', desks: ['R1','R2','R3','R4','R5','L1','L2','L3','L4','L5'], staff: ['R1'] },
         { name: 'T5', type: 'Dedicated Desk', desks: ['R1','R2','R3','R4','R5','L1','L2','L3','L4','L5'], staff: ['R1'] },
         { name: 'T6', type: 'Dedicated Desk', desks: ['R1','R2','R3','R4','R5','L1','L2','L3','L4','L5'], staff: ['R1'] },
-        { name: 'T7', type: 'Dedicated Desk', desks: ['R1','R2','R3','R4','R5','R6','R7','R8','R9','R10'], staff: ['R5','R8','R9'] },
-        { name: 'C1', type: 'Private Cabin', desks: ['Cabin 1'], staff: [] },
-        { name: 'C2', type: 'Private Cabin', desks: ['Cabin 2'], staff: [] },
-        { name: 'C3', type: 'Private Cabin', desks: ['Cabin 3'], staff: [] }
+        { name: 'T7', type: 'Dedicated Desk', desks: ['R1','R2','R3','R4','R5','R6','R7','R8','R9','R10'], staff: ['R5','R8','R9'] }
       ];
 
       for (const zone of zones) {
@@ -76,9 +87,9 @@ async function seedSeats() {
           });
         }
       }
-      console.log('59 seats layout seeded successfully.');
+      console.log('56 seats layout seeded successfully.');
     } else {
-      console.log('59 seats layout already seeded.');
+      console.log('56 seats layout already seeded.');
     }
   } catch (error) {
     console.error(`Failed to seed seats: ${error.message}`);
@@ -111,6 +122,8 @@ async function seedCMSContent() {
 async function startServer() {
   // Connect to DB
   await connectDatabase();
+  console.log(`Razorpay Key Loaded: ${process.env.RAZORPAY_KEY_ID ? `${process.env.RAZORPAY_KEY_ID.substring(0, 8)}... (Length: ${process.env.RAZORPAY_KEY_ID.trim().length})` : 'NONE'}`);
+  console.log(`Razorpay Secret Loaded: ${process.env.RAZORPAY_KEY_SECRET ? `${process.env.RAZORPAY_KEY_SECRET.substring(0, 4)}... (Length: ${process.env.RAZORPAY_KEY_SECRET.trim().length})` : 'NONE'}`);
 
   // Seed Admin Account
   await seedAdminUser();

@@ -2,7 +2,6 @@ import express from 'express';
 import crypto from 'crypto';
 import Reservation from '../models/Reservation.js';
 import Seat from '../models/Seat.js';
-import { pushToCRM } from '../services/crm.js';
 
 const router = express.Router();
 
@@ -40,11 +39,22 @@ router.post('/razorpay', async (req, res) => {
         return;
       }
 
-      const reservation = await Reservation.findOne({ razorpayOrderId: orderId });
-      if (reservation && reservation.paymentStatus !== 'confirmed') {
-        reservation.paymentStatus = 'confirmed';
-        reservation.razorpayPaymentId = paymentId || reservation.razorpayPaymentId;
-        await reservation.save();
+      const reservation = await Reservation.findOneAndUpdate(
+        { razorpayOrderId: orderId, paymentStatus: { $ne: 'PAID' } },
+        {
+          $set: {
+            paymentStatus: 'PAID',
+            leadStatus: 'CONFIRMED',
+          },
+        },
+        { new: true }
+      );
+
+      if (reservation) {
+        if (paymentId && !reservation.razorpayPaymentId) {
+          reservation.razorpayPaymentId = paymentId;
+          await reservation.save();
+        }
 
         // Lock seats
         const parsedSeats = reservation.seatNumbers.map((s) => {
@@ -56,13 +66,6 @@ router.post('/razorpay', async (req, res) => {
           { $or: conditions },
           { status: 'reserved', reservationId: reservation._id }
         );
-
-        // Sync CRM
-        const syncRes = await pushToCRM(reservation, 'Reservation Confirmed');
-        reservation.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-        reservation.crmSyncError = syncRes.error || '';
-        reservation.crmStage = 'Reservation Confirmed';
-        await reservation.save();
       }
     } else if (event === 'payment.failed') {
       const paymentEntity = payload.payment?.entity;
@@ -71,14 +74,7 @@ router.post('/razorpay', async (req, res) => {
       if (orderId) {
         const reservation = await Reservation.findOne({ razorpayOrderId: orderId });
         if (reservation) {
-          reservation.paymentStatus = 'failed';
-          await reservation.save();
-
-          // Sync CRM
-          const syncRes = await pushToCRM(reservation, 'Contacted');
-          reservation.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-          reservation.crmSyncError = syncRes.error || '';
-          reservation.crmStage = 'Contacted';
+          reservation.paymentStatus = 'FAILED';
           await reservation.save();
         }
       }
@@ -89,8 +85,8 @@ router.post('/razorpay', async (req, res) => {
       if (paymentId) {
         const reservation = await Reservation.findOne({ razorpayPaymentId: paymentId });
         if (reservation) {
-          reservation.paymentStatus = 'refunded';
-          reservation.status = 'refunded';
+          reservation.paymentStatus = 'REFUNDED';
+          reservation.leadStatus = 'REFUNDED';
           reservation.refundedAt = new Date();
           reservation.refundType = 'pre_launch';
           await reservation.save();
@@ -100,13 +96,6 @@ router.post('/razorpay', async (req, res) => {
             { reservationId: reservation._id },
             { status: 'available', reservationId: null, isStaff: false }
           );
-
-          // Sync CRM
-          const syncRes = await pushToCRM(reservation, 'Cancelled');
-          reservation.crmSyncStatus = syncRes.success ? 'success' : 'failed';
-          reservation.crmSyncError = syncRes.error || '';
-          reservation.crmStage = 'Cancelled';
-          await reservation.save();
         }
       }
     }

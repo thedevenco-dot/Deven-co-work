@@ -584,6 +584,8 @@ export default function AdminDashboard() {
   // Dashboard & reservations data
   const [reservations, setReservations] = useState([]);
   const [seats, setSeats] = useState([]);
+  const [capacityStats, setCapacityStats] = useState(null);
+  const [capacityConfig, setCapacityConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -591,6 +593,11 @@ export default function AdminDashboard() {
   // top-level: 'dashboard' | 'homepage' | 'navigation' | 'footer' | 'global' | 'seo' | 'media' | 'leads' | 'seats' | 'logs'
   const [activePanel, setActivePanel] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Amount Management state
+  const [amountSettings, setAmountSettings] = useState(null);
+  const [inputAmount, setInputAmount] = useState('');
+  const [savingAmount, setSavingAmount] = useState(false);
 
   // Leads filter state
   const [filterSearch, setFilterSearch] = useState('');
@@ -604,6 +611,11 @@ export default function AdminDashboard() {
   const [modalPayment, setModalPayment] = useState('');
   const [modalRefundType, setModalRefundType] = useState('none');
   const [updatingLead, setUpdatingLead] = useState(false);
+
+  // Manual Booking state
+  const [manualBookingOpen, setManualBookingOpen] = useState(false);
+  const [manualBookingData, setManualBookingData] = useState({ name: '', phone: '', email: '', seatNumbers: '' });
+  const [creatingBooking, setCreatingBooking] = useState(false);
 
   // CMS State
   const [cmsDraft, setCmsDraft] = useState(null);
@@ -629,6 +641,14 @@ export default function AdminDashboard() {
       setReservations(resData.data || []);
       const seatsData = await api.fetchSeats();
       setSeats(seatsData.data || []);
+      const capData = await api.getCapacity();
+      setCapacityStats(capData.stats);
+      setCapacityConfig(capData.config);
+
+      // Fetch amount settings
+      const amtSettings = await api.getAmountSettings();
+      setAmountSettings(amtSettings);
+      setInputAmount(amtSettings.bookingDepositAmount.toString());
     } catch (err) {
       setError(err.message || 'Failed to load dashboard data. Please log in.');
       api.logout();
@@ -902,8 +922,8 @@ export default function AdminDashboard() {
   const openLeadDetails = (lead) => {
     setSelectedLead(lead);
     setModalNotes(lead.notes || '');
-    setModalStatus(lead.status || 'new');
-    setModalPayment(lead.paymentStatus || 'pending');
+    setModalStatus(lead.leadStatus || 'NEW');
+    setModalPayment(lead.paymentStatus || 'N/A');
     setModalRefundType(lead.refundType || 'none');
   };
 
@@ -911,7 +931,7 @@ export default function AdminDashboard() {
     if (!selectedLead) return;
     setUpdatingLead(true);
     try {
-      const res = await api.updateReservation(selectedLead._id, { notes: modalNotes, status: modalStatus, paymentStatus: modalPayment, refundType: modalRefundType });
+      const res = await api.updateReservation(selectedLead._id, { notes: modalNotes, leadStatus: modalStatus, paymentStatus: modalPayment, refundType: modalRefundType });
       if (res.success) {
         toast({ title: 'Lead updated' });
         setSelectedLead(null);
@@ -924,23 +944,11 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleRetryCRM = async (leadId) => {
-    try {
-      const res = await api.retryCRMSync(leadId);
-      if (res.success) {
-        toast({ title: 'CRM Sync success' });
-        fetchDashboardData();
-      }
-    } catch (err) {
-      toast({ title: 'CRM Sync failed', description: err.message, variant: 'destructive' });
-    }
-  };
-
   const exportToCSV = () => {
-    const headers = ['Name', 'Phone', 'Seats Held', 'Plan', 'Payment Status', 'Deposit Amount', 'CRM Status', 'Source', 'Campaign', 'Date', 'Notes'];
+    const headers = ['Name', 'Phone', 'Seats Held', 'Plan', 'Payment Status', 'Deposit Amount', 'Type', 'Source', 'Campaign', 'Date', 'Notes'];
     const rows = filteredReservations.map(res => [
       res.name, res.phone, res.seatNumbers?.join('|') || '', res.plan,
-      res.paymentStatus, res.amount, res.crmSyncStatus, res.utmSource || 'Organic',
+      res.paymentStatus, res.amount, res.requestType, res.utmSource || 'Organic',
       res.utmCampaign || '', new Date(res.createdAt).toLocaleDateString(), res.notes || ''
     ]);
     const csvContent = "data:text/csv;charset=utf-8,\uFEFF"
@@ -963,14 +971,15 @@ export default function AdminDashboard() {
   // ── Seat Inventory ────────────────────────────────────────────────────────────
   const openSeatOverride = (seat) => {
     setSelectedSeat(seat);
-    setSeatOverrideStatus(seat.isStaff ? 'Staff-Reserved' : seat.status === 'reserved' ? 'Reserved' : 'Available');
+    setSeatOverrideStatus(seat.status === 'blocked' || seat.status === 'maintenance' ? 'blocked' : 'available');
   };
 
   const handleUpdateSeatStatus = async () => {
     if (!selectedSeat) return;
     setUpdatingSeat(true);
     try {
-      const res = await api.updateSeatStatus(selectedSeat.zone, selectedSeat.label, seatOverrideStatus);
+      const action = seatOverrideStatus === 'blocked' ? 'block' : 'unblock';
+      const res = await api.manageSeatState(selectedSeat._id, action, 'Admin override');
       if (res.success) {
         toast({ title: 'Seat status updated', description: `Seat ${selectedSeat.zone}-${selectedSeat.label} → ${seatOverrideStatus}` });
         setSelectedSeat(null);
@@ -980,6 +989,60 @@ export default function AdminDashboard() {
       toast({ title: 'Seat override failed', description: err.message, variant: 'destructive' });
     } finally {
       setUpdatingSeat(false);
+    }
+  };
+
+  const handleCreateManualBooking = async () => {
+    if (!manualBookingData.name || !manualBookingData.phone || !manualBookingData.email) {
+      return toast({ title: 'Error', description: 'Please fill name, phone, and email', variant: 'destructive' });
+    }
+    setCreatingBooking(true);
+    try {
+      const seats = manualBookingData.seatNumbers ? manualBookingData.seatNumbers.split(',').map(s => s.trim()).filter(Boolean) : [];
+      await api.createManualBooking({ ...manualBookingData, seatNumbers: seats });
+      toast({ title: 'Success', description: 'Manual booking created successfully.' });
+      setManualBookingOpen(false);
+      setManualBookingData({ name: '', phone: '', email: '', seatNumbers: '' });
+      fetchDashboardData();
+    } catch (err) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setCreatingBooking(false);
+    }
+  };
+
+  const handleSaveAmount = async () => {
+    const numVal = parseInt(inputAmount);
+    if (!inputAmount || isNaN(numVal) || numVal <= 0) {
+      return toast({
+        title: 'Validation Error',
+        description: 'Amount must be a positive number greater than zero.',
+        variant: 'destructive',
+      });
+    }
+
+    setSavingAmount(true);
+    try {
+      const res = await api.updateAmountSettings(numVal);
+      if (res.success) {
+        toast({
+          title: 'Success',
+          description: 'Booking amount updated successfully.',
+        });
+        setAmountSettings(res);
+        setInputAmount(res.bookingDepositAmount.toString());
+        // Also refresh capacity stats/config as refundableSeatDeposit changes
+        const capData = await api.getCapacity();
+        setCapacityConfig(capData.config);
+      }
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: err.message || 'Failed to update booking amount. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setSavingAmount(false);
     }
   };
 
@@ -1015,9 +1078,11 @@ export default function AdminDashboard() {
     {
       label: 'Operations',
       items: [
+        { id: 'bookings', label: 'Booking Management', icon: Calendar },
         { id: 'leads', label: 'Leads & Payments', icon: Users },
+        { id: 'capacity', label: 'Capacity Settings', icon: Settings },
+        { id: 'amount', label: 'Amount Management', icon: DollarSign },
         { id: 'seats', label: 'Seat Inventory', icon: Database },
-        { id: 'logs', label: 'CRM Sync Logs', icon: Shield },
       ]
     },
   ];
@@ -1112,6 +1177,180 @@ export default function AdminDashboard() {
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto">
           <div className="p-6 max-w-6xl mx-auto space-y-8">
+
+            {/* ── BOOKING MANAGEMENT ───────────────────────────────────────── */}
+            {activePanel === 'bookings' && (
+              <div className="space-y-8">
+                <div>
+                  <div className="eyebrow flex items-center gap-3 text-[#F8BC06]">
+                    <span className="h-px w-8 bg-[#F8BC06]" /> Operations
+                  </div>
+                  <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1]">Booking Management</h1>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+                  <div className="border border-[#242424] bg-[#0A0A0A] p-6">
+                    <span className="eyebrow">Total Capacity</span>
+                    <p className="mt-4 font-display text-5xl text-[#F1F1F1]">{loading || !capacityStats ? '—' : capacityStats.totalCapacity}</p>
+                  </div>
+                  <div className="border border-[#242424] bg-[#0A0A0A] p-6">
+                    <span className="eyebrow">Active Bookings</span>
+                    <p className="mt-4 font-display text-5xl text-[#F8BC06]">{loading || !capacityStats ? '—' : capacityStats.activeBookings}</p>
+                  </div>
+                  <div className="border border-[#242424] bg-[#0A0A0A] p-6">
+                    <span className="eyebrow">Available Capacity</span>
+                    <p className="mt-4 font-display text-5xl text-[#22c55e]">{loading || !capacityStats ? '—' : capacityStats.availableCapacity}</p>
+                  </div>
+                  <div className="border border-[#242424] bg-[#0A0A0A] p-6">
+                    <span className="eyebrow">Pending Payments</span>
+                    <p className="mt-4 font-display text-5xl text-[#F1F1F1]">{loading || !capacityStats ? '—' : capacityStats.pendingPayments}</p>
+                  </div>
+                  <div className="border border-[#242424] bg-[#0A0A0A] p-6">
+                    <span className="eyebrow">Cancelled Bookings</span>
+                    <p className="mt-4 font-display text-5xl text-[#A3A3A3]">{loading || !capacityStats ? '—' : capacityStats.cancelledBookings}</p>
+                  </div>
+                  <div className="border border-[#242424] bg-[#0A0A0A] p-6 flex justify-between items-center">
+                    <div>
+                      <span className="eyebrow">Blocked / Maintenance</span>
+                      <p className="mt-4 font-display text-5xl text-[#ef4444]">{loading || !capacityStats ? '—' : capacityStats.adminBlockedSeats}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── CAPACITY SETTINGS ────────────────────────────────────────── */}
+            {activePanel === 'capacity' && capacityConfig && (
+              <div className="space-y-8">
+                 <div>
+                  <div className="eyebrow flex items-center gap-3 text-[#F8BC06]">
+                    <span className="h-px w-8 bg-[#F8BC06]" /> Operations
+                  </div>
+                  <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1]">Capacity Settings</h1>
+                </div>
+
+                <SectionCard title="Workspace Settings">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Total Physical Capacity">
+                      <TextInput 
+                        type="number"
+                        value={capacityConfig.totalCapacity} 
+                        onChange={(e) => setCapacityConfig({...capacityConfig, totalCapacity: parseInt(e.target.value) || 0})}
+                      />
+                    </Field>
+                    <Field label="Refundable Seat Deposit (₹)">
+                      <TextInput 
+                        type="number"
+                        min="0"
+                        value={capacityConfig.refundableSeatDeposit || 1000} 
+                        onChange={(e) => setCapacityConfig({...capacityConfig, refundableSeatDeposit: parseInt(e.target.value) || 0})}
+                      />
+                    </Field>
+                    <Field label="Hold Duration (Minutes)">
+                       <TextInput 
+                        type="number"
+                        value={capacityConfig.holdDurationMinutes} 
+                        onChange={(e) => setCapacityConfig({...capacityConfig, holdDurationMinutes: parseInt(e.target.value) || 0})}
+                      />
+                    </Field>
+                  </div>
+                  <button onClick={async () => {
+                     try {
+                       await api.updateCapacity({
+                         totalCapacity: capacityConfig.totalCapacity,
+                         holdDurationMinutes: capacityConfig.holdDurationMinutes,
+                         freeTrialCapacity: capacityConfig.freeTrialCapacity,
+                         refundableSeatDeposit: capacityConfig.refundableSeatDeposit
+                       });
+                       toast({ title: 'Saved', description: 'Capacity settings updated' });
+                       fetchDashboardData();
+                     } catch(e) { toast({ title: 'Error', description: e.message, variant: 'destructive' }); }
+                  }} className="button button-primary button-small">Save Capacity Settings</button>
+                </SectionCard>
+              </div>
+            )}
+
+            {/* ── AMOUNT MANAGEMENT ────────────────────────────────────────── */}
+            {activePanel === 'amount' && amountSettings && (
+              <div className="space-y-8">
+                <div>
+                  <div className="eyebrow flex items-center gap-3 text-[#F8BC06]">
+                    <span className="h-px w-8 bg-[#F8BC06]" /> Operations
+                  </div>
+                  <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1] uppercase">Amount Management</h1>
+                  <p className="text-xs text-[#A3A3A3] mt-2">Manage the refundable booking deposit charged for each selected seat.</p>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-[1.5fr_1fr]">
+                  {/* Left: Input Form */}
+                  <SectionCard title="Booking Deposit">
+                    <div className="space-y-4">
+                      <div className="text-sm font-semibold flex items-center justify-between text-[#A3A3A3]">
+                        <span>Current Amount:</span>
+                        <span className="text-[#F8BC06] font-bold text-lg">
+                          ₹{(amountSettings.bookingDepositAmount || 1000).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+
+                      <Field label={`Refundable Seat Deposit (${amountSettings.currency || 'INR'})`}>
+                        <TextInput 
+                          type="number"
+                          min="1"
+                          value={inputAmount} 
+                          onChange={(e) => setInputAmount(e.target.value)}
+                        />
+                      </Field>
+                      
+                      <p className="text-[11px] text-[#A3A3A3]">
+                        Users will be charged this amount when reserving a seat.
+                      </p>
+
+                      <button 
+                        onClick={handleSaveAmount} 
+                        disabled={savingAmount}
+                        className="button button-primary button-small w-full sm:w-auto"
+                      >
+                        {savingAmount ? 'Saving...' : 'Save Amount'}
+                      </button>
+                    </div>
+                  </SectionCard>
+
+                  {/* Right: Preview & Meta */}
+                  <div className="space-y-6">
+                    <SectionCard title="Payment Preview">
+                      <div className="space-y-3 divide-y divide-[#242424] text-xs font-mono">
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#A3A3A3]">1 seat</span>
+                          <span className="text-white">₹{((amountSettings.bookingDepositAmount || 1000) * 1).toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#A3A3A3]">2 seats</span>
+                          <span className="text-white">₹{((amountSettings.bookingDepositAmount || 1000) * 2).toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#A3A3A3]">3 seats</span>
+                          <span className="text-white">₹{((amountSettings.bookingDepositAmount || 1000) * 3).toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                    </SectionCard>
+
+                    <SectionCard title="Last Updated">
+                      <div className="space-y-2 text-xs text-[#A3A3A3]">
+                        <p>
+                          Updated:{' '}
+                          <span className="text-white font-mono">
+                            {amountSettings.updatedAt ? new Date(amountSettings.updatedAt).toLocaleString() : 'N/A'}
+                          </span>
+                        </p>
+                        <p>
+                          By: <span className="text-white font-semibold">{amountSettings.updatedBy || 'admin'}</span>
+                        </p>
+                      </div>
+                    </SectionCard>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* ── DASHBOARD ────────────────────────────────────────────────── */}
             {activePanel === 'dashboard' && (
@@ -1288,6 +1527,7 @@ export default function AdminDashboard() {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">Leads & Payments</h2>
                   <div className="flex gap-2">
+                    <button onClick={() => setManualBookingOpen(true)} className="button button-primary button-small gap-2"><Plus size={14} /> Add Manual Booking</button>
                     <button onClick={exportToCSV} className="button button-outline button-small gap-2"><Download size={14} /> Export CSV</button>
                     <button onClick={fetchDashboardData} disabled={loading} className="button button-outline button-small gap-2">
                       <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> Refresh
@@ -1339,7 +1579,8 @@ export default function AdminDashboard() {
                           <th className="py-4 px-6 font-semibold">Plan</th>
                           <th className="py-4 px-6 font-semibold">Lead Status</th>
                           <th className="py-4 px-6 font-semibold">Payment</th>
-                          <th className="py-4 px-6 font-semibold text-center">Zoho Sync</th>
+                          <th className="py-4 px-6 font-semibold">Amounts</th>
+                          <th className="py-4 px-6 font-semibold text-center">Type</th>
                           <th className="py-4 px-6 font-semibold text-right">Actions</th>
                         </tr>
                       </thead>
@@ -1362,29 +1603,30 @@ export default function AdminDashboard() {
                               <td className="py-4 px-6 text-xs text-[#b5b1a7]">{res.plan}</td>
                               <td className="py-4 px-6">
                                 <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase ${
-                                  res.status === 'confirmed' ? 'bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/30' :
-                                  res.status === 'contacted' ? 'bg-[#3b82f6]/20 text-[#3b82f6] border border-[#3b82f6]/30' :
-                                  (res.status === 'refunded' || res.status === 'cancelled') ? 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/30' :
+                                  res.leadStatus === 'CONFIRMED' ? 'bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/30' :
+                                  (res.leadStatus === 'CONTACTED' || res.leadStatus === 'TRIAL') ? 'bg-[#3b82f6]/20 text-[#3b82f6] border border-[#3b82f6]/30' :
+                                  (res.leadStatus === 'REFUNDED' || res.leadStatus === 'CANCELLED' || res.leadStatus === 'LOST') ? 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/30' :
                                   'bg-white/10 text-white border border-white/20'
-                                }`}>{res.status}</span>
+                                }`}>{res.leadStatus}</span>
                               </td>
                               <td className="py-4 px-6">
                                 <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase ${
-                                  res.paymentStatus === 'confirmed' ? 'bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/30' :
-                                  res.paymentStatus === 'failed' ? 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/30' :
-                                  res.paymentStatus === 'refunded' ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' :
+                                  res.paymentStatus === 'PAID' ? 'bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/30' :
+                                  res.paymentStatus === 'FAILED' ? 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/30' :
+                                  res.paymentStatus === 'REFUNDED' ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' :
                                   'bg-white/10 text-white border border-white/20'
-                                }`}>{res.paymentStatus === 'confirmed' ? 'paid' : res.paymentStatus}</span>
+                                }`}>{res.paymentStatus}</span>
+                              </td>
+                              <td className="py-4 px-6">
+                                <div className="text-[10px] text-[#A3A3A3]">
+                                  <p>Deposit: <span className="text-white">₹{(res.seatDepositAmount || 1000).toLocaleString('en-IN')}</span></p>
+                                  <p>Total: <span className="text-[#F8BC06] font-bold">₹{(res.amount || 0).toLocaleString('en-IN')}</span></p>
+                                </div>
                               </td>
                               <td className="py-4 px-6 text-center">
-                                {res.crmSyncStatus === 'success' ? (
-                                  <span className="text-[#22c55e] text-xs flex items-center justify-center gap-1 font-semibold"><CheckCircle2 size={12} /> Sync</span>
-                                ) : (
-                                  <div className="flex flex-col items-center gap-1">
-                                    <span className="text-[#ef4444] text-xs flex items-center gap-1 font-semibold"><AlertCircle size={12} /> Fail</span>
-                                    <button onClick={() => handleRetryCRM(res._id)} className="text-[9px] font-bold uppercase tracking-wider text-[#F8BC06] border-b border-[#F8BC06]/30 hover:border-[#F8BC06]">Retry</button>
-                                  </div>
-                                )}
+                                <span className={`inline-block px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[#F1F1F1] bg-[#242424] border border-[#333]`}>
+                                  {res.requestType === 'seat_reservation' ? 'Reservation' : res.requestType === 'free_trial' ? 'Free Trial' : res.requestType === 'whatsapp' ? 'WhatsApp' : 'Unknown'}
+                                </span>
                               </td>
                               <td className="py-4 px-6 text-right">
                                 <button onClick={() => openLeadDetails(res)} className="text-xs font-bold uppercase tracking-wider text-[#F8BC06] hover:text-white">
@@ -1418,15 +1660,15 @@ export default function AdminDashboard() {
                           key={seat._id}
                           onClick={() => openSeatOverride(seat)}
                           className={`p-3 border text-xs font-semibold flex flex-col justify-between items-center text-center transition-all ${
-                            seat.isStaff ? 'border-[#ef4444] bg-[#ef4444]/10 text-[#ef4444]' :
-                            seat.status === 'reserved' ? 'border-[#242424] bg-white/5 text-[#888]' :
+                            ['blocked', 'maintenance'].includes(seat.status) ? 'border-[#ef4444] bg-[#ef4444]/10 text-[#ef4444]' :
+                            ['reserved', 'held'].includes(seat.status) ? 'border-[#F8BC06] bg-[#F8BC06]/10 text-[#F8BC06]' :
                             'border-[#22c55e] bg-[#22c55e]/10 text-[#22c55e]'
                           }`}
                         >
                           <span className="text-[10px] uppercase text-white/55 font-mono mb-2">{seat.zone}</span>
                           <span className="text-base font-bold mb-2">{seat.label}</span>
                           <span className="text-[9px] font-bold uppercase tracking-wider block">
-                            {seat.isStaff ? 'Staff' : seat.status === 'reserved' ? 'Locked' : 'Open'}
+                            {['blocked', 'maintenance'].includes(seat.status) ? 'Blocked' : ['reserved', 'held'].includes(seat.status) ? 'Booked' : 'Available'}
                           </span>
                         </button>
                       ))}
@@ -1435,15 +1677,29 @@ export default function AdminDashboard() {
                   <div>
                     {selectedSeat ? (
                       <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-6">
-                        <h3 className="font-display text-lg border-b border-[#242424] pb-3 text-[#F8BC06]">
+                        <h3 className="font-display text-lg border-b border-[#242424] pb-3 text-[#F8BC06] mb-4">
                           Modify Seat: {selectedSeat.zone}-{selectedSeat.label}
                         </h3>
+                        {['reserved', 'held'].includes(selectedSeat.status) && (
+                          <div className="bg-[#242424] p-4 text-sm mb-4">
+                            <p className="font-bold text-white mb-2">Current Booking Info</p>
+                            {(() => {
+                              const res = reservations.find(r => r._id === selectedSeat.reservationId || (r.seatNumbers && r.seatNumbers.includes(`${selectedSeat.zone}-${selectedSeat.label}`)));
+                              return res ? (
+                                <div className="space-y-1 text-[#A3A3A3]">
+                                  <p>Name: <span className="text-white">{res.name}</span></p>
+                                  <p>Phone: <span className="text-white">{res.phone}</span></p>
+                                  <p>Status: <span className="text-[#F8BC06] uppercase">{res.leadStatus}</span></p>
+                                </div>
+                              ) : <p className="text-[#A3A3A3]">Loading details or held anonymously...</p>;
+                            })()}
+                          </div>
+                        )}
                         <label className="field-label">
                           <span>Manual Status Override</span>
                           <select value={seatOverrideStatus} onChange={(e) => setSeatOverrideStatus(e.target.value)}>
-                            <option value="Available">Available (Open for booking)</option>
-                            <option value="Reserved">Reserved (Offline Lock)</option>
-                            <option value="Staff-Reserved">Staff-Reserved (Hidden)</option>
+                            <option value="available">Available (Open for booking)</option>
+                            <option value="blocked">Blocked / Maintenance</option>
                           </select>
                         </label>
                         <div className="flex gap-4 justify-end">
@@ -1463,51 +1719,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* ── CRM SYNC LOGS ─────────────────────────────────────────────── */}
-            {activePanel === 'logs' && (
-              <div className="space-y-6">
-                <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">CRM Sync Logs</h2>
-                <div className="bg-[#0A0A0A] border border-[#242424] p-5">
-                  <p className="text-sm font-semibold">Zoho Bigin CRM Synchronization Logs</p>
-                  <p className="text-xs text-[#A3A3A3] mt-1">Monitor API pipeline sync outputs. Click "Retry" on any failures to force sync.</p>
-                </div>
-                <div className="border border-[#242424] bg-[#0A0A0A] overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b border-[#242424] text-xs uppercase tracking-wider text-[#A3A3A3] bg-black/30">
-                          <th className="py-4 px-6 font-semibold">Lead Contact</th>
-                          <th className="py-4 px-6 font-semibold">Sync Stage</th>
-                          <th className="py-4 px-6 font-semibold text-center">Status</th>
-                          <th className="py-4 px-6 font-semibold">Error Message</th>
-                          <th className="py-4 px-6 font-semibold text-right">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-white/5 text-sm">
-                        {reservations.map((res) => (
-                          <tr key={res._id} className="hover:bg-white/[0.02] transition-colors">
-                            <td className="py-4 px-6 font-semibold text-white">
-                              <p>{res.name}</p>
-                              <p className="text-xs text-[#A3A3A3] font-normal">{res.phone}</p>
-                            </td>
-                            <td className="py-4 px-6 font-mono text-xs">{res.crmStage || 'New Lead'}</td>
-                            <td className="py-4 px-6 text-center">
-                              <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase ${
-                                res.crmSyncStatus === 'success' ? 'bg-[#22c55e]/20 text-[#22c55e]' : 'bg-[#ef4444]/20 text-[#ef4444]'
-                              }`}>{res.crmSyncStatus}</span>
-                            </td>
-                            <td className="py-4 px-6 text-xs text-[#A3A3A3] max-w-xs truncate" title={res.crmSyncError}>{res.crmSyncError || 'None'}</td>
-                            <td className="py-4 px-6 text-right">
-                              <button onClick={() => handleRetryCRM(res._id)} className="button button-outline button-small">Force Retry</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
+
 
           </div>
         </main>
@@ -1560,12 +1772,7 @@ export default function AdminDashboard() {
                 </label>
               )}
             </div>
-            {selectedLead.crmSyncStatus === 'failed' && (
-              <div className="border border-[#ef4444]/20 bg-[#ef4444]/5 p-3 text-xs text-[#ef4444] mb-6 flex justify-between items-center">
-                <span><strong>CRM Sync Failed:</strong> {selectedLead.crmSyncError || 'Unknown Error'}</span>
-                <button onClick={() => handleRetryCRM(selectedLead._id)} className="bg-[#ef4444]/20 px-2 py-1 uppercase tracking-wider font-bold text-white hover:bg-[#ef4444]/30">Retry Now</button>
-              </div>
-            )}
+
             <label className="field-label mb-6">
               <span>Internal Team Notes</span>
               <textarea value={modalNotes} onChange={(e) => setModalNotes(e.target.value)} placeholder="Type notes after calls here..." className="w-full min-h-[90px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#F8BC06]" />
@@ -1574,6 +1781,42 @@ export default function AdminDashboard() {
               <button onClick={() => setSelectedLead(null)} className="button button-outline button-small">Cancel</button>
               <button onClick={handleUpdateLead} disabled={updatingLead} className="button button-primary button-small">
                 {updatingLead ? 'Saving...' : 'Save Updates'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Manual Booking Modal */}
+      {manualBookingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg bg-[#0A0A0A] border border-[#242424] p-6 relative">
+            <button onClick={() => setManualBookingOpen(false)} className="absolute right-4 top-4 text-[#A3A3A3] hover:text-white"><X size={20} /></button>
+            <h2 className="font-display text-2xl tracking-wider text-white mb-6 border-b border-[#242424] pb-4">
+              Add Manual Booking
+            </h2>
+            <div className="space-y-4 mb-6">
+              <label className="field-label">
+                <span>Full Name <span className="text-[#ef4444] ml-1">*</span></span>
+                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#F8BC06]" value={manualBookingData.name} onChange={(e) => setManualBookingData({...manualBookingData, name: e.target.value})} />
+              </label>
+              <label className="field-label">
+                <span>Phone Number <span className="text-[#ef4444] ml-1">*</span></span>
+                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#F8BC06]" value={manualBookingData.phone} onChange={(e) => setManualBookingData({...manualBookingData, phone: e.target.value})} />
+              </label>
+              <label className="field-label">
+                <span>Email Address <span className="text-[#ef4444] ml-1">*</span></span>
+                <input type="email" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#F8BC06]" value={manualBookingData.email} onChange={(e) => setManualBookingData({...manualBookingData, email: e.target.value})} />
+              </label>
+              <label className="field-label">
+                <span>Seat Numbers (Comma separated, e.g. T4-R1, T5-L2)</span>
+                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#F8BC06]" value={manualBookingData.seatNumbers} onChange={(e) => setManualBookingData({...manualBookingData, seatNumbers: e.target.value})} placeholder="T4-R1, T5-L2" />
+              </label>
+            </div>
+            <div className="flex gap-4 justify-end border-t border-[#242424] pt-4">
+              <button onClick={() => setManualBookingOpen(false)} className="button button-outline button-small">Cancel</button>
+              <button onClick={handleCreateManualBooking} disabled={creatingBooking} className="button button-primary button-small">
+                {creatingBooking ? 'Saving...' : 'Create Booking'}
               </button>
             </div>
           </div>

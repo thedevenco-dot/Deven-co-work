@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
     },
+    role: {
+      type: String,
+      enum: ['SUPER_ADMIN', 'ADMIN'],
+      default: 'ADMIN',
+    },
   },
   {
     timestamps: true,

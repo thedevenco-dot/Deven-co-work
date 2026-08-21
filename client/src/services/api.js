@@ -121,19 +121,60 @@ export const api = {
     return handleResponse(res);
   },
 
-  async retryCRMSync(id) {
-    const res = await fetch(`${API_BASE}/reservations/${id}/sync`, {
-      method: 'POST',
-      headers: getHeaders(),
-    });
-    return handleResponse(res);
-  },
+
 
   async updateSeatStatus(zone, label, status) {
     const res = await fetch(`${API_BASE}/reservations/seats/status`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ zone, label, status }),
+    });
+    return handleResponse(res);
+  },
+
+  // ── Admin: Capacity & Seats ────────────────────────────────────────────────
+  async getCapacity() {
+    const res = await fetch(`${API_BASE}/admin/capacity`, { method: 'GET', headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  async updateCapacity(data) {
+    const res = await fetch(`${API_BASE}/admin/capacity`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  async getAmountSettings() {
+    const res = await fetch(`${API_BASE}/admin/settings/amount`, { method: 'GET', headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  async updateAmountSettings(amount) {
+    const res = await fetch(`${API_BASE}/admin/settings/amount`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify({ amount }),
+    });
+    return handleResponse(res);
+  },
+
+  async createManualBooking(data) {
+    const res = await fetch(`${API_BASE}/admin/bookings`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  async manageSeatState(id, action, reason = '') {
+    const res = await fetch(`${API_BASE}/admin/seats/${id}/${action}`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ reason }),
     });
     return handleResponse(res);
   },

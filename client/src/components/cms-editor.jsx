@@ -1352,13 +1352,7 @@ export default function CmsEditor({
                 onChange={(e) => onFieldChange('reservation', 'totalFoundingSeats', parseInt(e.target.value) || 50)}
               />
             </Field>
-            <Field label="Seat Deposit Amount (₹)">
-              <TextInput
-                type="number"
-                value={cmsDraft.reservation?.seatDepositAmount}
-                onChange={(e) => onFieldChange('reservation', 'seatDepositAmount', parseInt(e.target.value) || 1000)}
-              />
-            </Field>
+
             <Field label="Custom Joining Date">
               <TextInput
                 value={cmsDraft.reservation?.joiningDate}

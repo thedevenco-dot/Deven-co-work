@@ -5,7 +5,6 @@ import {
   failReservation,
   getReservations,
   updateReservation,
-  retryCRMSync,
   updateSeatStatus,
   createFreeTrial,
   createWhatsAppLead,
@@ -24,7 +23,6 @@ router.post('/whatsapp-lead', createWhatsAppLead);
 // Admin-only protected routes
 router.get('/', protect, getReservations);
 router.patch('/:id', protect, updateReservation);
-router.post('/:id/sync', protect, retryCRMSync);
 router.post('/seats/status', protect, updateSeatStatus);
 
 export default router;

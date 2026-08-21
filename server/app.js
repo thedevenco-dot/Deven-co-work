@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
 import contentRoutes from './routes/contentRoutes.js';
 import webhookRoutes from './routes/webhookRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import { getSeats } from './controllers/reservationController.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -80,6 +81,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/webhooks', webhookRoutes);
+app.use('/api/admin', adminRoutes);
 app.get('/api/seats', getSeats);
 
 // Health check endpoint

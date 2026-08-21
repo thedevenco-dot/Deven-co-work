@@ -5,7 +5,7 @@ const seatSchema = new mongoose.Schema(
     zone: {
       type: String,
       required: true,
-      enum: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'C1', 'C2', 'C3'],
+      enum: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
     },
     label: {
       type: String,
@@ -14,12 +14,12 @@ const seatSchema = new mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ['Hot Desk', 'Dedicated Desk', 'Private Cabin'],
+      enum: ['Hot Desk', 'Dedicated Desk'],
     },
     status: {
       type: String,
       required: true,
-      enum: ['available', 'reserved', 'held'],
+      enum: ['available', 'reserved', 'held', 'blocked', 'maintenance'],
       default: 'available',
     },
     heldUntil: {

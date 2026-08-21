@@ -39,8 +39,8 @@ const contentSchema = new mongoose.Schema(
     // ─── SEO ──────────────────────────────────────────────────────────────────
     seo: {
       title: { type: String, default: 'Deven Cowork — Reserve your founding seat | Raipur Premium Coworking' },
-      description: { type: String, default: "Deven Cowork is Raipur's most premium coworking space. Reserve one of 50 founding seats — private cabins, content studio, and a real founder's community." },
-      keywords: { type: String, default: 'coworking raipur, coworking space raipur, private cabin raipur, founder workspace raipur, deven cowork' },
+      description: { type: String, default: "Deven Cowork is Raipur's most premium coworking space. Reserve one of 50 founding seats — content studio, and a real founder's community." },
+      keywords: { type: String, default: 'coworking raipur, coworking space raipur, founder workspace raipur, deven cowork' },
       ogTitle: { type: String, default: '' },
       ogDescription: { type: String, default: '' },
       ogImage: { type: mongoose.Schema.Types.Mixed, default: '' },
@@ -63,7 +63,6 @@ const contentSchema = new mongoose.Schema(
         ],
         default: [
           { label: 'Pricing', url: '#pricing', external: false, visible: true, order: 0 },
-          { label: 'Cabins', url: '#reservation', external: false, visible: true, order: 1 },
           { label: 'Contact', url: '#reservation', external: false, visible: true, order: 2 },
         ],
       },
@@ -220,7 +219,7 @@ const contentSchema = new mongoose.Schema(
         ],
         default: [
           { title: 'Book Your Free 2-Day Trial', description: 'No card, no pressure, just come work from here.' },
-          { title: 'Pick Your Plan', description: 'Hot Desk, Dedicated Desk, or a Private Cabin — whatever fits.' },
+          { title: 'Pick Your Plan', description: 'Hot Desk or Dedicated Desk — whatever fits.' },
           { title: 'Move In & Grow', description: 'Join a real community, not just a shared room.' },
         ],
       },
@@ -373,7 +372,6 @@ const contentSchema = new mongoose.Schema(
         default: [
           { name: 'Hot Desk', standard: '₹7,500/mo', founding: '₹5,999/mo', desc: 'Flexible access for focused days. Includes shared workspace, meeting rooms, coffee bar, and community membership.' },
           { name: 'Dedicated Desk', standard: '₹11,000/mo', founding: '₹8,999/mo', desc: 'Your own place to build from. Includes 24/7 dedicated desk, studio + growth engine, photoshoot, and member network.' },
-          { name: 'Private Cabin', standard: '₹15,000/mo', founding: '[Cabin Pricing placeholder / Contact Us]', desc: 'Locked private space for scaling teams. Premium cabin infrastructure, full growth benefits, and priority booking.' },
           { name: 'Meeting Room', standard: '₹500/hr', founding: '₹399/hr', desc: 'Professional team meeting space. Interactive digital panel, high-speed connection, and host credentials.' },
           { name: 'Studio Hourly', standard: '₹1,500/hr', founding: '₹999/hr', desc: 'Professional audio/video podcast and content recording setup. High-grade gear, lighting, and audio backdrops.' },
         ],
@@ -416,7 +414,7 @@ const contentSchema = new mongoose.Schema(
         { question: 'Do I need to commit long-term?', answer: 'No. Month-to-month is available. Annual plans get 2 free months if you want to lock in the lowest rate.', published: true, order: 0 },
         { question: 'What happens after the 2-day free trial?', answer: 'Nothing automatic — no card is charged. If you love it, our team helps you pick the right plan.', published: true, order: 1 },
         { question: 'What if I want to cancel?', answer: "30 days' notice, no penalties, no hidden fees.", published: true, order: 2 },
-        { question: 'Can I upgrade later (e.g., Hot Desk to Cabin)?', answer: 'Yes, anytime — Founding Members get priority access when cabins open up.', published: true, order: 3 },
+        { question: 'Can I upgrade later?', answer: 'Yes, anytime — Founding Members get priority access.', published: true, order: 3 },
         { question: 'Is the Founding Member price really locked?', answer: 'Yes — for 12 months from the day you join, even as standard prices increase.', published: true, order: 4 },
         { question: 'Where exactly is Deven Co-Work located?', answer: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001 — right in the heart of Raipur, easily reachable from anywhere in the city.', published: true, order: 5 },
       ],
@@ -443,7 +441,6 @@ const contentSchema = new mongoose.Schema(
       reservationDescription: { type: String, default: 'Only 50 seats are available in the founding batch. Choose your next step below.' },
       scarcityText: { type: String, default: "FOUNDING BATCH\nLimited seats available" },
       totalFoundingSeats: { type: Number, default: 50 },
-      seatDepositAmount: { type: Number, default: 1000 },
       joiningDate: { type: String, default: '15 September 2026' },
       trialButtonText: { type: String, default: 'GET 2 DAYS FREE TRIAL' },
       whatsappButtonText: { type: String, default: 'BOOK VIA WHATSAPP →' },
@@ -478,7 +475,6 @@ const contentSchema = new mongoose.Schema(
         ],
         default: [
           { label: 'Pricing', href: '#pricing' },
-          { label: 'Cabins', href: '#reservation' },
           { label: 'Contact', href: '#reservation' },
           { label: 'Instagram', href: 'https://instagram.com/' },
           { label: 'GMB', href: 'https://www.google.com/maps/' },

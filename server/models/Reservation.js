@@ -26,33 +26,32 @@ const reservationSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    requestType: {
+      type: String,
+      required: true,
+      enum: ['seat_reservation', 'free_trial', 'whatsapp'],
+    },
     seatNumbers: {
       type: [String],
-      required: [true, 'Seat numbers are required'],
-      validate: {
-        validator: function (v) {
-          return Array.isArray(v) && v.length >= 1 && v.length <= 7;
-        },
-        message: 'You can select between 1 and 7 seats.',
-      },
+      default: [],
     },
     plan: {
       type: String,
-      required: [true, 'Preferred plan is required'],
-      enum: {
-        values: ['Hot Desk', 'Dedicated Desk', 'Private Cabin', 'Virtual Office'],
-        message: 'Invalid plan selection',
-      },
+      default: '',
     },
     amount: {
       type: Number,
-      required: [true, 'Deposit amount is required'],
+      default: 0,
+    },
+    seatDepositAmount: {
+      type: Number,
+      default: 1000,
     },
     paymentStatus: {
       type: String,
       required: true,
-      enum: ['pending', 'confirmed', 'failed', 'refunded'],
-      default: 'pending',
+      enum: ['N/A', 'PENDING', 'PAID', 'FAILED', 'REFUNDED'],
+      default: 'PENDING',
     },
     razorpayOrderId: {
       type: String,
@@ -66,28 +65,19 @@ const reservationSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
-    status: {
+    leadStatus: {
       type: String,
       required: true,
-      enum: ['new', 'contacted', 'confirmed', 'cancelled', 'refunded'],
-      default: 'new',
+      enum: ['NEW', 'CONTACTED', 'TRIAL', 'PAYMENT_PENDING', 'CONFIRMED', 'CANCELLED', 'LOST'],
+      default: 'NEW',
     },
     notes: {
       type: String,
       default: '',
     },
-    crmSyncStatus: {
-      type: String,
-      enum: ['pending', 'success', 'failed'],
-      default: 'pending',
-    },
-    crmSyncError: {
-      type: String,
-      default: '',
-    },
-    crmStage: {
-      type: String,
-      default: 'New Lead',
+    followUpDate: {
+      type: Date,
+      default: null,
     },
     utmSource: {
       type: String,
