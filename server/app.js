@@ -26,7 +26,8 @@ app.use(helmet({
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'http://localhost:5000'
+  'http://localhost:5000',
+  'https://deven-co-work.onrender.com'
 ];
 if (process.env.CORS_ALLOWED_ORIGIN) {
   allowedOrigins.push(process.env.CORS_ALLOWED_ORIGIN);

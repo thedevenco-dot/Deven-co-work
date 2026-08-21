@@ -53,6 +53,7 @@ Thumbs.db
 .env.local
 .env.production
 .env.*
+!.env.example
 
 # Local uploads
 server/uploads/
