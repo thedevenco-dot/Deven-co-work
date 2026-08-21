@@ -492,6 +492,7 @@ function Hero({ onReserve, hero }) {
       {/* Background Video */}
       {!videoFailed && data.videoUrl && (
         <video
+          key={getMediaUrl(data.videoUrl)}
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
           onError={() => setVideoFailed(true)}

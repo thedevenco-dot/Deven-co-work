@@ -183,7 +183,11 @@ export const api = {
 
   // ── CMS Content ────────────────────────────────────────────────────────────
   async fetchPublishedContent() {
-    const res = await fetch(`${API_BASE}/content/published`, { method: 'GET', headers: getHeaders() });
+    const res = await fetch(`${API_BASE}/content/published`, {
+      method: 'GET',
+      headers: getHeaders(),
+      cache: 'no-store'
+    });
     return handleResponse(res);
   },
 
