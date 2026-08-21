@@ -466,7 +466,7 @@ function Header({ onReserve, content }) {
 }
 
 // ─── HERO ─────────────────────────────────────────────────────────────────────
-function Hero({ onReserve, hero }) {
+function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [videoFailed, setVideoFailed] = useState(false);
   const data = hero || defaultContent.hero;
 
@@ -489,8 +489,8 @@ function Hero({ onReserve, hero }) {
       className="relative overflow-hidden border-b border-[rgba(255,255,255,0.06)] pt-[70px] grid-paper"
       data-testid="section-hero"
     >
-      {/* Background Video */}
-      {!videoFailed && data.videoUrl && (
+      {/* Background Video (CMS Mode) */}
+      {cmsLoaded && !videoFailed && data.videoUrl && (
         <video
           key={getMediaUrl(data.videoUrl)}
           autoPlay muted loop playsInline
@@ -502,11 +502,34 @@ function Hero({ onReserve, hero }) {
         </video>
       )}
 
-      {/* Fallback Image */}
-      {(videoFailed || !data.videoUrl) && data.imageUrl && (
+      {/* Fallback Image (CMS Mode) */}
+      {cmsLoaded && (videoFailed || !data.videoUrl) && data.imageUrl && (
         <SafeImage
           src={getMediaUrl(data.imageUrl)}
           alt="Deven Cowork space"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
+          style={{ filter: 'grayscale(40%) contrast(1.1)' }}
+        />
+      )}
+
+      {/* Fallback Video (API Failed Mode) */}
+      {!cmsLoaded && cmsFailed && !videoFailed && defaultContent.hero.videoUrl && (
+        <video
+          key={getMediaUrl(defaultContent.hero.videoUrl)}
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
+          onError={() => setVideoFailed(true)}
+          style={{ filter: 'grayscale(40%) contrast(1.1)' }}
+        >
+          <source src={getMediaUrl(defaultContent.hero.videoUrl)} type="video/mp4" />
+        </video>
+      )}
+
+      {/* Fallback Image (API Failed Mode) */}
+      {!cmsLoaded && cmsFailed && (videoFailed || !defaultContent.hero.videoUrl) && defaultContent.hero.imageUrl && (
+        <SafeImage
+          src={getMediaUrl(defaultContent.hero.imageUrl)}
+          alt="Deven Cowork space fallback"
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
           style={{ filter: 'grayscale(40%) contrast(1.1)' }}
         />
@@ -1776,6 +1799,8 @@ function WhatsAppFloat({ whatsapp, message }) {
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
 function Home() {
   const [content, setContent] = useState(defaultContent);
+  const [cmsLoaded, setCmsLoaded] = useState(false);
+  const [cmsFailed, setCmsFailed] = useState(false);
   const [utm, setUtm] = useState({ source: '', medium: '', campaign: '' });
   const [reserveOpen, setReserveOpen] = useState(false);
   const [reservedCount, setReservedCount] = useState(23);
@@ -1847,9 +1872,15 @@ function Home() {
           const merged = mergeContent(defaultContent, res.data);
           setContent(merged);
           applySEO(merged.seo, merged.globalSettings);
+          setCmsLoaded(true);
+        } else {
+          setCmsFailed(true);
         }
       })
-      .catch((err) => console.error('Failed to load published content. Using defaults.', err));
+      .catch((err) => {
+        console.error('Failed to load published content. Using defaults.', err);
+        setCmsFailed(true);
+      });
 
     fetchLiveSeatsCount();
 
@@ -1876,7 +1907,7 @@ function Home() {
   const sectionViz = content.sectionVisibility || defaultContent.sectionVisibility;
 
   const sectionComponents = {
-    hero: <Hero key="hero" onReserve={scrollToReservation} hero={content.hero} />,
+    hero: <Hero key="hero" onReserve={scrollToReservation} hero={content.hero} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     problem: <Problems key="problem" problem={content.problem} onReserve={scrollToReservation} />,
     guide: <Guide key="guide" guide={content.guide} onReserve={scrollToReservation} />,
     plan: <Plan key="plan" plan={content.plan} onReserve={scrollToReservation} />,
