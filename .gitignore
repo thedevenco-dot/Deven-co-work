@@ -54,6 +54,7 @@ Thumbs.db
 .env.production
 .env.*
 !.env.example
+!.env.production
 
 # Local uploads
 server/uploads/
