@@ -468,6 +468,7 @@ function Header({ onReserve, content }) {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [videoFailed, setVideoFailed] = useState(false);
+  const [mediaReady, setMediaReady] = useState(false);
   const data = hero || defaultContent.hero;
 
   const headlineLines = (data.headline || '').split('\n');
@@ -484,54 +485,79 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const floatingStats = data.floatingStats || defaultContent.hero.floatingStats;
   const metaItems = data.metaItems || defaultContent.hero.metaItems;
 
+  // Determine media visibility based on loading states
+  const showCmsVideo = cmsLoaded && !videoFailed && data.videoUrl;
+  const showCmsImage = cmsLoaded && (videoFailed || !data.videoUrl) && data.imageUrl;
+
+  const showFallbackVideo = !cmsLoaded && cmsFailed && !videoFailed && defaultContent.hero.videoUrl;
+  const showFallbackImage = !cmsLoaded && cmsFailed && (videoFailed || !defaultContent.hero.videoUrl) && defaultContent.hero.imageUrl;
+
+  const currentVideoUrl = showCmsVideo ? data.videoUrl : (showFallbackVideo ? defaultContent.hero.videoUrl : null);
+  const currentImageUrl = showCmsImage ? data.imageUrl : (showFallbackImage ? defaultContent.hero.imageUrl : null);
+
+  // Reset ready state when URLs change
+  useEffect(() => {
+    setMediaReady(false);
+  }, [currentVideoUrl, currentImageUrl]);
+
+  const videoRef = useRef(null);
+  const imgRef = useRef(null);
+
+  // Handle cached elements that may already be loaded
+  useEffect(() => {
+    if (currentVideoUrl && videoRef.current && videoRef.current.readyState >= 2) {
+      setMediaReady(true);
+    }
+  }, [currentVideoUrl]);
+
+  useEffect(() => {
+    if (currentImageUrl && imgRef.current && imgRef.current.complete) {
+      setMediaReady(true);
+    }
+  }, [currentImageUrl]);
+
+  const handleMediaReady = () => {
+    setMediaReady(true);
+  };
+
   return (
     <section
       className="relative overflow-hidden border-b border-[rgba(255,255,255,0.06)] pt-[70px] grid-paper"
       data-testid="section-hero"
     >
-      {/* Background Video (CMS Mode) */}
-      {cmsLoaded && !videoFailed && data.videoUrl && (
+      {/* Background Video */}
+      {currentVideoUrl && (
         <video
-          key={getMediaUrl(data.videoUrl)}
+          ref={videoRef}
+          key={getMediaUrl(currentVideoUrl)}
           autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
+          className="absolute inset-0 w-full h-full object-cover z-0"
           onError={() => setVideoFailed(true)}
-          style={{ filter: 'grayscale(40%) contrast(1.1)' }}
+          onLoadedData={handleMediaReady}
+          onCanPlay={handleMediaReady}
+          style={{
+            filter: 'grayscale(40%) contrast(1.1)',
+            opacity: mediaReady ? 0.25 : 0,
+            transition: 'opacity 0.4s ease-in-out',
+          }}
         >
-          <source src={getMediaUrl(data.videoUrl)} type="video/mp4" />
+          <source src={getMediaUrl(currentVideoUrl)} type="video/mp4" />
         </video>
       )}
 
-      {/* Fallback Image (CMS Mode) */}
-      {cmsLoaded && (videoFailed || !data.videoUrl) && data.imageUrl && (
-        <SafeImage
-          src={getMediaUrl(data.imageUrl)}
+      {/* Background Image */}
+      {currentImageUrl && (
+        <img
+          ref={imgRef}
+          src={getMediaUrl(currentImageUrl)}
           alt="Deven Cowork space"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
-          style={{ filter: 'grayscale(40%) contrast(1.1)' }}
-        />
-      )}
-
-      {/* Fallback Video (API Failed Mode) */}
-      {!cmsLoaded && cmsFailed && !videoFailed && defaultContent.hero.videoUrl && (
-        <video
-          key={getMediaUrl(defaultContent.hero.videoUrl)}
-          autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
-          onError={() => setVideoFailed(true)}
-          style={{ filter: 'grayscale(40%) contrast(1.1)' }}
-        >
-          <source src={getMediaUrl(defaultContent.hero.videoUrl)} type="video/mp4" />
-        </video>
-      )}
-
-      {/* Fallback Image (API Failed Mode) */}
-      {!cmsLoaded && cmsFailed && (videoFailed || !defaultContent.hero.videoUrl) && defaultContent.hero.imageUrl && (
-        <SafeImage
-          src={getMediaUrl(defaultContent.hero.imageUrl)}
-          alt="Deven Cowork space fallback"
-          className="absolute inset-0 w-full h-full object-cover z-0 opacity-25"
-          style={{ filter: 'grayscale(40%) contrast(1.1)' }}
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          onLoad={handleMediaReady}
+          style={{
+            filter: 'grayscale(40%) contrast(1.1)',
+            opacity: mediaReady ? 0.25 : 0,
+            transition: 'opacity 0.4s ease-in-out',
+          }}
         />
       )}
 
