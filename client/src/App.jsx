@@ -581,7 +581,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
               className="font-display font-black leading-[1.0] tracking-[-0.03em] text-[#F7F5EF] uppercase"
-              style={{ fontSize: '56px' }}
+              style={{ fontSize: 'clamp(32px, 3.8vw, 46px)' }}
             >
               {headlineLines.map((line, i) => (
                 <span key={i} className="block">
