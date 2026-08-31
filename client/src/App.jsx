@@ -490,6 +490,37 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [mediaReady, setMediaReady] = useState(false);
   const data = cmsLoaded ? hero : (cmsFailed ? defaultContent.hero : null);
 
+  const videoRef = useRef(null);
+  const imgRef = useRef(null);
+
+  // Determine media visibility based on loading states
+  const showCmsVideo = cmsLoaded && !videoFailed && data?.videoUrl;
+  const showCmsImage = cmsLoaded && (videoFailed || !data?.videoUrl) && data?.imageUrl;
+
+  const showFallbackVideo = !cmsLoaded && cmsFailed && !videoFailed && defaultContent.hero.videoUrl;
+  const showFallbackImage = !cmsLoaded && cmsFailed && (videoFailed || !defaultContent.hero.videoUrl) && defaultContent.hero.imageUrl;
+
+  const currentVideoUrl = showCmsVideo ? data?.videoUrl : (showFallbackVideo ? defaultContent.hero.videoUrl : null);
+  const currentImageUrl = showCmsImage ? data?.imageUrl : (showFallbackImage ? defaultContent.hero.imageUrl : null);
+
+  // Reset ready state when URLs change
+  useEffect(() => {
+    setMediaReady(false);
+  }, [currentVideoUrl, currentImageUrl]);
+
+  // Handle cached elements that may already be loaded
+  useEffect(() => {
+    if (currentVideoUrl && videoRef.current && videoRef.current.readyState >= 2) {
+      setMediaReady(true);
+    }
+  }, [currentVideoUrl]);
+
+  useEffect(() => {
+    if (currentImageUrl && imgRef.current && imgRef.current.complete) {
+      setMediaReady(true);
+    }
+  }, [currentImageUrl]);
+
   if (!data) {
     return (
       <section
@@ -514,37 +545,6 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
   const floatingStats = data.floatingStats || defaultContent.hero.floatingStats;
   const metaItems = data.metaItems || defaultContent.hero.metaItems;
-
-  // Determine media visibility based on loading states
-  const showCmsVideo = cmsLoaded && !videoFailed && data.videoUrl;
-  const showCmsImage = cmsLoaded && (videoFailed || !data.videoUrl) && data.imageUrl;
-
-  const showFallbackVideo = !cmsLoaded && cmsFailed && !videoFailed && defaultContent.hero.videoUrl;
-  const showFallbackImage = !cmsLoaded && cmsFailed && (videoFailed || !defaultContent.hero.videoUrl) && defaultContent.hero.imageUrl;
-
-  const currentVideoUrl = showCmsVideo ? data.videoUrl : (showFallbackVideo ? defaultContent.hero.videoUrl : null);
-  const currentImageUrl = showCmsImage ? data.imageUrl : (showFallbackImage ? defaultContent.hero.imageUrl : null);
-
-  // Reset ready state when URLs change
-  useEffect(() => {
-    setMediaReady(false);
-  }, [currentVideoUrl, currentImageUrl]);
-
-  const videoRef = useRef(null);
-  const imgRef = useRef(null);
-
-  // Handle cached elements that may already be loaded
-  useEffect(() => {
-    if (currentVideoUrl && videoRef.current && videoRef.current.readyState >= 2) {
-      setMediaReady(true);
-    }
-  }, [currentVideoUrl]);
-
-  useEffect(() => {
-    if (currentImageUrl && imgRef.current && imgRef.current.complete) {
-      setMediaReady(true);
-    }
-  }, [currentImageUrl]);
 
   const handleMediaReady = () => {
     setMediaReady(true);
