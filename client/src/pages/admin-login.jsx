@@ -31,7 +31,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="site-noise min-h-screen bg-[#000000] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="site-noise min-h-screen bg-[#0C0C0C] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <div className="logo text-[#F1F1F1]">
@@ -46,7 +46,7 @@ export default function AdminLogin() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="border border-[#242424] bg-[#0A0A0A] py-8 px-4 sm:px-10">
+        <div className="border border-[#024E5C] bg-[#0C0C0C] py-8 px-4 sm:px-10">
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label className="field-label">
@@ -93,8 +93,8 @@ export default function AdminLogin() {
             </div>
           </form>
 
-          <div className="mt-6 border-t border-[#242424] pt-4 flex justify-between items-center text-xs text-[#A3A3A3]">
-            <a href="/" className="inline-flex items-center gap-1 hover:text-[#F8BC06]">
+          <div className="mt-6 border-t border-[#024E5C] pt-4 flex justify-between items-center text-xs text-[#A3A3A3]">
+            <a href="/" className="inline-flex items-center gap-1 hover:text-[#04B8BB] transition-colors">
               <ArrowLeft size={12} /> Back to Site
             </a>
             <span className="inline-flex items-center gap-1">

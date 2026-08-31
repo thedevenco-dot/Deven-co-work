@@ -338,7 +338,7 @@ function HighlightedText({ text, highlightWords = [] }) {
     <>
       {parts.map((part, i) =>
         highlightWords.some(w => w.toLowerCase() === part.toLowerCase())
-          ? <span key={i} className="text-[#E5A51B]">{part}</span>
+          ? <span key={i} className="text-[#DF9716]">{part}</span>
           : <span key={i}>{part}</span>
       )}
     </>
@@ -418,14 +418,14 @@ function Header({ onReserve, content }) {
     <header
       className={`fixed left-0 right-0 top-0 z-30 transition-all duration-300 ${
         solid
-          ? 'bg-[#075E68]/95 backdrop-blur-md border-b border-[rgba(247,245,239,0.14)]'
+          ? 'bg-[#024E5C]/95 backdrop-blur-md border-b border-[rgba(252,250,249,0.14)]'
           : 'bg-transparent'
       }`}
     >
       <div className="container-wide flex h-[70px] items-center justify-between gap-4">
         <Logo logoUrl={logoUrl} />
 
-        <nav className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[.18em] text-[#F7F5EF]/85">
+        <nav className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[.18em] text-[#FCFAF9]/85">
           {visibleNav.map((item, idx) => (
             <a
               key={idx}
@@ -433,10 +433,10 @@ function Header({ onReserve, content }) {
               target={item.external ? '_blank' : undefined}
               rel={item.external ? 'noreferrer' : undefined}
               onClick={(e) => handleNavClick(e, item.url)}
-              className="hover:text-[#12D8D2] transition-colors relative group text-[#F7F5EF]/85"
+              className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
             >
               {item.label}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#12D8D2] transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
         </nav>
@@ -444,7 +444,7 @@ function Header({ onReserve, content }) {
         <div className="flex items-center gap-5">
           <a
             href={cleanPhoneHref}
-            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#E5A51B] transition-colors hover:text-[#12D8D2] sm:inline"
+            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#DF9716] transition-colors hover:text-[#04B8BB] sm:inline"
             data-testid="link-header-phone"
           >
             {phone}
@@ -567,7 +567,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="section-label mb-8"
-          style={{ '--section-label-color': '#12D8D2' }}
+          style={{ '--section-label-color': '#04B8BB' }}
         >
           {data.eyebrow || "DEVEN WORKSPACE — RAIPUR"}
         </motion.div>
@@ -580,7 +580,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
-              className="font-display font-black leading-[1.0] tracking-[-0.03em] text-[#F7F5EF] uppercase"
+              className="font-display font-black leading-[1.0] tracking-[-0.03em] text-[#FCFAF9] uppercase"
               style={{ fontSize: 'clamp(32px, 3.8vw, 46px)' }}
             >
               {headlineLines.map((line, i) => (
@@ -594,7 +594,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
-              className="mt-8 max-w-[520px] text-[15px] leading-[1.75] text-[#F7F5EF]/80"
+              className="mt-8 max-w-[520px] text-[15px] leading-[1.75] text-[#FCFAF9]/80"
             >
               {data.subheadline}
             </motion.p>
@@ -627,7 +627,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.42, duration: 0.5 }}
-                className="mt-7 text-[10px] text-[#F7F5EF]/60 uppercase tracking-[0.16em] font-bold"
+                className="mt-7 text-[10px] text-[#FCFAF9]/60 uppercase tracking-[0.16em] font-bold"
               >
                 {data.foundingPriceNote}
               </motion.p>
@@ -643,10 +643,10 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           >
             {floatingStats.map((stat, i) => (
               <div key={i} className="floating-card min-w-[160px]">
-                <div className="font-display font-black text-[28px] leading-none text-[#E5A51B]">
+                <div className="font-display font-black text-[28px] leading-none text-[#DF9716]">
                   {stat.value}
                 </div>
-                <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#F7F5EF]/75 mt-2">
+                <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#FCFAF9]/75 mt-2">
                   {stat.label}
                 </div>
               </div>
@@ -659,15 +659,15 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-20 grid grid-cols-2 sm:grid-cols-4 border-t border-[rgba(247,245,239,0.14)] pt-8 gap-6 max-w-[900px]"
+          className="mt-20 grid grid-cols-2 sm:grid-cols-4 border-t border-[rgba(252,250,249,0.14)] pt-8 gap-6 max-w-[900px]"
         >
           {(data.stats || []).map((item, index) => {
             const main = typeof item === 'object' ? item.main : item;
             const sub = typeof item === 'object' ? item.sub : '';
             return (
               <div key={index}>
-                <p className="font-display text-[18px] font-bold tracking-tight text-[#F7F5EF] uppercase leading-tight">{main}</p>
-                <p className="mt-1.5 text-[9px] uppercase tracking-[.18em] text-[#F7F5EF]/60 font-bold">{sub}</p>
+                <p className="font-display text-[18px] font-bold tracking-tight text-[#FCFAF9] uppercase leading-tight">{main}</p>
+                <p className="mt-1.5 text-[9px] uppercase tracking-[.18em] text-[#FCFAF9]/60 font-bold">{sub}</p>
               </div>
             );
           })}
@@ -675,14 +675,14 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
       </div>
 
       {/* Bottom metadata strip */}
-      <div className="relative z-20 border-t border-[rgba(247,245,239,0.1)] bg-[#075E68]/50 backdrop-blur-sm">
+      <div className="relative z-20 border-t border-[rgba(252,250,249,0.1)] bg-[#024E5C]/50 backdrop-blur-sm">
         <div className="container-wide flex items-center gap-0 overflow-x-auto no-scrollbar">
           {metaItems.map((item, i) => (
             <span
               key={i}
-              className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-[.25em] text-[#F7F5EF]/65 py-3 pr-6 whitespace-nowrap shrink-0"
+              className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-[.25em] text-[#FCFAF9]/65 py-3 pr-6 whitespace-nowrap shrink-0"
             >
-              {i > 0 && <span className="h-3 w-px bg-[rgba(247,245,239,0.2)] mr-0" />}
+              {i > 0 && <span className="h-3 w-px bg-[rgba(252,250,249,0.2)] mr-0" />}
               {item}
             </span>
           ))}
@@ -690,8 +690,8 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-[52px] right-8 hidden items-center gap-2.5 text-[9px] uppercase tracking-[.22em] text-[#F7F5EF]/55 font-bold lg:flex">
-        <ArrowDownRight size={13} className="text-[#E5A51B]" />
+      <div className="absolute bottom-[52px] right-8 hidden items-center gap-2.5 text-[9px] uppercase tracking-[.22em] text-[#FCFAF9]/55 font-bold lg:flex">
+        <ArrowDownRight size={13} className="text-[#DF9716]" />
         Scroll to discover
       </div>
     </section>
@@ -704,18 +704,18 @@ function Guide({ guide, onReserve }) {
   const gallery = data.gallery || defaultContent.guide.gallery;
 
   return (
-    <section className="bg-[#075E68] text-[#F7F5EF] border-y border-[rgba(247,245,239,0.16)] py-24 sm:py-36" data-testid="section-guide">
+    <section className="bg-[#024E5C] text-[#FCFAF9] border-y border-[rgba(252,250,249,0.16)] py-24 sm:py-36" data-testid="section-guide">
       <div className="container-wide">
         {/* Top: Brand statement */}
         <div className="grid gap-y-12 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-24 items-start">
           <RevealOnScroll>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-[#12D8D2] font-bold">02 — THE SPACE</div>
-            <h2 className="mt-6 font-display font-black leading-[1.01] text-[#F7F5EF] uppercase tracking-tight"
+            <div className="text-[10px] uppercase tracking-[0.28em] text-[#04B8BB] font-bold">02 — THE SPACE</div>
+            <h2 className="mt-6 font-display font-black leading-[1.01] text-[#FCFAF9] uppercase tracking-tight"
               style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}>
               {data.headline || 'We Built the Space Raipur Founders Actually Deserve.'}
             </h2>
             {/* Oversized watermark text */}
-            <div className="mt-10 flex flex-col gap-0 font-display font-black tracking-tighter leading-none select-none opacity-[0.05] text-[#12D8D2]"
+            <div className="mt-10 flex flex-col gap-0 font-display font-black tracking-tighter leading-none select-none opacity-[0.05] text-[#04B8BB]"
               style={{ fontSize: 'clamp(52px, 8vw, 100px)' }}>
               <span>WORK</span>
               <span>SPACE</span>
@@ -724,7 +724,7 @@ function Guide({ guide, onReserve }) {
           </RevealOnScroll>
 
           <RevealOnScroll delay={0.12} className="flex flex-col gap-8">
-            <div className="space-y-5 text-[14px] leading-[1.75] text-[#F7F5EF]/85 font-medium">
+            <div className="space-y-5 text-[14px] leading-[1.75] text-[#FCFAF9]/85 font-medium">
               <p>{data.body1}</p>
               <p>{data.body2}</p>
             </div>
@@ -735,9 +735,9 @@ function Guide({ guide, onReserve }) {
         </div>
 
         {/* Gallery: editorial masonry */}
-        <div className="mt-20 border-t border-[rgba(247,245,239,0.15)] pt-14">
+        <div className="mt-20 border-t border-[rgba(252,250,249,0.15)] pt-14">
           <RevealOnScroll>
-            <h3 className="font-display text-[11px] font-bold text-[#F7F5EF]/60 uppercase tracking-[0.28em] mb-10">
+            <h3 className="font-display text-[11px] font-bold text-[#FCFAF9]/60 uppercase tracking-[0.28em] mb-10">
               {data.galleryTitle || 'A Space Built for Professional Work'}
             </h3>
           </RevealOnScroll>
@@ -745,14 +745,14 @@ function Guide({ guide, onReserve }) {
           <div className="grid gap-3 md:grid-cols-[1.2fr_0.6fr_0.6fr]">
             {/* Large image */}
             {gallery[0] && (
-              <RevealOnScroll className="relative overflow-hidden aspect-[3/4] md:aspect-auto md:row-span-2 border border-[rgba(247,245,239,0.15)] group">
+              <RevealOnScroll className="relative overflow-hidden aspect-[3/4] md:aspect-auto md:row-span-2 border border-[rgba(252,250,249,0.15)] group">
                 <SafeImage
                   src={getMediaUrl(gallery[0].image)}
                   alt={gallery[0].label || 'Workspace'}
                   className="img-editorial img-zoom transition-opacity duration-500"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-4 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-black/65 backdrop-blur-sm">
-                  <div className="h-px w-8 bg-[#12D8D2] mb-2" />
+                  <div className="h-px w-8 bg-[#04B8BB] mb-2" />
                   <span className="text-[9px] font-bold uppercase tracking-[.18em] text-white block">{gallery[0].label}</span>
                   {gallery[0].caption && <span className="text-[10px] text-white/70 mt-0.5 block">{gallery[0].caption}</span>}
                 </div>
@@ -761,14 +761,14 @@ function Guide({ guide, onReserve }) {
 
             {/* Small images */}
             {gallery.slice(1, 5).map((item, idx) => (
-              <RevealOnScroll key={idx} delay={idx * 0.08} className="relative overflow-hidden aspect-[4/3] border border-[rgba(247,245,239,0.15)] group">
+              <RevealOnScroll key={idx} delay={idx * 0.08} className="relative overflow-hidden aspect-[4/3] border border-[rgba(252,250,249,0.15)] group">
                 <SafeImage
                   src={getMediaUrl(item.image)}
                   alt={item.label || 'Space'}
                   className="img-editorial img-zoom transition-opacity duration-500"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-3 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-black/65 backdrop-blur-sm">
-                  <div className="h-px w-5 bg-[#12D8D2] mb-1.5" />
+                  <div className="h-px w-5 bg-[#04B8BB] mb-1.5" />
                   <span className="text-[9px] font-bold uppercase tracking-[.15em] text-white block">{item.label}</span>
                 </div>
               </RevealOnScroll>
@@ -793,7 +793,7 @@ function Problems({ problem, onReserve }) {
   const quoteText = data.quoteText || "You're not lazy. Your environment is holding you back.";
 
   return (
-    <section className="bg-[#F7F5EF] text-[#111111] py-24 sm:py-36 border-b border-[rgba(17,17,17,0.14)]" data-testid="section-problems">
+    <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-b border-[rgba(12,12,12,0.14)]" data-testid="section-problems">
       <div className="container-wide grid gap-y-16 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-20 items-start">
 
         {/* Left: Headline + Image + Quote */}
@@ -801,24 +801,24 @@ function Problems({ problem, onReserve }) {
           <RevealOnScroll>
             <div className="section-label mb-6">01 — THE PROBLEM</div>
             <h2
-              className="font-display font-black leading-[1.04] text-[#111111] uppercase tracking-tight"
+              className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
               style={{ fontSize: 'clamp(32px, 4.5vw, 56px)' }}
             >
               {(data.headline || 'The problems we all\npretend are normal.').split('\n').map((line, i, arr) => (
                 <span key={i} className="block">
                   {i === arr.length - 1 ? (
-                    <><span className="text-[#111111]/60">{line.slice(0, -1)}</span><span className="text-[#E5A51B]">{line.slice(-1)}</span></>
+                    <><span className="text-[#0C0C0C]/60">{line.slice(0, -1)}</span><span className="text-[#DF9716]">{line.slice(-1)}</span></>
                   ) : line}
                 </span>
               ))}
             </h2>
-            <p className="mt-7 text-[14px] leading-[1.75] text-[#111111]/75 max-w-[440px]">
+            <p className="mt-7 text-[14px] leading-[1.75] text-[#0C0C0C]/75 max-w-[440px]">
               {(data.body || '').split('\n\n')[0]}
             </p>
           </RevealOnScroll>
 
           {/* Image with quote overlay */}
-          <RevealOnScroll delay={0.1} className="relative overflow-hidden border border-[rgba(17,17,17,0.12)]">
+          <RevealOnScroll delay={0.1} className="relative overflow-hidden border border-[rgba(12,12,12,0.12)]">
             <div className="aspect-[4/3]">
               <SafeImage
                 src={imgSrc}
@@ -831,11 +831,11 @@ function Problems({ problem, onReserve }) {
             {quoteText && (
               <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                 <div className="quote-card p-4 max-w-[360px]">
-                  <p className="text-[13px] leading-[1.65] text-[#111111] italic font-medium">
+                  <p className="text-[13px] leading-[1.65] text-[#0C0C0C] italic font-medium">
                     "{quoteText}"
                   </p>
                   {data.quoteAuthor && (
-                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#E5A51B]">
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#DF9716]">
                       — {data.quoteAuthor}
                     </p>
                   )}
@@ -846,7 +846,7 @@ function Problems({ problem, onReserve }) {
         </div>
 
         {/* Right: Problem list */}
-        <div className="flex flex-col border-t border-[rgba(17,17,17,0.14)] lg:border-t-0 lg:border-l lg:border-[rgba(17,17,17,0.14)] lg:pl-16">
+        <div className="flex flex-col border-t border-[rgba(12,12,12,0.14)] lg:border-t-0 lg:border-l lg:border-[rgba(12,12,12,0.14)] lg:pl-16">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -857,19 +857,19 @@ function Problems({ problem, onReserve }) {
               <motion.div
                 key={index}
                 variants={fadeUp}
-                className="py-8 flex items-start gap-6 border-b border-[rgba(17,17,17,0.14)]"
+                className="py-8 flex items-start gap-6 border-b border-[rgba(12,12,12,0.14)]"
               >
                 <span
-                  className="font-display font-black text-[#075E68] shrink-0 leading-none select-none"
+                  className="font-display font-black text-[#024E5C] shrink-0 leading-none select-none"
                   style={{ fontSize: 'clamp(28px, 3.5vw, 42px)' }}
                 >
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <div className="min-w-0">
-                  <h4 className="font-display text-[15px] font-bold text-[#111111] uppercase tracking-[0.02em] leading-tight">
+                  <h4 className="font-display text-[15px] font-bold text-[#0C0C0C] uppercase tracking-[0.02em] leading-tight">
                     {point.title}
                   </h4>
-                  <p className="mt-3 text-[13px] leading-[1.7] text-[#111111]/75">{point.description}</p>
+                  <p className="mt-3 text-[13px] leading-[1.7] text-[#0C0C0C]/75">{point.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -879,7 +879,7 @@ function Problems({ problem, onReserve }) {
           </motion.div>
 
           {showCta && (
-            <RevealOnScroll delay={0.2} className="mt-10 pt-8 border-t border-[rgba(17,17,17,0.14)]">
+            <RevealOnScroll delay={0.2} className="mt-10 pt-8 border-t border-[rgba(12,12,12,0.14)]">
               <Button
                 href={ctaUrl}
                 onClick={ctaUrl.startsWith('#') ? (e) => {
@@ -905,12 +905,12 @@ function Plan({ plan, onReserve }) {
   const steps = data.steps || [];
 
   return (
-    <section className="border-b border-[rgba(17,17,17,0.14)] bg-[#F7F5EF] text-[#111111] py-24 sm:py-36" data-testid="section-plan">
+    <section className="border-b border-[rgba(12,12,12,0.14)] bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36" data-testid="section-plan">
       <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
         <RevealOnScroll>
           <div className="section-label mb-6">03 — THE PLAN</div>
           <h2
-            className="font-display font-black leading-[1.04] text-[#111111] uppercase tracking-tight"
+            className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
             style={{ fontSize: 'clamp(30px, 4vw, 50px)' }}
           >
             {data.headline || 'Getting Started Is Simple'}
@@ -922,18 +922,18 @@ function Plan({ plan, onReserve }) {
           </div>
         </RevealOnScroll>
 
-        <div className="border-t border-[rgba(17,17,17,0.14)]">
+        <div className="border-t border-[rgba(12,12,12,0.14)]">
           {steps.map((step, index) => (
-            <RevealOnScroll key={index} delay={index * 0.1} className="border-b border-[rgba(17,17,17,0.14)] py-9 flex items-start gap-7">
+            <RevealOnScroll key={index} delay={index * 0.1} className="border-b border-[rgba(12,12,12,0.14)] py-9 flex items-start gap-7">
               <span
-                className="font-display font-black text-[#E5A51B] shrink-0 leading-none"
+                className="font-display font-black text-[#DF9716] shrink-0 leading-none"
                 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
               <div>
-                <h4 className="font-display text-[16px] font-bold text-[#111111] uppercase tracking-[0.02em]">{step.title}</h4>
-                <p className="mt-3 text-[13px] leading-[1.7] text-[#111111]/75">{step.description}</p>
+                <h4 className="font-display text-[16px] font-bold text-[#0C0C0C] uppercase tracking-[0.02em]">{step.title}</h4>
+                <p className="mt-3 text-[13px] leading-[1.7] text-[#0C0C0C]/75">{step.description}</p>
               </div>
             </RevealOnScroll>
           ))}
@@ -950,17 +950,17 @@ function OfferStack({ onReserve, offerStack }) {
   const tiers = data.tiers || [];
 
   return (
-    <section className="bg-[#075E68] text-[#F7F5EF] py-24 sm:py-36 border-b border-[rgba(247,245,239,0.16)]" data-testid="section-offer">
+    <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-offer">
       <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
         <RevealOnScroll>
           <div className="section-label mb-6">04 — THE FOUNDER'S OS</div>
           <h2
-            className="font-display font-black leading-[1.04] text-[#F7F5EF] uppercase tracking-tight"
+            className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
             style={{ fontSize: 'clamp(28px, 3.8vw, 48px)' }}
           >
             {data.headline || "Everything Included in The Deven Founder's OS"}
           </h2>
-          <p className="mt-6 text-[14px] leading-[1.75] text-[#F7F5EF]/75 max-w-[420px]">
+          <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[420px]">
             {data.subheadline || 'Not a list of amenities. A complete system to work, grow, and be seen.'}
           </p>
           <div className="mt-10">
@@ -968,7 +968,7 @@ function OfferStack({ onReserve, offerStack }) {
           </div>
         </RevealOnScroll>
 
-        <div className="border-t border-[rgba(247,245,239,0.16)] divide-y divide-[rgba(247,245,239,0.16)]">
+        <div className="border-t border-[rgba(252,250,249,0.16)] divide-y divide-[rgba(252,250,249,0.16)]">
           {tiers.map((tier, index) => (
             <div key={index}>
               <button
@@ -978,19 +978,19 @@ function OfferStack({ onReserve, offerStack }) {
                 aria-expanded={openIdx === index}
               >
                 <div className="flex items-center gap-4">
-                  <span className="font-display text-[10px] font-bold text-[#12D8D2]">{String(index + 1).padStart(2, '0')}</span>
-                  <h4 className="font-display text-[14px] font-bold text-[#F7F5EF] uppercase tracking-[0.05em] group-hover:text-[#12D8D2] transition-colors">
+                  <span className="font-display text-[10px] font-bold text-[#04B8BB]">{String(index + 1).padStart(2, '0')}</span>
+                  <h4 className="font-display text-[14px] font-bold text-[#FCFAF9] uppercase tracking-[0.05em] group-hover:text-[#04B8BB] transition-colors">
                     {tier.heading}
                   </h4>
                   {tier.isDevenEdge && (
-                    <span className="hidden sm:inline text-[8px] font-black uppercase tracking-[.18em] bg-[#E5A51B] text-[#111111] px-2 py-0.5">
+                    <span className="hidden sm:inline text-[8px] font-black uppercase tracking-[.18em] bg-[#DF9716] text-[#0C0C0C] px-2 py-0.5">
                       DEVEN EDGE
                     </span>
                   )}
                 </div>
                 <ChevronDown
                   size={15}
-                  className={`shrink-0 text-[#12D8D2] transition-transform duration-300 ${openIdx === index ? 'rotate-180' : ''}`}
+                  className={`shrink-0 text-[#04B8BB] transition-transform duration-300 ${openIdx === index ? 'rotate-180' : ''}`}
                 />
               </button>
               <AnimatePresence>
@@ -1003,10 +1003,10 @@ function OfferStack({ onReserve, offerStack }) {
                     style={{ overflow: 'hidden' }}
                   >
                     <div className="pb-8">
-                      <ul className="grid gap-x-8 gap-y-3 grid-cols-1 sm:grid-cols-2 text-[13px] leading-[1.65] text-[#F7F5EF]/75">
+                      <ul className="grid gap-x-8 gap-y-3 grid-cols-1 sm:grid-cols-2 text-[13px] leading-[1.65] text-[#FCFAF9]/75">
                         {(tier.items || []).map((item, idx) => (
                           <li key={idx} className="flex items-start gap-3">
-                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#12D8D2]/60 shrink-0" />
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#04B8BB]/60 shrink-0" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -1034,7 +1034,7 @@ function ValueStack({ valueStack, onReserve }) {
   const headlineLines = (data.headline || "Your desk\ncomes with\nmore than\na desk.").split('\n');
 
   return (
-    <section className="bg-[#F7F5EF] text-[#111111] py-24 sm:py-36 border-y border-[rgba(17,17,17,0.14)]" data-testid="section-value-stack">
+    <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)]" data-testid="section-value-stack">
       <div className="container-wide grid gap-y-16 gap-x-16 lg:grid-cols-[1fr_1.1fr] lg:gap-24 items-start">
 
         {/* Left */}
@@ -1048,13 +1048,13 @@ function ValueStack({ valueStack, onReserve }) {
               // Highlight the last line (assumed to be "a desk.")
               if (i === headlineLines.length - 1) {
                 return (
-                  <span key={i} className="block text-[#E5A51B]">{line}</span>
+                  <span key={i} className="block text-[#DF9716]">{line}</span>
                 );
               }
               return <span key={i} className="block">{line}</span>;
             })}
           </h2>
-          <p className="mt-8 text-[14px] leading-[1.75] text-[#111111]/75 max-w-[400px]">
+          <p className="mt-8 text-[14px] leading-[1.75] text-[#0C0C0C]/75 max-w-[400px]">
             {data.body || 'No inflated comparison price, no hidden bundle. We publish our true market value transparently.'}
           </p>
           <div className="mt-10">
@@ -1067,7 +1067,7 @@ function ValueStack({ valueStack, onReserve }) {
         {/* Right: Value table */}
         <RevealOnScroll delay={0.1}>
           {/* Header row */}
-          <div className="flex items-center justify-between py-4 border-b border-[rgba(17,17,17,0.14)] text-[9.5px] font-black uppercase tracking-[0.2em] text-[#111111]/50">
+          <div className="flex items-center justify-between py-4 border-b border-[rgba(12,12,12,0.14)] text-[9.5px] font-black uppercase tracking-[0.2em] text-[#0C0C0C]/50">
             <span>INCLUDED</span>
             <span>MARKET VALUE</span>
           </div>
@@ -1087,11 +1087,11 @@ function ValueStack({ valueStack, onReserve }) {
 
           {/* Total + Founding price */}
           <div className="mt-8 space-y-3">
-            <div className="flex items-center justify-between py-5 border-t border-[rgba(17,17,17,0.14)] border-b border-b-[rgba(17,17,17,0.08)]">
-              <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#111111]/50">TOTAL VALUE</span>
-              <span className="font-display font-black text-[22px] text-[#111111]/75">{data.totalValue}</span>
+            <div className="flex items-center justify-between py-5 border-t border-[rgba(12,12,12,0.14)] border-b border-b-[rgba(12,12,12,0.08)]">
+              <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#0C0C0C]/50">TOTAL VALUE</span>
+              <span className="font-display font-black text-[22px] text-[#0C0C0C]/75">{data.totalValue}</span>
             </div>
-            <div className="flex items-center justify-between bg-[#E5A51B] p-6">
+            <div className="flex items-center justify-between bg-[#DF9716] p-6">
               <div>
                 <span className="text-[9px] font-black uppercase tracking-[.2em] text-black/60 block">FOUNDING MEMBER RATE</span>
                 <span className="text-[10px] font-bold text-black/50 mt-0.5 block">Rate locked for 12 months</span>
@@ -1111,7 +1111,7 @@ function Guarantee({ guarantee, onReserve }) {
   const blocks = data.blocks || [];
 
   return (
-    <section className="bg-[#E5A51B] text-[#111111] border-y border-[rgba(17,17,17,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
+    <section className="bg-[#DF9716] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
       <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-20 items-start">
         <RevealOnScroll>
           <div className="text-[10px] uppercase tracking-[0.28em] text-black/60 font-bold">06 — RISK FREE</div>
@@ -1155,17 +1155,17 @@ function SocialProof({ socialProof, onReserve }) {
   const testimonials = (data.testimonials || []).filter(t => t.published !== false);
 
   return (
-    <section className="bg-[#075E68] text-[#F7F5EF] py-24 sm:py-36 border-b border-[rgba(247,245,239,0.16)]" data-testid="section-social-proof">
+    <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-social-proof">
       <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
         <RevealOnScroll>
           <div className="section-label mb-6">07 — SOCIAL PROOF</div>
           <h2
-            className="font-display font-black leading-[1.04] text-[#F7F5EF] uppercase tracking-tight"
+            className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
           >
             {data.headline || 'What Founders Are Saying'}
           </h2>
-          <p className="mt-6 text-[14px] leading-[1.75] text-[#F7F5EF]/75 max-w-[380px]">
+          <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[380px]">
             {data.subheadline || 'Hear from our members who switched to Deven Co-Work.'}
           </p>
           <div className="mt-10">
@@ -1175,9 +1175,9 @@ function SocialProof({ socialProof, onReserve }) {
 
         <div>
           {testimonials.length === 0 ? (
-            <RevealOnScroll className="border border-dashed border-[rgba(247,245,239,0.2)] p-14 text-center">
-              <p className="text-[13px] text-[#F7F5EF]/60">Testimonials coming soon.</p>
-              <p className="text-[11px] text-[#F7F5EF]/40 mt-2">Add them from Admin → CMS → Social Proof.</p>
+            <RevealOnScroll className="border border-dashed border-[rgba(252,250,249,0.2)] p-14 text-center">
+              <p className="text-[13px] text-[#FCFAF9]/60">Testimonials coming soon.</p>
+              <p className="text-[11px] text-[#FCFAF9]/40 mt-2">Add them from Admin → CMS → Social Proof.</p>
             </RevealOnScroll>
           ) : (
             <motion.div
@@ -1191,152 +1191,152 @@ function SocialProof({ socialProof, onReserve }) {
                 <motion.div
                   key={idx}
                   variants={fadeUp}
-                  className="border border-[rgba(247,245,239,0.16)] bg-[#064C54] p-7 flex flex-col justify-between hover:border-[#12D8D2]/40 transition-colors duration-300"
+                  className="border border-[rgba(252,250,249,0.16)] bg-[#024E5C] p-7 flex flex-col justify-between hover:border-[#04B8BB]/40 transition-colors duration-300"
                 >
                   <div>
-                    <span className="font-display font-black text-[48px] leading-none text-[#12D8D2]/20 block mb-2">"</span>
-                    <p className="text-[13px] leading-[1.7] text-[#F7F5EF]/90 font-medium">{t.quote}</p>
+                    <span className="font-display font-black text-[48px] leading-none text-[#04B8BB]/20 block mb-2">"</span>
+                    <p className="text-[13px] leading-[1.7] text-[#FCFAF9]/90 font-medium">{t.quote}</p>
                   </div>
-                  <div className="mt-8 border-t border-[rgba(247,245,239,0.12)] pt-5">
-                    <span className="font-display font-bold text-[#E5A51B] text-[10px] uppercase tracking-wider block">— {t.author}</span>
-                    <span className="text-[9.5px] text-[#F7F5EF]/60 uppercase tracking-wider mt-1 block font-semibold">{t.role}</span>
+                  <div className="mt-8 border-t border-[rgba(252,250,249,0.12)] pt-5">
+                    <span className="font-display font-bold text-[#DF9716] text-[10px] uppercase tracking-wider block">— {t.author}</span>
+                    <span className="text-[9.5px] text-[#FCFAF9]/60 uppercase tracking-wider mt-1 block font-semibold">{t.role}</span>
                   </div>
                 </motion.div>
               ))}
             </motion.div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── PRICING ──────────────────────────────────────────────────────────────────
-function Pricing({ onReserve, pricing }) {
-  const data = pricing || defaultContent.pricing;
-  const plans = data.plans || [];
-
-  return (
-    <section
-      className="bg-[#F7F5EF] text-[#111111] py-24 sm:py-36 border-y border-[rgba(17,17,17,0.14)] grid-paper-light"
-      id="pricing"
-      data-testid="section-pricing"
-    >
-      <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
-        <RevealOnScroll>
-          <div className="text-[10px] uppercase tracking-[0.28em] text-[#111111]/50 font-bold">08 — MEMBERSHIP</div>
-          <h2
-            className="mt-6 font-display font-black leading-[1.04] text-[#111111] uppercase tracking-tight"
-            style={{ fontSize: 'clamp(30px, 4vw, 50px)' }}
-          >
-            {data.headline || 'Choose the room that fits the way you work.'}
-          </h2>
-          <p className="mt-6 text-[14px] leading-[1.75] text-[#111111]/60 max-w-[420px]">
-            {data.subheadline}
-          </p>
-
-          <div className="mt-10 flex flex-col gap-5">
-            <button type="button" onClick={onReserve} className="button button-dark self-start" data-testid="button-pricing-reserve">
-              Book Your Free Trial <ArrowUpRight size={14} />
-            </button>
-            {(data.spotsLeft || data.closesDate) && (
-              <div className="border-l-2 border-[#111111] pl-5">
-                <p className="text-[13px] font-bold leading-[1.65] text-[#111111]">
-                  ⚡ Only{' '}
-                  <span className="bg-[#E5A51B] text-[#111111] px-1.5 py-0.5 border border-[#111111] font-mono font-black">{data.spotsLeft}</span>
-                  {' '}of 50 founding seats left — closes {data.closesDate}.
-                </p>
-                <p className="mt-1 text-[10px] text-[#111111]/50 uppercase tracking-wider font-semibold">Maximum 7 seats per company.</p>
-              </div>
             )}
           </div>
-        </RevealOnScroll>
+        </div>
+      </section>
+    );
+  }
 
-        <div className="border-t border-[rgba(17,17,17,0.14)] divide-y divide-[rgba(17,17,17,0.08)]">
-          {plans.map((plan, index) => (
-            <RevealOnScroll key={index} delay={index * 0.07} className="py-8 flex items-start gap-5">
-              <span className="font-display text-[10px] font-bold text-[#111111]/35 mt-1 shrink-0">{String(index + 1).padStart(2, '0')}</span>
-              <div className="flex-1">
-                <div className="flex justify-between items-baseline flex-wrap gap-3">
-                  <h4 className="font-display text-[16px] font-bold text-[#111111] uppercase tracking-[0.03em]">{plan.name}</h4>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[11px] text-[#111111]/35 line-through font-mono">{plan.standard}</span>
-                    <span className="font-display text-[15px] font-black text-[#111111] bg-[#E5A51B] px-2.5 py-1">
-                      {plan.founding}
+  // ─── PRICING ──────────────────────────────────────────────────────────────────
+  function Pricing({ onReserve, pricing }) {
+    const data = pricing || defaultContent.pricing;
+    const plans = data.plans || [];
+
+    return (
+      <section
+        className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)] grid-paper-light"
+        id="pricing"
+        data-testid="section-pricing"
+      >
+        <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
+          <RevealOnScroll>
+            <div className="text-[10px] uppercase tracking-[0.28em] text-[#0C0C0C]/50 font-bold">08 — MEMBERSHIP</div>
+            <h2
+              className="mt-6 font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
+              style={{ fontSize: 'clamp(30px, 4vw, 50px)' }}
+            >
+              {data.headline || 'Choose the room that fits the way you work.'}
+            </h2>
+            <p className="mt-6 text-[14px] leading-[1.75] text-[#0C0C0C]/60 max-w-[420px]">
+              {data.subheadline}
+            </p>
+
+            <div className="mt-10 flex flex-col gap-5">
+              <button type="button" onClick={onReserve} className="button button-dark self-start" data-testid="button-pricing-reserve">
+                Book Your Free Trial <ArrowUpRight size={14} />
+              </button>
+              {(data.spotsLeft || data.closesDate) && (
+                <div className="border-l-2 border-[#0C0C0C] pl-5">
+                  <p className="text-[13px] font-bold leading-[1.65] text-[#0C0C0C]">
+                    ⚡ Only{' '}
+                    <span className="bg-[#DF9716] text-[#0C0C0C] px-1.5 py-0.5 border border-[#0C0C0C] font-mono font-black">{data.spotsLeft}</span>
+                    {' '}of 50 founding seats left — closes {data.closesDate}.
+                  </p>
+                  <p className="mt-1 text-[10px] text-[#0C0C0C]/50 uppercase tracking-wider font-semibold">Maximum 7 seats per company.</p>
+                </div>
+              )}
+            </div>
+          </RevealOnScroll>
+
+          <div className="border-t border-[rgba(12,12,12,0.14)] divide-y divide-[rgba(12,12,12,0.08)]">
+            {plans.map((plan, index) => (
+              <RevealOnScroll key={index} delay={index * 0.07} className="py-8 flex items-start gap-5">
+                <span className="font-display text-[10px] font-bold text-[#0C0C0C]/35 mt-1 shrink-0">{String(index + 1).padStart(2, '0')}</span>
+                <div className="flex-1">
+                  <div className="flex justify-between items-baseline flex-wrap gap-3">
+                    <h4 className="font-display text-[16px] font-bold text-[#0C0C0C] uppercase tracking-[0.03em]">{plan.name}</h4>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] text-[#0C0C0C]/35 line-through font-mono">{plan.standard}</span>
+                      <span className="font-display text-[15px] font-black text-[#0C0C0C] bg-[#DF9716] px-2.5 py-1">
+                        {plan.founding}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-[13px] text-[#0C0C0C]/60 leading-[1.7] max-w-[500px]">{plan.desc}</p>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ─── FAQ ──────────────────────────────────────────────────────────────────────
+  function FAQ({ faq, faqSection, onReserve }) {
+    const [active, setActive] = useState(null);
+    const sectionData = faqSection || defaultContent.faqSection;
+    const data = (faq || defaultContent.faq).filter(f => f.published !== false);
+
+    return (
+      <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
+        <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
+          <RevealOnScroll>
+            <div className="section-label mb-6">09 — QUESTIONS</div>
+            <h2
+              className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
+              style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
+            >
+              {sectionData.headline || 'Before You Come In'}
+            </h2>
+            <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[380px]">
+              {sectionData.subheadline || 'Everything you need to know about memberships, pricing, rules, and billing details.'}
+            </p>
+            <div className="mt-10">
+              <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Trial</Button>
+            </div>
+          </RevealOnScroll>
+
+          <div className="border-t border-[rgba(252,250,249,0.16)]">
+            {data.map((item, index) => (
+              <div key={index} className="border-b border-[rgba(252,250,249,0.16)]">
+                <button
+                  type="button"
+                  className="flex py-7 w-full items-center justify-between gap-5 text-left group"
+                  onClick={() => setActive(active === index ? null : index)}
+                  aria-expanded={active === index}
+                  data-testid={`button-faq-${index}`}
+                >
+                  <div className="flex gap-5 items-start">
+                    <span className="font-display text-[10px] font-bold text-[#FCFAF9]/40 tracking-[.1em] mt-1 shrink-0">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-[14px] font-bold text-[#FCFAF9] uppercase tracking-[0.02em] group-hover:text-[#04B8BB] transition-colors">
+                      {item.question}
                     </span>
                   </div>
-                </div>
-                <p className="mt-3 text-[13px] text-[#111111]/60 leading-[1.7] max-w-[500px]">{plan.desc}</p>
-              </div>
-            </RevealOnScroll>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── FAQ ──────────────────────────────────────────────────────────────────────
-function FAQ({ faq, faqSection, onReserve }) {
-  const [active, setActive] = useState(null);
-  const sectionData = faqSection || defaultContent.faqSection;
-  const data = (faq || defaultContent.faq).filter(f => f.published !== false);
-
-  return (
-    <section className="bg-[#075E68] text-[#F7F5EF] py-24 sm:py-36 border-b border-[rgba(247,245,239,0.16)]" id="faq" data-testid="section-faq">
-      <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-        <RevealOnScroll>
-          <div className="section-label mb-6">09 — QUESTIONS</div>
-          <h2
-            className="font-display font-black leading-[1.04] text-[#F7F5EF] uppercase tracking-tight"
-            style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
-          >
-            {sectionData.headline || 'Before You Come In'}
-          </h2>
-          <p className="mt-6 text-[14px] leading-[1.75] text-[#F7F5EF]/75 max-w-[380px]">
-            {sectionData.subheadline || 'Everything you need to know about memberships, pricing, rules, and billing details.'}
-          </p>
-          <div className="mt-10">
-            <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Trial</Button>
-          </div>
-        </RevealOnScroll>
-
-        <div className="border-t border-[rgba(247,245,239,0.16)]">
-          {data.map((item, index) => (
-            <div key={index} className="border-b border-[rgba(247,245,239,0.16)]">
-              <button
-                type="button"
-                className="flex py-7 w-full items-center justify-between gap-5 text-left group"
-                onClick={() => setActive(active === index ? null : index)}
-                aria-expanded={active === index}
-                data-testid={`button-faq-${index}`}
-              >
-                <div className="flex gap-5 items-start">
-                  <span className="font-display text-[10px] font-bold text-[#F7F5EF]/40 tracking-[.1em] mt-1 shrink-0">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span className="text-[14px] font-bold text-[#F7F5EF] uppercase tracking-[0.02em] group-hover:text-[#12D8D2] transition-colors">
-                    {item.question}
-                  </span>
-                </div>
-                <ChevronDown
-                  size={15}
-                  className={`shrink-0 text-[#12D8D2] transition-transform duration-300 ${active === index ? 'rotate-180' : ''}`}
-                />
-              </button>
-              <AnimatePresence>
-                {active === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ overflow: 'hidden' }}
-                  >
-                    <div
-                      className="max-w-[640px] pb-8 pl-10 pr-4 text-[13px] leading-[1.75] text-[#F7F5EF]/80 normal-case font-normal"
-                      data-testid={`text-faq-answer-${index}`}
+                  <ChevronDown
+                    size={15}
+                    className={`shrink-0 text-[#04B8BB] transition-transform duration-300 ${active === index ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {active === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ overflow: 'hidden' }}
                     >
+                      <div
+                        className="max-w-[640px] pb-8 pl-10 pr-4 text-[13px] leading-[1.75] text-[#FCFAF9]/80 normal-case font-normal"
+                        data-testid={`text-faq-answer-${index}`}
+                      >
                       {item.answer}
                     </div>
                   </motion.div>
@@ -1467,7 +1467,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
         description: `Seat Reservation${selectedSeats.length ? ` - Seats ${selectedSeats.join(', ')}` : ''}`,
         order_id: razorpayOrder.id,
         prefill: { name: form.name, contact: form.phone, email: form.email },
-        theme: { color: '#F8BC06' },
+        theme: { color: '#DF9716' },
         handler: async function (response) {
           try {
             setLoading(true);
@@ -1510,7 +1510,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
   return (
     <section
-      className="border-t border-[rgba(17,17,17,0.14)] bg-[#F7F5EF] py-20 sm:py-28 text-[#111111]"
+      className="border-t border-[rgba(12,12,12,0.14)] bg-[#FCFAF9] py-20 sm:py-28 text-[#0C0C0C]"
       id="reservation"
       data-testid="section-reservation"
     >
@@ -1521,25 +1521,25 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
           <RevealOnScroll className="space-y-6 lg:sticky lg:top-24">
             <div className="section-label">10 — RESERVE</div>
             <h2
-              className="font-display font-black leading-[1.04] text-[#111111] uppercase tracking-tight"
+              className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
               style={{ fontSize: 'clamp(32px, 4.5vw, 56px)' }}
             >
               {headlineLines.map((line, i) => (
                 <span key={i} className="block">
                   {i === headlineLines.length - 1
-                    ? <span className="text-[#E5A51B]">{line}</span>
+                    ? <span className="text-[#DF9716]">{line}</span>
                     : line}
                 </span>
               ))}
             </h2>
-            <p className="text-[14px] leading-[1.75] text-[#111111]/75 max-w-[440px]">
+            <p className="text-[14px] leading-[1.75] text-[#0C0C0C]/75 max-w-[440px]">
               {resData.reservationDescription}
             </p>
 
             {/* Scarcity */}
             <div className="scarcity-badge flex-col items-start py-2">
-              <span className="text-[#E5A51B] text-[10px] font-black">FOUNDING BATCH</span>
-              <span className="text-[#111111]/75 text-[11px] mt-1 whitespace-pre-line">
+              <span className="text-[#DF9716] text-[10px] font-black">FOUNDING BATCH</span>
+              <span className="text-[#0C0C0C]/75 text-[11px] mt-1 whitespace-pre-line">
                 {resData.scarcityText || scarcityText}
               </span>
             </div>
@@ -1547,10 +1547,10 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
             {/* Trial availability badge */}
             <div className={`inline-flex items-center gap-2 border px-4 py-3 text-[10px] font-bold uppercase tracking-[0.15em] ${
               isFreeTrialAvailable
-                ? 'border-[#E5A51B]/40 text-[#E5A51B] bg-[#E5A51B]/5'
-                : 'border-[rgba(17,17,17,0.15)] text-[#111111]/55'
+                ? 'border-[#DF9716]/40 text-[#DF9716] bg-[#DF9716]/5'
+                : 'border-[rgba(12,12,12,0.15)] text-[#0C0C0C]/55'
             }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#E5A51B] animate-pulse' : 'bg-neutral-300'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#DF9716] animate-pulse' : 'bg-neutral-300'}`} />
               {isFreeTrialAvailable
                 ? `Free Trial Available Today (${todayInTZ})`
                 : `Free Trial: ${trialDays.join(' & ')} only`}
@@ -1594,7 +1594,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <button
                   type="button"
                   onClick={() => setShowMap(!showMap)}
-                  className="w-full border border-[rgba(7,94,104,0.25)] hover:border-[#12D8D2]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#075E68] hover:text-[#12D8D2]"
+                  className="w-full border border-[rgba(2,78,92,0.25)] hover:border-[#04B8BB]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#024E5C] hover:text-[#04B8BB]"
                 >
                   <span>{showMap ? 'Hide Seating Floor Plan (Optional)' : 'Select Specific Seat on Floor Map (Optional)'}</span>
                   <ChevronDown size={13} className={`transition-transform duration-300 ${showMap ? 'rotate-180' : ''}`} />
@@ -1657,7 +1657,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                       )}
                     </span>
                   </button>
-                  <p className="text-[9px] text-[#111111]/60 uppercase tracking-[0.14em] text-center font-bold">
+                  <p className="text-[9px] text-[#0C0C0C]/60 uppercase tracking-[0.14em] text-center font-bold">
                     {resData.depositNote || 'Refundable Deposit · UPI-first Checkout'}
                   </p>
                 </div>
@@ -1674,7 +1674,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     >
                       {resData.trialButtonText || 'GET 2-DAY FREE TRIAL'}
                     </button>
-                    <p className="text-[8.5px] text-[#111111]/60 uppercase text-center font-bold tracking-wider">
+                    <p className="text-[8.5px] text-[#0C0C0C]/60 uppercase text-center font-bold tracking-wider">
                       {isFreeTrialAvailable
                         ? `✓ Available today · ${trialDays.join(' & ')}`
                         : `${trialDays.join(' & ')} only`}
@@ -1691,7 +1691,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     >
                       {resData.whatsappButtonText || 'BOOK VIA WHATSAPP'}
                     </button>
-                    <p className="text-[8.5px] text-[#111111]/60 uppercase text-center font-bold tracking-wider">
+                    <p className="text-[8.5px] text-[#0C0C0C]/60 uppercase text-center font-bold tracking-wider">
                       Chat directly with our team
                     </p>
                   </div>
@@ -1721,45 +1721,45 @@ function Footer({ footer, globalSettings }) {
   const cleanPhoneHref = `tel:${phone.replaceAll(' ', '')}`;
 
   return (
-    <footer className="border-t border-[rgba(247,245,239,0.16)] bg-[#111111] py-24 sm:py-36 text-[#F7F5EF]">
+    <footer className="border-t border-[rgba(252,250,249,0.16)] bg-[#0C0C0C] py-24 sm:py-36 text-[#FCFAF9]">
       <div className="container-wide grid gap-y-16 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
         <div>
           <Logo logoUrl={logoUrl} />
-          <p className="mt-7 text-[13px] leading-[1.75] text-[#F7F5EF]/75 max-w-[400px]">{data.tagline}</p>
-          <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[10.5px] text-[#F7F5EF]/55">
+          <p className="mt-7 text-[13px] leading-[1.75] text-[#FCFAF9]/75 max-w-[400px]">{data.tagline}</p>
+          <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[10.5px] text-[#FCFAF9]/55">
             {(data.quickLinks || []).map((link, idx) => (
-              <a key={idx} href={link.href} className="hover:text-[#E5A51B] transition-colors">{link.label}</a>
+              <a key={idx} href={link.href} className="hover:text-[#DF9716] transition-colors">{link.label}</a>
             ))}
           </div>
         </div>
 
-        <div className="border-t border-[rgba(247,245,239,0.16)]">
-          <div className="border-b border-[rgba(247,245,239,0.16)] py-9 flex items-start gap-5">
-            <span className="font-display text-[10px] font-bold text-[#F7F5EF]/35 mt-1">01</span>
+        <div className="border-t border-[rgba(252,250,249,0.16)]">
+          <div className="border-b border-[rgba(252,250,249,0.16)] py-9 flex items-start gap-5">
+            <span className="font-display text-[10px] font-bold text-[#FCFAF9]/35 mt-1">01</span>
             <div>
-              <h4 className="font-display text-[13px] font-bold text-[#F7F5EF] tracking-[.05em] uppercase">Location</h4>
-              <p className="mt-2.5 text-[12px] text-[#F7F5EF]/75 leading-[1.75]">{address}</p>
+              <h4 className="font-display text-[13px] font-bold text-[#FCFAF9] tracking-[.05em] uppercase">Location</h4>
+              <p className="mt-2.5 text-[12px] text-[#FCFAF9]/75 leading-[1.75]">{address}</p>
             </div>
           </div>
 
-          <div className="border-b border-[rgba(247,245,239,0.16)] py-9 flex items-start gap-5">
-            <span className="font-display text-[10px] font-bold text-[#F7F5EF]/35 mt-1">02</span>
+          <div className="border-b border-[rgba(252,250,249,0.16)] py-9 flex items-start gap-5">
+            <span className="font-display text-[10px] font-bold text-[#FCFAF9]/35 mt-1">02</span>
             <div>
-              <h4 className="font-display text-[13px] font-bold text-[#F7F5EF] tracking-[.05em] uppercase">Direct Contact</h4>
-              <p className="mt-2.5 text-[12px] text-[#F7F5EF]/75 leading-[1.75]">
-                <a href={cleanPhoneHref} className="text-[#E5A51B] hover:text-[#12D8D2] transition-colors" data-testid="link-footer-phone">{phone}</a>
+              <h4 className="font-display text-[13px] font-bold text-[#FCFAF9] tracking-[.05em] uppercase">Direct Contact</h4>
+              <p className="mt-2.5 text-[12px] text-[#FCFAF9]/75 leading-[1.75]">
+                <a href={cleanPhoneHref} className="text-[#DF9716] hover:text-[#04B8BB] transition-colors" data-testid="link-footer-phone">{phone}</a>
                 <br />
-                <a href={`mailto:${email}`} className="text-[#E5A51B] hover:text-[#12D8D2] transition-colors">{email}</a>
+                <a href={`mailto:${email}`} className="text-[#DF9716] hover:text-[#04B8BB] transition-colors">{email}</a>
               </p>
             </div>
           </div>
 
           <div className="py-9 flex items-start gap-5">
-            <span className="font-display text-[10px] font-bold text-[#F7F5EF]/35 mt-1">03</span>
+            <span className="font-display text-[10px] font-bold text-[#FCFAF9]/35 mt-1">03</span>
             <div className="w-full">
-              <h4 className="font-display text-[13px] font-bold text-[#F7F5EF] tracking-[.05em] uppercase">Find Us</h4>
+              <h4 className="font-display text-[13px] font-bold text-[#FCFAF9] tracking-[.05em] uppercase">Find Us</h4>
               {mapsEmbedSrc && (
-                <div className="mt-4 relative h-[100px] w-full border border-[rgba(247,245,239,0.12)] overflow-hidden">
+                <div className="mt-4 relative h-[100px] w-full border border-[rgba(252,250,249,0.12)] overflow-hidden">
                   <iframe
                     src={mapsEmbedSrc}
                     className="map-embed absolute inset-0 w-full h-full border-0"
@@ -1774,7 +1774,7 @@ function Footer({ footer, globalSettings }) {
                   href={mapsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-[11px] font-bold text-[#E5A51B] hover:text-[#12D8D2] transition-colors"
+                  className="mt-3 inline-block text-[11px] font-bold text-[#DF9716] hover:text-[#04B8BB] transition-colors"
                   data-testid="link-footer-directions"
                 >
                   Get Directions ↗
@@ -1785,7 +1785,7 @@ function Footer({ footer, globalSettings }) {
         </div>
       </div>
 
-      <div className="container-wide mt-14 border-t border-[rgba(247,245,239,0.08)] pt-8 text-[9.5px] uppercase tracking-[.16em] text-[#F7F5EF]/45 flex flex-col sm:flex-row justify-between gap-3">
+      <div className="container-wide mt-14 border-t border-[rgba(252,250,249,0.08)] pt-8 text-[9.5px] uppercase tracking-[.16em] text-[#FCFAF9]/45 flex flex-col sm:flex-row justify-between gap-3">
         <p>{copyright}</p>
         <p>Premium Coworking / Podcast Studio</p>
       </div>
@@ -1803,10 +1803,10 @@ function WhatsAppFloat({ whatsapp, message }) {
       href={`https://wa.me/${cleanNumber}?text=${text}`}
       target="_blank"
       rel="noreferrer"
-      className="fixed bottom-5 right-4 z-30 flex min-h-11 items-center gap-2 border border-[#E5A51B] bg-[#075E68] px-5 text-[10.5px] font-bold text-[#F7F5EF] shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all hover:bg-[#075E68]/90 hover:border-[#12D8D2] sm:right-5"
+      className="fixed bottom-5 right-4 z-30 flex min-h-11 items-center gap-2 border border-[#DF9716] bg-[#024E5C] px-5 text-[10.5px] font-bold text-[#FCFAF9] shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all hover:bg-[#024E5C]/90 hover:border-[#04B8BB] sm:right-5"
       data-testid="link-floating-whatsapp"
     >
-      <MessageCircle size={15} className="text-[#12D8D2]" />
+      <MessageCircle size={15} className="text-[#04B8BB]" />
       <span className="hidden sm:inline">Chat on WhatsApp →</span>
     </a>
   );
@@ -1948,7 +1948,7 @@ function Home() {
   };
 
   return (
-    <div className="site-noise min-h-[100dvh] bg-[#111111]">
+    <div className="site-noise min-h-[100dvh] bg-[#0C0C0C]">
       <Header onReserve={scrollToReservation} content={content} />
       <main>
         {sectionOrder

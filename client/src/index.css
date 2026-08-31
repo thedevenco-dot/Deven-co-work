@@ -26,49 +26,49 @@
   --font-mono: var(--app-font-mono);
 
   /* New Theme Colors */
-  --color-cream: #F7F5EF;
-  --color-teal: #075E68;
-  --color-cyan: #12D8D2;
-  --color-gold: #E5A51B;
-  --color-black: #111111;
+  --color-white: #FCFAF9;
+  --color-teal: #024E5C;
+  --color-cyan: #04B8BB;
+  --color-gold: #DF9716;
+  --color-black: #0C0C0C;
 }
 
 :root,
 .dark {
-  --background: 44 10% 7%;              /* #111111 near-black */
-  --foreground: 41 24% 95%;             /* #F7F5EF cream */
-  --border: 41 24% 16%;                 /* rgba(247,245,239,0.16) */
-  --input: 180 87% 10%;                 /* rgba(7,94,104,0.15) */
-  --ring: 41 80% 50%;                  /* #E5A51B warm gold */
-  --card: 185 87% 15%;                 /* #075E68 deep teal */
-  --card-foreground: 41 24% 95%;        /* #F7F5EF cream */
-  --primary: 41 80% 50%;                /* #E5A51B warm gold */
-  --primary-foreground: 0 0% 7%;        /* #111111 near black */
-  --secondary: 180 87% 22%;             /* Deep Teal */
-  --secondary-foreground: 41 24% 95%;   /* Cream */
-  --muted: 41 24% 90%;
-  --muted-foreground: 41 10% 65%;
-  --accent: 180 85% 45%;                /* Cyan */
-  --accent-foreground: 0 0% 7%;
+  --background: 0 0% 5%;                /* #0C0C0C black */
+  --foreground: 20 20% 98%;             /* #FCFAF9 off-white */
+  --border: 190 96% 18% / 16%;          /* #024E5C teal at 16% */
+  --input: 190 96% 18% / 15%;           /* #024E5C teal at 15% */
+  --ring: 39 82% 48%;                   /* #DF9716 warm gold */
+  --card: 190 96% 18%;                  /* #024E5C deep teal */
+  --card-foreground: 20 20% 98%;        /* #FCFAF9 off-white */
+  --primary: 39 82% 48%;                /* #DF9716 warm gold */
+  --primary-foreground: 0 0% 5%;        /* #0C0C0C black */
+  --secondary: 190 96% 18%;             /* Deep Teal */
+  --secondary-foreground: 20 20% 98%;   /* Off-white */
+  --muted: 20 20% 90%;
+  --muted-foreground: 20 10% 65%;
+  --accent: 181 96% 37%;                /* Cyan */
+  --accent-foreground: 0 0% 5%;
 
   /* Brand Palette */
-  --cream: #F7F5EF;
-  --teal: #075E68;
-  --cyan: #12D8D2;
-  --gold: #E5A51B;
-  --black: #111111;
+  --cream: #FCFAF9;
+  --teal: #024E5C;
+  --cyan: #04B8BB;
+  --gold: #DF9716;
+  --black: #0C0C0C;
 
-  --yellow: #E5A51B;
-  --yellow-dim: rgba(229,165,27,0.12);
-  --near-black: #111111;
-  --surface: #075E68;
-  --elevated: #0B464E;
-  --border-color: rgba(17,17,17,0.14);
-  --border-subtle: rgba(247,245,239,0.16);
-  --muted-text: rgba(17,17,17,0.65);
+  --yellow: #DF9716;
+  --yellow-dim: rgba(223,151,22,0.12);
+  --near-black: #0C0C0C;
+  --surface: #024E5C;
+  --elevated: #035E6F;
+  --border-color: rgba(12,12,12,0.14);
+  --border-subtle: rgba(252,250,249,0.16);
+  --muted-text: rgba(12,12,12,0.65);
   --disabled: #555555;
-  --white: #FFFFFF;
-  --off-white: #F7F5EF;
+  --white: #FCFAF9;
+  --off-white: #FCFAF9;
 
   --app-font-sans: 'Geist', 'Inter', sans-serif;
   --app-font-display: 'Sora', 'Geist', sans-serif;
@@ -79,7 +79,7 @@
 /* ─── BASE ───────────────────────────────────────────────────────────────────── */
 @layer base {
   * { @apply border-border; box-sizing: border-box; }
-  html { scroll-behavior: smooth; background: #050505; }
+  html { scroll-behavior: smooth; background: #0C0C0C; }
   body {
     @apply font-sans antialiased bg-background text-foreground;
     min-width: 320px;
@@ -87,8 +87,8 @@
     font-size: 16px;
     line-height: 1.6;
   }
-  ::selection { color: #111111; background: #E5A51B; }
-  :focus-visible { outline: 2px solid #12D8D2; outline-offset: 3px; }
+  ::selection { color: #0C0C0C; background: #DF9716; }
+  :focus-visible { outline: 2px solid #04B8BB; outline-offset: 3px; }
   button, a, input, select { -webkit-tap-highlight-color: transparent; }
 
   img {
@@ -110,7 +110,7 @@
     font-size: 10px;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--section-label-color, #E5A51B);
+    color: var(--section-label-color, #DF9716);
     font-weight: 700;
     font-family: var(--app-font-sans);
   }
@@ -122,14 +122,14 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.28em;
-    color: var(--section-label-color, #E5A51B);
+    color: var(--section-label-color, #DF9716);
   }
   .section-label::before {
     content: '';
     display: block;
     width: 20px;
     height: 1px;
-    background: var(--section-label-color, #E5A51B);
+    background: var(--section-label-color, #DF9716);
     flex-shrink: 0;
   }
 
@@ -140,25 +140,25 @@
     line-height: 1.02;
     letter-spacing: -0.025em;
     text-transform: uppercase;
-    color: #F7F5EF;
+    color: #FCFAF9;
   }
 
   /* Text utilities */
   .text-balance { text-wrap: balance; }
-  .text-yellow { color: #E5A51B; }
-  .text-muted { color: rgba(17,17,17,0.65); }
+  .text-yellow { color: #DF9716; }
+  .text-muted { color: rgba(12,12,12,0.65); }
   .text-dim { color: #555555; }
 
   /* Background utilities */
-  .bg-near-black { background-color: #111111; }
-  .bg-surface { background-color: #075E68; }
-  .bg-elevated { background-color: #0B464E; }
-  .bg-yellow-brand { background-color: #E5A51B; }
-  .bg-off-white { background-color: #F7F5EF; }
+  .bg-near-black { background-color: #0C0C0C; }
+  .bg-surface { background-color: #024E5C; }
+  .bg-elevated { background-color: #035E6F; }
+  .bg-yellow-brand { background-color: #DF9716; }
+  .bg-off-white { background-color: #FCFAF9; }
 
   /* Border utilities */
-  .border-subtle { border-color: rgba(247,245,239,0.16); }
-  .border-brand { border-color: #E5A51B; }
+  .border-subtle { border-color: rgba(252,250,249,0.16); }
+  .border-brand { border-color: #DF9716; }
 
   /* Brutalist helper classes */
   .text-dark { color: #000000; }
@@ -235,11 +235,11 @@
 
 /* ─── GRID PAPER TEXTURE ─────────────────────────────────────────────────────── */
 .grid-paper {
-  background-color: #050505;
+  background-color: #0C0C0C;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%23ffffff' stroke-opacity='.04'/%3E%3C/svg%3E");
 }
 .grid-paper-light {
-  background-color: #F5F4F0;
+  background-color: #FCFAF9;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%23000000' stroke-opacity='.04'/%3E%3C/svg%3E");
 }
 
@@ -262,7 +262,7 @@
 .logo-mark span:first-child {
   position: absolute;
   inset: 0;
-  background: #E5A51B;
+  background: #DF9716;
 }
 .logo-mark span:last-child {
   position: absolute;
@@ -270,7 +270,7 @@
   right: 0;
   width: 6px;
   height: 6px;
-  background: #111111;
+  background: #0C0C0C;
 }
 
 /* ─── BUTTONS ─────────────────────────────────────────────────────────────────── */
@@ -296,7 +296,7 @@
 }
 .button:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 3px 3px 0 0 var(--btn-shadow-color, #E5A51B);
+  box-shadow: 3px 3px 0 0 var(--btn-shadow-color, #DF9716);
 }
 .button:active {
   transform: translate(0, 0);
@@ -310,37 +310,40 @@
 }
 
 .button-primary {
-  background: #E5A51B;
-  color: #111111;
-  border-color: #E5A51B;
-  --btn-shadow-color: rgba(17,17,17,0.3);
+  background: #DF9716;
+  color: #0C0C0C;
+  border-color: #DF9716;
+  --btn-shadow-color: rgba(12,12,12,0.3);
 }
-.button-primary:hover { background: #cca000; }
+.button-primary:hover {
+  background: #04B8BB;
+  border-color: #04B8BB;
+}
 
 .button-dark {
-  background: #111111;
-  color: #E5A51B;
-  border-color: #111111;
-  --btn-shadow-color: #E5A51B;
+  background: #0C0C0C;
+  color: #DF9716;
+  border-color: #0C0C0C;
+  --btn-shadow-color: #DF9716;
 }
-.button-dark:hover { background: #1f1f1f; }
+.button-dark:hover { background: #1a1a1a; }
 
 .button-outline {
-  border-color: rgba(247,245,239,0.25);
-  color: #F7F5EF;
-  --btn-shadow-color: #12D8D2;
+  border-color: rgba(252,250,249,0.25);
+  color: #FCFAF9;
+  --btn-shadow-color: #04B8BB;
 }
 .button-outline:hover {
-  border-color: #12D8D2;
-  color: #12D8D2;
+  border-color: #04B8BB;
+  color: #04B8BB;
 }
 
 .button-outline-dark {
-  border-color: rgba(17,17,17,0.25);
-  color: #111111;
-  --btn-shadow-color: #111111;
+  border-color: rgba(12,12,12,0.25);
+  color: #0C0C0C;
+  --btn-shadow-color: #0C0C0C;
 }
-.button-outline-dark:hover { border-color: #111111; }
+.button-outline-dark:hover { border-color: #0C0C0C; }
 
 .button-small { min-height: 44px; padding-inline: 16px; font-size: 10px; }
 .button-xs    { min-height: 36px; padding-inline: 14px; font-size: 9.5px; }
@@ -352,15 +355,15 @@
   min-height: 44px;
   align-items: center;
   gap: 8px;
-  color: #E5A51B;
+  color: #DF9716;
   font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  border-bottom: 1.5px solid rgba(229,165,27,0.5);
+  border-bottom: 1.5px solid rgba(223,151,22,0.5);
   transition: border-color 0.18s ease, color 0.18s ease;
 }
-.text-link:hover { border-color: #12D8D2; color: #12D8D2; }
+.text-link:hover { border-color: #04B8BB; color: #04B8BB; }
 
 /* ─── FORM FIELDS ─────────────────────────────────────────────────────────────── */
 .field-label {
@@ -378,10 +381,10 @@
 .field-label textarea {
   width: 100%;
   min-height: 52px;
-  border: 1px solid rgba(7,94,104,0.25);
+  border: 1px solid rgba(2,78,92,0.25);
   border-radius: 0;
   background: #FFFFFF;
-  color: #111111;
+  color: #0C0C0C;
   padding: 0 16px;
   font: 400 15px / 1.4 var(--app-font-sans);
   transition: border-color 0.15s ease;
@@ -390,10 +393,10 @@
 .field-label input:focus,
 .field-label select:focus,
 .field-label textarea:focus {
-  border-color: #12D8D2;
+  border-color: #04B8BB;
   outline: none;
 }
-.field-label select option { background: #FFFFFF; color: #111111; }
+.field-label select option { background: #FFFFFF; color: #0C0C0C; }
 
 /* ─── VALUE STACK DOTTED LEADER ──────────────────────────────────────────────── */
 .value-row {
@@ -401,12 +404,12 @@
   align-items: baseline;
   gap: 8px;
   padding: 18px 0;
-  border-bottom: 1px solid rgba(17,17,17,0.1);
+  border-bottom: 1px solid rgba(12,12,12,0.1);
 }
 .value-row-num {
   font-size: 10px;
   font-weight: 700;
-  color: #075E68;
+  color: #024E5C;
   letter-spacing: 0.08em;
   flex-shrink: 0;
   font-family: var(--app-font-mono);
@@ -416,7 +419,7 @@
   flex: 1;
   font-size: 13px;
   font-weight: 500;
-  color: #111111;
+  color: #0C0C0C;
   min-width: 0;
 }
 .value-row-dots {
@@ -424,7 +427,7 @@
   min-width: 16px;
   max-width: 120px;
   height: 1px;
-  border-bottom: 1px dotted rgba(17,17,17,0.12);
+  border-bottom: 1px dotted rgba(12,12,12,0.12);
   align-self: center;
   margin: 0 8px;
 }
@@ -432,7 +435,7 @@
   font-family: var(--app-font-mono);
   font-size: 12px;
   font-weight: 700;
-  color: #111111;
+  color: #0C0C0C;
   flex-shrink: 0;
   text-align: right;
 }
@@ -453,8 +456,8 @@
 
 /* ─── FLOATING CARD ──────────────────────────────────────────────────────────── */
 .floating-card {
-  background: rgba(7,94,104,0.9);
-  border: 1px solid rgba(229,165,27,0.35);
+  background: rgba(2,78,92,0.9);
+  border: 1px solid rgba(223,151,22,0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 16px 20px;
@@ -465,7 +468,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border-left: 2px solid #E5A51B;
+  border-left: 2px solid #DF9716;
   padding-left: 12px;
   font-size: 10px;
   font-weight: 700;
@@ -480,9 +483,9 @@
 
 /* ─── QUOTE CARD ─────────────────────────────────────────────────────────────── */
 .quote-card {
-  background: rgba(247,245,239,0.96);
-  border: 1px solid rgba(7,94,104,0.2);
-  border-left: 3px solid #E5A51B;
+  background: rgba(252,250,249,0.96);
+  border: 1px solid rgba(2,78,92,0.2);
+  border-left: 3px solid #DF9716;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }

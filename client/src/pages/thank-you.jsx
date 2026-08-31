@@ -34,20 +34,20 @@ export default function ThankYou() {
   const waHref = `https://wa.me/916260582852?text=${encodeURIComponent(waMessage)}`;
 
   return (
-    <div className="site-noise min-h-screen bg-[#F7F5EF] text-[#111111] flex flex-col justify-between">
+    <div className="site-noise min-h-screen bg-[#FCFAF9] text-[#0C0C0C] flex flex-col justify-between">
       {/* Header */}
-      <header className="border-b border-[rgba(247,245,239,0.16)] bg-[#075E68] h-[72px] flex items-center">
+      <header className="border-b border-[rgba(252,250,249,0.16)] bg-[#024E5C] h-[72px] flex items-center">
         <div className="container-wide flex items-center justify-between">
-          <div className="logo text-[#F7F5EF] flex items-center gap-3">
-            <span className="logo-mark" aria-hidden="true" style={{ borderColor: '#F7F5EF' }}><span style={{ backgroundColor: '#F7F5EF' }} /><span style={{ backgroundColor: '#F7F5EF' }} /></span>
+          <div className="logo text-[#FCFAF9] flex items-center gap-3">
+            <span className="logo-mark" aria-hidden="true" style={{ borderColor: '#FCFAF9' }}><span style={{ backgroundColor: '#FCFAF9' }} /><span style={{ backgroundColor: '#FCFAF9' }} /></span>
             <div className="flex flex-col">
-              <span className="font-display text-[21px] tracking-[.02em] leading-none text-[#F7F5EF]">DEVEN</span>
-              <span className="mt-[3px] text-[9px] font-bold tracking-[.18em] text-[#F7F5EF]/75 leading-none">COWORK</span>
+              <span className="font-display text-[21px] tracking-[.02em] leading-none text-[#FCFAF9]">DEVEN</span>
+              <span className="mt-[3px] text-[9px] font-bold tracking-[.18em] text-[#FCFAF9]/75 leading-none">COWORK</span>
             </div>
           </div>
           <button
             onClick={() => setLocation('/')}
-            className="button px-4 py-2 text-[10.5px] border border-[rgba(247,245,239,0.3)] text-[#F7F5EF] hover:bg-[#F7F5EF] hover:text-[#075E68] flex items-center gap-2 rounded-none transition-colors"
+            className="button px-4 py-2 text-[10.5px] border border-[rgba(252,250,249,0.3)] text-[#FCFAF9] hover:bg-[#FCFAF9] hover:text-[#024E5C] flex items-center gap-2 rounded-none transition-colors"
           >
             <ArrowLeft size={14} /> Back to Home
           </button>
@@ -56,20 +56,20 @@ export default function ThankYou() {
 
       {/* Main Content */}
       <main className="container-wide py-16 flex-grow flex items-center justify-center">
-        <div className="max-w-xl w-full border border-[rgba(7,94,104,0.2)] bg-white p-8 sm:p-12 space-y-8 shadow-sm">
+        <div className="max-w-xl w-full border border-[rgba(2,78,92,0.2)] bg-white p-8 sm:p-12 space-y-8 shadow-sm">
           
           {/* Status Indicator */}
-          <div className="flex h-14 w-14 items-center justify-center border border-[#E5A51B] text-[#E5A51B] rounded-none bg-[#E5A51B]/5">
+          <div className="flex h-14 w-14 items-center justify-center border border-[#DF9716] text-[#DF9716] rounded-none bg-[#DF9716]/5">
             <Check size={28} />
           </div>
 
           {/* Heading */}
           <div className="space-y-3">
-            <div className="eyebrow flex items-center gap-3 text-[#E5A51B] uppercase text-[10px] tracking-widest font-bold">
-              <span className="h-px w-8 bg-[#E5A51B]" /> 
+            <div className="eyebrow flex items-center gap-3 text-[#DF9716] uppercase text-[10px] tracking-widest font-bold">
+              <span className="h-px w-8 bg-[#DF9716]" /> 
               {isFreeTrial ? 'Free Trial Registered' : 'Founding Member Seat Reserved'}
             </div>
-            <h1 className="font-display text-3xl md:text-[40px] font-bold leading-[1.05] tracking-wider text-[#111111] uppercase">
+            <h1 className="font-display text-3xl md:text-[40px] font-bold leading-[1.05] tracking-wider text-[#0C0C0C] uppercase">
               {isFreeTrial ? 'Your Free Trial is Booked.' : 'Reservation Confirmed'}
             </h1>
           </div>
@@ -79,37 +79,37 @@ export default function ThankYou() {
             isFreeTrial ? (
               /* FREE TRIAL STATE */
               <div className="space-y-6">
-                <div className="border-y border-[rgba(7,94,104,0.15)] py-6 space-y-4 text-sm text-[#111111]/75">
+                <div className="border-y border-[rgba(2,78,92,0.15)] py-6 space-y-4 text-sm text-[#0C0C0C]/75">
                   <div className="flex justify-between">
                     <span>Name:</span>
-                    <strong className="text-[#111111]">{data.name}</strong>
+                    <strong className="text-[#0C0C0C]">{data.name}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span>Phone:</span>
-                    <strong className="text-[#111111]">{data.phone}</strong>
+                    <strong className="text-[#0C0C0C]">{data.phone}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span>Email:</span>
-                    <strong className="text-[#111111]">{data.email || 'N/A'}</strong>
+                    <strong className="text-[#0C0C0C]">{data.email || 'N/A'}</strong>
                   </div>
                   {trialDates && (
                     <div className="flex justify-between">
                       <span className="flex items-center gap-1.5"><Calendar size={14} /> Scheduled Dates:</span>
-                      <strong className="text-[#111111]">
+                      <strong className="text-[#0C0C0C]">
                         {new Date(trialDates.start).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} &amp; {new Date(trialDates.end).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                       </strong>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span>Trial Status:</span>
-                    <strong className="text-[#E5A51B] font-bold uppercase tracking-wider text-[10px] bg-[#E5A51B]/10 border border-[#E5A51B]/20 px-2 py-0.5">
+                    <strong className="text-[#DF9716] font-bold uppercase tracking-wider text-[10px] bg-[#DF9716]/10 border border-[#DF9716]/20 px-2 py-0.5">
                       Request Received
                     </strong>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <p className="text-sm leading-6 text-[#111111]/70">
+                  <p className="text-sm leading-6 text-[#0C0C0C]/70">
                     Thanks for booking your free trial. Our team will call you shortly to confirm your visit and guide you through the next steps.
                   </p>
                   <button
@@ -123,32 +123,32 @@ export default function ThankYou() {
             ) : (
               /* PAID RESERVATION STATE */
               <div className="space-y-6">
-                <div className="border-y border-[rgba(7,94,104,0.15)] py-6 space-y-4 text-sm text-[#111111]/75">
+                <div className="border-y border-[rgba(2,78,92,0.15)] py-6 space-y-4 text-sm text-[#0C0C0C]/75">
                   <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5"><BadgeCheck size={14} className="text-[#E5A51B]" /> Reservation ID:</span>
-                    <strong className="text-[#111111] font-mono">{data.razorpayOrderId || `DEV-${data._id?.slice(-6).toUpperCase()}`}</strong>
+                    <span className="flex items-center gap-1.5"><BadgeCheck size={14} className="text-[#DF9716]" /> Reservation ID:</span>
+                    <strong className="text-[#0C0C0C] font-mono">{data.razorpayOrderId || `DEV-${data._id?.slice(-6).toUpperCase()}`}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span>Selected Seat(s):</span>
-                    <strong className="text-[#E5A51B] font-mono">
+                    <strong className="text-[#DF9716] font-mono">
                       {data.seatNumbers ? data.seatNumbers.join(', ') : 'None selected'}
                     </strong>
                   </div>
                   <div className="flex justify-between">
                     <span>Payment Deposit:</span>
-                    <strong className="text-[#111111] font-bold">
+                    <strong className="text-[#0C0C0C] font-bold">
                       ₹{(data.amount || 1000).toLocaleString('en-IN')}
                     </strong>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center gap-1.5"><Calendar size={14} /> Joining Date:</span>
-                    <strong className="text-[#111111]">{data.joiningDate || '15 September 2026'}</strong>
+                    <strong className="text-[#0C0C0C]">{data.joiningDate || '15 September 2026'}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span>Email:</span>
-                    <strong className="text-[#111111]">{data.email || 'N/A'}</strong>
+                    <strong className="text-[#0C0C0C]">{data.email || 'N/A'}</strong>
                   </div>
-                  <div className="flex justify-between items-center text-xs pt-2 text-[#111111]/60">
+                  <div className="flex justify-between items-center text-xs pt-2 text-[#0C0C0C]/60">
                     <span className="flex items-center gap-1.5"><Landmark size={12} /> Landmark Location:</span>
                     <span className="text-right max-w-[280px]">VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur</span>
                   </div>
@@ -180,7 +180,7 @@ export default function ThankYou() {
             )
           ) : (
             <div className="space-y-4">
-              <p className="text-sm text-[#111111]/70">
+              <p className="text-sm text-[#0C0C0C]/70">
                 Thank you for reserving your seats. We are locking in your preferences.
               </p>
               <button
@@ -196,7 +196,7 @@ export default function ThankYou() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[rgba(17,17,17,0.12)] bg-[#111111] py-8 text-center text-xs text-[#F7F5EF]/70">
+      <footer className="border-t border-[rgba(12,12,12,0.12)] bg-[#0C0C0C] py-8 text-center text-xs text-[#FCFAF9]/70">
         <div className="container-wide">
           <p>© {new Date().getFullYear()} Deven Cowork · Pre-launch Pre-booking Confirmation</p>
         </div>
