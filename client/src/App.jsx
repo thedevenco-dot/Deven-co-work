@@ -391,15 +391,8 @@ function SafeImage({ src, alt = '', className = '', style }) {
 }
 
 // ─── HEADER ───────────────────────────────────────────────────────────────────
-function Header({ onReserve, content }) {
+function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   const [solid, setSolid] = useState(false);
-  const phone = content.header?.phone || content.globalSettings?.phone || '+91 62605 82852';
-  const cleanPhoneHref = `tel:${phone.replaceAll(' ', '')}`;
-  const nav = content.navigation || defaultContent.navigation;
-  const visibleNav = (nav.items || [])
-    .filter(i => i.visible !== false)
-    .sort((a, b) => (a.order || 0) - (b.order || 0));
-  const logoUrl = getMediaUrl(content.globalSettings?.logo || content.header?.logo || '');
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 24);
@@ -413,6 +406,32 @@ function Header({ onReserve, content }) {
       document.getElementById(url.slice(1))?.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const data = cmsLoaded ? content : (cmsFailed ? defaultContent : null);
+
+  if (!data) {
+    return (
+      <header
+        className={`fixed left-0 right-0 top-0 z-30 transition-all duration-300 ${
+          solid
+            ? 'bg-[#024E5C]/95 backdrop-blur-md border-b border-[rgba(252,250,249,0.14)]'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="container-wide flex h-[70px] items-center justify-between gap-4">
+          <Logo logoUrl="" />
+        </div>
+      </header>
+    );
+  }
+
+  const phone = data.header?.phone || data.globalSettings?.phone || '+91 62605 82852';
+  const cleanPhoneHref = `tel:${phone.replaceAll(' ', '')}`;
+  const nav = data.navigation || defaultContent.navigation;
+  const visibleNav = (nav.items || [])
+    .filter(i => i.visible !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  const logoUrl = getMediaUrl(data.globalSettings?.logo || data.header?.logo || '');
 
   return (
     <header
@@ -469,7 +488,18 @@ function Header({ onReserve, content }) {
 function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [videoFailed, setVideoFailed] = useState(false);
   const [mediaReady, setMediaReady] = useState(false);
-  const data = hero || defaultContent.hero;
+  const data = cmsLoaded ? hero : (cmsFailed ? defaultContent.hero : null);
+
+  if (!data) {
+    return (
+      <section
+        className="relative overflow-hidden border-b border-[rgba(255,255,255,0.06)] pt-[70px] grid-paper"
+        data-testid="section-hero"
+      >
+        <div className="container-wide relative z-20 flex min-h-[calc(100dvh-70px)] flex-col justify-center pb-16 pt-16 sm:min-h-[820px] sm:pb-28" />
+      </section>
+    );
+  }
 
   const headlineLines = (data.headline || '').split('\n');
   const highlightWords = (data.highlightWords || '')
@@ -698,9 +728,17 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   );
 }
 
-// ─── GUIDE (BRAND STATEMENT + GALLERY) ────────────────────────────────────────
-function Guide({ guide, onReserve }) {
-  const data = guide || defaultContent.guide;
+function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? guide : (cmsFailed ? defaultContent.guide : null);
+
+  if (!data) {
+    return (
+      <section className="bg-[#024E5C] text-[#FCFAF9] border-y border-[rgba(252,250,249,0.16)] py-24 sm:py-36" data-testid="section-guide">
+        <div className="container-wide min-h-[400px]" />
+      </section>
+    );
+  }
+
   const gallery = data.gallery || defaultContent.guide.gallery;
 
   return (
@@ -780,9 +818,17 @@ function Guide({ guide, onReserve }) {
   );
 }
 
-// ─── PROBLEMS ─────────────────────────────────────────────────────────────────
-function Problems({ problem, onReserve }) {
-  const data = problem || defaultContent.problem;
+function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? problem : (cmsFailed ? defaultContent.problem : null);
+
+  if (!data) {
+    return (
+      <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-b border-[rgba(12,12,12,0.14)]" data-testid="section-problems">
+        <div className="container-wide min-h-[500px]" />
+      </section>
+    );
+  }
+
   const pointsToRender = data.problemPoints && data.problemPoints.length > 0
     ? data.problemPoints
     : (data.blocks || []);
@@ -899,9 +945,17 @@ function Problems({ problem, onReserve }) {
   );
 }
 
-// ─── PLAN ─────────────────────────────────────────────────────────────────────
-function Plan({ plan, onReserve }) {
-  const data = plan || defaultContent.plan;
+function Plan({ plan, onReserve, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? plan : (cmsFailed ? defaultContent.plan : null);
+
+  if (!data) {
+    return (
+      <section className="border-b border-[rgba(12,12,12,0.14)] bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36" data-testid="section-plan">
+        <div className="container-wide min-h-[400px]" />
+      </section>
+    );
+  }
+
   const steps = data.steps || [];
 
   return (
@@ -944,9 +998,18 @@ function Plan({ plan, onReserve }) {
 }
 
 // ─── OFFER STACK ──────────────────────────────────────────────────────────────
-function OfferStack({ onReserve, offerStack }) {
+function OfferStack({ onReserve, offerStack, cmsLoaded, cmsFailed }) {
   const [openIdx, setOpenIdx] = useState(null);
-  const data = offerStack || defaultContent.offerStack;
+  const data = cmsLoaded ? offerStack : (cmsFailed ? defaultContent.offerStack : null);
+
+  if (!data) {
+    return (
+      <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-offer">
+        <div className="container-wide min-h-[500px]" />
+      </section>
+    );
+  }
+
   const tiers = data.tiers || [];
 
   return (
@@ -1024,8 +1087,17 @@ function OfferStack({ onReserve, offerStack }) {
 }
 
 // ─── VALUE STACK ──────────────────────────────────────────────────────────────
-function ValueStack({ valueStack, onReserve }) {
-  const data = valueStack || defaultContent.valueStack;
+function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? valueStack : (cmsFailed ? defaultContent.valueStack : null);
+
+  if (!data) {
+    return (
+      <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)]" data-testid="section-value-stack">
+        <div className="container-wide min-h-[500px]" />
+      </section>
+    );
+  }
+
   const itemsToRender = data.valueItems && data.valueItems.length > 0
     ? data.valueItems.filter(item => item.visible !== false)
     : (data.rows || []).map(row => ({ title: row.inclusion, displayValue: row.val }));
@@ -1106,8 +1178,17 @@ function ValueStack({ valueStack, onReserve }) {
 }
 
 // ─── GUARANTEE ────────────────────────────────────────────────────────────────
-function Guarantee({ guarantee, onReserve }) {
-  const data = guarantee || defaultContent.riskReversal;
+function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? guarantee : (cmsFailed ? defaultContent.riskReversal : null);
+
+  if (!data) {
+    return (
+      <section className="bg-[#DF9716] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
+        <div className="container-wide min-h-[400px]" />
+      </section>
+    );
+  }
+
   const blocks = data.blocks || [];
 
   return (
@@ -1150,8 +1231,17 @@ function Guarantee({ guarantee, onReserve }) {
 }
 
 // ─── SOCIAL PROOF ─────────────────────────────────────────────────────────────
-function SocialProof({ socialProof, onReserve }) {
-  const data = socialProof || defaultContent.socialProof;
+function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? socialProof : (cmsFailed ? defaultContent.socialProof : null);
+
+  if (!data) {
+    return (
+      <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-social-proof">
+        <div className="container-wide min-h-[400px]" />
+      </section>
+    );
+  }
+
   const testimonials = (data.testimonials || []).filter(t => t.published !== false);
 
   return (
@@ -1212,8 +1302,17 @@ function SocialProof({ socialProof, onReserve }) {
   }
 
   // ─── PRICING ──────────────────────────────────────────────────────────────────
-  function Pricing({ onReserve, pricing }) {
-    const data = pricing || defaultContent.pricing;
+  function Pricing({ onReserve, pricing, cmsLoaded, cmsFailed }) {
+    const data = cmsLoaded ? pricing : (cmsFailed ? defaultContent.pricing : null);
+
+    if (!data) {
+      return (
+        <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)] grid-paper-light" id="pricing" data-testid="section-pricing">
+          <div className="container-wide min-h-[500px]" />
+        </section>
+      );
+    }
+
     const plans = data.plans || [];
 
     return (
@@ -1277,10 +1376,18 @@ function SocialProof({ socialProof, onReserve }) {
   }
 
   // ─── FAQ ──────────────────────────────────────────────────────────────────────
-  function FAQ({ faq, faqSection, onReserve }) {
+  function FAQ({ faq, faqSection, onReserve, cmsLoaded, cmsFailed }) {
     const [active, setActive] = useState(null);
-    const sectionData = faqSection || defaultContent.faqSection;
-    const data = (faq || defaultContent.faq).filter(f => f.published !== false);
+    const sectionData = cmsLoaded ? faqSection : (cmsFailed ? defaultContent.faqSection : null);
+    const data = cmsLoaded ? (faq || []).filter(f => f.published !== false) : (cmsFailed ? defaultContent.faq.filter(f => f.published !== false) : null);
+
+    if (!sectionData || !data) {
+      return (
+        <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
+          <div className="container-wide min-h-[500px]" />
+        </section>
+      );
+    }
 
     return (
       <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
@@ -1351,7 +1458,7 @@ function SocialProof({ socialProof, onReserve }) {
 }
 
 // ─── RESERVATION / FINAL CTA ──────────────────────────────────────────────────
-function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings, freeTrial, bookingAmount }) {
+function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings, freeTrial, bookingAmount, cmsLoaded, cmsFailed }) {
   const [, setLocation] = useLocation();
   const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', email_confirm: '' });
   const [selectedSeats, setSelectedSeats] = useState([]);
@@ -1360,10 +1467,18 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const ctaData = finalCTA || defaultContent.finalCTA;
-  const resData = reservation || defaultContent.reservation;
-  const settings = globalSettings || defaultContent.globalSettings;
-  const freeTrialData = freeTrial || defaultContent.freeTrial;
+  const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
+  const resData = cmsLoaded ? reservation : (cmsFailed ? defaultContent.reservation : null);
+  const settings = cmsLoaded ? globalSettings : (cmsFailed ? defaultContent.globalSettings : null);
+  const freeTrialData = cmsLoaded ? freeTrial : (cmsFailed ? defaultContent.freeTrial : null);
+
+  if (!ctaData || !resData || !settings || !freeTrialData) {
+    return (
+      <section className="border-t border-[rgba(12,12,12,0.14)] bg-[#FCFAF9] py-20 sm:py-28 text-[#0C0C0C]" id="reservation" data-testid="section-reservation">
+        <div className="container-wide min-h-[600px]" />
+      </section>
+    );
+  }
 
   const totalSeats = resData.totalFoundingSeats || 50;
   const remainingSeats = reservedCount !== undefined ? totalSeats - reservedCount : 27;
@@ -1706,9 +1821,18 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 }
 
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
-function Footer({ footer, globalSettings }) {
-  const data = footer || defaultContent.footer;
-  const settings = globalSettings || defaultContent.globalSettings;
+function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? footer : (cmsFailed ? defaultContent.footer : null);
+  const settings = cmsLoaded ? globalSettings : (cmsFailed ? defaultContent.globalSettings : null);
+
+  if (!data || !settings) {
+    return (
+      <footer className="border-t border-[rgba(252,250,249,0.16)] bg-[#0C0C0C] py-24 sm:py-36 text-[#FCFAF9]">
+        <div className="container-wide min-h-[300px]" />
+      </footer>
+    );
+  }
+
   const phone = data.phone || settings.phone || '+91 62605 82852';
   const email = data.email || settings.email || 'bookings@devencowork.com';
   const address = data.address || settings.address || '';
@@ -1794,8 +1918,10 @@ function Footer({ footer, globalSettings }) {
 }
 
 // ─── WHATSAPP FLOAT ───────────────────────────────────────────────────────────
-function WhatsAppFloat({ whatsapp, message }) {
-  const number = whatsapp || '+91 62605 82852';
+function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
+  if (!cmsLoaded && !cmsFailed) return null;
+  const number = whatsapp || (cmsFailed ? '+91 62605 82852' : '');
+  if (!number) return null;
   const cleanNumber = number.replaceAll(' ', '').replaceAll('+', '');
   const text = encodeURIComponent(message || "Hi, I'd like to reserve a seat at Deven Co-Work");
   return (
@@ -1814,7 +1940,7 @@ function WhatsAppFloat({ whatsapp, message }) {
 
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
 function Home() {
-  const [content, setContent] = useState(defaultContent);
+  const [content, setContent] = useState(null);
   const [cmsLoaded, setCmsLoaded] = useState(false);
   const [cmsFailed, setCmsFailed] = useState(false);
   const [utm, setUtm] = useState({ source: '', medium: '', campaign: '' });
@@ -1890,11 +2016,13 @@ function Home() {
           applySEO(merged.seo, merged.globalSettings);
           setCmsLoaded(true);
         } else {
+          setContent(defaultContent);
           setCmsFailed(true);
         }
       })
       .catch((err) => {
         console.error('Failed to load published content. Using defaults.', err);
+        setContent(defaultContent);
         setCmsFailed(true);
       });
 
@@ -1919,46 +2047,50 @@ function Home() {
     setReserveOpen(true);
   };
 
-  const sectionOrder = content.sectionOrder || defaultContent.sectionOrder;
-  const sectionViz = content.sectionVisibility || defaultContent.sectionVisibility;
+  const sectionOrder = content?.sectionOrder || defaultContent.sectionOrder;
+  const sectionViz = content?.sectionVisibility || defaultContent.sectionVisibility;
 
   const sectionComponents = {
-    hero: <Hero key="hero" onReserve={scrollToReservation} hero={content.hero} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
-    problem: <Problems key="problem" problem={content.problem} onReserve={scrollToReservation} />,
-    guide: <Guide key="guide" guide={content.guide} onReserve={scrollToReservation} />,
-    plan: <Plan key="plan" plan={content.plan} onReserve={scrollToReservation} />,
-    offerStack: <OfferStack key="offerStack" offerStack={content.offerStack} onReserve={scrollToReservation} />,
-    valueStack: <ValueStack key="valueStack" valueStack={content.valueStack} onReserve={scrollToReservation} />,
-    guarantee: <Guarantee key="guarantee" guarantee={content.riskReversal} onReserve={scrollToReservation} />,
-    socialProof: <SocialProof key="socialProof" socialProof={content.socialProof} onReserve={scrollToReservation} />,
-    pricing: <Pricing key="pricing" onReserve={scrollToReservation} pricing={content.pricing} />,
-    faq: <FAQ key="faq" faq={content.faq} faqSection={content.faqSection} onReserve={scrollToReservation} />,
+    hero: <Hero key="hero" onReserve={scrollToReservation} hero={content?.hero} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    problem: <Problems key="problem" problem={content?.problem} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    guide: <Guide key="guide" guide={content?.guide} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    plan: <Plan key="plan" plan={content?.plan} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    offerStack: <OfferStack key="offerStack" offerStack={content?.offerStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    valueStack: <ValueStack key="valueStack" valueStack={content?.valueStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    guarantee: <Guarantee key="guarantee" guarantee={content?.riskReversal} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    socialProof: <SocialProof key="socialProof" socialProof={content?.socialProof} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    pricing: <Pricing key="pricing" onReserve={scrollToReservation} pricing={content?.pricing} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    faq: <FAQ key="faq" faq={content?.faq} faqSection={content?.faqSection} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     finalCTA: (
       <Reservation
         key="finalCTA"
         utm={utm}
-        finalCTA={content.finalCTA}
-        reservation={content.reservation}
+        finalCTA={content?.finalCTA}
+        reservation={content?.reservation}
         reservedCount={reservedCount}
-        globalSettings={content.globalSettings}
-        freeTrial={content.freeTrial || defaultContent.freeTrial}
+        globalSettings={content?.globalSettings}
+        freeTrial={content?.freeTrial}
         bookingAmount={bookingAmount}
+        cmsLoaded={cmsLoaded}
+        cmsFailed={cmsFailed}
       />
     ),
   };
 
   return (
     <div className="site-noise min-h-[100dvh] bg-[#0C0C0C]">
-      <Header onReserve={scrollToReservation} content={content} />
+      <Header onReserve={scrollToReservation} content={content} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />
       <main>
         {sectionOrder
           .filter(key => sectionViz[key] !== false)
           .map(key => sectionComponents[key] || null)}
       </main>
-      <Footer footer={content.footer} globalSettings={content.globalSettings} />
+      <Footer footer={content?.footer} globalSettings={content?.globalSettings} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />
       <WhatsAppFloat
-        whatsapp={content.footer?.whatsapp || content.globalSettings?.whatsapp}
-        message={content.reservation?.whatsappMessage}
+        whatsapp={content?.footer?.whatsapp || content?.globalSettings?.whatsapp}
+        message={content?.reservation?.whatsappMessage}
+        cmsLoaded={cmsLoaded}
+        cmsFailed={cmsFailed}
       />
       {reserveOpen && <span className="sr-only" aria-live="polite">Reservation form is in view.</span>}
     </div>
