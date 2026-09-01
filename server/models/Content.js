@@ -122,7 +122,7 @@ const contentSchema = new mongoose.Schema(
         type: [String],
         default: ['RAIPUR', 'VIP ESTATE', '50 SEATS', 'FRI — SAT FREE TRIAL'],
       },
-      // Words to highlight in yellow (comma-separated)
+      // Words to highlight in cyan accent (comma-separated)
       highlightWords: { type: String, default: '' },
     },
 

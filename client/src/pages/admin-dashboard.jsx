@@ -34,7 +34,7 @@ function TextArea({ value, onChange, rows = 3, placeholder = '' }) {
       onChange={onChange}
       rows={rows}
       placeholder={placeholder}
-      className="w-full min-h-[70px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716]"
+      className="w-full min-h-[70px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB]"
     />
   );
 }
@@ -47,7 +47,7 @@ function Toggle({ checked, onChange, label }) {
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-[#DF9716]' : 'bg-[#333]'}`}
+        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-[#04B8BB]' : 'bg-[#333]'}`}
       >
         <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${checked ? 'translate-x-5' : ''}`} />
       </button>
@@ -59,7 +59,7 @@ function Toggle({ checked, onChange, label }) {
 function SectionCard({ title, children }) {
   return (
     <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-5">
-      <h3 className="font-display text-base font-semibold border-b border-[#242424] pb-3 text-[#DF9716] uppercase tracking-wider">
+      <h3 className="font-display text-base font-semibold border-b border-[#242424] pb-3 text-[#04B8BB] uppercase tracking-wider">
         {title}
       </h3>
       {children}
@@ -144,18 +144,11 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
   const filtered = media.filter(m => {
     if (filter === 'images' && !m.isImage) return false;
     if (filter === 'videos' && !m.isVideo) return false;
-    if (search && !m.fileName.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
-  const formatSize = (bytes) => {
-    if (bytes < 1024) return `${bytes}B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
-  };
-
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Toolbar */}
       <div className="flex flex-wrap gap-3 items-center justify-between bg-[#0A0A0A] border border-[#242424] p-4">
         <div className="flex gap-2">
@@ -163,7 +156,7 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 border transition-colors ${filter === f ? 'border-[#DF9716] bg-[#DF9716]/10 text-[#DF9716]' : 'border-[#333] text-[#A3A3A3] hover:border-white hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 border transition-colors ${filter === f ? 'border-[#04B8BB] bg-[#04B8BB]/10 text-[#04B8BB]' : 'border-[#333] text-[#A3A3A3] hover:border-white hover:text-white'}`}
             >
               {f}
             </button>
@@ -202,7 +195,7 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
           {filtered.map((item) => (
             <div
               key={item.fileName}
-              className={`group border border-[#242424] bg-[#0A0A0A] overflow-hidden relative ${selectMode ? 'cursor-pointer hover:border-[#DF9716]' : ''}`}
+              className={`group border border-[#242424] bg-[#0A0A0A] overflow-hidden relative ${selectMode ? 'cursor-pointer hover:border-[#04B8BB]' : ''}`}
               onClick={selectMode ? () => onSelect?.(item) : undefined}
             >
               {/* Thumbnail */}
@@ -215,8 +208,8 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
                   </div>
                 )}
                 {selectMode && (
-                  <div className="absolute inset-0 bg-[#DF9716]/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-xs font-bold text-[#DF9716] uppercase tracking-wider bg-black/70 px-2 py-1">Select</span>
+                  <div className="absolute inset-0 bg-[#04B8BB]/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="text-xs font-bold text-[#04B8BB] uppercase tracking-wider bg-black/70 px-2 py-1">Select</span>
                   </div>
                 )}
               </div>
@@ -225,7 +218,7 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
               <div className="p-2">
                 <p className="text-[10px] text-[#A3A3A3] truncate" title={item.fileName}>{item.originalName || item.fileName}</p>
                 <p className="text-[9px] text-[#555] mt-0.5">{formatSize(item.sizeBytes)}</p>
-                {item.altText && <p className="text-[9px] text-[#DF9716]/70 mt-0.5 truncate" title={item.altText}>{item.altText}</p>}
+                {item.altText && <p className="text-[9px] text-[#04B8BB]/70 mt-0.5 truncate" title={item.altText}>{item.altText}</p>}
               </div>
 
               {/* Actions */}
@@ -234,14 +227,14 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
                   <button
                     onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(item.url); toast({ title: 'URL copied', description: item.url }); }}
                     title="Copy URL"
-                    className="bg-black/80 p-1 border border-[#333] hover:border-[#DF9716] hover:text-[#DF9716]"
+                    className="bg-black/80 p-1 border border-[#333] hover:border-[#04B8BB] hover:text-[#04B8BB]"
                   >
                     <Link size={10} />
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); setEditingMeta(item); setMetaAlt(item.altText || ''); }}
                     title="Edit alt text"
-                    className="bg-black/80 p-1 border border-[#333] hover:border-[#DF9716] hover:text-[#DF9716]"
+                    className="bg-black/80 p-1 border border-[#333] hover:border-[#04B8BB] hover:text-[#04B8BB]"
                   >
                     <Edit3 size={10} />
                   </button>
@@ -289,20 +282,12 @@ function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange }) {
   const nav = cmsDraft.navigation || {};
   const items = nav.items || [];
 
-  const addItem = () => {
-    const newItems = [...items, { label: '', url: '#', external: false, visible: true, order: items.length }];
-    onFieldChange('navigation', 'items', newItems);
+  const updateItem = (idx, key, val) => {
+    const updated = items.map((it, i) => (i === idx ? { ...it, [key]: val } : it));
+    onFieldChange('navigation', 'items', updated);
   };
-
-  const removeItem = (idx) => {
-    const newItems = items.filter((_, i) => i !== idx);
-    onFieldChange('navigation', 'items', newItems);
-  };
-
-  const updateItem = (idx, key, value) => {
-    const newItems = items.map((item, i) => i === idx ? { ...item, [key]: value } : item);
-    onFieldChange('navigation', 'items', newItems);
-  };
+  const addItem = () => onFieldChange('navigation', 'items', [...items, { label: 'New Link', url: '#', visible: true }]);
+  const removeItem = (idx) => onFieldChange('navigation', 'items', items.filter((_, i) => i !== idx));
 
   return (
     <div className="space-y-6">
@@ -311,7 +296,7 @@ function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange }) {
           {items.map((item, idx) => (
             <div key={idx} className="border border-[#242424] p-4 space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-[#DF9716] font-semibold uppercase">Link {idx + 1}</span>
+                <span className="text-xs text-[#04B8BB] font-semibold uppercase">Link {idx + 1}</span>
                 <button onClick={() => removeItem(idx)} className="text-xs text-[#ef4444] hover:text-white">Remove</button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -1124,7 +1109,7 @@ export default function AdminDashboard() {
           )}
 
           <div className="flex items-center gap-4">
-            <a href="/" target="_blank" rel="noreferrer" className="hidden sm:flex items-center gap-1.5 text-xs text-[#A3A3A3] hover:text-[#DF9716] font-semibold uppercase tracking-wider">
+            <a href="/" target="_blank" rel="noreferrer" className="hidden sm:flex items-center gap-1.5 text-xs text-[#A3A3A3] hover:text-[#04B8BB] font-semibold uppercase tracking-wider">
               <Eye size={13} /> View Site
             </a>
             <span className="hidden sm:inline text-xs text-[#A3A3A3] uppercase tracking-wider font-semibold">
@@ -1160,7 +1145,7 @@ export default function AdminDashboard() {
                       onClick={() => setActivePanel(item.id)}
                       className={`w-full flex items-center gap-2.5 px-2 py-2 text-xs font-semibold uppercase tracking-wider transition-colors text-left rounded-none ${
                         activePanel === item.id
-                          ? 'bg-[#DF9716]/10 text-[#DF9716] border-l-2 border-[#DF9716]'
+                          ? 'bg-[#04B8BB]/10 text-[#04B8BB] border-l-2 border-[#04B8BB]'
                           : 'text-[#A3A3A3] hover:text-white hover:bg-white/[0.04]'
                       }`}
                     >
@@ -1182,8 +1167,8 @@ export default function AdminDashboard() {
             {activePanel === 'bookings' && (
               <div className="space-y-8">
                 <div>
-                  <div className="eyebrow flex items-center gap-3 text-[#DF9716]">
-                    <span className="h-px w-8 bg-[#DF9716]" /> Operations
+                  <div className="eyebrow flex items-center gap-3 text-[#04B8BB]">
+                    <span className="h-px w-8 bg-[#04B8BB]" /> Operations
                   </div>
                   <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1]">Booking Management</h1>
                 </div>
@@ -1195,7 +1180,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
                     <span className="eyebrow">Active Bookings</span>
-                    <p className="mt-4 font-display text-5xl text-[#DF9716]">{loading || !capacityStats ? '—' : capacityStats.activeBookings}</p>
+                    <p className="mt-4 font-display text-5xl text-[#04B8BB]">{loading || !capacityStats ? '—' : capacityStats.activeBookings}</p>
                   </div>
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
                     <span className="eyebrow">Available Capacity</span>
@@ -1223,8 +1208,8 @@ export default function AdminDashboard() {
             {activePanel === 'capacity' && capacityConfig && (
               <div className="space-y-8">
                  <div>
-                  <div className="eyebrow flex items-center gap-3 text-[#DF9716]">
-                    <span className="h-px w-8 bg-[#DF9716]" /> Operations
+                  <div className="eyebrow flex items-center gap-3 text-[#04B8BB]">
+                    <span className="h-px w-8 bg-[#04B8BB]" /> Operations
                   </div>
                   <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1]">Capacity Settings</h1>
                 </div>
@@ -1274,8 +1259,8 @@ export default function AdminDashboard() {
             {activePanel === 'amount' && amountSettings && (
               <div className="space-y-8">
                 <div>
-                  <div className="eyebrow flex items-center gap-3 text-[#DF9716]">
-                    <span className="h-px w-8 bg-[#DF9716]" /> Operations
+                  <div className="eyebrow flex items-center gap-3 text-[#04B8BB]">
+                    <span className="h-px w-8 bg-[#04B8BB]" /> Operations
                   </div>
                   <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1] uppercase">Amount Management</h1>
                   <p className="text-xs text-[#A3A3A3] mt-2">Manage the refundable booking deposit charged for each selected seat.</p>
@@ -1287,7 +1272,7 @@ export default function AdminDashboard() {
                     <div className="space-y-4">
                       <div className="text-sm font-semibold flex items-center justify-between text-[#A3A3A3]">
                         <span>Current Amount:</span>
-                        <span className="text-[#DF9716] font-bold text-lg">
+                        <span className="text-[#04B8BB] font-bold text-lg">
                           ₹{(amountSettings.bookingDepositAmount || 1000).toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -1356,8 +1341,8 @@ export default function AdminDashboard() {
             {activePanel === 'dashboard' && (
               <div className="space-y-8">
                 <div>
-                  <div className="eyebrow flex items-center gap-3 text-[#DF9716]">
-                    <span className="h-px w-8 bg-[#DF9716]" /> Admin Dashboard
+                  <div className="eyebrow flex items-center gap-3 text-[#04B8BB]">
+                    <span className="h-px w-8 bg-[#04B8BB]" /> Admin Dashboard
                   </div>
                   <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1]">Control Panel</h1>
                 </div>
@@ -1367,7 +1352,7 @@ export default function AdminDashboard() {
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
                     <div className="flex justify-between items-start">
                       <span className="eyebrow">Total Bookings</span>
-                      <Calendar size={18} className="text-[#DF9716]" />
+                      <Calendar size={18} className="text-[#04B8BB]" />
                     </div>
                     <p className="mt-4 font-display text-5xl text-[#F1F1F1]">{loading ? '—' : totalBookings}</p>
                     <p className="mt-2 text-xs text-[#A3A3A3] uppercase tracking-wider">Leads & enquiries submitted</p>
@@ -1375,7 +1360,7 @@ export default function AdminDashboard() {
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
                     <div className="flex justify-between items-start">
                       <span className="eyebrow">Desks Reserved</span>
-                      <Users size={18} className="text-[#DF9716]" />
+                      <Users size={18} className="text-[#04B8BB]" />
                     </div>
                     <p className="mt-4 font-display text-5xl text-[#F1F1F1]">
                       {loading ? '—' : totalSeatsReserved} <span className="text-xl text-[#A3A3A3]">/ 50</span>
@@ -1385,9 +1370,9 @@ export default function AdminDashboard() {
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
                     <div className="flex justify-between items-start">
                       <span className="eyebrow">Open Capacity</span>
-                      <Award size={18} className="text-[#DF9716]" />
+                      <Award size={18} className="text-[#04B8BB]" />
                     </div>
-                    <p className="mt-4 font-display text-5xl text-[#DF9716]">{loading ? '—' : seatsRemaining}</p>
+                    <p className="mt-4 font-display text-5xl text-[#04B8BB]">{loading ? '—' : seatsRemaining}</p>
                     <p className="mt-2 text-xs text-[#A3A3A3] uppercase tracking-wider">Seats still available to lock</p>
                   </div>
                 </div>
@@ -1402,9 +1387,9 @@ export default function AdminDashboard() {
                     { id: 'navigation', label: 'Navigation', icon: Link, desc: 'Header links & CTA button' },
                     { id: 'leads', label: 'View Leads', icon: Users, desc: 'Reservations and payment status' },
                   ].map(item => (
-                    <button key={item.id} onClick={() => setActivePanel(item.id)} className="border border-[#242424] bg-[#0A0A0A] p-5 text-left hover:border-[#DF9716] transition-colors group">
-                      <item.icon size={20} className="text-[#DF9716] mb-3" />
-                      <p className="font-semibold text-sm text-[#F1F1F1] group-hover:text-[#DF9716] transition-colors">{item.label}</p>
+                    <button key={item.id} onClick={() => setActivePanel(item.id)} className="border border-[#242424] bg-[#0A0A0A] p-5 text-left hover:border-[#04B8BB] transition-colors group">
+                      <item.icon size={20} className="text-[#04B8BB] mb-3" />
+                      <p className="font-semibold text-sm text-[#F1F1F1] group-hover:text-[#04B8BB] transition-colors">{item.label}</p>
                       <p className="text-xs text-[#A3A3A3] mt-1">{item.desc}</p>
                     </button>
                   ))}
@@ -1599,7 +1584,7 @@ export default function AdminDashboard() {
                                 </div>
                               </td>
                               <td className="py-4 px-6 text-[#b5b1a7]">{res.phone}</td>
-                              <td className="py-4 px-6 text-center font-bold text-[#DF9716]">{res.seatNumbers?.length || 0}</td>
+                              <td className="py-4 px-6 text-center font-bold text-[#04B8BB]">{res.seatNumbers?.length || 0}</td>
                               <td className="py-4 px-6 text-xs text-[#b5b1a7]">{res.plan}</td>
                               <td className="py-4 px-6">
                                 <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase ${
@@ -1620,7 +1605,7 @@ export default function AdminDashboard() {
                               <td className="py-4 px-6">
                                 <div className="text-[10px] text-[#A3A3A3]">
                                   <p>Deposit: <span className="text-white">₹{(res.seatDepositAmount || 1000).toLocaleString('en-IN')}</span></p>
-                                  <p>Total: <span className="text-[#DF9716] font-bold">₹{(res.amount || 0).toLocaleString('en-IN')}</span></p>
+                                  <p>Total: <span className="text-[#04B8BB] font-bold">₹{(res.amount || 0).toLocaleString('en-IN')}</span></p>
                                 </div>
                               </td>
                               <td className="py-4 px-6 text-center">
@@ -1629,7 +1614,7 @@ export default function AdminDashboard() {
                                 </span>
                               </td>
                               <td className="py-4 px-6 text-right">
-                                <button onClick={() => openLeadDetails(res)} className="text-xs font-bold uppercase tracking-wider text-[#DF9716] hover:text-white">
+                                <button onClick={() => openLeadDetails(res)} className="text-xs font-bold uppercase tracking-wider text-[#04B8BB] hover:text-white">
                                   Edit details
                                 </button>
                               </td>
@@ -1653,7 +1638,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="grid gap-6 md:grid-cols-[1.5fr_1fr]">
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-6">
-                    <h3 className="font-display text-lg border-b border-[#242424] pb-3 text-[#DF9716]">Desks Layout Grid</h3>
+                    <h3 className="font-display text-lg border-b border-[#242424] pb-3 text-[#04B8BB]">Desks Layout Grid</h3>
                     <div className="grid gap-4 grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 max-h-[500px] overflow-y-auto pr-2">
                       {seats.map((seat) => (
                         <button
@@ -1661,7 +1646,7 @@ export default function AdminDashboard() {
                           onClick={() => openSeatOverride(seat)}
                           className={`p-3 border text-xs font-semibold flex flex-col justify-between items-center text-center transition-all ${
                             ['blocked', 'maintenance'].includes(seat.status) ? 'border-[#ef4444] bg-[#ef4444]/10 text-[#ef4444]' :
-                            ['reserved', 'held'].includes(seat.status) ? 'border-[#DF9716] bg-[#DF9716]/10 text-[#DF9716]' :
+                            ['reserved', 'held'].includes(seat.status) ? 'border-[#04B8BB] bg-[#04B8BB]/10 text-[#04B8BB]' :
                             'border-[#22c55e] bg-[#22c55e]/10 text-[#22c55e]'
                           }`}
                         >
@@ -1677,7 +1662,7 @@ export default function AdminDashboard() {
                   <div>
                     {selectedSeat ? (
                       <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-6">
-                        <h3 className="font-display text-lg border-b border-[#242424] pb-3 text-[#DF9716] mb-4">
+                        <h3 className="font-display text-lg border-b border-[#242424] pb-3 text-[#04B8BB] mb-4">
                           Modify Seat: {selectedSeat.zone}-{selectedSeat.label}
                         </h3>
                         {['reserved', 'held'].includes(selectedSeat.status) && (
@@ -1689,7 +1674,7 @@ export default function AdminDashboard() {
                                 <div className="space-y-1 text-[#A3A3A3]">
                                   <p>Name: <span className="text-white">{res.name}</span></p>
                                   <p>Phone: <span className="text-white">{res.phone}</span></p>
-                                  <p>Status: <span className="text-[#DF9716] uppercase">{res.leadStatus}</span></p>
+                                  <p>Status: <span className="text-[#04B8BB] uppercase">{res.leadStatus}</span></p>
                                 </div>
                               ) : <p className="text-[#A3A3A3]">Loading details or held anonymously...</p>;
                             })()}
@@ -1735,7 +1720,7 @@ export default function AdminDashboard() {
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 mb-6">
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Phone</p><p className="text-sm font-semibold">{selectedLead.phone}</p></div>
-              <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Seats Selected</p><p className="text-sm font-semibold text-[#DF9716]">{selectedLead.seatNumbers?.join(', ') || 'None'}</p></div>
+              <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Seats Selected</p><p className="text-sm font-semibold text-[#04B8BB]">{selectedLead.seatNumbers?.join(', ') || 'None'}</p></div>
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Plan</p><p className="text-sm font-semibold">{selectedLead.plan}</p></div>
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Registered</p><p className="text-sm font-semibold">{new Date(selectedLead.createdAt).toLocaleString()}</p></div>
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">UTM Source / Campaign</p><p className="text-sm font-semibold">{selectedLead.utmSource || 'N/A'} / {selectedLead.utmCampaign || 'N/A'}</p></div>
@@ -1775,7 +1760,7 @@ export default function AdminDashboard() {
 
             <label className="field-label mb-6">
               <span>Internal Team Notes</span>
-              <textarea value={modalNotes} onChange={(e) => setModalNotes(e.target.value)} placeholder="Type notes after calls here..." className="w-full min-h-[90px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716]" />
+              <textarea value={modalNotes} onChange={(e) => setModalNotes(e.target.value)} placeholder="Type notes after calls here..." className="w-full min-h-[90px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB]" />
             </label>
             <div className="flex gap-4 justify-end">
               <button onClick={() => setSelectedLead(null)} className="button button-outline button-small">Cancel</button>
@@ -1798,19 +1783,19 @@ export default function AdminDashboard() {
             <div className="space-y-4 mb-6">
               <label className="field-label">
                 <span>Full Name <span className="text-[#ef4444] ml-1">*</span></span>
-                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716]" value={manualBookingData.name} onChange={(e) => setManualBookingData({...manualBookingData, name: e.target.value})} />
+                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB]" value={manualBookingData.name} onChange={(e) => setManualBookingData({...manualBookingData, name: e.target.value})} />
               </label>
               <label className="field-label">
                 <span>Phone Number <span className="text-[#ef4444] ml-1">*</span></span>
-                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716]" value={manualBookingData.phone} onChange={(e) => setManualBookingData({...manualBookingData, phone: e.target.value})} />
+                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB]" value={manualBookingData.phone} onChange={(e) => setManualBookingData({...manualBookingData, phone: e.target.value})} />
               </label>
               <label className="field-label">
                 <span>Email Address <span className="text-[#ef4444] ml-1">*</span></span>
-                <input type="email" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716]" value={manualBookingData.email} onChange={(e) => setManualBookingData({...manualBookingData, email: e.target.value})} />
+                <input type="email" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB]" value={manualBookingData.email} onChange={(e) => setManualBookingData({...manualBookingData, email: e.target.value})} />
               </label>
               <label className="field-label">
                 <span>Seat Numbers (Comma separated, e.g. T4-R1, T5-L2)</span>
-                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716]" value={manualBookingData.seatNumbers} onChange={(e) => setManualBookingData({...manualBookingData, seatNumbers: e.target.value})} placeholder="T4-R1, T5-L2" />
+                <input type="text" className="w-full bg-[#0A0A0A] border border-[#242424] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB]" value={manualBookingData.seatNumbers} onChange={(e) => setManualBookingData({...manualBookingData, seatNumbers: e.target.value})} placeholder="T4-R1, T5-L2" />
               </label>
             </div>
             <div className="flex gap-4 justify-end border-t border-[#242424] pt-4">

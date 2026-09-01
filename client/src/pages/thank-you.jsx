@@ -59,14 +59,14 @@ export default function ThankYou() {
         <div className="max-w-xl w-full border border-[rgba(2,78,92,0.2)] bg-white p-8 sm:p-12 space-y-8 shadow-sm">
           
           {/* Status Indicator */}
-          <div className="flex h-14 w-14 items-center justify-center border border-[#DF9716] text-[#DF9716] rounded-none bg-[#DF9716]/5">
+          <div className="flex h-14 w-14 items-center justify-center border border-[#04B8BB] text-[#04B8BB] rounded-none bg-[#04B8BB]/10">
             <Check size={28} />
           </div>
 
           {/* Heading */}
           <div className="space-y-3">
-            <div className="eyebrow flex items-center gap-3 text-[#DF9716] uppercase text-[10px] tracking-widest font-bold">
-              <span className="h-px w-8 bg-[#DF9716]" /> 
+            <div className="eyebrow flex items-center gap-3 text-[#04B8BB] uppercase text-[10px] tracking-widest font-bold">
+              <span className="h-px w-8 bg-[#04B8BB]" /> 
               {isFreeTrial ? 'Free Trial Registered' : 'Founding Member Seat Reserved'}
             </div>
             <h1 className="font-display text-3xl md:text-[40px] font-bold leading-[1.05] tracking-wider text-[#0C0C0C] uppercase">
@@ -102,7 +102,7 @@ export default function ThankYou() {
                   )}
                   <div className="flex justify-between">
                     <span>Trial Status:</span>
-                    <strong className="text-[#DF9716] font-bold uppercase tracking-wider text-[10px] bg-[#DF9716]/10 border border-[#DF9716]/20 px-2 py-0.5">
+                    <strong className="text-[#04B8BB] font-bold uppercase tracking-wider text-[10px] bg-[#04B8BB]/10 border border-[#04B8BB]/20 px-2 py-0.5">
                       Request Received
                     </strong>
                   </div>
@@ -125,12 +125,12 @@ export default function ThankYou() {
               <div className="space-y-6">
                 <div className="border-y border-[rgba(2,78,92,0.15)] py-6 space-y-4 text-sm text-[#0C0C0C]/75">
                   <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1.5"><BadgeCheck size={14} className="text-[#DF9716]" /> Reservation ID:</span>
+                    <span className="flex items-center gap-1.5"><BadgeCheck size={14} className="text-[#04B8BB]" /> Reservation ID:</span>
                     <strong className="text-[#0C0C0C] font-mono">{data.razorpayOrderId || `DEV-${data._id?.slice(-6).toUpperCase()}`}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span>Selected Seat(s):</span>
-                    <strong className="text-[#DF9716] font-mono">
+                    <strong className="text-[#04B8BB] font-mono">
                       {data.seatNumbers ? data.seatNumbers.join(', ') : 'None selected'}
                     </strong>
                   </div>

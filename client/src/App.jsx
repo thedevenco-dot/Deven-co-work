@@ -338,7 +338,7 @@ function HighlightedText({ text, highlightWords = [] }) {
     <>
       {parts.map((part, i) =>
         highlightWords.some(w => w.toLowerCase() === part.toLowerCase())
-          ? <span key={i} className="text-[#DF9716]">{part}</span>
+          ? <span key={i} className="text-[#04B8BB]">{part}</span>
           : <span key={i}>{part}</span>
       )}
     </>
@@ -463,7 +463,7 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
         <div className="flex items-center gap-5">
           <a
             href={cleanPhoneHref}
-            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#DF9716] transition-colors hover:text-[#04B8BB] sm:inline"
+            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#04B8BB] transition-colors hover:text-white sm:inline"
             data-testid="link-header-phone"
           >
             {phone}
@@ -673,7 +673,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           >
             {floatingStats.map((stat, i) => (
               <div key={i} className="floating-card min-w-[160px]">
-                <div className="font-display font-black text-[28px] leading-none text-[#DF9716]">
+                <div className="font-display font-black text-[28px] leading-none text-[#04B8BB]">
                   {stat.value}
                 </div>
                 <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#FCFAF9]/75 mt-2">
@@ -721,7 +721,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-[52px] right-8 hidden items-center gap-2.5 text-[9px] uppercase tracking-[.22em] text-[#FCFAF9]/55 font-bold lg:flex">
-        <ArrowDownRight size={13} className="text-[#DF9716]" />
+        <ArrowDownRight size={13} className="text-[#04B8BB]" />
         Scroll to discover
       </div>
     </section>
@@ -853,7 +853,7 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
               {(data.headline || 'The problems we all\npretend are normal.').split('\n').map((line, i, arr) => (
                 <span key={i} className="block">
                   {i === arr.length - 1 ? (
-                    <><span className="text-[#0C0C0C]/60">{line.slice(0, -1)}</span><span className="text-[#DF9716]">{line.slice(-1)}</span></>
+                    <><span className="text-[#0C0C0C]/60">{line.slice(0, -1)}</span><span className="text-[#04B8BB]">{line.slice(-1)}</span></>
                   ) : line}
                 </span>
               ))}
@@ -881,7 +881,7 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
                     "{quoteText}"
                   </p>
                   {data.quoteAuthor && (
-                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#DF9716]">
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#04B8BB]">
                       — {data.quoteAuthor}
                     </p>
                   )}
@@ -980,7 +980,7 @@ function Plan({ plan, onReserve, cmsLoaded, cmsFailed }) {
           {steps.map((step, index) => (
             <RevealOnScroll key={index} delay={index * 0.1} className="border-b border-[rgba(12,12,12,0.14)] py-9 flex items-start gap-7">
               <span
-                className="font-display font-black text-[#DF9716] shrink-0 leading-none"
+                className="font-display font-black text-[#04B8BB] shrink-0 leading-none"
                 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}
               >
                 {String(index + 1).padStart(2, '0')}
@@ -1046,7 +1046,7 @@ function OfferStack({ onReserve, offerStack, cmsLoaded, cmsFailed }) {
                     {tier.heading}
                   </h4>
                   {tier.isDevenEdge && (
-                    <span className="hidden sm:inline text-[8px] font-black uppercase tracking-[.18em] bg-[#DF9716] text-[#0C0C0C] px-2 py-0.5">
+                    <span className="hidden sm:inline text-[8px] font-black uppercase tracking-[.18em] bg-[#04B8BB] text-[#0C0C0C] px-2 py-0.5">
                       DEVEN EDGE
                     </span>
                   )}
@@ -1120,7 +1120,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
               // Highlight the last line (assumed to be "a desk.")
               if (i === headlineLines.length - 1) {
                 return (
-                  <span key={i} className="block text-[#DF9716]">{line}</span>
+                  <span key={i} className="block text-[#04B8BB]">{line}</span>
                 );
               }
               return <span key={i} className="block">{line}</span>;
@@ -1163,7 +1163,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
               <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#0C0C0C]/50">TOTAL VALUE</span>
               <span className="font-display font-black text-[22px] text-[#0C0C0C]/75">{data.totalValue}</span>
             </div>
-            <div className="flex items-center justify-between bg-[#DF9716] p-6">
+            <div className="flex items-center justify-between bg-[#04B8BB] text-[#0C0C0C] p-6">
               <div>
                 <span className="text-[9px] font-black uppercase tracking-[.2em] text-black/60 block">FOUNDING MEMBER RATE</span>
                 <span className="text-[10px] font-bold text-black/50 mt-0.5 block">Rate locked for 12 months</span>
@@ -1183,7 +1183,7 @@ function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
 
   if (!data) {
     return (
-      <section className="bg-[#DF9716] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
+      <section className="bg-[#04B8BB] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
         <div className="container-wide min-h-[400px]" />
       </section>
     );
@@ -1192,7 +1192,7 @@ function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
   const blocks = data.blocks || [];
 
   return (
-    <section className="bg-[#DF9716] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
+    <section className="bg-[#04B8BB] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
       <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-20 items-start">
         <RevealOnScroll>
           <div className="text-[10px] uppercase tracking-[0.28em] text-black/60 font-bold">06 — RISK FREE</div>
@@ -1288,7 +1288,7 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
                     <p className="text-[13px] leading-[1.7] text-[#FCFAF9]/90 font-medium">{t.quote}</p>
                   </div>
                   <div className="mt-8 border-t border-[rgba(252,250,249,0.12)] pt-5">
-                    <span className="font-display font-bold text-[#DF9716] text-[10px] uppercase tracking-wider block">— {t.author}</span>
+                    <span className="font-display font-bold text-[#04B8BB] text-[10px] uppercase tracking-wider block">— {t.author}</span>
                     <span className="text-[9.5px] text-[#FCFAF9]/60 uppercase tracking-wider mt-1 block font-semibold">{t.role}</span>
                   </div>
                 </motion.div>
@@ -1342,7 +1342,7 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
                 <div className="border-l-2 border-[#0C0C0C] pl-5">
                   <p className="text-[13px] font-bold leading-[1.65] text-[#0C0C0C]">
                     ⚡ Only{' '}
-                    <span className="bg-[#DF9716] text-[#0C0C0C] px-1.5 py-0.5 border border-[#0C0C0C] font-mono font-black">{data.spotsLeft}</span>
+                    <span className="bg-[#04B8BB] text-[#0C0C0C] px-1.5 py-0.5 border border-[#0C0C0C] font-mono font-black">{data.spotsLeft}</span>
                     {' '}of 50 founding seats left — closes {data.closesDate}.
                   </p>
                   <p className="mt-1 text-[10px] text-[#0C0C0C]/50 uppercase tracking-wider font-semibold">Maximum 7 seats per company.</p>
@@ -1360,7 +1360,7 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
                     <h4 className="font-display text-[16px] font-bold text-[#0C0C0C] uppercase tracking-[0.03em]">{plan.name}</h4>
                     <div className="flex items-center gap-3">
                       <span className="text-[11px] text-[#0C0C0C]/35 line-through font-mono">{plan.standard}</span>
-                      <span className="font-display text-[15px] font-black text-[#0C0C0C] bg-[#DF9716] px-2.5 py-1">
+                      <span className="font-display text-[15px] font-black text-[#0C0C0C] bg-[#04B8BB] px-2.5 py-1">
                         {plan.founding}
                       </span>
                     </div>
@@ -1582,7 +1582,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
         description: `Seat Reservation${selectedSeats.length ? ` - Seats ${selectedSeats.join(', ')}` : ''}`,
         order_id: razorpayOrder.id,
         prefill: { name: form.name, contact: form.phone, email: form.email },
-        theme: { color: '#DF9716' },
+        theme: { color: '#04B8BB' },
         handler: async function (response) {
           try {
             setLoading(true);
@@ -1642,7 +1642,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
               {headlineLines.map((line, i) => (
                 <span key={i} className="block">
                   {i === headlineLines.length - 1
-                    ? <span className="text-[#DF9716]">{line}</span>
+                    ? <span className="text-[#04B8BB]">{line}</span>
                     : line}
                 </span>
               ))}
@@ -1653,7 +1653,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
             {/* Scarcity */}
             <div className="scarcity-badge flex-col items-start py-2">
-              <span className="text-[#DF9716] text-[10px] font-black">FOUNDING BATCH</span>
+              <span className="text-[#04B8BB] text-[10px] font-black">FOUNDING BATCH</span>
               <span className="text-[#0C0C0C]/75 text-[11px] mt-1 whitespace-pre-line">
                 {resData.scarcityText || scarcityText}
               </span>
@@ -1662,10 +1662,10 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
             {/* Trial availability badge */}
             <div className={`inline-flex items-center gap-2 border px-4 py-3 text-[10px] font-bold uppercase tracking-[0.15em] ${
               isFreeTrialAvailable
-                ? 'border-[#DF9716]/40 text-[#DF9716] bg-[#DF9716]/5'
+                ? 'border-[#04B8BB]/40 text-[#04B8BB] bg-[#04B8BB]/5'
                 : 'border-[rgba(12,12,12,0.15)] text-[#0C0C0C]/55'
             }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#DF9716] animate-pulse' : 'bg-neutral-300'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#04B8BB] animate-pulse' : 'bg-neutral-300'}`} />
               {isFreeTrialAvailable
                 ? `Free Trial Available Today (${todayInTZ})`
                 : `Free Trial: ${trialDays.join(' & ')} only`}
@@ -1852,7 +1852,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
           <p className="mt-7 text-[13px] leading-[1.75] text-[#FCFAF9]/75 max-w-[400px]">{data.tagline}</p>
           <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[10.5px] text-[#FCFAF9]/55">
             {(data.quickLinks || []).map((link, idx) => (
-              <a key={idx} href={link.href} className="hover:text-[#DF9716] transition-colors">{link.label}</a>
+              <a key={idx} href={link.href} className="hover:text-[#04B8BB] transition-colors">{link.label}</a>
             ))}
           </div>
         </div>
@@ -1871,9 +1871,9 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
             <div>
               <h4 className="font-display text-[13px] font-bold text-[#FCFAF9] tracking-[.05em] uppercase">Direct Contact</h4>
               <p className="mt-2.5 text-[12px] text-[#FCFAF9]/75 leading-[1.75]">
-                <a href={cleanPhoneHref} className="text-[#DF9716] hover:text-[#04B8BB] transition-colors" data-testid="link-footer-phone">{phone}</a>
+                <a href={cleanPhoneHref} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors" data-testid="link-footer-phone">{phone}</a>
                 <br />
-                <a href={`mailto:${email}`} className="text-[#DF9716] hover:text-[#04B8BB] transition-colors">{email}</a>
+                <a href={`mailto:${email}`} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors">{email}</a>
               </p>
             </div>
           </div>
@@ -1898,7 +1898,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
                   href={mapsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-[11px] font-bold text-[#DF9716] hover:text-[#04B8BB] transition-colors"
+                  className="mt-3 inline-block text-[11px] font-bold text-[#04B8BB] hover:text-[#04B8BB] transition-colors"
                   data-testid="link-footer-directions"
                 >
                   Get Directions ↗
@@ -1929,7 +1929,7 @@ function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
       href={`https://wa.me/${cleanNumber}?text=${text}`}
       target="_blank"
       rel="noreferrer"
-      className="fixed bottom-5 right-4 z-30 flex min-h-11 items-center gap-2 border border-[#DF9716] bg-[#024E5C] px-5 text-[10.5px] font-bold text-[#FCFAF9] shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all hover:bg-[#024E5C]/90 hover:border-[#04B8BB] sm:right-5"
+      className="fixed bottom-5 right-4 z-30 flex min-h-11 items-center gap-2 border border-[#04B8BB] bg-[#024E5C] px-5 text-[10.5px] font-bold text-[#FCFAF9] shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all hover:bg-[#024E5C]/90 hover:border-[#04B8BB] sm:right-5"
       data-testid="link-floating-whatsapp"
     >
       <MessageCircle size={15} className="text-[#04B8BB]" />

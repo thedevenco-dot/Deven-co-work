@@ -118,7 +118,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
     return `bg-[#0C0C0C]/10 border-transparent text-[#0C0C0C]/30 cursor-not-allowed select-none opacity-40`;
   }
   if (isSelected) {
-    return `${baseStyle} ring-2 ring-[#DF9716] bg-[#DF9716]/20 text-[#DF9716] border-[#DF9716] scale-[1.03] z-10 font-bold`;
+    return `${baseStyle} ring-2 ring-[#04B8BB] bg-[#04B8BB]/15 text-[#04B8BB] border-[#04B8BB] scale-[1.03] z-10 font-bold`;
   }
   const isCapReached = selectedSeats.length >= 7 && !isSelected;
   if (isCapReached) {
@@ -147,7 +147,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
       <div className="border border-[rgba(2,78,92,0.15)] bg-[#FCFAF9]/80 p-2.5 rounded space-y-2">
         <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-[#A3A3A3] font-bold">
           <span>Zone {zoneName}</span>
-          <span className="text-[#DF9716] font-semibold">{getAvailableInZone()} Open</span>
+          <span className="text-[#04B8BB] font-semibold">{getAvailableInZone()} Open</span>
         </div>
 
         <div className="flex items-center justify-center gap-1.5 py-1">
@@ -214,7 +214,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
       <div className="border border-[rgba(2,78,92,0.15)] bg-[#FCFAF9]/80 p-2.5 rounded space-y-2">
         <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-[#A3A3A3] font-bold">
           <span>Zone {zoneName}</span>
-          <span className="text-[#DF9716] font-semibold">{getAvailableInZone()} Open</span>
+          <span className="text-[#04B8BB] font-semibold">{getAvailableInZone()} Open</span>
         </div>
 
         <div className="flex flex-col gap-1 items-center py-1">
@@ -278,7 +278,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
       <div className="border border-[rgba(2,78,92,0.15)] bg-[#FCFAF9]/80 p-2.5 rounded space-y-2">
         <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-[#A3A3A3] font-bold">
           <span>Zone T7 (Dedicated)</span>
-          <span className="text-[#DF9716] font-semibold">{getAvailableInZone()} Open</span>
+          <span className="text-[#04B8BB] font-semibold">{getAvailableInZone()} Open</span>
         </div>
 
         <div className="flex flex-wrap gap-1 justify-center py-1">
@@ -346,7 +346,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
                 type="button"
                 onClick={() => setZoomView(v)}
                 className={`px-2.5 py-1 text-[9px] font-bold uppercase rounded transition-all whitespace-nowrap ${
-                  zoomView === v ? 'bg-[#DF9716] text-[#0C0C0C]' : 'bg-black/5 text-[#0C0C0C]/75'
+                  zoomView === v ? 'bg-[#04B8BB] text-[#0C0C0C]' : 'bg-black/5 text-[#0C0C0C]/75'
                 }`}
               >
                 {v === 'all' ? '🗺️ Full Map' : v === 't2-t3' ? 'Hot Desks (T2/T3)' : v === 't4-t6' ? 'Dedicated (T4/5/6)' : 'Dedicated (T7)'}
@@ -361,8 +361,8 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
               {/* TOP ROW: Stage / Screen Area */}
               {(zoomView === 'all') && (
                 <div className="grid grid-cols-1 gap-4 items-center border-b border-[rgba(2,78,92,0.15)] pb-3">
-                  <div className="border border-dashed border-[#DF9716]/35 bg-[#DF9716]/5 h-14 rounded flex flex-col items-center justify-center text-center p-2">
-                    <span className="font-display text-xs text-[#DF9716] font-bold tracking-wider uppercase">STAGE & PRESENTATION SCREEN</span>
+                  <div className="border border-dashed border-[#04B8BB]/40 bg-[#04B8BB]/10 h-14 rounded flex flex-col items-center justify-center text-center p-2">
+                    <span className="font-display text-xs text-[#04B8BB] font-bold tracking-wider uppercase">STAGE & PRESENTATION SCREEN</span>
                     <span className="text-[7px] text-[#0C0C0C]/60 mt-0.5 uppercase tracking-wider font-semibold"> Raipur Founders Launch Hub</span>
                   </div>
                 </div>
@@ -428,7 +428,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
               <span>Available</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 bg-[#DF9716]/20 border border-[#DF9716] text-[#DF9716] rounded-sm" />
+              <span className="h-3 w-3 bg-[#04B8BB]/20 border border-[#04B8BB] text-[#04B8BB] rounded-sm" />
               <span>Selected</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -446,7 +446,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
             <div>
               <p className="text-[#0C0C0C]/85 font-medium">
                 Selected Seats:{' '}
-                <strong className="text-[#DF9716]">
+                <strong className="text-[#04B8BB]">
                   {selectedSeats.length === 0 ? 'None' : selectedSeats.join(', ')}
                 </strong>
               </p>
@@ -457,13 +457,13 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
             </div>
 
             {selectedSeats.length >= 7 && (
-              <div className="border border-[#DF9716]/35 bg-[#DF9716]/5 p-2 rounded text-[10px] text-[#DF9716] flex items-center gap-2">
+              <div className="border border-[#04B8BB]/35 bg-[#04B8BB]/10 p-2 rounded text-[10px] text-[#04B8BB] flex items-center gap-2">
                 <span>Limit reached. Need more?</span>
                 <a
                   href={WHATSAPP_HREF}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-1 px-2 py-1 bg-[#DF9716] text-[#0C0C0C] font-bold rounded hover:opacity-90 transition-all text-[9px] uppercase tracking-wider"
+                  className="flex items-center gap-1 px-2 py-1 bg-[#04B8BB] text-[#0C0C0C] font-bold rounded hover:opacity-90 transition-all text-[9px] uppercase tracking-wider"
                 >
                   <MessageCircle size={10} /> WhatsApp
                 </a>

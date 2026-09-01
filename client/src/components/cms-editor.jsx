@@ -30,7 +30,7 @@ function TextArea({ value, onChange, rows = 3, placeholder = '' }) {
       onChange={onChange}
       rows={rows}
       placeholder={placeholder}
-      className="w-full min-h-[70px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716] resize-y"
+      className="w-full min-h-[70px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB] resize-y"
     />
   );
 }
@@ -43,7 +43,7 @@ function Toggle({ checked, onChange, label }) {
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative w-9 h-[18px] rounded-full transition-colors shrink-0 ${checked ? 'bg-[#DF9716]' : 'bg-[#333]'}`}
+        className={`relative w-9 h-[18px] rounded-full transition-colors shrink-0 ${checked ? 'bg-[#04B8BB]' : 'bg-[#333]'}`}
       >
         <span className={`absolute top-[2px] left-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform ${checked ? 'translate-x-[18px]' : ''}`} />
       </button>
@@ -146,7 +146,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
                     value={altText}
                     onChange={(e) => handleAltChange(e.target.value)}
                     placeholder="Describe this image for screen readers and SEO..."
-                    className="w-full bg-[#151515] border border-[#242424] text-xs text-[#F1F1F1] px-3 py-1.5 focus:border-[#DF9716] focus:outline-none transition-colors rounded"
+                    className="w-full bg-[#151515] border border-[#242424] text-xs text-[#F1F1F1] px-3 py-1.5 focus:border-[#04B8BB] focus:outline-none transition-colors rounded"
                   />
                 </div>
               )}
@@ -168,7 +168,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
                 <button
                   type="button"
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="text-[10px] text-[#A3A3A3] hover:text-[#DF9716] ml-auto"
+                  className="text-[10px] text-[#A3A3A3] hover:text-[#04B8BB] ml-auto"
                 >
                   {showAdvanced ? 'Hide Link' : 'Advanced Link'}
                 </button>
@@ -177,7 +177,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
           </div>
         ) : (
           /* Empty / Upload Trigger State */
-          <div className="border border-dashed border-[#333] hover:border-[#DF9716] transition-colors bg-[#080808] p-6 text-center rounded">
+          <div className="border border-dashed border-[#333] hover:border-[#04B8BB] transition-colors bg-[#080808] p-6 text-center rounded">
             <label className="cursor-pointer inline-flex flex-col items-center gap-2">
               <div className="w-10 h-10 rounded-full bg-[#151515] border border-[#242424] flex items-center justify-center text-[#A3A3A3]">
                 {accept.includes('video') ? <Video size={16} /> : <Plus size={16} />}
@@ -219,7 +219,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
 function SectionPanel({ number, title, children }) {
   return (
     <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-6">
-      <h3 className="font-display text-lg tracking-wider border-b border-[#242424] pb-3 text-[#DF9716]">
+      <h3 className="font-display text-lg tracking-wider border-b border-[#242424] pb-3 text-[#04B8BB]">
         {number}. {title}
       </h3>
       {children}
@@ -262,7 +262,7 @@ function RepeatableBlock({
           <div key={idx} className="border border-[#242424] bg-[#060606] overflow-hidden">
             {/* Card header with controls */}
             <div className="flex items-center justify-between px-4 py-2 bg-[#0A0A0A] border-b border-[#242424]">
-              <span className="font-mono text-[11px] font-bold tracking-[.15em] text-[#DF9716] uppercase">
+              <span className="font-mono text-[11px] font-bold tracking-[.15em] text-[#04B8BB] uppercase">
                 {itemLabel} {String(idx + 1).padStart(2, '0')}
               </span>
               <div className="flex items-center gap-0.5">
@@ -288,7 +288,7 @@ function RepeatableBlock({
                   type="button"
                   onClick={() => onDuplicate(idx)}
                   title="Duplicate"
-                  className="p-1.5 text-[#555] hover:text-[#DF9716] transition-colors rounded flex items-center gap-1"
+                  className="p-1.5 text-[#555] hover:text-[#04B8BB] transition-colors rounded flex items-center gap-1"
                 >
                   <Copy size={13} />
                 </button>
@@ -319,7 +319,7 @@ function RepeatableBlock({
       <button
         type="button"
         onClick={() => onAdd()}
-        className="w-full border border-dashed border-[#333] bg-transparent text-[#A3A3A3] hover:border-[#DF9716] hover:text-[#DF9716] transition-all py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
+        className="w-full border border-dashed border-[#333] bg-transparent text-[#A3A3A3] hover:border-[#04B8BB] hover:text-[#04B8BB] transition-all py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
       >
         <Plus size={13} /> {addLabel}
       </button>
@@ -793,7 +793,7 @@ export default function CmsEditor({
                   <select
                     value={item.size || 'medium'}
                     onChange={(e) => onNestedChange('guide', 'gallery', idx, 'size', e.target.value)}
-                    className="w-full min-h-[44px] border border-[#242424] bg-[#0A0A0A] text-white px-3 py-2 text-sm focus:outline-none focus:border-[#DF9716]"
+                    className="w-full min-h-[44px] border border-[#242424] bg-[#0A0A0A] text-white px-3 py-2 text-sm focus:outline-none focus:border-[#04B8BB]"
                   >
                     <option value="large">Large (left column, tall)</option>
                     <option value="medium">Medium</option>
@@ -1020,7 +1020,7 @@ export default function CmsEditor({
                     <Toggle
                       checked={!!item.highlighted}
                       onChange={(v) => onNestedChange('valueStack', 'valueItems', idx, 'highlighted', v)}
-                      label="Highlighted row (yellow)"
+                      label="Highlighted row (cyan accent)"
                     />
                   </div>
                 </div>
