@@ -644,21 +644,29 @@ function PlansManager() {
       }
     }
 
+    const payload = {
+      ...formData,
+      name: formData.name.trim(),
+      price: numPrice,
+      paymentMode: formData.paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT',
+      reservationAmount: formData.paymentMode === 'RESERVATION' ? (Number(formData.reservationAmount) || 999) : 0,
+    };
+
     setSubmitting(true);
     try {
       if (editingPlan) {
-        const res = await api.updatePlan(editingPlan._id, formData);
+        const res = await api.updatePlan(editingPlan._id, payload);
         if (res.success) {
           toast({ title: 'Plan Updated', description: `${formData.name} updated successfully.` });
           setModalOpen(false);
-          fetchPlans();
+          await fetchPlans();
         }
       } else {
-        const res = await api.createPlan(formData);
+        const res = await api.createPlan(payload);
         if (res.success) {
           toast({ title: 'Plan Created', description: `${formData.name} added successfully.` });
           setModalOpen(false);
-          fetchPlans();
+          await fetchPlans();
         }
       }
     } catch (err) {
