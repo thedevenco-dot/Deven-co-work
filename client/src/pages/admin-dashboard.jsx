@@ -411,17 +411,11 @@ function GlobalSettingsEditor({ cmsDraft, onFieldChange, onUpload }) {
             accept="image/*"
           />
           <MediaField
-            label="Favicon Asset (PNG / ICO / SVG)"
+            label="Favicon & Social Sharing Preview Image (PNG / ICO / SVG)"
             value={gs.favicon}
             onChange={(e) => onFieldChange('globalSettings', 'favicon', e.target.value)}
             onUpload={(e) => onUpload?.('globalSettings', 'favicon', e)}
             accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml,image/ico,image/jpeg,image/webp,.ico,.png,.svg"
-          />
-          <MediaField
-            label="OG / Social Sharing Image"
-            value={gs.ogImage}
-            onChange={(e) => onFieldChange('globalSettings', 'ogImage', e.target.value)}
-            onUpload={(e) => onUpload?.('globalSettings', 'ogImage', e)}
           />
         </div>
       </SectionCard>

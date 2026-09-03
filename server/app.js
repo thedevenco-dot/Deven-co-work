@@ -4,12 +4,14 @@ import path from 'path';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import authRoutes from './routes/authRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
 import contentRoutes from './routes/contentRoutes.js';
 import webhookRoutes from './routes/webhookRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { getSeats } from './controllers/reservationController.js';
+import Content from './models/Content.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -90,18 +92,62 @@ app.get('/api/healthz', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Production environment configuration (Serve client production build)
-if (process.env.NODE_ENV === 'production') {
-  const clientBuildPath = path.resolve(__dirname, '../client/dist');
-  app.use(express.static(clientBuildPath));
+// Production / Static Serving: Inject dynamic CMS Favicon into initial HTML for social crawlers (WhatsApp, Facebook, Twitter)
+const clientBuildPath = path.resolve(__dirname, '../client/dist');
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(clientBuildPath, 'index.html'));
-  });
+const serveDynamicHtml = async (req, res, next) => {
+  if (path.extname(req.path)) {
+    return next();
+  }
+  try {
+    const indexPath = path.resolve(clientBuildPath, 'index.html');
+    if (!fs.existsSync(indexPath)) {
+      return res.send('API Server is running...');
+    }
+
+    let html = fs.readFileSync(indexPath, 'utf8');
+
+    // Query published content for CMS Favicon
+    const published = await Content.findOne({ key: 'published' }).lean();
+    let faviconUrl = '';
+    if (published && published.globalSettings && published.globalSettings.favicon) {
+      const val = published.globalSettings.favicon;
+      if (typeof val === 'string') faviconUrl = val;
+      else if (typeof val === 'object' && val !== null) faviconUrl = val.url || '';
+    }
+
+    if (!faviconUrl) {
+      faviconUrl = 'https://www.devencowork.com/favicon.svg';
+    } else if (!faviconUrl.startsWith('http://') && !faviconUrl.startsWith('https://')) {
+      const host = req.get('host') || 'www.devencowork.com';
+      const protocol = req.protocol || 'https';
+      faviconUrl = `${protocol}://${host}${faviconUrl.startsWith('/') ? '' : '/'}${faviconUrl}`;
+    }
+
+    const updatedAt = published && published.updatedAt ? new Date(published.updatedAt).getTime() : '';
+    let finalSocialUrl = faviconUrl;
+    if (updatedAt) {
+      finalSocialUrl += (faviconUrl.includes('?') ? '&' : '?') + `v=${updatedAt}`;
+    }
+
+    // Dynamically replace og:image, twitter:image, and icon tags in initial HTML
+    html = html.replace(/<meta property="og:image" content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${finalSocialUrl}" />`);
+    html = html.replace(/<meta name="twitter:image" content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${finalSocialUrl}" />`);
+    html = html.replace(/<link rel="icon" [^>]*>/i, `<link rel="icon" type="image/svg+xml" href="${finalSocialUrl}" />`);
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(html);
+  } catch (err) {
+    console.error('Error injecting dynamic CMS metadata:', err);
+    return res.sendFile(path.resolve(clientBuildPath, 'index.html'));
+  }
+};
+
+if (fs.existsSync(clientBuildPath)) {
+  app.use(express.static(clientBuildPath, { index: false }));
+  app.get('*', serveDynamicHtml);
 } else {
-  app.get('/', (req, res) => {
-    res.send('API Server is running in development mode...');
-  });
+  app.get('/', serveDynamicHtml);
 }
 
 // Global Error Handler

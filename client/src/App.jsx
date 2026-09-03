@@ -16,8 +16,8 @@ import AdminDashboard from '@/pages/admin-dashboard';
 import ThankYou from '@/pages/thank-you';
 import SeatSelection from '@/components/seat-selection';
 import { api } from '@/services/api';
-import { getMediaUrl, updateFavicon } from '@/lib/utils';
-export { getMediaUrl, updateFavicon };
+import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon } from '@/lib/utils';
+export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 
 
 const queryClient = new QueryClient();
@@ -46,10 +46,10 @@ const defaultContent = {
     keywords: 'coworking raipur, coworking space raipur, founder workspace raipur, deven cowork',
     ogTitle: 'Deven Co-Work | Premium Coworking Space in Raipur',
     ogDescription: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
-    ogImage: 'https://www.devencowork.com/assets/og-preview.png',
+    ogImage: '',
     twitterTitle: 'Deven Co-Work | Premium Coworking Space in Raipur',
     twitterDescription: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
-    twitterImage: 'https://www.devencowork.com/assets/og-preview.png',
+    twitterImage: '',
   },
   navigation: {
     items: [
@@ -1970,10 +1970,12 @@ function Home() {
       const description = seo?.description || defaultContent.seo.description;
       const ogTitle = seo?.ogTitle || defaultContent.seo.ogTitle || title;
       const ogDescription = seo?.ogDescription || defaultContent.seo.ogDescription || description;
-      const ogImage = getMediaUrl(seo?.ogImage || settings?.ogImage) || defaultContent.seo.ogImage;
       const twitterTitle = seo?.twitterTitle || defaultContent.seo.twitterTitle || ogTitle;
       const twitterDescription = seo?.twitterDescription || defaultContent.seo.twitterDescription || ogDescription;
-      const twitterImage = getMediaUrl(seo?.twitterImage || ogImage) || defaultContent.seo.twitterImage;
+
+      // Single source of truth for both browser favicon and social preview image (WhatsApp og:image)
+      const faviconUrl = getMediaUrl(settings?.favicon) || '/favicon.svg';
+      const absoluteSocialImage = getAbsoluteMediaUrl(settings?.favicon || seo?.ogImage, '/favicon.svg');
 
       document.title = title;
 
@@ -1992,12 +1994,12 @@ function Home() {
       setMetaTag('property', 'og:description', ogDescription);
       setMetaTag('property', 'og:url', 'https://www.devencowork.com/');
       setMetaTag('property', 'og:type', 'website');
-      setMetaTag('property', 'og:image', ogImage);
+      setMetaTag('property', 'og:image', absoluteSocialImage);
 
       setMetaTag('name', 'twitter:card', 'summary_large_image');
       setMetaTag('name', 'twitter:title', twitterTitle);
       setMetaTag('name', 'twitter:description', twitterDescription);
-      setMetaTag('name', 'twitter:image', twitterImage);
+      setMetaTag('name', 'twitter:image', absoluteSocialImage);
 
       let canonical = document.querySelector('link[rel="canonical"]');
       if (!canonical) {
@@ -2007,10 +2009,7 @@ function Home() {
       }
       canonical.setAttribute('href', 'https://www.devencowork.com/');
 
-      const faviconUrl = getMediaUrl(settings?.favicon);
-      if (faviconUrl) {
-        updateFavicon(faviconUrl);
-      }
+      updateFavicon(faviconUrl);
     };
 
     applySEO(defaultContent.seo, defaultContent.globalSettings);

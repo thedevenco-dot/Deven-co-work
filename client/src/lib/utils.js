@@ -12,6 +12,18 @@ export function getMediaUrl(val) {
   return '';
 }
 
+export function getAbsoluteMediaUrl(val, fallback = '/favicon.svg') {
+  let url = getMediaUrl(val);
+  if (!url) url = fallback;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const origin = typeof window !== 'undefined' && window.location.origin
+    ? window.location.origin
+    : 'https://www.devencowork.com';
+  return `${origin}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
 export function updateFavicon(faviconUrl) {
   if (!faviconUrl) return;
   let linkFavicon = document.querySelector('link[rel="icon"]') || document.querySelector('link[rel="shortcut icon"]');
