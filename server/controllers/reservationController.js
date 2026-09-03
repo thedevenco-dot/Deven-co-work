@@ -5,6 +5,8 @@ import Reservation from '../models/Reservation.js';
 import Seat from '../models/Seat.js';
 import Content from '../models/Content.js';
 import { broadcast } from '../socket.js';
+import { sendBookingConfirmationEmail, sendTrialConfirmationEmail } from '../services/emailService.js';
+
 
 /**
  * @desc    Get all seats layout
@@ -248,6 +250,13 @@ export async function createReservation(req, res) {
 
     await reservation.save();
 
+    if (amount === 0) {
+      sendBookingConfirmationEmail(reservation).catch((emailErr) => {
+        console.error('[ReservationController] Error triggering zero-amount booking email:', emailErr);
+      });
+    }
+
+
     // Broadcast Seat Hold status to all connected pages (only if seats were selected)
     if (conditions.length > 0) {
       const updatedSeats = await Seat.find({ $or: conditions });
@@ -353,6 +362,12 @@ export async function confirmReservation(req, res) {
       paymentStatus: 'PAID',
       leadStatus: 'CONFIRMED'
     });
+
+    // Send confirmation email safely (non-blocking)
+    sendBookingConfirmationEmail(reservation).catch((emailErr) => {
+      console.error('[ReservationController] Error sending booking confirmation email:', emailErr);
+    });
+
 
     res.json({
       success: true,
@@ -690,7 +705,13 @@ export async function createFreeTrial(req, res) {
 
     await lead.save();
 
+    // Send free trial confirmation email safely (non-blocking)
+    sendTrialConfirmationEmail(lead).catch((emailErr) => {
+      console.error('[ReservationController] Error sending free trial email:', emailErr);
+    });
+
     // Notify admin dashboard
+
     broadcast({
       type: 'NEW_LEAD',
       lead: lead

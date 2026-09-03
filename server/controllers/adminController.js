@@ -1,8 +1,11 @@
+import mongoose from 'mongoose';
 import WorkspaceConfig from '../models/WorkspaceConfig.js';
 import Reservation from '../models/Reservation.js';
 import Seat from '../models/Seat.js';
 import AuditLog from '../models/AuditLog.js';
 import { broadcast } from '../socket.js';
+import { sendBookingConfirmationEmail, sendTrialConfirmationEmail } from '../services/emailService.js';
+
 
 /**
  * Log admin action
@@ -318,4 +321,50 @@ export async function updateAmountSettings(req, res) {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+/**
+ * @desc    Send test email (Admin only)
+ * @route   POST /api/admin/test-email
+ * @access  Private (ADMIN)
+ */
+export async function sendTestEmail(req, res) {
+  const { email, type = 'booking' } = req.body;
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Recipient email is required' });
+  }
+
+  const dummyBooking = new Reservation({
+    _id: new mongoose.Types.ObjectId(),
+    name: 'Test Member',
+    phone: '+91 62605 82852',
+    email: email.trim(),
+    seatNumbers: ['A-01'],
+    plan: 'Founding Member Plan',
+    amount: 1000,
+    seatDepositAmount: 1000,
+    joiningDate: '15 September 2026',
+    paymentStatus: 'PAID',
+    leadStatus: 'CONFIRMED',
+    razorpayPaymentId: 'pay_test_sample123',
+    trialStartDate: new Date(),
+    trialEndDate: new Date(Date.now() + 86400000 * 2),
+  });
+
+  try {
+    let result;
+    if (type === 'trial') {
+      result = await sendTrialConfirmationEmail(dummyBooking);
+    } else {
+      result = await sendBookingConfirmationEmail(dummyBooking);
+    }
+
+    res.json({
+      success: true,
+      result,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
 

@@ -38,15 +38,15 @@ const contentSchema = new mongoose.Schema(
 
     // ─── SEO ──────────────────────────────────────────────────────────────────
     seo: {
-      title: { type: String, default: 'Deven Cowork — Reserve your founding seat | Raipur Premium Coworking' },
-      description: { type: String, default: "Deven Cowork is Raipur's most premium coworking space. Reserve one of 50 founding seats — content studio, and a real founder's community." },
+      title: { type: String, default: 'Deven Co-Work | Premium Coworking Space in Raipur' },
+      description: { type: String, default: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.' },
       keywords: { type: String, default: 'coworking raipur, coworking space raipur, founder workspace raipur, deven cowork' },
-      ogTitle: { type: String, default: '' },
-      ogDescription: { type: String, default: '' },
-      ogImage: { type: mongoose.Schema.Types.Mixed, default: '' },
-      twitterTitle: { type: String, default: '' },
-      twitterDescription: { type: String, default: '' },
-      twitterImage: { type: mongoose.Schema.Types.Mixed, default: '' },
+      ogTitle: { type: String, default: 'Deven Co-Work | Premium Coworking Space in Raipur' },
+      ogDescription: { type: String, default: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.' },
+      ogImage: { type: mongoose.Schema.Types.Mixed, default: 'https://www.devencowork.com/assets/hero-fallback.png' },
+      twitterTitle: { type: String, default: 'Deven Co-Work | Premium Coworking Space in Raipur' },
+      twitterDescription: { type: String, default: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.' },
+      twitterImage: { type: mongoose.Schema.Types.Mixed, default: 'https://www.devencowork.com/assets/hero-fallback.png' },
     },
 
     // ─── NAVIGATION ───────────────────────────────────────────────────────────

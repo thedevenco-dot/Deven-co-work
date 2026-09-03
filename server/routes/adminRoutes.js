@@ -7,6 +7,7 @@ import {
   manageSeatState,
   getAmountSettings,
   updateAmountSettings,
+  sendTestEmail,
 } from '../controllers/adminController.js';
 
 const router = express.Router();
@@ -24,4 +25,7 @@ router.post('/bookings', authorize('SUPER_ADMIN', 'ADMIN'), createManualBooking)
 
 router.post('/seats/:id/:action', authorize('SUPER_ADMIN', 'ADMIN'), manageSeatState);
 
+router.post('/test-email', authorize('SUPER_ADMIN', 'ADMIN'), sendTestEmail);
+
 export default router;
+

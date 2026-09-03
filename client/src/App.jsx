@@ -41,12 +41,15 @@ const defaultContent = {
     ogImage: '',
   },
   seo: {
-    title: 'Deven Cowork — Reserve your founding seat | Raipur Premium Coworking',
-    description: "Deven Cowork is Raipur's most premium coworking space. Reserve one of 50 founding seats — content studio, and a real founder's community.",
+    title: 'Deven Co-Work | Premium Coworking Space in Raipur',
+    description: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
     keywords: 'coworking raipur, coworking space raipur, founder workspace raipur, deven cowork',
-    ogTitle: '',
-    ogDescription: '',
-    ogImage: '',
+    ogTitle: 'Deven Co-Work | Premium Coworking Space in Raipur',
+    ogDescription: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
+    ogImage: 'https://www.devencowork.com/assets/hero-fallback.png',
+    twitterTitle: 'Deven Co-Work | Premium Coworking Space in Raipur',
+    twitterDescription: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
+    twitterImage: 'https://www.devencowork.com/assets/hero-fallback.png',
   },
   navigation: {
     items: [
@@ -1963,29 +1966,50 @@ function Home() {
 
   useEffect(() => {
     const applySEO = (seo, settings) => {
-      document.title = seo?.title || defaultContent.seo.title;
-      let metaDesc = document.querySelector('meta[name="description"]');
-      if (!metaDesc) {
-        metaDesc = document.createElement('meta');
-        metaDesc.setAttribute('name', 'description');
-        document.head.appendChild(metaDesc);
+      const title = seo?.title || defaultContent.seo.title;
+      const description = seo?.description || defaultContent.seo.description;
+      const ogTitle = seo?.ogTitle || defaultContent.seo.ogTitle || title;
+      const ogDescription = seo?.ogDescription || defaultContent.seo.ogDescription || description;
+      const ogImage = getMediaUrl(seo?.ogImage || settings?.ogImage) || defaultContent.seo.ogImage;
+      const twitterTitle = seo?.twitterTitle || defaultContent.seo.twitterTitle || ogTitle;
+      const twitterDescription = seo?.twitterDescription || defaultContent.seo.twitterDescription || ogDescription;
+      const twitterImage = getMediaUrl(seo?.twitterImage || ogImage) || defaultContent.seo.twitterImage;
+
+      document.title = title;
+
+      const setMetaTag = (attrName, attrVal, contentVal) => {
+        let meta = document.querySelector(`meta[${attrName}="${attrVal}"]`);
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute(attrName, attrVal);
+          document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', contentVal);
+      };
+
+      setMetaTag('name', 'description', description);
+      setMetaTag('property', 'og:title', ogTitle);
+      setMetaTag('property', 'og:description', ogDescription);
+      setMetaTag('property', 'og:url', 'https://www.devencowork.com/');
+      setMetaTag('property', 'og:type', 'website');
+      setMetaTag('property', 'og:image', ogImage);
+
+      setMetaTag('name', 'twitter:card', 'summary_large_image');
+      setMetaTag('name', 'twitter:title', twitterTitle);
+      setMetaTag('name', 'twitter:description', twitterDescription);
+      setMetaTag('name', 'twitter:image', twitterImage);
+
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
       }
-      metaDesc.setAttribute('content', seo?.description || defaultContent.seo.description);
+      canonical.setAttribute('href', 'https://www.devencowork.com/');
 
       const faviconUrl = getMediaUrl(settings?.favicon);
       if (faviconUrl) {
         updateFavicon(faviconUrl);
-      }
-
-      const ogImgUrl = getMediaUrl(seo?.ogImage || settings?.ogImage);
-      if (ogImgUrl) {
-        let metaOgImg = document.querySelector('meta[property="og:image"]');
-        if (!metaOgImg) {
-          metaOgImg = document.createElement('meta');
-          metaOgImg.setAttribute('property', 'og:image');
-          document.head.appendChild(metaOgImg);
-        }
-        metaOgImg.setAttribute('content', ogImgUrl);
       }
     };
 

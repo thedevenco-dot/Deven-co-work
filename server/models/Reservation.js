@@ -100,7 +100,16 @@ const reservationSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    confirmationEmailSent: {
+      type: Boolean,
+      default: false,
+    },
+    confirmationEmailSentAt: {
+      type: Date,
+      default: null,
+    },
   },
+
   {
     timestamps: true,
   }
