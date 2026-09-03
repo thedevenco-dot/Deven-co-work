@@ -398,7 +398,7 @@ export async function createReservation(req, res) {
 
     await reservation.save();
 
-    if (amount === 0) {
+    if (totalAmount === 0) {
       sendBookingConfirmationEmail(reservation).catch((emailErr) => {
         console.error('[ReservationController] Error triggering zero-amount booking email:', emailErr);
       });
