@@ -192,7 +192,17 @@ export async function createReservation(req, res) {
     }
 
     const durationVal = Math.max(1, parseInt(duration) || 1);
-    const subtotal = targetPlan.price * durationVal;
+    const paymentMode = targetPlan.paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT';
+
+    let subtotal = 0;
+    let reservationAmount = 0;
+
+    if (paymentMode === 'RESERVATION') {
+      reservationAmount = targetPlan.reservationAmount !== undefined ? targetPlan.reservationAmount : 999;
+      subtotal = reservationAmount; // Single reservation payment, not multiplied by duration
+    } else {
+      subtotal = targetPlan.price * durationVal; // Full payment rate * duration
+    }
 
     const seatDepositAmount = workspaceConfig.refundableSeatDeposit || 1000;
     let deposit = 0;
@@ -216,6 +226,9 @@ export async function createReservation(req, res) {
       planName: targetPlan.name,
       planPrice: targetPlan.price,
       billingPeriod: targetPlan.billingPeriod,
+      paymentMode,
+      reservationAmount,
+      amountPaid: amount,
       duration: durationVal,
       subtotal,
       deposit,

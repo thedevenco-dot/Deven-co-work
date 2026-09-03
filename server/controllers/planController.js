@@ -9,6 +9,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'month',
     pricingLabel: '₹6,999/mo',
+    paymentMode: 'RESERVATION',
+    reservationAmount: 999,
     isActive: true,
     displayOrder: 1,
     category: 'workspace',
@@ -24,6 +26,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'month',
     pricingLabel: '₹4,999/mo',
+    paymentMode: 'RESERVATION',
+    reservationAmount: 999,
     isActive: true,
     displayOrder: 2,
     category: 'workspace',
@@ -39,6 +43,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'hour',
     pricingLabel: '₹199/hr',
+    paymentMode: 'FULL_PAYMENT',
+    reservationAmount: 0,
     isActive: true,
     displayOrder: 3,
     category: 'meeting',
@@ -54,6 +60,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'hour',
     pricingLabel: '₹999/hr',
+    paymentMode: 'FULL_PAYMENT',
+    reservationAmount: 0,
     isActive: true,
     displayOrder: 4,
     category: 'studio',
@@ -69,6 +77,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'day',
     pricingLabel: '₹399/day',
+    paymentMode: 'FULL_PAYMENT',
+    reservationAmount: 0,
     isActive: true,
     displayOrder: 5,
     category: 'pass',
@@ -84,6 +94,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'hour',
     pricingLabel: '₹2,500/hr',
+    paymentMode: 'FULL_PAYMENT',
+    reservationAmount: 0,
     isActive: true,
     displayOrder: 6,
     category: 'event',
@@ -99,6 +111,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'hour',
     pricingLabel: '₹49/hr',
+    paymentMode: 'FULL_PAYMENT',
+    reservationAmount: 0,
     isActive: true,
     displayOrder: 7,
     category: 'workspace',
@@ -114,6 +128,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'month',
     pricingLabel: '₹5,999/mo founding rate',
+    paymentMode: 'RESERVATION',
+    reservationAmount: 999,
     isActive: true,
     displayOrder: 8,
     category: 'workspace',
@@ -129,6 +145,8 @@ export const INITIAL_PLANS = [
     currency: 'INR',
     billingPeriod: 'month',
     pricingLabel: '₹8,999/mo founding rate',
+    paymentMode: 'RESERVATION',
+    reservationAmount: 999,
     isActive: true,
     displayOrder: 9,
     category: 'workspace',
@@ -139,7 +157,7 @@ export const INITIAL_PLANS = [
 ];
 
 /**
- * Seed default plans if collection is empty
+ * Seed default plans if collection is empty or update missing payment modes
  */
 async function seedPlansIfEmpty() {
   const count = await Plan.countDocuments();
@@ -147,6 +165,14 @@ async function seedPlansIfEmpty() {
     console.log('Seeding initial membership plans into MongoDB...');
     await Plan.insertMany(INITIAL_PLANS);
     console.log('Successfully seeded 9 membership plans.');
+  } else {
+    // Ensure existing seeded plans have proper paymentMode and reservationAmount
+    for (const initPlan of INITIAL_PLANS) {
+      await Plan.updateOne(
+        { slug: initPlan.slug, paymentMode: { $exists: false } },
+        { $set: { paymentMode: initPlan.paymentMode, reservationAmount: initPlan.reservationAmount } }
+      );
+    }
   }
 }
 
@@ -222,6 +248,8 @@ export async function createPlan(req, res) {
       currency = 'INR',
       billingPeriod,
       pricingLabel,
+      paymentMode = 'FULL_PAYMENT',
+      reservationAmount = 999,
       isActive = true,
       displayOrder = 0,
       category = 'workspace',
@@ -262,6 +290,8 @@ export async function createPlan(req, res) {
       currency,
       billingPeriod,
       pricingLabel: (pricingLabel || '').trim(),
+      paymentMode: paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT',
+      reservationAmount: Number(reservationAmount) >= 0 ? Number(reservationAmount) : 999,
       isActive: Boolean(isActive),
       displayOrder: Number(displayOrder) || 0,
       category: category || 'workspace',
@@ -310,6 +340,8 @@ export async function updatePlan(req, res) {
       currency,
       billingPeriod,
       pricingLabel,
+      paymentMode,
+      reservationAmount,
       isActive,
       displayOrder,
       category,
@@ -357,6 +389,8 @@ export async function updatePlan(req, res) {
     if (description !== undefined) plan.description = description.trim();
     if (currency !== undefined) plan.currency = currency;
     if (pricingLabel !== undefined) plan.pricingLabel = pricingLabel.trim();
+    if (paymentMode !== undefined) plan.paymentMode = paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT';
+    if (reservationAmount !== undefined) plan.reservationAmount = Number(reservationAmount) >= 0 ? Number(reservationAmount) : 0;
     if (isActive !== undefined) plan.isActive = Boolean(isActive);
     if (displayOrder !== undefined) plan.displayOrder = Number(displayOrder) || 0;
     if (category !== undefined) plan.category = category;

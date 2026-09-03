@@ -40,6 +40,16 @@ const planSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    paymentMode: {
+      type: String,
+      enum: ['RESERVATION', 'FULL_PAYMENT'],
+      default: 'FULL_PAYMENT',
+    },
+    reservationAmount: {
+      type: Number,
+      default: 999,
+      min: [0, 'Reservation amount must be 0 or positive'],
+    },
     isActive: {
       type: Boolean,
       default: true,

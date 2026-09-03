@@ -56,6 +56,19 @@ const reservationSchema = new mongoose.Schema(
       type: String,
       default: 'month',
     },
+    paymentMode: {
+      type: String,
+      enum: ['RESERVATION', 'FULL_PAYMENT'],
+      default: 'FULL_PAYMENT',
+    },
+    reservationAmount: {
+      type: Number,
+      default: 0,
+    },
+    amountPaid: {
+      type: Number,
+      default: 0,
+    },
     duration: {
       type: Number,
       default: 1,

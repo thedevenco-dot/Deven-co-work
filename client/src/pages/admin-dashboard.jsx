@@ -571,6 +571,8 @@ function PlansManager() {
     currency: 'INR',
     billingPeriod: 'month',
     pricingLabel: '',
+    paymentMode: 'FULL_PAYMENT',
+    reservationAmount: 999,
     isActive: true,
     displayOrder: 0,
     category: 'workspace',
@@ -610,6 +612,8 @@ function PlansManager() {
       currency: plan.currency || 'INR',
       billingPeriod: plan.billingPeriod || 'month',
       pricingLabel: plan.pricingLabel || '',
+      paymentMode: plan.paymentMode || 'FULL_PAYMENT',
+      reservationAmount: plan.reservationAmount ?? 999,
       isActive: plan.isActive !== false,
       displayOrder: plan.displayOrder ?? 0,
       category: plan.category || 'workspace',
@@ -688,7 +692,7 @@ function PlansManager() {
         <div>
           <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase tracking-wider">Plans & Pricing Management</h2>
           <p className="text-xs text-[#A3A3A3] mt-1">
-            Single Source of Truth for booking form plans, rates, units, and active status.
+            Single Source of Truth for booking form plans, rates, payment modes (Reservation vs Full Payment), and active status.
           </p>
         </div>
         <button onClick={openAddModal} className="button button-primary button-small gap-2">
@@ -710,7 +714,7 @@ function PlansManager() {
                 <th className="p-3 font-semibold w-12 text-center">Order</th>
                 <th className="p-3 font-semibold">Plan Name</th>
                 <th className="p-3 font-semibold">Price & Period</th>
-                <th className="p-3 font-semibold">Label</th>
+                <th className="p-3 font-semibold">Payment Mode</th>
                 <th className="p-3 font-semibold">Category</th>
                 <th className="p-3 font-semibold">Seat Required</th>
                 <th className="p-3 font-semibold">Status</th>
@@ -729,7 +733,17 @@ function PlansManager() {
                   <td className="p-3 font-mono font-bold text-[#04B8BB]">
                     ₹{p.price?.toLocaleString('en-IN')} / {p.billingPeriod}
                   </td>
-                  <td className="p-3 text-[#A3A3A3]">{p.pricingLabel || '—'}</td>
+                  <td className="p-3 font-mono text-xs">
+                    {p.paymentMode === 'RESERVATION' ? (
+                      <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-[#04B8BB]/15 text-[#04B8BB] border border-[#04B8BB]/40">
+                        Reservation (₹{p.reservationAmount || 999})
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-white/5 text-[#A3A3A3] border border-white/10">
+                        Full Payment
+                      </span>
+                    )}
+                  </td>
                   <td className="p-3 uppercase text-[10px] font-bold tracking-wider text-[#A3A3A3]">{p.category}</td>
                   <td className="p-3">
                     <span className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${p.requiresSeatSelection ? 'bg-[#04B8BB]/10 text-[#04B8BB] border border-[#04B8BB]/30' : 'bg-white/5 text-[#A3A3A3]'}`}>
@@ -842,6 +856,34 @@ function PlansManager() {
                     placeholder="e.g. ₹199/hr"
                   />
                 </Field>
+              </div>
+
+              {/* Payment Mode & Reservation Amount */}
+              <div className="grid gap-3 sm:grid-cols-2 border-t border-b border-[#242424] py-3 my-2">
+                <Field label="Payment Mode" required>
+                  <select
+                    value={formData.paymentMode}
+                    onChange={(e) => setFormData({ ...formData, paymentMode: e.target.value })}
+                    className="w-full border border-[#242424] bg-[#0A0A0A] text-white p-2.5 text-xs focus:border-[#04B8BB]"
+                  >
+                    <option value="FULL_PAYMENT">Full Payment (User pays complete rate)</option>
+                    <option value="RESERVATION">Reservation (User pays fixed reservation fee)</option>
+                  </select>
+                </Field>
+                {formData.paymentMode === 'RESERVATION' ? (
+                  <Field label="Reservation Amount (INR)" required>
+                    <TextInput
+                      type="number"
+                      value={formData.reservationAmount}
+                      onChange={(e) => setFormData({ ...formData, reservationAmount: e.target.value })}
+                      placeholder="999"
+                    />
+                  </Field>
+                ) : (
+                  <div className="flex items-center text-[10px] text-[#A3A3A3] pt-4">
+                    Full rate will be charged at checkout based on duration.
+                  </div>
+                )}
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">

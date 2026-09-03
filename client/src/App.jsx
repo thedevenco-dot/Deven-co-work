@@ -1508,7 +1508,10 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
     }
   };
 
-  const subtotalAmount = selectedPlan ? (selectedPlan.price * duration) : 0;
+  const isReservationMode = selectedPlan?.paymentMode === 'RESERVATION';
+  const subtotalAmount = isReservationMode
+    ? (selectedPlan.reservationAmount !== undefined ? selectedPlan.reservationAmount : 999)
+    : (selectedPlan ? selectedPlan.price * duration : 0);
   const depositPerSeat = bookingAmount || 1000;
   const requiresSeat = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit) : false;
   const depositAmount = (requiresSeat && selectedSeats.length > 0) ? (selectedSeats.length * depositPerSeat) : 0;
@@ -1837,8 +1840,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <div className="bg-[#024E5C]/5 border border-[#024E5C]/20 p-4 space-y-2 text-xs text-[#0C0C0C]">
                   <div className="flex justify-between items-center font-bold text-[#024E5C] border-b border-[#024E5C]/15 pb-2">
                     <span className="uppercase tracking-wider">Booking Summary</span>
-                    <span className="font-mono text-[#04B8BB] font-black">
-                      {selectedPlan.pricingLabel || `₹${selectedPlan.price.toLocaleString('en-IN')}/${selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}`}
+                    <span className={`font-mono font-black text-[10px] px-2 py-0.5 uppercase ${isReservationMode ? 'bg-[#04B8BB]/15 text-[#04B8BB] border border-[#04B8BB]/30' : 'bg-[#024E5C]/10 text-[#024E5C]'}`}>
+                      {isReservationMode ? 'RESERVATION MODE' : 'FULL PAYMENT'}
                     </span>
                   </div>
                   <div className="flex justify-between text-[#0C0C0C]/80">
@@ -1846,27 +1849,37 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     <span className="font-semibold text-[#0C0C0C]">{selectedPlan.name}</span>
                   </div>
                   <div className="flex justify-between text-[#0C0C0C]/80">
-                    <span>Rate:</span>
+                    <span>{isReservationMode ? 'Membership Price:' : 'Plan Rate:'}</span>
                     <span className="font-semibold text-[#0C0C0C]">
                       ₹{selectedPlan.price.toLocaleString('en-IN')}/{selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}
                     </span>
                   </div>
-                  {selectedPlan.billingPeriod !== 'month' && (
-                    <div className="flex justify-between text-[#0C0C0C]/80">
-                      <span>Duration:</span>
-                      <span className="font-semibold text-[#0C0C0C]">
-                        {duration} {selectedPlan.billingPeriod === 'hour' ? (duration > 1 ? 'hours' : 'hour') : (duration > 1 ? 'days' : 'day')}
-                      </span>
+
+                  {isReservationMode ? (
+                    <div className="flex justify-between text-[#04B8BB] font-bold">
+                      <span>Reservation Amount Payable Today:</span>
+                      <span>₹{(selectedPlan.reservationAmount !== undefined ? selectedPlan.reservationAmount : 999).toLocaleString('en-IN')}</span>
                     </div>
+                  ) : (
+                    (selectedPlan.billingPeriod === 'hour' || selectedPlan.billingPeriod === 'day') && (
+                      <div className="flex justify-between text-[#0C0C0C]/80">
+                        <span>Duration:</span>
+                        <span className="font-semibold text-[#0C0C0C]">
+                          {duration} {selectedPlan.billingPeriod === 'hour' ? (duration > 1 ? 'hours' : 'hour') : (duration > 1 ? 'days' : 'day')}
+                        </span>
+                      </div>
+                    )
                   )}
+
                   {depositAmount > 0 && (
                     <div className="flex justify-between text-[#024E5C] font-semibold">
                       <span>Refundable Seat Deposit ({selectedSeats.length} seat{selectedSeats.length > 1 ? 's' : ''}):</span>
                       <span>₹{depositAmount.toLocaleString('en-IN')}</span>
                     </div>
                   )}
+
                   <div className="flex justify-between items-center text-sm font-black border-t border-[#024E5C]/15 pt-2 text-[#024E5C]">
-                    <span>Total Amount:</span>
+                    <span>Total Amount Payable Today:</span>
                     <span className="font-mono text-[#04B8BB] text-base">₹{calculatedTotal.toLocaleString('en-IN')}</span>
                   </div>
                 </div>

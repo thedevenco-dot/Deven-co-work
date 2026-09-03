@@ -103,12 +103,16 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
   const whatsappUrl = `https://wa.me/916260582852?text=${whatsappMsg}`;
 
   return `
+  const isReservation = booking.paymentMode === 'RESERVATION';
+  const headerTitle = isReservation ? 'Reservation Confirmed' : 'Booking Confirmed';
+
+  return `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Booking Confirmed — Deven Co-Work</title>
+      <title>${headerTitle} — Deven Co-Work</title>
     </head>
     <body style="margin: 0; padding: 0; background-color: #0C0C0C; font-family: Arial, sans-serif; color: #FCFAF9;">
       <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #0C0C0C; padding: 20px 10px;">
@@ -119,7 +123,7 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
               <!-- Header -->
               <tr>
                 <td>
-                  ${getEmailHeaderHtml(logoUrl, 'Booking Confirmed')}
+                  ${getEmailHeaderHtml(logoUrl, headerTitle)}
                 </td>
               </tr>
 
@@ -127,11 +131,11 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
               <tr>
                 <td style="padding: 30px 24px;">
                   <h1 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 700; color: #FCFAF9; letter-spacing: 0.5px;">
-                    Your Founding Seat is Locked!
+                    ${isReservation ? 'Your Founding Member Seat Reservation is Locked!' : 'Your Workspace Booking is Confirmed!'}
                   </h1>
                   <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #A3A3A3;">
                     Hello <strong style="color: #FCFAF9;">${booking.name}</strong>,<br>
-                    Thank you for choosing Deven Co-Work. We have received and confirmed your workspace reservation. Below are your booking details.
+                    Thank you for choosing Deven Co-Work. We have received and confirmed your ${isReservation ? 'seat reservation' : 'booking'}. Below are your confirmation details.
                   </p>
 
                   <!-- Details Box -->
@@ -153,14 +157,26 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                             <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Phone:</td>
                             <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${booking.phone}</td>
                           </tr>
+                          ${seatsStr !== 'None' ? `
                           <tr>
                             <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Selected Seat(s):</td>
                             <td style="font-size: 13px; color: #04B8BB; font-weight: 700; text-align: right; padding-bottom: 6px;">${seatsStr}</td>
                           </tr>
+                          ` : ''}
                           <tr>
                             <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Plan:</td>
                             <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; text-align: right; padding-bottom: 6px;">${booking.planName || booking.plan || 'Founding Member Plan'}</td>
                           </tr>
+                          ${isReservation ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Membership Price:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">₹${(booking.planPrice || 0).toLocaleString('en-IN')}/month</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Reservation Fee Paid:</td>
+                            <td style="font-size: 13px; color: #04B8BB; font-weight: 600; text-align: right; padding-bottom: 6px;">₹${(booking.reservationAmount || booking.subtotal || 999).toLocaleString('en-IN')}</td>
+                          </tr>
+                          ` : `
                           ${booking.planPrice ? `
                           <tr>
                             <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Rate:</td>
@@ -173,9 +189,10 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                             <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${booking.duration} ${booking.billingPeriod === 'hour' ? (booking.duration > 1 ? 'hours' : 'hour') : booking.billingPeriod === 'day' ? (booking.duration > 1 ? 'days' : 'day') : (booking.duration > 1 ? 'months' : 'month')}</td>
                           </tr>
                           ` : ''}
+                          `}
                           ${booking.deposit > 0 ? `
                           <tr>
-                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Refundable Deposit:</td>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Refundable Seat Deposit:</td>
                             <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">₹${booking.deposit.toLocaleString('en-IN')}</td>
                           </tr>
                           ` : ''}
@@ -184,7 +201,7 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                             <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${booking.joiningDate || '15 September 2026'}</td>
                           </tr>
                           <tr>
-                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Total Paid:</td>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Total Paid Today:</td>
                             <td style="font-size: 14px; color: #04B8BB; font-weight: 700; text-align: right; padding-bottom: 6px;">${formattedAmount}</td>
                           </tr>
                           ${booking.razorpayPaymentId ? `
@@ -198,7 +215,9 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                     </tr>
                     <tr>
                       <td style="padding: 12px 20px; background-color: rgba(2, 78, 92, 0.2); font-size: 12px; color: #04B8BB;">
-                        ✓ ${depositText} refundable seat deposit is locked & guaranteed for founding batch.
+                        ${isReservation
+                          ? `✓ ₹${(booking.reservationAmount || 999).toLocaleString('en-IN')} reservation payment locks in your founding member seat & rate.`
+                          : `✓ ${depositText} refundable seat deposit is locked & guaranteed for founding batch.`}
                       </td>
                     </tr>
                   </table>
