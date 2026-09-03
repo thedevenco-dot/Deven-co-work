@@ -198,7 +198,7 @@ export async function createReservation(req, res) {
     let reservationAmount = 0;
 
     if (paymentMode === 'RESERVATION') {
-      reservationAmount = targetPlan.reservationAmount !== undefined ? targetPlan.reservationAmount : 999;
+      reservationAmount = (targetPlan.reservationAmount && targetPlan.reservationAmount > 0) ? targetPlan.reservationAmount : 999;
       subtotal = reservationAmount; // Single reservation payment, not multiplied by duration
     } else {
       subtotal = targetPlan.price * durationVal; // Full payment rate * duration

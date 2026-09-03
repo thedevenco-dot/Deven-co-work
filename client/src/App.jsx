@@ -1510,7 +1510,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
   const isReservationMode = selectedPlan?.paymentMode === 'RESERVATION';
   const subtotalAmount = isReservationMode
-    ? (selectedPlan.reservationAmount !== undefined ? selectedPlan.reservationAmount : 999)
+    ? (selectedPlan.reservationAmount && selectedPlan.reservationAmount > 0 ? selectedPlan.reservationAmount : 999)
     : (selectedPlan ? selectedPlan.price * duration : 0);
   const depositPerSeat = bookingAmount || 1000;
   const requiresSeat = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit) : false;
@@ -1858,7 +1858,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                   {isReservationMode ? (
                     <div className="flex justify-between text-[#04B8BB] font-bold">
                       <span>Reservation Amount Payable Today:</span>
-                      <span>₹{(selectedPlan.reservationAmount !== undefined ? selectedPlan.reservationAmount : 999).toLocaleString('en-IN')}</span>
+                      <span>₹{(selectedPlan.reservationAmount && selectedPlan.reservationAmount > 0 ? selectedPlan.reservationAmount : 999).toLocaleString('en-IN')}</span>
                     </div>
                   ) : (
                     (selectedPlan.billingPeriod === 'hour' || selectedPlan.billingPeriod === 'day') && (

@@ -282,6 +282,12 @@ export async function createPlan(req, res) {
       return res.status(400).json({ success: false, message: `A plan with slug "${finalSlug}" already exists.` });
     }
 
+    const normalizedPaymentMode = paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT';
+    const numResAmount = Number(reservationAmount);
+    const normalizedReservationAmount = normalizedPaymentMode === 'RESERVATION'
+      ? (!isNaN(numResAmount) && numResAmount > 0 ? numResAmount : 999)
+      : 0;
+
     const plan = new Plan({
       name: name.trim(),
       slug: finalSlug,
@@ -290,8 +296,8 @@ export async function createPlan(req, res) {
       currency,
       billingPeriod,
       pricingLabel: (pricingLabel || '').trim(),
-      paymentMode: paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT',
-      reservationAmount: Number(reservationAmount) >= 0 ? Number(reservationAmount) : 999,
+      paymentMode: normalizedPaymentMode,
+      reservationAmount: normalizedReservationAmount,
       isActive: Boolean(isActive),
       displayOrder: Number(displayOrder) || 0,
       category: category || 'workspace',
@@ -389,8 +395,18 @@ export async function updatePlan(req, res) {
     if (description !== undefined) plan.description = description.trim();
     if (currency !== undefined) plan.currency = currency;
     if (pricingLabel !== undefined) plan.pricingLabel = pricingLabel.trim();
-    if (paymentMode !== undefined) plan.paymentMode = paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT';
-    if (reservationAmount !== undefined) plan.reservationAmount = Number(reservationAmount) >= 0 ? Number(reservationAmount) : 0;
+
+    if (paymentMode !== undefined) {
+      plan.paymentMode = paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT';
+    }
+
+    if (plan.paymentMode === 'RESERVATION') {
+      const targetResAmount = reservationAmount !== undefined ? Number(reservationAmount) : Number(plan.reservationAmount);
+      plan.reservationAmount = !isNaN(targetResAmount) && targetResAmount > 0 ? targetResAmount : 999;
+    } else {
+      plan.reservationAmount = 0;
+    }
+
     if (isActive !== undefined) plan.isActive = Boolean(isActive);
     if (displayOrder !== undefined) plan.displayOrder = Number(displayOrder) || 0;
     if (category !== undefined) plan.category = category;

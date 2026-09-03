@@ -604,6 +604,10 @@ function PlansManager() {
 
   const openEditModal = (plan) => {
     setEditingPlan(plan);
+    const pMode = plan.paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT';
+    const rAmt = pMode === 'RESERVATION'
+      ? (Number(plan.reservationAmount) > 0 ? Number(plan.reservationAmount) : 999)
+      : (plan.reservationAmount ?? 0);
     setFormData({
       name: plan.name || '',
       slug: plan.slug || '',
@@ -612,8 +616,8 @@ function PlansManager() {
       currency: plan.currency || 'INR',
       billingPeriod: plan.billingPeriod || 'month',
       pricingLabel: plan.pricingLabel || '',
-      paymentMode: plan.paymentMode || 'FULL_PAYMENT',
-      reservationAmount: plan.reservationAmount ?? 999,
+      paymentMode: pMode,
+      reservationAmount: rAmt,
       isActive: plan.isActive !== false,
       displayOrder: plan.displayOrder ?? 0,
       category: plan.category || 'workspace',
@@ -900,7 +904,7 @@ function PlansManager() {
                       name="paymentMode"
                       value="RESERVATION"
                       checked={formData.paymentMode === 'RESERVATION'}
-                      onChange={() => setFormData({ ...formData, paymentMode: 'RESERVATION', reservationAmount: formData.reservationAmount || 999 })}
+                      onChange={() => setFormData({ ...formData, paymentMode: 'RESERVATION', reservationAmount: Number(formData.reservationAmount) > 0 ? formData.reservationAmount : 999 })}
                       className="mt-0.5 accent-[#04B8BB]"
                     />
                     <div>
