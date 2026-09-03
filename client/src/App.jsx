@@ -1457,6 +1457,100 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
   );
 }
 
+/**
+ * Authoritative Frontend Booking Payment Calculator
+ */
+function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 }) {
+  if (!selectedPlan) {
+    return {
+      seatCount: 0,
+      effectiveSeatCount: 0,
+      isReservationMode: false,
+      requiresSeats: false,
+      reservationAmountPerSeat: 0,
+      amountPayableToday: 0,
+      totalAmount: 0,
+      amountPaidToday: 0,
+      amount: 0,
+      totalMembershipValue: 0,
+      fullMembershipAmount: 0,
+      remainingAmountAtJoining: 0,
+      remainingAmount: 0,
+    };
+  }
+
+  const uniqueSelectedSeats = Array.isArray(selectedSeats)
+    ? [...new Set(selectedSeats.filter(Boolean))]
+    : [];
+  const seatCount = uniqueSelectedSeats.length;
+  const isReservationMode = selectedPlan.paymentMode === 'RESERVATION';
+  const requiresSeats = selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit || isReservationMode;
+  const durationVal = Math.max(1, parseInt(duration) || 1);
+
+  if (isReservationMode) {
+    const reservationAmountPerSeat = Number(selectedPlan.reservationAmount || 0);
+    const planPrice = Number(selectedPlan.price || 0);
+
+    if (requiresSeats && seatCount === 0) {
+      return {
+        seatCount: 0,
+        effectiveSeatCount: 0,
+        isReservationMode: true,
+        requiresSeats: true,
+        reservationAmountPerSeat,
+        amountPayableToday: 0,
+        totalAmount: 0,
+        amountPaidToday: 0,
+        amount: 0,
+        totalMembershipValue: 0,
+        fullMembershipAmount: 0,
+        remainingAmountAtJoining: 0,
+        remainingAmount: 0,
+      };
+    }
+
+    const effectiveCount = seatCount > 0 ? seatCount : 1;
+    const amountPayableToday = reservationAmountPerSeat * effectiveCount;
+    const totalMembershipValue = planPrice * effectiveCount;
+    const remainingAmountAtJoining = Math.max(0, totalMembershipValue - amountPayableToday);
+
+    return {
+      seatCount: effectiveCount,
+      effectiveSeatCount: effectiveCount,
+      isReservationMode: true,
+      requiresSeats,
+      reservationAmountPerSeat,
+      amountPayableToday,
+      totalAmount: amountPayableToday,
+      amountPaidToday: amountPayableToday,
+      amount: amountPayableToday,
+      totalMembershipValue,
+      fullMembershipAmount: totalMembershipValue,
+      remainingAmountAtJoining,
+      remainingAmount: remainingAmountAtJoining,
+    };
+  } else {
+    const planPrice = Number(selectedPlan.price || 0);
+    const amountPayableToday = planPrice * durationVal;
+
+    return {
+      seatCount: 0,
+      effectiveSeatCount: 0,
+      isReservationMode: false,
+      requiresSeats: false,
+      reservationAmountPerSeat: 0,
+      amountPayableToday,
+      totalAmount: amountPayableToday,
+      amountPaidToday: amountPayableToday,
+      amount: amountPayableToday,
+      totalMembershipValue: amountPayableToday,
+      fullMembershipAmount: amountPayableToday,
+      remainingAmountAtJoining: 0,
+      remainingAmount: 0,
+    };
+  }
+}
+
 // ─── RESERVATION / FINAL CTA ──────────────────────────────────────────────────
 function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings, freeTrial, bookingAmount, cmsLoaded, cmsFailed }) {
   const [, setLocation] = useLocation();
@@ -1475,14 +1569,16 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   useEffect(() => {
     let active = true;
     setPlansLoading(true);
-    api.fetchPlans()
+    api.getPlans()
       .then((res) => {
         if (active && res.success) {
           const list = res.data || [];
           setPlans(list);
-          if (list.length > 0) {
-            setSelectedPlanId(list[0]._id);
-            setPlan(list[0].name);
+          const activePlans = list.filter(p => p.isActive !== false);
+          if (activePlans.length > 0) {
+            const defaultPlan = activePlans.find(p => p.slug === 'founders-seats') || activePlans[0];
+            setSelectedPlanId(defaultPlan._id);
+            setPlan(defaultPlan.name);
           }
         }
       })
@@ -1509,38 +1605,22 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
     }
   };
 
-  const uniqueSelectedSeats = [...new Set(selectedSeats)];
-  const seatCount = uniqueSelectedSeats.length;
-  const effectiveSeatCount = seatCount;
-  const isReservationMode = selectedPlan?.paymentMode === 'RESERVATION';
-  const requiresSeats = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit || isReservationMode) : false;
-
-  const reservationAmountPerSeat = isReservationMode
-    ? (selectedPlan.reservationAmount !== undefined ? selectedPlan.reservationAmount : 0)
-    : 0;
-
-  let amountPayableToday = 0;
-  let totalMembershipValue = 0;
-  let remainingAmountAtJoining = 0;
-
-  if (isReservationMode) {
-    if (requiresSeats && seatCount === 0) {
-      amountPayableToday = 0;
-      totalMembershipValue = 0;
-      remainingAmountAtJoining = 0;
-    } else {
-      const effectiveCount = seatCount > 0 ? seatCount : 1;
-      amountPayableToday = reservationAmountPerSeat * effectiveCount;
-      totalMembershipValue = (selectedPlan?.price || 0) * effectiveCount;
-      remainingAmountAtJoining = Math.max(0, totalMembershipValue - amountPayableToday);
-    }
-  } else {
-    amountPayableToday = selectedPlan ? selectedPlan.price * duration : 0;
-    totalMembershipValue = amountPayableToday;
-    remainingAmountAtJoining = 0;
-  }
-
-  const totalAmount = amountPayableToday;
+  const calc = getBookingCalculation({ selectedPlan, selectedSeats, duration });
+  const {
+    seatCount,
+    effectiveSeatCount,
+    isReservationMode,
+    requiresSeats,
+    reservationAmountPerSeat,
+    amountPayableToday,
+    totalAmount,
+    amountPaidToday,
+    amount,
+    totalMembershipValue,
+    fullMembershipAmount,
+    remainingAmountAtJoining,
+    remainingAmount,
+  } = calc;
 
   const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
   const resData = cmsLoaded ? reservation : (cmsFailed ? defaultContent.reservation : null);
