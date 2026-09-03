@@ -1569,7 +1569,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   useEffect(() => {
     let active = true;
     setPlansLoading(true);
-    api.getPlans()
+    api.fetchPlans()
       .then((res) => {
         if (active && res.success) {
           const list = res.data || [];
