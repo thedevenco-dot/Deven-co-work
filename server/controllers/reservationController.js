@@ -553,25 +553,27 @@ export async function failReservation(req, res) {
     reservation.paymentStatus = 'FAILED';
     await reservation.save();
 
-    const parsedSeats = reservation.seatNumbers.map((s) => {
-      const parts = s.split('-');
-      return { zone: parts[0], label: parts[1] };
-    });
+    // Release seat holds immediately back to available (only if seats were selected)
+    if (Array.isArray(reservation.seatNumbers) && reservation.seatNumbers.length > 0) {
+      const parsedSeats = reservation.seatNumbers.map((s) => {
+        const parts = s.split('-');
+        return { zone: parts[0], label: parts[1] };
+      });
 
-    const conditions = parsedSeats.map((p) => ({ zone: p.zone, label: p.label }));
+      const conditions = parsedSeats.map((p) => ({ zone: p.zone, label: p.label }));
 
-    // Release seat holds immediately back to available
-    await Seat.updateMany(
-      { $or: conditions, heldBy: reservation._id },
-      { status: 'available', heldBy: null, heldUntil: null }
-    );
+      await Seat.updateMany(
+        { $or: conditions, heldBy: reservation._id },
+        { status: 'available', heldBy: null, heldUntil: null }
+      );
 
-    // Broadcast seats released back to available status
-    const updatedSeats = await Seat.find({ $or: conditions });
-    broadcast({
-      type: 'SEAT_UPDATE',
-      seats: updatedSeats
-    });
+      // Broadcast seats released back to available status
+      const updatedSeats = await Seat.find({ $or: conditions });
+      broadcast({
+        type: 'SEAT_UPDATE',
+        seats: updatedSeats
+      });
+    }
 
     // Broadcast failed alert to admin panel
     broadcast({
