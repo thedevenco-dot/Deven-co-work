@@ -4,7 +4,7 @@ import { api } from '@/services/api';
 
 const WHATSAPP_HREF = 'https://wa.me/916260582852?text=Hi%2C%20I%27d%20like%20to%20pre-book%20more%20than%207%20founding%20seats%20at%20Deven%20Cowork.';
 
-export default function SeatSelection({ selectedSeats = [], onSeatsChange, preferredPlan, onPlanChange }) {
+export default function SeatSelection({ selectedSeats = [], onSeatsChange, preferredPlan, onPlanChange, reservationAmount = 0 }) {
   const [seats, setSeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -12,6 +12,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
 
   const safeSelectedSeats = Array.isArray(selectedSeats) ? selectedSeats : [];
   const safeSeats = Array.isArray(seats) ? seats : [];
+  const resRate = reservationAmount !== undefined ? reservationAmount : 0;
 
   const loadSeats = async () => {
     setLoading(true);
@@ -469,7 +470,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
               <p className="text-[10px] text-[#0C0C0C]/75 mt-0.5 font-medium">
                 Reservation Payable Today:{' '}
                 <strong className="text-[#0C0C0C]">
-                  {[...new Set(safeSelectedSeats)].length === 0 ? '₹0' : `₹${([...new Set(safeSelectedSeats)].length * 999).toLocaleString('en-IN')} (₹999/seat)`}
+                  {[...new Set(safeSelectedSeats)].length === 0 ? '₹0' : `₹${([...new Set(safeSelectedSeats)].length * resRate).toLocaleString('en-IN')} (₹${resRate.toLocaleString('en-IN')}/seat)`}
                 </strong>
               </p>
             </div>

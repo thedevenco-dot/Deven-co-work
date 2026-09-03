@@ -198,12 +198,7 @@ export async function createReservation(req, res) {
     const effectiveSeatCount = uniqueSeats.length;
     const seatCount = effectiveSeatCount;
 
-    let paymentMode = targetPlan.paymentMode;
-    if (!paymentMode || (paymentMode !== 'RESERVATION' && ['founders-seats', 'team-seats', 'hot-desk', 'dedicated-desk'].includes(targetPlan.slug))) {
-      paymentMode = 'RESERVATION';
-    } else if (paymentMode !== 'RESERVATION') {
-      paymentMode = 'FULL_PAYMENT';
-    }
+    let paymentMode = targetPlan.paymentMode || 'FULL_PAYMENT';
 
     const requiresSeats = targetPlan.requiresSeatSelection || targetPlan.usesDeposit || paymentMode === 'RESERVATION';
 
@@ -220,7 +215,7 @@ export async function createReservation(req, res) {
     let remainingAmount = 0;
 
     if (paymentMode === 'RESERVATION') {
-      reservationAmountPerSeat = (targetPlan.reservationAmount && targetPlan.reservationAmount > 0) ? targetPlan.reservationAmount : 999;
+      reservationAmountPerSeat = targetPlan.reservationAmount !== undefined ? targetPlan.reservationAmount : 0;
       amountPayableToday = reservationAmountPerSeat * seatCount;
       totalMembershipAmount = targetPlan.price * seatCount;
       remainingAmount = Math.max(0, totalMembershipAmount - amountPayableToday);

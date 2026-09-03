@@ -1516,7 +1516,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   const requiresSeats = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit || isReservationMode) : false;
 
   const reservationAmountPerSeat = isReservationMode
-    ? (selectedPlan.reservationAmount && selectedPlan.reservationAmount > 0 ? selectedPlan.reservationAmount : 999)
+    ? (selectedPlan.reservationAmount !== undefined ? selectedPlan.reservationAmount : 0)
     : 0;
 
   let amountPayableToday = 0;
@@ -1852,6 +1852,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                           onSeatsChange={setSelectedSeats}
                           preferredPlan={selectedPlan?.name || plan}
                           onPlanChange={setPlan}
+                          reservationAmount={reservationAmountPerSeat}
                         />
                       </div>
                     </motion.div>
