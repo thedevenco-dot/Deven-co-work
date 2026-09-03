@@ -1505,28 +1505,39 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
     if (p) {
       setPlan(p.name);
       setDuration(1);
+      setSelectedSeats([]); // Reset seat choices when switching plans
     }
   };
 
   const uniqueSelectedSeats = [...new Set(selectedSeats)];
-  const seatCountForPlan = Math.max(1, uniqueSelectedSeats.length);
+  const seatCount = uniqueSelectedSeats.length;
   const isReservationMode = selectedPlan?.paymentMode === 'RESERVATION';
+  const requiresSeats = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit || isReservationMode) : false;
 
   const reservationAmountPerSeat = isReservationMode
     ? (selectedPlan.reservationAmount && selectedPlan.reservationAmount > 0 ? selectedPlan.reservationAmount : 999)
     : 0;
 
-  const amountPayableToday = isReservationMode
-    ? (reservationAmountPerSeat * seatCountForPlan)
-    : (selectedPlan ? selectedPlan.price * duration : 0);
+  let amountPayableToday = 0;
+  let totalMembershipValue = 0;
+  let remainingAmountAtJoining = 0;
 
-  const totalMembershipValue = isReservationMode
-    ? ((selectedPlan?.price || 0) * seatCountForPlan)
-    : (selectedPlan ? selectedPlan.price * duration : 0);
-
-  const remainingAmountAtJoining = isReservationMode
-    ? Math.max(0, totalMembershipValue - amountPayableToday)
-    : 0;
+  if (isReservationMode) {
+    if (requiresSeats && seatCount === 0) {
+      amountPayableToday = 0;
+      totalMembershipValue = 0;
+      remainingAmountAtJoining = 0;
+    } else {
+      const effectiveCount = seatCount > 0 ? seatCount : 1;
+      amountPayableToday = reservationAmountPerSeat * effectiveCount;
+      totalMembershipValue = (selectedPlan?.price || 0) * effectiveCount;
+      remainingAmountAtJoining = Math.max(0, totalMembershipValue - amountPayableToday);
+    }
+  } else {
+    amountPayableToday = selectedPlan ? selectedPlan.price * duration : 0;
+    totalMembershipValue = amountPayableToday;
+    remainingAmountAtJoining = 0;
+  }
 
   const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
   const resData = cmsLoaded ? reservation : (cmsFailed ? defaultContent.reservation : null);
@@ -1858,22 +1869,10 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     <span>Plan:</span>
                     <span className="font-semibold text-[#0C0C0C]">{selectedPlan.name}</span>
                   </div>
-              {selectedPlan && (
-                <div className="bg-[#024E5C]/5 border border-[#024E5C]/15 p-3.5 space-y-2 text-xs">
-                  <div className="font-bold text-[#024E5C] border-b border-[#024E5C]/15 pb-1.5 uppercase text-[10px] tracking-wider flex justify-between items-center">
-                    <span>Booking Summary</span>
-                    <span className="text-[9px] text-[#04B8BB] font-mono">{isReservationMode ? 'Reservation' : 'Full Payment'}</span>
-                  </div>
-                  
                   <div className="flex justify-between text-[#0C0C0C]/80">
-                    <span>Plan:</span>
-                    <span className="font-semibold text-[#0C0C0C]">{selectedPlan.name}</span>
-                  </div>
-
-                  <div className="flex justify-between text-[#0C0C0C]/80">
-                    <span>{isReservationMode ? 'Price:' : 'Plan Rate:'}</span>
+                    <span>{isReservationMode ? 'Membership Price:' : 'Plan Rate:'}</span>
                     <span className="font-semibold text-[#0C0C0C]">
-                      ₹{selectedPlan.price.toLocaleString('en-IN')} {isReservationMode ? '/ seat / month' : `/${selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}`}
+                      ₹{selectedPlan.price.toLocaleString('en-IN')}{isReservationMode ? ' / seat / month' : `/${selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}`}
                     </span>
                   </div>
 
@@ -1881,24 +1880,32 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     <>
                       <div className="flex justify-between text-[#0C0C0C]/80">
                         <span>Selected Seats:</span>
-                        <span className="font-semibold text-[#0C0C0C]">{seatCountForPlan} {uniqueSelectedSeats.length > 0 ? `(${uniqueSelectedSeats.join(', ')})` : ''}</span>
+                        <span className="font-semibold text-[#0C0C0C]">{seatCount} {uniqueSelectedSeats.length > 0 ? `(${uniqueSelectedSeats.join(', ')})` : '(None)'}</span>
                       </div>
-                      <div className="flex justify-between text-[#0C0C0C]/80">
-                        <span>Total Membership Value:</span>
-                        <span className="font-semibold text-[#0C0C0C]">₹{totalMembershipValue.toLocaleString('en-IN')} / month</span>
-                      </div>
-                      <div className="flex justify-between text-[#0C0C0C]/80">
-                        <span>Reservation Amount:</span>
-                        <span className="font-semibold text-[#0C0C0C]">₹{reservationAmountPerSeat.toLocaleString('en-IN')} / seat</span>
-                      </div>
-                      <div className="flex justify-between text-[#04B8BB] font-bold border-t border-[#024E5C]/10 pt-1.5">
-                        <span>Amount Payable Today:</span>
-                        <span>₹{amountPayableToday.toLocaleString('en-IN')}</span>
-                      </div>
-                      <div className="flex justify-between text-[#0C0C0C]/80 font-medium">
-                        <span>Remaining Amount at Joining:</span>
-                        <span>₹{remainingAmountAtJoining.toLocaleString('en-IN')}</span>
-                      </div>
+                      {seatCount > 0 ? (
+                        <>
+                          <div className="flex justify-between text-[#0C0C0C]/80">
+                            <span>Total Membership Value:</span>
+                            <span className="font-semibold text-[#0C0C0C]">₹{totalMembershipValue.toLocaleString('en-IN')} / month</span>
+                          </div>
+                          <div className="flex justify-between text-[#0C0C0C]/80">
+                            <span>Reservation Amount:</span>
+                            <span className="font-semibold text-[#0C0C0C]">₹{reservationAmountPerSeat.toLocaleString('en-IN')} / seat</span>
+                          </div>
+                          <div className="flex justify-between text-[#04B8BB] font-bold border-t border-[#024E5C]/10 pt-1.5">
+                            <span>Amount Payable Today:</span>
+                            <span>₹{amountPayableToday.toLocaleString('en-IN')}</span>
+                          </div>
+                          <div className="flex justify-between text-[#0C0C0C]/80 font-medium">
+                            <span>Remaining Amount at Joining:</span>
+                            <span>₹{remainingAmountAtJoining.toLocaleString('en-IN')}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-[11px] text-[#024E5C] font-semibold italic border-t border-[#024E5C]/10 pt-1.5">
+                          Please select at least 1 seat above to view reservation amount.
+                        </div>
+                      )}
                     </>
                   ) : (
                     (selectedPlan.billingPeriod === 'hour' || selectedPlan.billingPeriod === 'day') && (
@@ -1930,11 +1937,17 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <div className="space-y-1.5">
                   <button
                     type="button"
-                    disabled={loading}
+                    disabled={loading || (isReservationMode && requiresSeats && seatCount === 0)}
                     onClick={handlePaidReservation}
-                    className="button button-primary w-full justify-between py-4 text-[10.5px] font-bold uppercase tracking-[0.15em]"
+                    className="button button-primary w-full justify-between py-4 text-[10.5px] font-bold uppercase tracking-[0.15em] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <span>{seatCountForPlan > 1 ? 'RESERVE MY SEATS' : (resData.reserveButtonText || 'RESERVE MY SEAT')}</span>
+                    <span>
+                      {isReservationMode && requiresSeats && seatCount === 0
+                        ? 'SELECT A SEAT TO RESERVE'
+                        : seatCount > 1
+                        ? 'RESERVE MY SEATS'
+                        : (resData.reserveButtonText || 'RESERVE MY SEAT')}
+                    </span>
                     <span className="text-[10px] font-mono opacity-90">
                       Total ₹{amountPayableToday.toLocaleString('en-IN')}
                     </span>

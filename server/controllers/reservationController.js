@@ -195,15 +195,22 @@ export async function createReservation(req, res) {
     const uniqueSeats = Array.isArray(seatNumbers)
       ? [...new Set(seatNumbers.filter(Boolean))]
       : [];
-    
-    // Effective seat count for calculation: if seats selected use uniqueSeats.length, else 1
-    const effectiveSeatCount = uniqueSeats.length > 0 ? uniqueSeats.length : 1;
+    const seatCount = uniqueSeats.length;
 
     let paymentMode = targetPlan.paymentMode;
     if (!paymentMode || (paymentMode !== 'RESERVATION' && ['founders-seats', 'team-seats', 'hot-desk', 'dedicated-desk'].includes(targetPlan.slug))) {
       paymentMode = 'RESERVATION';
     } else if (paymentMode !== 'RESERVATION') {
       paymentMode = 'FULL_PAYMENT';
+    }
+
+    const requiresSeats = targetPlan.requiresSeatSelection || targetPlan.usesDeposit || paymentMode === 'RESERVATION';
+
+    if (paymentMode === 'RESERVATION' && requiresSeats && seatCount === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please select at least one seat to proceed with your reservation.',
+      });
     }
 
     let reservationAmountPerSeat = 0;
@@ -213,8 +220,8 @@ export async function createReservation(req, res) {
 
     if (paymentMode === 'RESERVATION') {
       reservationAmountPerSeat = (targetPlan.reservationAmount && targetPlan.reservationAmount > 0) ? targetPlan.reservationAmount : 999;
-      amountPayableToday = reservationAmountPerSeat * effectiveSeatCount;
-      totalMembershipAmount = targetPlan.price * effectiveSeatCount;
+      amountPayableToday = reservationAmountPerSeat * seatCount;
+      totalMembershipAmount = targetPlan.price * seatCount;
       remainingAmount = Math.max(0, totalMembershipAmount - amountPayableToday);
     } else {
       amountPayableToday = targetPlan.price * durationVal;

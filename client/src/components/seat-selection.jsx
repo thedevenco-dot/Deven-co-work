@@ -565,7 +565,9 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
               </p>
               <p className="text-[10px] text-[#0C0C0C]/75 mt-0.5 font-medium">
                 Reservation Payable Today:{' '}
-                <strong className="text-[#0C0C0C]">₹{((Math.max(1, [...new Set(selectedSeats)].length)) * 999).toLocaleString('en-IN')} (₹999/seat)</strong>
+                <strong className="text-[#0C0C0C]">
+                  {[...new Set(selectedSeats)].length === 0 ? '₹0' : `₹${([...new Set(selectedSeats)].length * 999).toLocaleString('en-IN')} (₹999/seat)`}
+                </strong>
               </p>
             </div>
 
