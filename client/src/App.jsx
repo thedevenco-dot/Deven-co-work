@@ -1461,8 +1461,13 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
  * Authoritative Frontend Booking Payment Calculator
  */
 function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 }) {
+  const uniqueSelectedSeats = Array.isArray(selectedSeats)
+    ? [...new Set(selectedSeats.filter(Boolean))]
+    : [];
+
   if (!selectedPlan) {
     return {
+      uniqueSelectedSeats: [],
       seatCount: 0,
       effectiveSeatCount: 0,
       isReservationMode: false,
@@ -1479,9 +1484,6 @@ function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 
     };
   }
 
-  const uniqueSelectedSeats = Array.isArray(selectedSeats)
-    ? [...new Set(selectedSeats.filter(Boolean))]
-    : [];
   const seatCount = uniqueSelectedSeats.length;
   const isReservationMode = selectedPlan.paymentMode === 'RESERVATION';
   const requiresSeats = selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit || isReservationMode;
@@ -1493,6 +1495,7 @@ function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 
 
     if (requiresSeats && seatCount === 0) {
       return {
+        uniqueSelectedSeats: [],
         seatCount: 0,
         effectiveSeatCount: 0,
         isReservationMode: true,
@@ -1515,6 +1518,7 @@ function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 
     const remainingAmountAtJoining = Math.max(0, totalMembershipValue - amountPayableToday);
 
     return {
+      uniqueSelectedSeats,
       seatCount: effectiveCount,
       effectiveSeatCount: effectiveCount,
       isReservationMode: true,
@@ -1534,6 +1538,7 @@ function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 
     const amountPayableToday = planPrice * durationVal;
 
     return {
+      uniqueSelectedSeats: [],
       seatCount: 0,
       effectiveSeatCount: 0,
       isReservationMode: false,
@@ -1607,6 +1612,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
   const calc = getBookingCalculation({ selectedPlan, selectedSeats, duration });
   const {
+    uniqueSelectedSeats,
     seatCount,
     effectiveSeatCount,
     isReservationMode,
