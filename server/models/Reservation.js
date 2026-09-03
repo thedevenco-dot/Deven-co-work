@@ -39,6 +39,39 @@ const reservationSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    planId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Plan',
+      default: null,
+    },
+    planName: {
+      type: String,
+      default: '',
+    },
+    planPrice: {
+      type: Number,
+      default: 0,
+    },
+    billingPeriod: {
+      type: String,
+      default: 'month',
+    },
+    duration: {
+      type: Number,
+      default: 1,
+    },
+    subtotal: {
+      type: Number,
+      default: 0,
+    },
+    deposit: {
+      type: Number,
+      default: 0,
+    },
+    totalAmount: {
+      type: Number,
+      default: 0,
+    },
     amount: {
       type: Number,
       default: 0,

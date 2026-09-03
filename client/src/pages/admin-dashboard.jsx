@@ -554,6 +554,362 @@ function SectionManager({ cmsDraft, onChange }) {
   );
 }
 
+// ─── PLANS & PRICING MANAGER ──────────────────────────────────────────────────
+function PlansManager() {
+  const { toast } = useToast();
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const initialForm = {
+    name: '',
+    slug: '',
+    description: '',
+    price: '',
+    currency: 'INR',
+    billingPeriod: 'month',
+    pricingLabel: '',
+    isActive: true,
+    displayOrder: 0,
+    category: 'workspace',
+    requiresSeatSelection: false,
+    requiresPayment: true,
+    usesDeposit: false,
+  };
+  const [formData, setFormData] = useState(initialForm);
+
+  const fetchPlans = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await api.fetchAdminPlans();
+      if (res.success) setPlans(res.data || []);
+    } catch (err) {
+      toast({ title: 'Plans Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchPlans(); }, [fetchPlans]);
+
+  const openAddModal = () => {
+    setEditingPlan(null);
+    setFormData({ ...initialForm, displayOrder: plans.length + 1 });
+    setModalOpen(true);
+  };
+
+  const openEditModal = (plan) => {
+    setEditingPlan(plan);
+    setFormData({
+      name: plan.name || '',
+      slug: plan.slug || '',
+      description: plan.description || '',
+      price: plan.price ?? 0,
+      currency: plan.currency || 'INR',
+      billingPeriod: plan.billingPeriod || 'month',
+      pricingLabel: plan.pricingLabel || '',
+      isActive: plan.isActive !== false,
+      displayOrder: plan.displayOrder ?? 0,
+      category: plan.category || 'workspace',
+      requiresSeatSelection: !!plan.requiresSeatSelection,
+      requiresPayment: plan.requiresPayment !== false,
+      usesDeposit: !!plan.usesDeposit,
+    });
+    setModalOpen(true);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!formData.name.trim()) {
+      return toast({ title: 'Validation Error', description: 'Plan name is required', variant: 'destructive' });
+    }
+    const numPrice = Number(formData.price);
+    if (formData.price === '' || isNaN(numPrice) || numPrice < 0) {
+      return toast({ title: 'Validation Error', description: 'Price must be a positive number or 0', variant: 'destructive' });
+    }
+    if (!formData.billingPeriod) {
+      return toast({ title: 'Validation Error', description: 'Billing period is required', variant: 'destructive' });
+    }
+
+    setSubmitting(true);
+    try {
+      if (editingPlan) {
+        const res = await api.updatePlan(editingPlan._id, formData);
+        if (res.success) {
+          toast({ title: 'Plan Updated', description: `${formData.name} updated successfully.` });
+          setModalOpen(false);
+          fetchPlans();
+        }
+      } else {
+        const res = await api.createPlan(formData);
+        if (res.success) {
+          toast({ title: 'Plan Created', description: `${formData.name} added successfully.` });
+          setModalOpen(false);
+          fetchPlans();
+        }
+      }
+    } catch (err) {
+      toast({ title: 'Save Failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const toggleActive = async (plan) => {
+    try {
+      const res = await api.updatePlan(plan._id, { isActive: !plan.isActive });
+      if (res.success) {
+        toast({ title: 'Status Updated', description: `${plan.name} is now ${!plan.isActive ? 'Active' : 'Inactive'}` });
+        fetchPlans();
+      }
+    } catch (err) {
+      toast({ title: 'Update Failed', description: err.message, variant: 'destructive' });
+    }
+  };
+
+  const handleDelete = async (plan) => {
+    if (!confirm(`Deactivate plan "${plan.name}"? It will no longer appear in the booking form, but historical bookings remain unaffected.`)) return;
+    try {
+      const res = await api.deletePlan(plan._id);
+      if (res.success) {
+        toast({ title: 'Plan Deactivated', description: res.message });
+        fetchPlans();
+      }
+    } catch (err) {
+      toast({ title: 'Deactivation Failed', description: err.message, variant: 'destructive' });
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#242424] pb-4">
+        <div>
+          <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase tracking-wider">Plans & Pricing Management</h2>
+          <p className="text-xs text-[#A3A3A3] mt-1">
+            Single Source of Truth for booking form plans, rates, units, and active status.
+          </p>
+        </div>
+        <button onClick={openAddModal} className="button button-primary button-small gap-2">
+          <Plus size={14} /> Add New Plan
+        </button>
+      </div>
+
+      {loading ? (
+        <div className="py-20 text-center text-[#A3A3A3] animate-pulse">Loading plans from CMS...</div>
+      ) : plans.length === 0 ? (
+        <div className="py-16 text-center border border-dashed border-[#242424] text-[#A3A3A3]">
+          No plans found. Click "+ Add New Plan" to create your first membership plan.
+        </div>
+      ) : (
+        <div className="overflow-x-auto border border-[#242424] bg-[#0A0A0A]">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#111] text-[#A3A3A3] uppercase tracking-wider border-b border-[#242424]">
+              <tr>
+                <th className="p-3 font-semibold w-12 text-center">Order</th>
+                <th className="p-3 font-semibold">Plan Name</th>
+                <th className="p-3 font-semibold">Price & Period</th>
+                <th className="p-3 font-semibold">Label</th>
+                <th className="p-3 font-semibold">Category</th>
+                <th className="p-3 font-semibold">Seat Required</th>
+                <th className="p-3 font-semibold">Status</th>
+                <th className="p-3 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#242424] text-white">
+              {plans.map((p) => (
+                <tr key={p._id} className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-3 font-mono text-[#555] text-center">{p.displayOrder}</td>
+                  <td className="p-3">
+                    <div className="font-semibold text-sm text-white">{p.name}</div>
+                    <div className="text-[10px] text-[#A3A3A3] font-mono">{p.slug}</div>
+                    {p.description && <div className="text-[11px] text-[#555] truncate max-w-xs">{p.description}</div>}
+                  </td>
+                  <td className="p-3 font-mono font-bold text-[#04B8BB]">
+                    ₹{p.price?.toLocaleString('en-IN')} / {p.billingPeriod}
+                  </td>
+                  <td className="p-3 text-[#A3A3A3]">{p.pricingLabel || '—'}</td>
+                  <td className="p-3 uppercase text-[10px] font-bold tracking-wider text-[#A3A3A3]">{p.category}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${p.requiresSeatSelection ? 'bg-[#04B8BB]/10 text-[#04B8BB] border border-[#04B8BB]/30' : 'bg-white/5 text-[#A3A3A3]'}`}>
+                      {p.requiresSeatSelection ? 'Yes (Floor Map)' : 'No'}
+                    </span>
+                  </td>
+                  <td className="p-3">
+                    <button
+                      onClick={() => toggleActive(p)}
+                      className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded transition-colors ${
+                        p.isActive !== false
+                          ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30'
+                          : 'bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30'
+                      }`}
+                    >
+                      {p.isActive !== false ? 'Active' : 'Inactive'}
+                    </button>
+                  </td>
+                  <td className="p-3 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => openEditModal(p)}
+                        className="p-1.5 border border-[#333] text-[#A3A3A3] hover:text-white hover:border-[#04B8BB] transition-colors"
+                        title="Edit Plan"
+                      >
+                        <Edit3 size={13} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p)}
+                        className="p-1.5 border border-[#333] text-[#A3A3A3] hover:text-[#ef4444] hover:border-[#ef4444] transition-colors"
+                        title="Deactivate Plan"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Add / Edit Plan Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg bg-[#0A0A0A] border border-[#242424] p-6 relative max-h-[90vh] overflow-y-auto space-y-4">
+            <div className="flex justify-between items-center border-b border-[#242424] pb-3">
+              <h3 className="font-display text-lg text-white font-semibold">
+                {editingPlan ? `Edit Plan: ${editingPlan.name}` : 'Add New Membership Plan'}
+              </h3>
+              <button onClick={() => setModalOpen(false)} className="text-[#A3A3A3] hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSave} className="space-y-4 text-xs">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Plan Name" required>
+                  <TextInput
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g. Meeting Room"
+                  />
+                </Field>
+                <Field label="Slug (URL identifier)">
+                  <TextInput
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    placeholder="e.g. meeting-room"
+                  />
+                </Field>
+              </div>
+
+              <Field label="Description">
+                <TextArea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Short description of amenities or access included..."
+                  rows={2}
+                />
+              </Field>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Field label="Price (INR)" required>
+                  <TextInput
+                    type="number"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    placeholder="199"
+                  />
+                </Field>
+                <Field label="Billing Unit" required>
+                  <select
+                    value={formData.billingPeriod}
+                    onChange={(e) => setFormData({ ...formData, billingPeriod: e.target.value })}
+                    className="w-full border border-[#242424] bg-[#0A0A0A] text-white p-2.5 text-xs focus:border-[#04B8BB]"
+                  >
+                    <option value="hour">Hour</option>
+                    <option value="day">Day</option>
+                    <option value="month">Month</option>
+                    <option value="quarter">Quarter</option>
+                    <option value="year">Year</option>
+                  </select>
+                </Field>
+                <Field label="Pricing Label">
+                  <TextInput
+                    value={formData.pricingLabel}
+                    onChange={(e) => setFormData({ ...formData, pricingLabel: e.target.value })}
+                    placeholder="e.g. ₹199/hr"
+                  />
+                </Field>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Display Order">
+                  <TextInput
+                    type="number"
+                    value={formData.displayOrder}
+                    onChange={(e) => setFormData({ ...formData, displayOrder: Number(e.target.value) })}
+                    placeholder="1"
+                  />
+                </Field>
+                <Field label="Category">
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full border border-[#242424] bg-[#0A0A0A] text-white p-2.5 text-xs focus:border-[#04B8BB]"
+                  >
+                    <option value="workspace">Workspace</option>
+                    <option value="meeting">Meeting Room</option>
+                    <option value="studio">Content Studio</option>
+                    <option value="pass">Day Pass</option>
+                    <option value="event">Full Venue Event</option>
+                  </select>
+                </Field>
+              </div>
+
+              <div className="space-y-2 border-t border-[#242424] pt-3">
+                <Toggle
+                  checked={formData.isActive}
+                  onChange={(v) => setFormData({ ...formData, isActive: v })}
+                  label="Is Active (Visible in public booking form)"
+                />
+                <Toggle
+                  checked={formData.requiresSeatSelection}
+                  onChange={(v) => setFormData({ ...formData, requiresSeatSelection: v })}
+                  label="Requires Seat Selection (Shows floor map)"
+                />
+                <Toggle
+                  checked={formData.usesDeposit}
+                  onChange={(v) => setFormData({ ...formData, usesDeposit: v })}
+                  label="Uses Refundable Seat Deposit"
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end border-t border-[#242424] pt-4">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="button button-outline button-small"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="button button-primary button-small"
+                >
+                  {submitting ? 'Saving...' : editingPlan ? 'Update Plan' : 'Create Plan'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN DASHBOARD ────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -1043,8 +1399,9 @@ export default function AdminDashboard() {
       ]
     },
     {
-      label: 'Website',
+      label: 'Website & Plans',
       items: [
+        { id: 'plans', label: 'Plans & Pricing', icon: Tag },
         { id: 'sections', label: 'Section Manager', icon: Layers },
         { id: 'homepage', label: 'Homepage CMS', icon: Globe },
         { id: 'navigation', label: 'Navigation', icon: Link },
@@ -1385,11 +1742,11 @@ export default function AdminDashboard() {
                 {/* Quick access */}
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                   {[
+                    { id: 'plans', label: 'Plans & Pricing', icon: Tag, desc: 'Manage membership plans, rates & units' },
                     { id: 'homepage', label: 'Edit Homepage Content', icon: Globe, desc: 'Hero, pricing, FAQ & all sections' },
                     { id: 'sections', label: 'Manage Sections', icon: Layers, desc: 'Reorder and show/hide sections' },
                     { id: 'media', label: 'Media Library', icon: Image, desc: 'Upload and manage images & videos' },
                     { id: 'global', label: 'Global Settings', icon: Settings, desc: 'Business info, social, contact' },
-                    { id: 'navigation', label: 'Navigation', icon: Link, desc: 'Header links & CTA button' },
                     { id: 'leads', label: 'View Leads', icon: Users, desc: 'Reservations and payment status' },
                   ].map(item => (
                     <button key={item.id} onClick={() => setActivePanel(item.id)} className="border border-[#242424] bg-[#0A0A0A] p-5 text-left hover:border-[#04B8BB] transition-colors group">
@@ -1407,6 +1764,11 @@ export default function AdminDashboard() {
                   </div>
                 )}
               </div>
+            )}
+
+            {/* ── PLANS & PRICING ───────────────────────────────────────────── */}
+            {activePanel === 'plans' && (
+              <PlansManager />
             )}
 
             {/* ── SECTION MANAGER ───────────────────────────────────────────── */}

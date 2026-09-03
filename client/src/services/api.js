@@ -258,4 +258,41 @@ export const api = {
     });
     return handleResponse(res);
   },
+
+  // ── Plans & Pricing ────────────────────────────────────────────────────────
+  async fetchPlans() {
+    const res = await fetch(`${API_BASE}/plans`, { method: 'GET', headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  async fetchAdminPlans() {
+    const res = await fetch(`${API_BASE}/admin/plans`, { method: 'GET', headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  async createPlan(planData) {
+    const res = await fetch(`${API_BASE}/admin/plans`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(planData),
+    });
+    return handleResponse(res);
+  },
+
+  async updatePlan(id, planData) {
+    const res = await fetch(`${API_BASE}/admin/plans/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(planData),
+    });
+    return handleResponse(res);
+  },
+
+  async deletePlan(id) {
+    const res = await fetch(`${API_BASE}/admin/plans/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
 };

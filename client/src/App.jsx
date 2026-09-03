@@ -1463,9 +1463,56 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', email_confirm: '' });
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [plan, setPlan] = useState('');
+  const [plans, setPlans] = useState([]);
+  const [plansLoading, setPlansLoading] = useState(true);
+  const [plansError, setPlansError] = useState('');
+  const [selectedPlanId, setSelectedPlanId] = useState('');
+  const [duration, setDuration] = useState(1);
   const [showMap, setShowMap] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    setPlansLoading(true);
+    api.fetchPlans()
+      .then((res) => {
+        if (active && res.success) {
+          const list = res.data || [];
+          setPlans(list);
+          if (list.length > 0) {
+            setSelectedPlanId(list[0]._id);
+            setPlan(list[0].name);
+          }
+        }
+      })
+      .catch((err) => {
+        if (active) {
+          setPlansError(err.message || 'Failed to load membership plans.');
+        }
+      })
+      .finally(() => {
+        if (active) setPlansLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
+
+  const selectedPlan = plans.find(p => p._id === selectedPlanId) || null;
+
+  const handlePlanSelect = (id) => {
+    setSelectedPlanId(id);
+    const p = plans.find(item => item._id === id);
+    if (p) {
+      setPlan(p.name);
+      setDuration(1);
+    }
+  };
+
+  const subtotalAmount = selectedPlan ? (selectedPlan.price * duration) : 0;
+  const depositPerSeat = bookingAmount || 1000;
+  const requiresSeat = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit) : false;
+  const depositAmount = (requiresSeat && selectedSeats.length > 0) ? (selectedSeats.length * depositPerSeat) : 0;
+  const calculatedTotal = subtotalAmount + depositAmount;
 
   const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
   const resData = cmsLoaded ? reservation : (cmsFailed ? defaultContent.reservation : null);
@@ -1557,15 +1604,16 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
       setError('Please complete Name, Phone, and Email fields.');
       return;
     }
-    if (!plan) {
-      setError('Please select a preferred plan (Hot Desk / Dedicated Desk).');
+    if (!selectedPlanId && !plan) {
+      setError('Please select a preferred membership plan.');
       return;
     }
     setError('');
     setLoading(true);
     api.submitReservation({
       name: form.name, phone: form.phone, email: form.email, company: form.company,
-      seatNumbers: selectedSeats, plan: plan, email_confirm: form.email_confirm || '', ...utmData
+      seatNumbers: selectedSeats, plan: selectedPlan?.name || plan, planId: selectedPlanId,
+      duration, email_confirm: form.email_confirm || '', ...utmData
     })
     .then((res) => {
       const { reservation: savedRes, razorpayOrder } = res;
@@ -1579,7 +1627,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         name: 'Deven Cowork',
-        description: `Seat Reservation${selectedSeats.length ? ` - Seats ${selectedSeats.join(', ')}` : ''}`,
+        description: `Booking: ${selectedPlan?.name || plan}${selectedSeats.length ? ` (${selectedSeats.join(', ')})` : ''}`,
         order_id: razorpayOrder.id,
         prefill: { name: form.name, contact: form.phone, email: form.email },
         theme: { color: '#04B8BB' },
@@ -1602,7 +1650,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
         modal: {
           ondismiss: async function () {
             await api.failReservation(savedRes._id);
-            setError('Payment cancelled. Your seat lock has been released.');
+            setError('Payment cancelled.');
             setLoading(false);
           },
         },
@@ -1617,7 +1665,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
     })
     .catch((err) => {
       setLoading(false);
-      setError(err.message || 'Failed to initialize seat reservation. Please try again.');
+      setError(err.message || 'Failed to initialize reservation order. Please try again.');
     });
   };
 
@@ -1704,6 +1752,53 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                   onChange={(e) => update('company', e.target.value)} disabled={loading} />
               </label>
 
+              {/* Dynamic CMS Plan Selector */}
+              <label className="field-label">
+                <span>Preferred Membership Plan *</span>
+                {plansLoading ? (
+                  <div className="p-3 text-xs text-[#0C0C0C]/60 bg-neutral-100 border border-neutral-200 animate-pulse">
+                    Loading plans from CMS...
+                  </div>
+                ) : plansError ? (
+                  <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200">
+                    {plansError}
+                  </div>
+                ) : (
+                  <select
+                    value={selectedPlanId}
+                    onChange={(e) => handlePlanSelect(e.target.value)}
+                    required
+                    disabled={loading}
+                  >
+                    <option value="">Select plan type...</option>
+                    {plans.map((p) => (
+                      <option key={p._id} value={p._id}>
+                        {p.name} — {p.pricingLabel || `₹${p.price.toLocaleString('en-IN')}/${p.billingPeriod === 'hour' ? 'hr' : p.billingPeriod === 'day' ? 'day' : 'mo'}`}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </label>
+
+              {/* Duration Selector for Hourly / Daily plans */}
+              {selectedPlan && (selectedPlan.billingPeriod === 'hour' || selectedPlan.billingPeriod === 'day') && (
+                <label className="field-label">
+                  <span>Duration ({selectedPlan.billingPeriod === 'hour' ? 'Hours' : 'Days'}) *</span>
+                  <select
+                    value={duration}
+                    onChange={(e) => setDuration(Number(e.target.value))}
+                    required
+                    disabled={loading}
+                  >
+                    {(selectedPlan.billingPeriod === 'hour' ? [1, 2, 3, 4, 5, 6, 8, 10, 12] : [1, 2, 3, 4, 5, 7, 10, 14, 30]).map((num) => (
+                      <option key={num} value={num}>
+                        {num} {selectedPlan.billingPeriod === 'hour' ? (num > 1 ? 'Hours' : 'Hour') : (num > 1 ? 'Days' : 'Day')}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
               {/* Seat map toggle */}
               <div className="pt-1">
                 <button
@@ -1711,7 +1806,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                   onClick={() => setShowMap(!showMap)}
                   className="w-full border border-[rgba(2,78,92,0.25)] hover:border-[#04B8BB]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#024E5C] hover:text-[#04B8BB]"
                 >
-                  <span>{showMap ? 'Hide Seating Floor Plan (Optional)' : 'Select Specific Seat on Floor Map (Optional)'}</span>
+                  <span>{showMap ? 'Hide Seating Floor Map (Optional)' : 'Select Specific Seat on Floor Map (Optional)'}</span>
                   <ChevronDown size={13} className={`transition-transform duration-300 ${showMap ? 'rotate-180' : ''}`} />
                 </button>
                 <AnimatePresence>
@@ -1727,7 +1822,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                         <SeatSelection
                           selectedSeats={selectedSeats}
                           onSeatsChange={setSelectedSeats}
-                          preferredPlan={plan}
+                          preferredPlan={selectedPlan?.name || plan}
                           onPlanChange={setPlan}
                           bookingAmount={bookingAmount}
                         />
@@ -1737,15 +1832,45 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 </AnimatePresence>
               </div>
 
-              {/* Plan selector */}
-              <label className="field-label">
-                <span>Preferred Membership Plan</span>
-                <select value={plan} onChange={(e) => setPlan(e.target.value)} required>
-                  <option value="">Select plan type...</option>
-                  <option value="Hot Desk">Hot Desk (₹5,999/mo founding rate)</option>
-                  <option value="Dedicated Desk">Dedicated Desk (₹8,999/mo founding rate)</option>
-                </select>
-              </label>
+              {/* Booking Summary Card */}
+              {selectedPlan && (
+                <div className="bg-[#024E5C]/5 border border-[#024E5C]/20 p-4 space-y-2 text-xs text-[#0C0C0C]">
+                  <div className="flex justify-between items-center font-bold text-[#024E5C] border-b border-[#024E5C]/15 pb-2">
+                    <span className="uppercase tracking-wider">Booking Summary</span>
+                    <span className="font-mono text-[#04B8BB] font-black">
+                      {selectedPlan.pricingLabel || `₹${selectedPlan.price.toLocaleString('en-IN')}/${selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[#0C0C0C]/80">
+                    <span>Plan:</span>
+                    <span className="font-semibold text-[#0C0C0C]">{selectedPlan.name}</span>
+                  </div>
+                  <div className="flex justify-between text-[#0C0C0C]/80">
+                    <span>Rate:</span>
+                    <span className="font-semibold text-[#0C0C0C]">
+                      ₹{selectedPlan.price.toLocaleString('en-IN')}/{selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}
+                    </span>
+                  </div>
+                  {selectedPlan.billingPeriod !== 'month' && (
+                    <div className="flex justify-between text-[#0C0C0C]/80">
+                      <span>Duration:</span>
+                      <span className="font-semibold text-[#0C0C0C]">
+                        {duration} {selectedPlan.billingPeriod === 'hour' ? (duration > 1 ? 'hours' : 'hour') : (duration > 1 ? 'days' : 'day')}
+                      </span>
+                    </div>
+                  )}
+                  {depositAmount > 0 && (
+                    <div className="flex justify-between text-[#024E5C] font-semibold">
+                      <span>Refundable Seat Deposit ({selectedSeats.length} seat{selectedSeats.length > 1 ? 's' : ''}):</span>
+                      <span>₹{depositAmount.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center text-sm font-black border-t border-[#024E5C]/15 pt-2 text-[#024E5C]">
+                    <span>Total Amount:</span>
+                    <span className="font-mono text-[#04B8BB] text-base">₹{calculatedTotal.toLocaleString('en-IN')}</span>
+                  </div>
+                </div>
+              )}
 
               {error && (
                 <p className="text-[11px] text-red-600 bg-red-50 p-3.5 border border-red-200">
@@ -1764,12 +1889,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     className="button button-primary w-full justify-between py-4 text-[10.5px] font-bold uppercase tracking-[0.15em]"
                   >
                     <span>{resData.reserveButtonText || 'RESERVE MY SEAT'}</span>
-                    <span className="text-[10px] font-mono opacity-80">
-                      {bookingAmount === null ? (
-                        <span className="animate-pulse">Loading...</span>
-                      ) : (
-                        `Deposit ₹${selectedSeats.length > 0 ? (selectedSeats.length * bookingAmount).toLocaleString('en-IN') : bookingAmount.toLocaleString('en-IN')}`
-                      )}
+                    <span className="text-[10px] font-mono opacity-90">
+                      Total ₹{calculatedTotal.toLocaleString('en-IN')}
                     </span>
                   </button>
                   <p className="text-[9px] text-[#0C0C0C]/60 uppercase tracking-[0.14em] text-center font-bold">

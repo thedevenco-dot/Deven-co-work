@@ -9,11 +9,22 @@ import {
   updateAmountSettings,
   sendTestEmail,
 } from '../controllers/adminController.js';
+import {
+  getAllPlansAdmin,
+  createPlan,
+  updatePlan,
+  deletePlan,
+} from '../controllers/planController.js';
 
 const router = express.Router();
 
 // Apply protect middleware to all admin routes
 router.use(protect);
+
+router.get('/plans', authorize('SUPER_ADMIN', 'ADMIN'), getAllPlansAdmin);
+router.post('/plans', authorize('SUPER_ADMIN', 'ADMIN'), createPlan);
+router.put('/plans/:id', authorize('SUPER_ADMIN', 'ADMIN'), updatePlan);
+router.delete('/plans/:id', authorize('SUPER_ADMIN', 'ADMIN'), deletePlan);
 
 router.get('/capacity', authorize('SUPER_ADMIN', 'ADMIN'), getCapacityStats);
 router.patch('/capacity', authorize('SUPER_ADMIN'), updateCapacitySettings);

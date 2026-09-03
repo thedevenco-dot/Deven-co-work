@@ -159,14 +159,32 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                           </tr>
                           <tr>
                             <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Plan:</td>
-                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${booking.plan || 'Founding Member Plan'}</td>
+                            <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; text-align: right; padding-bottom: 6px;">${booking.planName || booking.plan || 'Founding Member Plan'}</td>
                           </tr>
+                          ${booking.planPrice ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Rate:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">₹${booking.planPrice.toLocaleString('en-IN')}/${booking.billingPeriod === 'hour' ? 'hr' : booking.billingPeriod === 'day' ? 'day' : 'mo'}</td>
+                          </tr>
+                          ` : ''}
+                          ${booking.duration ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Duration:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${booking.duration} ${booking.billingPeriod === 'hour' ? (booking.duration > 1 ? 'hours' : 'hour') : booking.billingPeriod === 'day' ? (booking.duration > 1 ? 'days' : 'day') : (booking.duration > 1 ? 'months' : 'month')}</td>
+                          </tr>
+                          ` : ''}
+                          ${booking.deposit > 0 ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Refundable Deposit:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">₹${booking.deposit.toLocaleString('en-IN')}</td>
+                          </tr>
+                          ` : ''}
                           <tr>
                             <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Joining Date:</td>
                             <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${booking.joiningDate || '15 September 2026'}</td>
                           </tr>
                           <tr>
-                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Amount Paid:</td>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Total Paid:</td>
                             <td style="font-size: 14px; color: #04B8BB; font-weight: 700; text-align: right; padding-bottom: 6px;">${formattedAmount}</td>
                           </tr>
                           ${booking.razorpayPaymentId ? `

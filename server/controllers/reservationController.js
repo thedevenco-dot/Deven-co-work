@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import Reservation from '../models/Reservation.js';
 import Seat from '../models/Seat.js';
 import Content from '../models/Content.js';
+import Plan from '../models/Plan.js';
 import { broadcast } from '../socket.js';
 import { sendBookingConfirmationEmail, sendTrialConfirmationEmail } from '../services/emailService.js';
 
@@ -63,7 +64,7 @@ export async function getSeats(req, res) {
  * @access  Public
  */
 export async function createReservation(req, res) {
-  const { name, phone, email, company, seatNumbers, plan, utmSource, utmMedium, utmCampaign, email_confirm } = req.body;
+  const { name, phone, email, company, seatNumbers, plan, planId, duration, utmSource, utmMedium, utmCampaign, email_confirm } = req.body;
 
   if (email_confirm) {
     console.warn('[Honeypot Triggered] Blocked spam bot submission.');
@@ -74,7 +75,7 @@ export async function createReservation(req, res) {
     return;
   }
 
-  if (!name || !phone || !email || !plan) {
+  if (!name || !phone || !email || (!plan && !planId)) {
     res.status(400).json({
       success: false,
       message: 'Please provide name, phone, email, and plan',
@@ -165,14 +166,42 @@ export async function createReservation(req, res) {
       }
     }
 
-    // Fetch dynamic joining date from Content settings or default
+    // Fetchdynamic joining date from Content settings or default
     const content = await Content.findOne({ key: 'draft' });
     const jDate = content?.reservation?.joiningDate || '15 September 2026';
 
-    const seatDepositAmount = workspaceConfig.refundableSeatDeposit || 1000;
-    const amount = (Array.isArray(seatNumbers) && seatNumbers.length > 0) ? seatNumbers.length * seatDepositAmount : 0;
+    // Fetch Plan from MongoDB as single source of truth
+    let targetPlan = null;
+    if (planId && mongoose.Types.ObjectId.isValid(planId)) {
+      targetPlan = await Plan.findById(planId);
+    }
+    if (!targetPlan && plan) {
+      targetPlan = await Plan.findOne({
+        $or: [
+          { slug: plan.toLowerCase().trim() },
+          { name: plan.trim() }
+        ]
+      });
+    }
 
-    // Create Pending Reservation in DB
+    if (!targetPlan || targetPlan.isActive === false) {
+      return res.status(400).json({
+        success: false,
+        message: 'The selected membership plan is invalid or currently inactive.',
+      });
+    }
+
+    const durationVal = Math.max(1, parseInt(duration) || 1);
+    const subtotal = targetPlan.price * durationVal;
+
+    const seatDepositAmount = workspaceConfig.refundableSeatDeposit || 1000;
+    let deposit = 0;
+    if ((targetPlan.requiresSeatSelection || targetPlan.usesDeposit) && Array.isArray(seatNumbers) && seatNumbers.length > 0) {
+      deposit = seatNumbers.length * seatDepositAmount;
+    }
+    const amount = subtotal + deposit;
+
+    // Create Pending Reservation in DB with Plan Snapshot
     const reservation = new Reservation({
       _id: reservationId,
       name: name.trim(),
@@ -182,7 +211,15 @@ export async function createReservation(req, res) {
       joiningDate: jDate,
       seatNumbers,
       requestType: 'seat_reservation',
-      plan,
+      plan: targetPlan.name,
+      planId: targetPlan._id,
+      planName: targetPlan.name,
+      planPrice: targetPlan.price,
+      billingPeriod: targetPlan.billingPeriod,
+      duration: durationVal,
+      subtotal,
+      deposit,
+      totalAmount: amount,
       amount,
       seatDepositAmount,
       paymentStatus: amount > 0 ? 'PENDING' : 'N/A',
