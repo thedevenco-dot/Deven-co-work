@@ -637,6 +637,13 @@ function PlansManager() {
       return toast({ title: 'Validation Error', description: 'Billing period is required', variant: 'destructive' });
     }
 
+    if (formData.paymentMode === 'RESERVATION') {
+      const numRes = Number(formData.reservationAmount);
+      if (formData.reservationAmount !== '' && (isNaN(numRes) || numRes <= 0)) {
+        return toast({ title: 'Validation Error', description: 'Reservation amount must be a positive number greater than 0', variant: 'destructive' });
+      }
+    }
+
     setSubmitting(true);
     try {
       if (editingPlan) {
@@ -859,29 +866,52 @@ function PlansManager() {
               </div>
 
               {/* Payment Mode & Reservation Amount */}
-              <div className="grid gap-3 sm:grid-cols-2 border-t border-b border-[#242424] py-3 my-2">
-                <Field label="Payment Mode" required>
-                  <select
-                    value={formData.paymentMode}
-                    onChange={(e) => setFormData({ ...formData, paymentMode: e.target.value })}
-                    className="w-full border border-[#242424] bg-[#0A0A0A] text-white p-2.5 text-xs focus:border-[#04B8BB]"
-                  >
-                    <option value="FULL_PAYMENT">Full Payment (User pays complete rate)</option>
-                    <option value="RESERVATION">Reservation (User pays fixed reservation fee)</option>
-                  </select>
-                </Field>
-                {formData.paymentMode === 'RESERVATION' ? (
-                  <Field label="Reservation Amount (INR)" required>
-                    <TextInput
-                      type="number"
-                      value={formData.reservationAmount}
-                      onChange={(e) => setFormData({ ...formData, reservationAmount: e.target.value })}
-                      placeholder="999"
+              <div className="space-y-3 border-t border-b border-[#242424] py-3 my-2">
+                <label className="block text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">
+                  Payment Mode *
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className={`cursor-pointer border p-3 flex items-start gap-2.5 transition-colors ${formData.paymentMode === 'FULL_PAYMENT' ? 'border-[#04B8BB] bg-[#04B8BB]/10 text-white' : 'border-[#242424] bg-[#0A0A0A] text-[#A3A3A3] hover:border-[#444]'}`}>
+                    <input
+                      type="radio"
+                      name="paymentMode"
+                      value="FULL_PAYMENT"
+                      checked={formData.paymentMode === 'FULL_PAYMENT'}
+                      onChange={() => setFormData({ ...formData, paymentMode: 'FULL_PAYMENT' })}
+                      className="mt-0.5 accent-[#04B8BB]"
                     />
-                  </Field>
-                ) : (
-                  <div className="flex items-center text-[10px] text-[#A3A3A3] pt-4">
-                    Full rate will be charged at checkout based on duration.
+                    <div>
+                      <div className="font-bold text-xs text-white">Full Payment</div>
+                      <div className="text-[10px] text-[#A3A3A3] mt-0.5">User pays complete rate (Price × Duration).</div>
+                    </div>
+                  </label>
+
+                  <label className={`cursor-pointer border p-3 flex items-start gap-2.5 transition-colors ${formData.paymentMode === 'RESERVATION' ? 'border-[#04B8BB] bg-[#04B8BB]/10 text-white' : 'border-[#242424] bg-[#0A0A0A] text-[#A3A3A3] hover:border-[#444]'}`}>
+                    <input
+                      type="radio"
+                      name="paymentMode"
+                      value="RESERVATION"
+                      checked={formData.paymentMode === 'RESERVATION'}
+                      onChange={() => setFormData({ ...formData, paymentMode: 'RESERVATION', reservationAmount: formData.reservationAmount || 999 })}
+                      className="mt-0.5 accent-[#04B8BB]"
+                    />
+                    <div>
+                      <div className="font-bold text-xs text-white">Reservation</div>
+                      <div className="text-[10px] text-[#A3A3A3] mt-0.5">User pays fixed reservation fee today.</div>
+                    </div>
+                  </label>
+                </div>
+
+                {formData.paymentMode === 'RESERVATION' && (
+                  <div className="pt-2">
+                    <Field label="Reservation Amount (INR)" required>
+                      <TextInput
+                        type="number"
+                        value={formData.reservationAmount}
+                        onChange={(e) => setFormData({ ...formData, reservationAmount: e.target.value })}
+                        placeholder="999"
+                      />
+                    </Field>
                   </div>
                 )}
               </div>
