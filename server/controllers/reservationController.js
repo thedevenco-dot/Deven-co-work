@@ -192,24 +192,52 @@ export async function createReservation(req, res) {
     }
 
     const durationVal = Math.max(1, parseInt(duration) || 1);
-    const paymentMode = targetPlan.paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT';
+    
+    const uniqueSeats = Array.isArray(seatNumbers)
+      ? [...new Set(seatNumbers.filter(Boolean))]
+      : [];
+    const uniqueSeatCount = uniqueSeats.length;
 
-    let subtotal = 0;
+    const seatDepositRate = (workspaceConfig && workspaceConfig.refundableSeatDeposit >= 1000)
+      ? workspaceConfig.refundableSeatDeposit
+      : 1000;
+
+    let paymentMode = targetPlan.paymentMode;
+    if (!paymentMode || (paymentMode !== 'RESERVATION' && ['founders-seats', 'team-seats', 'hot-desk', 'dedicated-desk'].includes(targetPlan.slug))) {
+      paymentMode = 'RESERVATION';
+    } else if (paymentMode !== 'RESERVATION') {
+      paymentMode = 'FULL_PAYMENT';
+    }
+
+    let baseAmount = 0;
     let reservationAmount = 0;
 
     if (paymentMode === 'RESERVATION') {
       reservationAmount = (targetPlan.reservationAmount && targetPlan.reservationAmount > 0) ? targetPlan.reservationAmount : 999;
-      subtotal = reservationAmount; // Single reservation payment, not multiplied by duration
+      baseAmount = reservationAmount; // Single reservation payment, not multiplied by duration
     } else {
-      subtotal = targetPlan.price * durationVal; // Full payment rate * duration
+      baseAmount = targetPlan.price * durationVal; // Full payment rate * duration
     }
 
-    const seatDepositAmount = workspaceConfig.refundableSeatDeposit || 1000;
     let deposit = 0;
-    if ((targetPlan.requiresSeatSelection || targetPlan.usesDeposit) && Array.isArray(seatNumbers) && seatNumbers.length > 0) {
-      deposit = seatNumbers.length * seatDepositAmount;
+    if ((targetPlan.requiresSeatSelection || targetPlan.usesDeposit) && uniqueSeatCount > 0) {
+      deposit = uniqueSeatCount * seatDepositRate;
     }
-    const amount = subtotal + deposit;
+    const totalAmount = baseAmount + deposit;
+    const razorpayAmount = totalAmount * 100;
+
+    console.log('--- RESERVATION ORDER CALCULATION LOG ---');
+    console.log('PLAN:', targetPlan.name);
+    console.log('PLAN PRICE:', targetPlan.price);
+    console.log('PAYMENT MODE:', paymentMode);
+    console.log('RESERVATION:', reservationAmount);
+    console.log('SELECTED SEATS:', uniqueSeats.join(','));
+    console.log('UNIQUE SEAT COUNT:', uniqueSeatCount);
+    console.log('SEAT DEPOSIT:', deposit);
+    console.log('BASE AMOUNT:', baseAmount);
+    console.log('FINAL AMOUNT:', totalAmount);
+    console.log('RAZORPAY AMOUNT:', razorpayAmount);
+    console.log('-----------------------------------------');
 
     // Create Pending Reservation in DB with Plan Snapshot
     const reservation = new Reservation({
@@ -219,7 +247,7 @@ export async function createReservation(req, res) {
       email: email.trim(),
       company: (company || '').trim(),
       joiningDate: jDate,
-      seatNumbers,
+      seatNumbers: uniqueSeats,
       requestType: 'seat_reservation',
       plan: targetPlan.name,
       planId: targetPlan._id,
@@ -228,15 +256,15 @@ export async function createReservation(req, res) {
       billingPeriod: targetPlan.billingPeriod,
       paymentMode,
       reservationAmount,
-      amountPaid: amount,
+      amountPaid: totalAmount,
       duration: durationVal,
-      subtotal,
+      subtotal: baseAmount,
       deposit,
-      totalAmount: amount,
-      amount,
-      seatDepositAmount,
-      paymentStatus: amount > 0 ? 'PENDING' : 'N/A',
-      leadStatus: amount > 0 ? 'PAYMENT_PENDING' : 'CONFIRMED',
+      totalAmount,
+      amount: totalAmount,
+      seatDepositAmount: seatDepositRate,
+      paymentStatus: totalAmount > 0 ? 'PENDING' : 'N/A',
+      leadStatus: totalAmount > 0 ? 'PAYMENT_PENDING' : 'CONFIRMED',
       utmSource: utmSource || '',
       utmMedium: utmMedium || '',
       utmCampaign: utmCampaign || '',
@@ -249,51 +277,50 @@ export async function createReservation(req, res) {
     let razorpayOrder = null;
 
     // Only create Razorpay order for non-zero amounts
-    if (amount > 0) {
+    if (totalAmount > 0) {
       if (rpKeyId && rpKeySecret) {
-      const auth = Buffer.from(`${rpKeyId}:${rpKeySecret}`).toString('base64');
-      const rpResponse = await fetch('https://api.razorpay.com/v1/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${auth}`,
-        },
-        body: JSON.stringify({
-          amount: amount * 100,
+        const auth = Buffer.from(`${rpKeyId}:${rpKeySecret}`).toString('base64');
+        const rpResponse = await fetch('https://api.razorpay.com/v1/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${auth}`,
+          },
+          body: JSON.stringify({
+            amount: razorpayAmount,
+            currency: 'INR',
+            receipt: `receipt_order_${reservation._id}`,
+          }),
+        });
+
+        if (!rpResponse.ok) {
+          const errText = await rpResponse.text();
+          throw new Error(`Razorpay Order creation failed: ${errText}`);
+        }
+
+        razorpayOrder = await rpResponse.json();
+        razorpayOrder.key_id = rpKeyId;
+        reservation.razorpayOrderId = razorpayOrder.id;
+      } else {
+        // Mock Razorpay Order for development/testing
+        console.log('--- RAZORPAY KEYS MISSING: USING MOCK ORDER ---');
+        razorpayOrder = {
+          id: `order_mock_${crypto.randomBytes(6).toString('hex')}`,
+          key_id: 'rzp_test_mockkey',
+          entity: 'order',
+          amount: razorpayAmount,
+          amount_paid: 0,
+          amount_due: razorpayAmount,
           currency: 'INR',
           receipt: `receipt_order_${reservation._id}`,
-        }),
-      });
-
-      if (!rpResponse.ok) {
-        const errText = await rpResponse.text();
-        throw new Error(`Razorpay Order creation failed: ${errText}`);
+          status: 'created',
+          created_at: Math.floor(Date.now() / 1000),
+        };
+        reservation.razorpayOrderId = razorpayOrder.id;
       }
-
-      razorpayOrder = await rpResponse.json();
-      razorpayOrder.key_id = rpKeyId;
-      reservation.razorpayOrderId = razorpayOrder.id;
-    } else {
-      // Mock Razorpay Order for development/testing
-      console.log('--- RAZORPAY KEYS MISSING: USING MOCK ORDER ---');
-      razorpayOrder = {
-        id: `order_mock_${crypto.randomBytes(6).toString('hex')}`,
-        key_id: 'rzp_test_mockkey',
-        entity: 'order',
-        amount: amount * 100,
-        amount_paid: 0,
-        amount_due: amount * 100,
-        currency: 'INR',
-        receipt: `receipt_order_${reservation._id}`,
-        status: 'created',
-        created_at: Math.floor(Date.now() / 1000),
-      };
-      reservation.razorpayOrderId = razorpayOrder.id;
-    }
-
     }
     // If amount is zero, skip Razorpay creation entirely and mark reservation confirmed
-    if (amount === 0) {
+    if (totalAmount === 0) {
       reservation.paymentStatus = 'N/A';
       reservation.leadStatus = 'CONFIRMED';
     }

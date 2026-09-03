@@ -447,12 +447,12 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
               <p className="text-[#0C0C0C]/85 font-medium">
                 Selected Seats:{' '}
                 <strong className="text-[#04B8BB]">
-                  {selectedSeats.length === 0 ? 'None' : selectedSeats.join(', ')}
+                  {[...new Set(selectedSeats)].length === 0 ? 'None' : [...new Set(selectedSeats)].join(', ')}
                 </strong>
               </p>
               <p className="text-[10px] text-[#0C0C0C]/75 mt-0.5 font-medium">
                 Refundable Deposit:{' '}
-                <strong className="text-[#0C0C0C]">₹{(selectedSeats.length * (bookingAmount || 1000)).toLocaleString('en-IN')}</strong>
+                <strong className="text-[#0C0C0C]">₹{([...new Set(selectedSeats)].length * (bookingAmount && bookingAmount >= 1000 ? bookingAmount : 1000)).toLocaleString('en-IN')}</strong>
               </p>
             </div>
 

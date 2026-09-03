@@ -168,10 +168,14 @@ async function seedPlansIfEmpty() {
   } else {
     // Ensure existing seeded plans have proper paymentMode and reservationAmount
     for (const initPlan of INITIAL_PLANS) {
-      await Plan.updateOne(
-        { slug: initPlan.slug, paymentMode: { $exists: false } },
-        { $set: { paymentMode: initPlan.paymentMode, reservationAmount: initPlan.reservationAmount } }
-      );
+      const doc = await Plan.findOne({ slug: initPlan.slug });
+      if (doc) {
+        if (!doc.paymentMode || (initPlan.paymentMode === 'RESERVATION' && doc.paymentMode !== 'RESERVATION' && (!doc.reservationAmount || doc.reservationAmount === 0))) {
+          doc.paymentMode = initPlan.paymentMode;
+          doc.reservationAmount = initPlan.reservationAmount;
+          await doc.save();
+        }
+      }
     }
   }
 }

@@ -1508,13 +1508,14 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
     }
   };
 
+  const uniqueSelectedSeats = [...new Set(selectedSeats)];
   const isReservationMode = selectedPlan?.paymentMode === 'RESERVATION';
   const subtotalAmount = isReservationMode
     ? (selectedPlan.reservationAmount && selectedPlan.reservationAmount > 0 ? selectedPlan.reservationAmount : 999)
     : (selectedPlan ? selectedPlan.price * duration : 0);
-  const depositPerSeat = bookingAmount || 1000;
+  const depositPerSeat = (bookingAmount && bookingAmount >= 1000) ? bookingAmount : 1000;
   const requiresSeat = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit) : false;
-  const depositAmount = (requiresSeat && selectedSeats.length > 0) ? (selectedSeats.length * depositPerSeat) : 0;
+  const depositAmount = (requiresSeat && uniqueSelectedSeats.length > 0) ? (uniqueSelectedSeats.length * depositPerSeat) : 0;
   const calculatedTotal = subtotalAmount + depositAmount;
 
   const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
@@ -1873,7 +1874,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
                   {depositAmount > 0 && (
                     <div className="flex justify-between text-[#024E5C] font-semibold">
-                      <span>Refundable Seat Deposit ({selectedSeats.length} seat{selectedSeats.length > 1 ? 's' : ''}):</span>
+                      <span>Refundable Seat Deposit ({uniqueSelectedSeats.length} seat{uniqueSelectedSeats.length > 1 ? 's' : ''}):</span>
                       <span>₹{depositAmount.toLocaleString('en-IN')}</span>
                     </div>
                   )}
