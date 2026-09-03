@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { api } from '@/services/api';
+import { useBranding } from '@/hooks/useBranding';
 
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
+  const { logoUrl } = useBranding();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,11 +37,18 @@ export default function AdminLogin() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <div className="logo text-[#F1F1F1]">
-            <span className="logo-mark" aria-hidden="true"><span /><span /></span>
-            <span className="font-display text-[21px] tracking-[.02em]">DEVEN</span>
-            <span className="mt-[3px] text-[9px] font-bold tracking-[.18em] text-[#A3A3A3]">COWORK</span>
+            {logoUrl ? (
+              <img src={logoUrl} alt="Deven Co-Work" className="h-10 object-contain mx-auto" />
+            ) : (
+              <>
+                <span className="logo-mark" aria-hidden="true"><span /><span /></span>
+                <span className="font-display text-[21px] tracking-[.02em]">DEVEN</span>
+                <span className="mt-[3px] text-[9px] font-bold tracking-[.18em] text-[#A3A3A3]">COWORK</span>
+              </>
+            )}
           </div>
         </div>
+
         <h2 className="mt-6 text-center font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1]">
           ADMIN PORTAL
         </h2>

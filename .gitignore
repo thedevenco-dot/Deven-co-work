@@ -58,3 +58,7 @@ Thumbs.db
 
 # Local uploads
 server/uploads/
+
+# Scratch files
+scratch/
+

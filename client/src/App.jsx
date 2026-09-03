@@ -16,6 +16,9 @@ import AdminDashboard from '@/pages/admin-dashboard';
 import ThankYou from '@/pages/thank-you';
 import SeatSelection from '@/components/seat-selection';
 import { api } from '@/services/api';
+import { getMediaUrl, updateFavicon } from '@/lib/utils';
+export { getMediaUrl, updateFavicon };
+
 
 const queryClient = new QueryClient();
 
@@ -287,12 +290,6 @@ function mergeContent(defaults, fetched) {
   return merged;
 }
 
-export function getMediaUrl(val) {
-  if (!val) return '';
-  if (typeof val === 'string') return val;
-  if (typeof val === 'object' && val !== null) return val.url || '';
-  return '';
-}
 
 // ─── ANIMATION VARIANTS ───────────────────────────────────────────────────────
 const fadeUp = {
@@ -1977,13 +1974,7 @@ function Home() {
 
       const faviconUrl = getMediaUrl(settings?.favicon);
       if (faviconUrl) {
-        let linkFavicon = document.querySelector('link[rel="icon"]') || document.querySelector('link[rel="shortcut icon"]');
-        if (!linkFavicon) {
-          linkFavicon = document.createElement('link');
-          linkFavicon.setAttribute('rel', 'icon');
-          document.head.appendChild(linkFavicon);
-        }
-        linkFavicon.setAttribute('href', faviconUrl);
+        updateFavicon(faviconUrl);
       }
 
       const ogImgUrl = getMediaUrl(seo?.ogImage || settings?.ogImage);

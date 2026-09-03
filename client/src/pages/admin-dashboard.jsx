@@ -10,7 +10,9 @@ import {
 } from 'lucide-react';
 import { api } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import { useBranding } from '@/hooks/useBranding';
 import CmsEditor, { MediaField } from '@/components/cms-editor';
+
 
 // ─── HELPER COMPONENTS ────────────────────────────────────────────────────────
 
@@ -604,7 +606,9 @@ export default function AdminDashboard() {
 
   // CMS State
   const [cmsDraft, setCmsDraft] = useState(null);
+  const { logoUrl } = useBranding(cmsDraft?.globalSettings);
   const [cmsSaving, setCmsSaving] = useState(false);
+
   const [cmsPublishing, setCmsPublishing] = useState(false);
   const [cmsLoading, setCmsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -1085,10 +1089,17 @@ export default function AdminDashboard() {
               <PanelLeft size={18} />
             </button>
             <div className="logo text-[#F1F1F1]">
-              <span className="logo-mark" aria-hidden="true"><span /><span /></span>
-              <span className="font-display text-[18px] tracking-[.02em]">DEVEN</span>
-              <span className="mt-[3px] text-[9px] font-bold tracking-[.18em] text-[#A3A3A3]">ADMIN</span>
+              {logoUrl ? (
+                <img src={logoUrl} alt="Deven Co-Work" className="h-7 object-contain" />
+              ) : (
+                <>
+                  <span className="logo-mark" aria-hidden="true"><span /><span /></span>
+                  <span className="font-display text-[18px] tracking-[.02em]">DEVEN</span>
+                  <span className="mt-[3px] text-[9px] font-bold tracking-[.18em] text-[#A3A3A3]">ADMIN</span>
+                </>
+              )}
             </div>
+
           </div>
 
           {/* CMS Toolbar */}
