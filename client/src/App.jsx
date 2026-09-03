@@ -1511,6 +1511,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
   const uniqueSelectedSeats = [...new Set(selectedSeats)];
   const seatCount = uniqueSelectedSeats.length;
+  const effectiveSeatCount = seatCount;
   const isReservationMode = selectedPlan?.paymentMode === 'RESERVATION';
   const requiresSeats = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit || isReservationMode) : false;
 

@@ -195,7 +195,8 @@ export async function createReservation(req, res) {
     const uniqueSeats = Array.isArray(seatNumbers)
       ? [...new Set(seatNumbers.filter(Boolean))]
       : [];
-    const seatCount = uniqueSeats.length;
+    const effectiveSeatCount = uniqueSeats.length;
+    const seatCount = effectiveSeatCount;
 
     let paymentMode = targetPlan.paymentMode;
     if (!paymentMode || (paymentMode !== 'RESERVATION' && ['founders-seats', 'team-seats', 'hot-desk', 'dedicated-desk'].includes(targetPlan.slug))) {
