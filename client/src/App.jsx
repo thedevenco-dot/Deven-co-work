@@ -46,10 +46,10 @@ const defaultContent = {
     keywords: 'coworking raipur, coworking space raipur, founder workspace raipur, deven cowork',
     ogTitle: 'Deven Co-Work | Premium Coworking Space in Raipur',
     ogDescription: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
-    ogImage: 'https://www.devencowork.com/assets/hero-fallback.png',
+    ogImage: 'https://www.devencowork.com/assets/og-preview.png',
     twitterTitle: 'Deven Co-Work | Premium Coworking Space in Raipur',
     twitterDescription: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
-    twitterImage: 'https://www.devencowork.com/assets/hero-fallback.png',
+    twitterImage: 'https://www.devencowork.com/assets/og-preview.png',
   },
   navigation: {
     items: [
