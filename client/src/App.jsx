@@ -1509,14 +1509,24 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   };
 
   const uniqueSelectedSeats = [...new Set(selectedSeats)];
+  const seatCountForPlan = Math.max(1, uniqueSelectedSeats.length);
   const isReservationMode = selectedPlan?.paymentMode === 'RESERVATION';
-  const subtotalAmount = isReservationMode
+
+  const reservationAmountPerSeat = isReservationMode
     ? (selectedPlan.reservationAmount && selectedPlan.reservationAmount > 0 ? selectedPlan.reservationAmount : 999)
+    : 0;
+
+  const amountPayableToday = isReservationMode
+    ? (reservationAmountPerSeat * seatCountForPlan)
     : (selectedPlan ? selectedPlan.price * duration : 0);
-  const depositPerSeat = (bookingAmount && bookingAmount >= 1000) ? bookingAmount : 1000;
-  const requiresSeat = selectedPlan ? (selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit) : false;
-  const depositAmount = (requiresSeat && uniqueSelectedSeats.length > 0) ? (uniqueSelectedSeats.length * depositPerSeat) : 0;
-  const calculatedTotal = subtotalAmount + depositAmount;
+
+  const totalMembershipValue = isReservationMode
+    ? ((selectedPlan?.price || 0) * seatCountForPlan)
+    : (selectedPlan ? selectedPlan.price * duration : 0);
+
+  const remainingAmountAtJoining = isReservationMode
+    ? Math.max(0, totalMembershipValue - amountPayableToday)
+    : 0;
 
   const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
   const resData = cmsLoaded ? reservation : (cmsFailed ? defaultContent.reservation : null);
@@ -1849,18 +1859,48 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     <span>Plan:</span>
                     <span className="font-semibold text-[#0C0C0C]">{selectedPlan.name}</span>
                   </div>
+              {selectedPlan && (
+                <div className="bg-[#024E5C]/5 border border-[#024E5C]/15 p-3.5 space-y-2 text-xs">
+                  <div className="font-bold text-[#024E5C] border-b border-[#024E5C]/15 pb-1.5 uppercase text-[10px] tracking-wider flex justify-between items-center">
+                    <span>Booking Summary</span>
+                    <span className="text-[9px] text-[#04B8BB] font-mono">{isReservationMode ? 'Reservation' : 'Full Payment'}</span>
+                  </div>
+                  
                   <div className="flex justify-between text-[#0C0C0C]/80">
-                    <span>{isReservationMode ? 'Membership Price:' : 'Plan Rate:'}</span>
+                    <span>Plan:</span>
+                    <span className="font-semibold text-[#0C0C0C]">{selectedPlan.name}</span>
+                  </div>
+
+                  <div className="flex justify-between text-[#0C0C0C]/80">
+                    <span>{isReservationMode ? 'Price:' : 'Plan Rate:'}</span>
                     <span className="font-semibold text-[#0C0C0C]">
-                      ₹{selectedPlan.price.toLocaleString('en-IN')}/{selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}
+                      ₹{selectedPlan.price.toLocaleString('en-IN')} {isReservationMode ? '/ seat / month' : `/${selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}`}
                     </span>
                   </div>
 
                   {isReservationMode ? (
-                    <div className="flex justify-between text-[#04B8BB] font-bold">
-                      <span>Reservation Amount Payable Today:</span>
-                      <span>₹{(selectedPlan.reservationAmount && selectedPlan.reservationAmount > 0 ? selectedPlan.reservationAmount : 999).toLocaleString('en-IN')}</span>
-                    </div>
+                    <>
+                      <div className="flex justify-between text-[#0C0C0C]/80">
+                        <span>Selected Seats:</span>
+                        <span className="font-semibold text-[#0C0C0C]">{seatCountForPlan} {uniqueSelectedSeats.length > 0 ? `(${uniqueSelectedSeats.join(', ')})` : ''}</span>
+                      </div>
+                      <div className="flex justify-between text-[#0C0C0C]/80">
+                        <span>Total Membership Value:</span>
+                        <span className="font-semibold text-[#0C0C0C]">₹{totalMembershipValue.toLocaleString('en-IN')} / month</span>
+                      </div>
+                      <div className="flex justify-between text-[#0C0C0C]/80">
+                        <span>Reservation Amount:</span>
+                        <span className="font-semibold text-[#0C0C0C]">₹{reservationAmountPerSeat.toLocaleString('en-IN')} / seat</span>
+                      </div>
+                      <div className="flex justify-between text-[#04B8BB] font-bold border-t border-[#024E5C]/10 pt-1.5">
+                        <span>Amount Payable Today:</span>
+                        <span>₹{amountPayableToday.toLocaleString('en-IN')}</span>
+                      </div>
+                      <div className="flex justify-between text-[#0C0C0C]/80 font-medium">
+                        <span>Remaining Amount at Joining:</span>
+                        <span>₹{remainingAmountAtJoining.toLocaleString('en-IN')}</span>
+                      </div>
+                    </>
                   ) : (
                     (selectedPlan.billingPeriod === 'hour' || selectedPlan.billingPeriod === 'day') && (
                       <div className="flex justify-between text-[#0C0C0C]/80">
@@ -1872,16 +1912,9 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     )
                   )}
 
-                  {depositAmount > 0 && (
-                    <div className="flex justify-between text-[#024E5C] font-semibold">
-                      <span>Refundable Seat Deposit ({uniqueSelectedSeats.length} seat{uniqueSelectedSeats.length > 1 ? 's' : ''}):</span>
-                      <span>₹{depositAmount.toLocaleString('en-IN')}</span>
-                    </div>
-                  )}
-
                   <div className="flex justify-between items-center text-sm font-black border-t border-[#024E5C]/15 pt-2 text-[#024E5C]">
                     <span>Total Amount Payable Today:</span>
-                    <span className="font-mono text-[#04B8BB] text-base">₹{calculatedTotal.toLocaleString('en-IN')}</span>
+                    <span className="font-mono text-[#04B8BB] text-base">₹{amountPayableToday.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               )}
@@ -1902,13 +1935,13 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                     onClick={handlePaidReservation}
                     className="button button-primary w-full justify-between py-4 text-[10.5px] font-bold uppercase tracking-[0.15em]"
                   >
-                    <span>{resData.reserveButtonText || 'RESERVE MY SEAT'}</span>
+                    <span>{seatCountForPlan > 1 ? 'RESERVE MY SEATS' : (resData.reserveButtonText || 'RESERVE MY SEAT')}</span>
                     <span className="text-[10px] font-mono opacity-90">
-                      Total ₹{calculatedTotal.toLocaleString('en-IN')}
+                      Total ₹{amountPayableToday.toLocaleString('en-IN')}
                     </span>
                   </button>
                   <p className="text-[9px] text-[#0C0C0C]/60 uppercase tracking-[0.14em] text-center font-bold">
-                    {resData.depositNote || 'Refundable Deposit · UPI-first Checkout'}
+                    UPI-first Checkout · Balance Payable at Joining
                   </p>
                 </div>
 

@@ -196,11 +196,9 @@ export async function createReservation(req, res) {
     const uniqueSeats = Array.isArray(seatNumbers)
       ? [...new Set(seatNumbers.filter(Boolean))]
       : [];
-    const uniqueSeatCount = uniqueSeats.length;
-
-    const seatDepositRate = (workspaceConfig && workspaceConfig.refundableSeatDeposit >= 1000)
-      ? workspaceConfig.refundableSeatDeposit
-      : 1000;
+    
+    // Effective seat count for calculation: if seats selected use uniqueSeats.length, else 1
+    const effectiveSeatCount = uniqueSeats.length > 0 ? uniqueSeats.length : 1;
 
     let paymentMode = targetPlan.paymentMode;
     if (!paymentMode || (paymentMode !== 'RESERVATION' && ['founders-seats', 'team-seats', 'hot-desk', 'dedicated-desk'].includes(targetPlan.slug))) {
@@ -209,34 +207,35 @@ export async function createReservation(req, res) {
       paymentMode = 'FULL_PAYMENT';
     }
 
-    let baseAmount = 0;
-    let reservationAmount = 0;
+    let reservationAmountPerSeat = 0;
+    let amountPayableToday = 0;
+    let totalMembershipAmount = 0;
+    let remainingAmount = 0;
 
     if (paymentMode === 'RESERVATION') {
-      reservationAmount = (targetPlan.reservationAmount && targetPlan.reservationAmount > 0) ? targetPlan.reservationAmount : 999;
-      baseAmount = reservationAmount; // Single reservation payment, not multiplied by duration
+      reservationAmountPerSeat = (targetPlan.reservationAmount && targetPlan.reservationAmount > 0) ? targetPlan.reservationAmount : 999;
+      amountPayableToday = reservationAmountPerSeat * effectiveSeatCount;
+      totalMembershipAmount = targetPlan.price * effectiveSeatCount;
+      remainingAmount = Math.max(0, totalMembershipAmount - amountPayableToday);
     } else {
-      baseAmount = targetPlan.price * durationVal; // Full payment rate * duration
+      amountPayableToday = targetPlan.price * durationVal;
+      totalMembershipAmount = amountPayableToday;
+      remainingAmount = 0;
     }
 
-    let deposit = 0;
-    if ((targetPlan.requiresSeatSelection || targetPlan.usesDeposit) && uniqueSeatCount > 0) {
-      deposit = uniqueSeatCount * seatDepositRate;
-    }
-    const totalAmount = baseAmount + deposit;
-    const razorpayAmount = totalAmount * 100;
+    const razorpayAmount = amountPayableToday * 100;
 
     console.log('--- RESERVATION ORDER CALCULATION LOG ---');
     console.log('PLAN:', targetPlan.name);
-    console.log('PLAN PRICE:', targetPlan.price);
+    console.log('PLAN PRICE PER SEAT:', targetPlan.price);
     console.log('PAYMENT MODE:', paymentMode);
-    console.log('RESERVATION:', reservationAmount);
+    console.log('RESERVATION PER SEAT:', reservationAmountPerSeat);
     console.log('SELECTED SEATS:', uniqueSeats.join(','));
-    console.log('UNIQUE SEAT COUNT:', uniqueSeatCount);
-    console.log('SEAT DEPOSIT:', deposit);
-    console.log('BASE AMOUNT:', baseAmount);
-    console.log('FINAL AMOUNT:', totalAmount);
-    console.log('RAZORPAY AMOUNT:', razorpayAmount);
+    console.log('EFFECTIVE SEAT COUNT:', effectiveSeatCount);
+    console.log('TOTAL MEMBERSHIP VALUE:', totalMembershipAmount);
+    console.log('AMOUNT PAYABLE TODAY:', amountPayableToday);
+    console.log('REMAINING AT JOINING:', remainingAmount);
+    console.log('RAZORPAY AMOUNT (PAISE):', razorpayAmount);
     console.log('-----------------------------------------');
 
     // Create Pending Reservation in DB with Plan Snapshot
@@ -255,16 +254,20 @@ export async function createReservation(req, res) {
       planPrice: targetPlan.price,
       billingPeriod: targetPlan.billingPeriod,
       paymentMode,
-      reservationAmount,
-      amountPaid: totalAmount,
+      reservationAmount: reservationAmountPerSeat,
+      seatCount: effectiveSeatCount,
+      totalMembershipAmount,
+      amountPaidToday: amountPayableToday,
+      remainingAmount,
+      amountPaid: amountPayableToday,
       duration: durationVal,
-      subtotal: baseAmount,
-      deposit,
-      totalAmount,
-      amount: totalAmount,
-      seatDepositAmount: seatDepositRate,
-      paymentStatus: totalAmount > 0 ? 'PENDING' : 'N/A',
-      leadStatus: totalAmount > 0 ? 'PAYMENT_PENDING' : 'CONFIRMED',
+      subtotal: amountPayableToday,
+      deposit: 0,
+      totalAmount: amountPayableToday,
+      amount: amountPayableToday,
+      seatDepositAmount: 0,
+      paymentStatus: amountPayableToday > 0 ? 'PENDING' : 'N/A',
+      leadStatus: amountPayableToday > 0 ? 'PAYMENT_PENDING' : 'CONFIRMED',
       utmSource: utmSource || '',
       utmMedium: utmMedium || '',
       utmCampaign: utmCampaign || '',

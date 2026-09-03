@@ -89,9 +89,25 @@ const reservationSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    seatCount: {
+      type: Number,
+      default: 1,
+    },
+    totalMembershipAmount: {
+      type: Number,
+      default: 0,
+    },
+    amountPaidToday: {
+      type: Number,
+      default: 0,
+    },
+    remainingAmount: {
+      type: Number,
+      default: 0,
+    },
     seatDepositAmount: {
       type: Number,
-      default: 1000,
+      default: 0,
     },
     paymentStatus: {
       type: String,

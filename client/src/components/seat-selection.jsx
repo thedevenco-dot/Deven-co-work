@@ -408,35 +408,148 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
                       </div>
                       <div className="bg-red-50 border border-red-200 text-red-600/90 text-center py-1 text-[7px] font-bold uppercase tracking-wider rounded">
                         🚨 Fire Exit
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    {renderEntranceZone()}
-                  </div>
-                </div>
-              )}
-
-            </div>
+        <div className="space-y-4">
+          {/* Zoom view filter tabs */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px]">
+            <button
+              type="button"
+              onClick={() => setZoomView('all')}
+              className={`px-3 py-1 font-mono rounded-full border transition-all ${
+                zoomView === 'all'
+                  ? 'bg-[#024E5C] text-[#FCFAF9] border-[#024E5C]'
+                  : 'border-[#024E5C]/20 text-[#0C0C0C]/70 hover:border-[#024E5C]'
+              }`}
+            >
+              Full Floor View
+            </button>
+            <button
+              type="button"
+              onClick={() => setZoomView('t2-t3')}
+              className={`px-3 py-1 font-mono rounded-full border transition-all ${
+                zoomView === 't2-t3'
+                  ? 'bg-[#024E5C] text-[#FCFAF9] border-[#024E5C]'
+                  : 'border-[#024E5C]/20 text-[#0C0C0C]/70 hover:border-[#024E5C]'
+              }`}
+            >
+              Founders Zone (T2–T3)
+            </button>
+            <button
+              type="button"
+              onClick={() => setZoomView('t4-t6')}
+              className={`px-3 py-1 font-mono rounded-full border transition-all ${
+                zoomView === 't4-t6'
+                  ? 'bg-[#024E5C] text-[#FCFAF9] border-[#024E5C]'
+                  : 'border-[#024E5C]/20 text-[#0C0C0C]/70 hover:border-[#024E5C]'
+              }`}
+            >
+              Growth Zone (T4–T6)
+            </button>
+            <button
+              type="button"
+              onClick={() => setZoomView('t7')}
+              className={`px-3 py-1 font-mono rounded-full border transition-all ${
+                zoomView === 't7'
+                  ? 'bg-[#024E5C] text-[#FCFAF9] border-[#024E5C]'
+                  : 'border-[#024E5C]/20 text-[#0C0C0C]/70 hover:border-[#024E5C]'
+              }`}
+            >
+              Flexi Desk (T7)
+            </button>
+            <button
+              type="button"
+              onClick={() => setZoomView('cabins')}
+              className={`px-3 py-1 font-mono rounded-full border transition-all ${
+                zoomView === 'cabins'
+                  ? 'bg-[#024E5C] text-[#FCFAF9] border-[#024E5C]'
+                  : 'border-[#024E5C]/20 text-[#0C0C0C]/70 hover:border-[#024E5C]'
+              }`}
+            >
+              Private Cabins (C1–C6)
+            </button>
           </div>
 
-          {/* Legends */}
-          <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-[rgba(2,78,92,0.15)] pt-3 text-[10px] text-[#0C0C0C]/75">
+          {/* Map layout grid */}
+          <div className="border border-[rgba(2,78,92,0.2)] bg-[#FCFAF9] p-4 font-mono text-xs overflow-x-auto space-y-6">
+            {/* Top Bar / Reception indicator */}
+            <div className="flex justify-between items-center bg-[#024E5C]/10 border border-[#024E5C]/20 px-4 py-2 text-[10px] uppercase font-bold text-[#024E5C]">
+              <span>🚪 Main Entrance & Reception</span>
+              <span>☕ Coffee Bar & Lounge</span>
+            </div>
+
+            {/* Render tables based on zoom filter */}
+            {(zoomView === 'all' || zoomView === 't2-t3') && (
+              <div className="space-y-4 border-l-2 border-[#04B8BB] pl-3">
+                <div className="text-[11px] font-bold text-[#024E5C] uppercase tracking-wider">
+                  Founders & Dedicated Zone (Tables T2 & T3)
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {renderTable('T2', 'Table 2 — Founder Desks (6 Seats)')}
+                  {renderTable('T3', 'Table 3 — Founder Desks (6 Seats)')}
+                </div>
+              </div>
+            )}
+
+            {(zoomView === 'all' || zoomView === 't4-t6') && (
+              <div className="space-y-4 border-l-2 border-[#024E5C] pl-3">
+                <div className="text-[11px] font-bold text-[#024E5C] uppercase tracking-wider">
+                  Team & Dedicated Zone (Tables T4, T5, T6)
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {renderTable('T4', 'Table 4 (6 Seats)')}
+                  {renderTable('T5', 'Table 5 (6 Seats)')}
+                  {renderTable('T6', 'Table 6 (6 Seats)')}
+                </div>
+              </div>
+            )}
+
+            {(zoomView === 'all' || zoomView === 't7') && (
+              <div className="space-y-4 border-l-2 border-[#A3A3A3] pl-3">
+                <div className="text-[11px] font-bold text-[#024E5C] uppercase tracking-wider">
+                  Hot Desk & Flexi Zone (Table T7)
+                </div>
+                <div>
+                  {renderTable('T7', 'Table 7 — Hot Desks (6 Seats)')}
+                </div>
+              </div>
+            )}
+
+            {(zoomView === 'all' || zoomView === 'cabins') && (
+              <div className="space-y-4 border-l-2 border-purple-500 pl-3">
+                <div className="text-[11px] font-bold text-[#024E5C] uppercase tracking-wider">
+                  Private Executive Cabins (Cabins C1 to C6)
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                  {renderCabin('C1', 'Cabin 1')}
+                  {renderCabin('C2', 'Cabin 2')}
+                  {renderCabin('C3', 'Cabin 3')}
+                  {renderCabin('C4', 'Cabin 4')}
+                  {renderCabin('C5', 'Cabin 5')}
+                  {renderCabin('C6', 'Cabin 6')}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Legend */}
+          <div className="flex flex-wrap items-center gap-4 text-[10px] text-[#0C0C0C]/80 font-mono bg-[#024E5C]/5 p-3 border border-[#024E5C]/15">
             <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 border border-[rgba(2,78,92,0.2)] bg-[#F1EFEA] rounded-sm" />
+              <span className="w-3 h-3 rounded bg-emerald-500 border border-emerald-600 inline-block" />
               <span>Available</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 bg-[#04B8BB]/20 border border-[#04B8BB] text-[#04B8BB] rounded-sm" />
-              <span>Selected</span>
+              <span className="w-3 h-3 rounded bg-[#04B8BB] border border-[#024E5C] inline-block" />
+              <span>Your Selection</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 bg-[#0C0C0C]/10 border border-transparent rounded-sm" />
-              <span>Booked / Held</span>
+              <span className="w-3 h-3 rounded bg-amber-500/80 border border-amber-600 inline-block" />
+              <span>Temporary Hold (10 min)</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 bg-[#0C0C0C]/20 border border-[rgba(2,78,92,0.15)] rounded-sm flex items-center justify-center"><Lock size={6} className="text-[#0C0C0C]/50" /></span>
+              <span className="w-3 h-3 rounded bg-rose-500 border border-rose-600 inline-block" />
+              <span>Reserved</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded bg-gray-400 border border-gray-500 inline-block" />
               <span>Staff Locked</span>
             </div>
           </div>
@@ -451,8 +564,8 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
                 </strong>
               </p>
               <p className="text-[10px] text-[#0C0C0C]/75 mt-0.5 font-medium">
-                Refundable Deposit:{' '}
-                <strong className="text-[#0C0C0C]">₹{([...new Set(selectedSeats)].length * (bookingAmount && bookingAmount >= 1000 ? bookingAmount : 1000)).toLocaleString('en-IN')}</strong>
+                Reservation Payable Today:{' '}
+                <strong className="text-[#0C0C0C]">₹{((Math.max(1, [...new Set(selectedSeats)].length)) * 999).toLocaleString('en-IN')} (₹999/seat)</strong>
               </p>
             </div>
 

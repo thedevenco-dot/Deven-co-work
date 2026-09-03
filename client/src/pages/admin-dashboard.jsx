@@ -909,14 +909,14 @@ function PlansManager() {
                     />
                     <div>
                       <div className="font-bold text-xs text-white">Reservation</div>
-                      <div className="text-[10px] text-[#A3A3A3] mt-0.5">User pays fixed reservation fee today.</div>
+                      <div className="text-[10px] text-[#A3A3A3] mt-0.5">User pays reservation amount per seat today.</div>
                     </div>
                   </label>
                 </div>
 
                 {formData.paymentMode === 'RESERVATION' && (
                   <div className="pt-2">
-                    <Field label="Reservation Amount (INR)" required>
+                    <Field label="Reservation Amount Per Seat (INR)" required>
                       <TextInput
                         type="number"
                         value={formData.reservationAmount}

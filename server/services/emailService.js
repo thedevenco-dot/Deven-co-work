@@ -105,6 +105,10 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
   return `
   const isReservation = booking.paymentMode === 'RESERVATION';
   const headerTitle = isReservation ? 'Reservation Confirmed' : 'Booking Confirmed';
+  const sCount = booking.seatCount || (Array.isArray(booking.seatNumbers) && booking.seatNumbers.length > 0 ? booking.seatNumbers.length : 1);
+  const paidToday = booking.amountPaidToday || booking.amountPaid || booking.totalAmount || (booking.reservationAmount ? booking.reservationAmount * sCount : 999 * sCount);
+  const totalVal = booking.totalMembershipAmount || ((booking.planPrice || 6999) * sCount);
+  const remainingAtJoining = booking.remainingAmount !== undefined ? booking.remainingAmount : Math.max(0, totalVal - paidToday);
 
   return `
     <!DOCTYPE html>
@@ -169,12 +173,24 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                           </tr>
                           ${isReservation ? `
                           <tr>
-                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Membership Price:</td>
-                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">₹${(booking.planPrice || 0).toLocaleString('en-IN')}/month</td>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Seats Reserved:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; text-align: right; padding-bottom: 6px;">${sCount}</td>
                           </tr>
                           <tr>
-                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Reservation Fee Paid:</td>
-                            <td style="font-size: 13px; color: #04B8BB; font-weight: 600; text-align: right; padding-bottom: 6px;">₹${(booking.reservationAmount || booking.subtotal || 999).toLocaleString('en-IN')}</td>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Membership Rate:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">₹${(booking.planPrice || 0).toLocaleString('en-IN')}/seat/month</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Total Membership Value:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; text-align: right; padding-bottom: 6px;">₹${totalVal.toLocaleString('en-IN')}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Reservation Paid Today:</td>
+                            <td style="font-size: 13px; color: #04B8BB; font-weight: 700; text-align: right; padding-bottom: 6px;">₹${paidToday.toLocaleString('en-IN')}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Remaining Amount at Joining:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; text-align: right; padding-bottom: 6px;">₹${remainingAtJoining.toLocaleString('en-IN')}</td>
                           </tr>
                           ` : `
                           ${booking.planPrice ? `
@@ -190,12 +206,6 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                           </tr>
                           ` : ''}
                           `}
-                          ${booking.deposit > 0 ? `
-                          <tr>
-                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Refundable Seat Deposit:</td>
-                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">₹${booking.deposit.toLocaleString('en-IN')}</td>
-                          </tr>
-                          ` : ''}
                           <tr>
                             <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Joining Date:</td>
                             <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${booking.joiningDate || '15 September 2026'}</td>
@@ -216,8 +226,8 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                     <tr>
                       <td style="padding: 12px 20px; background-color: rgba(2, 78, 92, 0.2); font-size: 12px; color: #04B8BB;">
                         ${isReservation
-                          ? `✓ ₹${(booking.reservationAmount || 999).toLocaleString('en-IN')} reservation payment locks in your founding member seat & rate.`
-                          : `✓ ${depositText} refundable seat deposit is locked & guaranteed for founding batch.`}
+                          ? `✓ ₹${paidToday.toLocaleString('en-IN')} has been paid today to reserve ${sCount} seat${sCount > 1 ? 's' : ''}. The remaining ₹${remainingAtJoining.toLocaleString('en-IN')} is payable at the time of joining.`
+                          : `✓ Full payment confirmed.`}
                       </td>
                     </tr>
                   </table>
