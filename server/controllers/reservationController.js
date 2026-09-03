@@ -230,6 +230,7 @@ export async function createReservation(req, res) {
       remainingAmount = 0;
     }
 
+    const totalAmount = amountPayableToday;
     const razorpayAmount = amountPayableToday * 100;
 
     console.log('--- RESERVATION ORDER CALCULATION LOG ---');

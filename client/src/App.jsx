@@ -1540,6 +1540,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
     remainingAmountAtJoining = 0;
   }
 
+  const totalAmount = amountPayableToday;
+
   const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
   const resData = cmsLoaded ? reservation : (cmsFailed ? defaultContent.reservation : null);
   const settings = cmsLoaded ? globalSettings : (cmsFailed ? defaultContent.globalSettings : null);
