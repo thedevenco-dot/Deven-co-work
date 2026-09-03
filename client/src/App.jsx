@@ -1838,7 +1838,6 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                           onSeatsChange={setSelectedSeats}
                           preferredPlan={selectedPlan?.name || plan}
                           onPlanChange={setPlan}
-                          bookingAmount={bookingAmount}
                         />
                       </div>
                     </motion.div>

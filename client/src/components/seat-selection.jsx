@@ -4,7 +4,7 @@ import { api } from '@/services/api';
 
 const WHATSAPP_HREF = 'https://wa.me/916260582852?text=Hi%2C%20I%27d%20like%20to%20pre-book%20more%20than%207%20founding%20seats%20at%20Deven%20Cowork.';
 
-export default function SeatSelection({ selectedSeats, onSeatsChange, preferredPlan, onPlanChange, bookingAmount }) {
+export default function SeatSelection({ selectedSeats, onSeatsChange, preferredPlan, onPlanChange }) {
   const [seats, setSeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

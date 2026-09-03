@@ -155,10 +155,18 @@ export async function createManualBooking(req, res) {
         }
     }
 
-    // Fetch global config for recording deposit rate
-    let workspaceConfig = await WorkspaceConfig.findOne();
-    const seatDepositAmount = workspaceConfig ? (workspaceConfig.refundableSeatDeposit || 1000) : 1000;
-    const computedAmount = (Array.isArray(seatNumbers) && seatNumbers.length > 0) ? seatNumbers.length * seatDepositAmount : 0;
+    // Fetch Plan to calculate plan-based reservation amount
+    let targetPlan = null;
+    if (plan) {
+      targetPlan = await Plan.findOne({ name: plan });
+    }
+    const uniqueSeats = Array.isArray(seatNumbers) ? [...new Set(seatNumbers.filter(Boolean))] : [];
+    const seatCount = uniqueSeats.length > 0 ? uniqueSeats.length : 1;
+    const resPerSeat = (targetPlan && targetPlan.reservationAmount > 0) ? targetPlan.reservationAmount : 999;
+    const planPrice = targetPlan ? targetPlan.price : 6999;
+    const calcPaidToday = resPerSeat * seatCount;
+    const calcTotalMembership = planPrice * seatCount;
+    const calcRemaining = Math.max(0, calcTotalMembership - calcPaidToday);
 
     const reservation = new Reservation({
       name: name.trim(),
@@ -166,10 +174,19 @@ export async function createManualBooking(req, res) {
       email: email.trim(),
       company: (company || '').trim(),
       plan: plan || '',
+      planName: plan || '',
+      planPrice: planPrice,
+      paymentMode: 'RESERVATION',
+      reservationAmount: resPerSeat,
       joiningDate: joiningDate || '',
-      seatNumbers: seatNumbers || [],
-      amount: amount !== undefined ? amount : computedAmount,
-      seatDepositAmount,
+      seatNumbers: uniqueSeats,
+      seatCount,
+      totalMembershipAmount: calcTotalMembership,
+      amountPaidToday: amount !== undefined ? amount : calcPaidToday,
+      remainingAmount: calcRemaining,
+      amount: amount !== undefined ? amount : calcPaidToday,
+      amountPaid: amount !== undefined ? amount : calcPaidToday,
+      seatDepositAmount: 0,
       paymentStatus: paymentStatus || 'PAID',
       leadStatus: leadStatus || 'CONFIRMED',
       notes: notes || '',

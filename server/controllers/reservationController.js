@@ -48,7 +48,6 @@ export async function getSeats(req, res) {
       success: true,
       count: seats.length,
       data: seats,
-      seatDepositAmount: workspaceConfig.refundableSeatDeposit || 1000,
     });
   } catch (error) {
     res.status(500).json({

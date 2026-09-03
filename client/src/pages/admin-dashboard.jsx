@@ -1669,119 +1669,62 @@ export default function AdminDashboard() {
                         onChange={(e) => setCapacityConfig({...capacityConfig, totalCapacity: parseInt(e.target.value) || 0})}
                       />
                     </Field>
-                    <Field label="Refundable Seat Deposit (₹)">
-                      <TextInput 
-                        type="number"
-                        min="0"
-                        value={capacityConfig.refundableSeatDeposit || 1000} 
-                        onChange={(e) => setCapacityConfig({...capacityConfig, refundableSeatDeposit: parseInt(e.target.value) || 0})}
-                      />
-                    </Field>
-                    <Field label="Hold Duration (Minutes)">
-                       <TextInput 
-                        type="number"
-                        value={capacityConfig.holdDurationMinutes} 
-                        onChange={(e) => setCapacityConfig({...capacityConfig, holdDurationMinutes: parseInt(e.target.value) || 0})}
-                      />
-                    </Field>
-                  </div>
-                  <button onClick={async () => {
-                     try {
-                       await api.updateCapacity({
-                         totalCapacity: capacityConfig.totalCapacity,
-                         holdDurationMinutes: capacityConfig.holdDurationMinutes,
-                         freeTrialCapacity: capacityConfig.freeTrialCapacity,
-                         refundableSeatDeposit: capacityConfig.refundableSeatDeposit
-                       });
-                       toast({ title: 'Saved', description: 'Capacity settings updated' });
-                       fetchDashboardData();
-                     } catch(e) { toast({ title: 'Error', description: e.message, variant: 'destructive' }); }
-                  }} className="button button-primary button-small">Save Capacity Settings</button>
-                </SectionCard>
-              </div>
-            )}
-
-            {/* ── AMOUNT MANAGEMENT ────────────────────────────────────────── */}
-            {activePanel === 'amount' && amountSettings && (
-              <div className="space-y-8">
-                <div>
-                  <div className="eyebrow flex items-center gap-3 text-[#04B8BB]">
-                    <span className="h-px w-8 bg-[#04B8BB]" /> Operations
-                  </div>
-                  <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1] uppercase">Amount Management</h1>
-                  <p className="text-xs text-[#A3A3A3] mt-2">Manage the refundable booking deposit charged for each selected seat.</p>
-                </div>
-
-                <div className="grid gap-6 md:grid-cols-[1.5fr_1fr]">
-                  {/* Left: Input Form */}
-                  <SectionCard title="Booking Deposit">
-                    <div className="space-y-4">
-                      <div className="text-sm font-semibold flex items-center justify-between text-[#A3A3A3]">
-                        <span>Current Amount:</span>
-                        <span className="text-[#04B8BB] font-bold text-lg">
-                          ₹{(amountSettings.bookingDepositAmount || 1000).toLocaleString('en-IN')}
-                        </span>
-                      </div>
-
-                      <Field label={`Refundable Seat Deposit (${amountSettings.currency || 'INR'})`}>
+                     <Field label="Hold Duration (Minutes)">
                         <TextInput 
-                          type="number"
-                          min="1"
-                          value={inputAmount} 
-                          onChange={(e) => setInputAmount(e.target.value)}
-                        />
-                      </Field>
-                      
-                      <p className="text-[11px] text-[#A3A3A3]">
-                        Users will be charged this amount when reserving a seat.
-                      </p>
+                         type="number"
+                         value={capacityConfig.holdDurationMinutes} 
+                         onChange={(e) => setCapacityConfig({...capacityConfig, holdDurationMinutes: parseInt(e.target.value) || 0})}
+                       />
+                     </Field>
+                   </div>
+                   <button onClick={async () => {
+                      try {
+                        await api.updateCapacity({
+                          totalCapacity: capacityConfig.totalCapacity,
+                          holdDurationMinutes: capacityConfig.holdDurationMinutes,
+                          freeTrialCapacity: capacityConfig.freeTrialCapacity,
+                        });
+                        toast({ title: 'Saved', description: 'Capacity settings updated' });
+                        fetchDashboardData();
+                      } catch(e) { toast({ title: 'Error', description: e.message, variant: 'destructive' }); }
+                   }} className="button button-primary button-small">Save Capacity Settings</button>
+                 </SectionCard>
+               </div>
+             )}
 
-                      <button 
-                        onClick={handleSaveAmount} 
-                        disabled={savingAmount}
-                        className="button button-primary button-small w-full sm:w-auto"
-                      >
-                        {savingAmount ? 'Saving...' : 'Save Amount'}
-                      </button>
-                    </div>
-                  </SectionCard>
+             {/* ── AMOUNT MANAGEMENT ────────────────────────────────────────── */}
+             {activePanel === 'amount' && (
+               <div className="space-y-8">
+                 <div>
+                   <div className="eyebrow flex items-center gap-3 text-[#04B8BB]">
+                     <span className="h-px w-8 bg-[#04B8BB]" /> Operations
+                   </div>
+                   <h1 className="mt-4 font-display text-3xl md:text-[44px] font-[650] leading-[1.1] tracking-[.02em] text-[#F1F1F1] uppercase">Reservation Amount Management</h1>
+                   <p className="text-xs text-[#A3A3A3] mt-2">Reservation amounts are managed directly per plan in Plans & Pricing. The legacy global deposit setting has been deprecated.</p>
+                 </div>
 
-                  {/* Right: Preview & Meta */}
-                  <div className="space-y-6">
-                    <SectionCard title="Payment Preview">
-                      <div className="space-y-3 divide-y divide-[#242424] text-xs font-mono">
-                        <div className="flex justify-between py-2">
-                          <span className="text-[#A3A3A3]">1 seat</span>
-                          <span className="text-white">₹{((amountSettings.bookingDepositAmount || 1000) * 1).toLocaleString('en-IN')}</span>
-                        </div>
-                        <div className="flex justify-between py-2">
-                          <span className="text-[#A3A3A3]">2 seats</span>
-                          <span className="text-white">₹{((amountSettings.bookingDepositAmount || 1000) * 2).toLocaleString('en-IN')}</span>
-                        </div>
-                        <div className="flex justify-between py-2">
-                          <span className="text-[#A3A3A3]">3 seats</span>
-                          <span className="text-white">₹{((amountSettings.bookingDepositAmount || 1000) * 3).toLocaleString('en-IN')}</span>
-                        </div>
-                      </div>
-                    </SectionCard>
+                 <SectionCard title="Plan-Based Reservation Pricing">
+                   <div className="space-y-4">
+                     <p className="text-xs text-[#F1F1F1]">
+                       The Deven Co-Work booking engine uses individual per-seat reservation amounts configured on each Membership Plan.
+                     </p>
+                     <div className="bg-[#0A0A0A] border border-[#242424] p-4 text-xs space-y-2">
+                       <p className="font-bold text-[#04B8BB]">Current Standard Reservation Rate:</p>
+                       <p className="text-[#A3A3A3]">Founders Seats / Team Seats / Hot Desks: <strong className="text-white">₹999 per seat</strong></p>
+                       <p className="text-[#A3A3A3]">Amount Collected Today = <strong className="text-white">Reservation Amount Per Seat × Number of Seats</strong></p>
+                       <p className="text-[#A3A3A3]">Remaining Balance = <strong className="text-white">Total Membership Value - Amount Paid Today (Payable at Joining)</strong></p>
+                     </div>
 
-                    <SectionCard title="Last Updated">
-                      <div className="space-y-2 text-xs text-[#A3A3A3]">
-                        <p>
-                          Updated:{' '}
-                          <span className="text-white font-mono">
-                            {amountSettings.updatedAt ? new Date(amountSettings.updatedAt).toLocaleString() : 'N/A'}
-                          </span>
-                        </p>
-                        <p>
-                          By: <span className="text-white font-semibold">{amountSettings.updatedBy || 'admin'}</span>
-                        </p>
-                      </div>
-                    </SectionCard>
-                  </div>
-                </div>
-              </div>
-            )}
+                     <button 
+                       onClick={() => setActivePanel('plans')} 
+                       className="button button-primary button-small"
+                     >
+                       Go to Plans & Pricing to Edit Reservation Amounts
+                     </button>
+                   </div>
+                 </SectionCard>
+               </div>
+             )}
 
             {/* ── DASHBOARD ────────────────────────────────────────────────── */}
             {activePanel === 'dashboard' && (
@@ -2055,8 +1998,8 @@ export default function AdminDashboard() {
                               </td>
                               <td className="py-4 px-6">
                                 <div className="text-[10px] text-[#A3A3A3]">
-                                  <p>Deposit: <span className="text-white">₹{(res.seatDepositAmount || 1000).toLocaleString('en-IN')}</span></p>
-                                  <p>Total: <span className="text-[#04B8BB] font-bold">₹{(res.amount || 0).toLocaleString('en-IN')}</span></p>
+                                  <p>Paid Today: <span className="text-[#04B8BB] font-bold">₹{(res.amountPaidToday || res.amount || 0).toLocaleString('en-IN')}</span></p>
+                                  <p>Remaining: <span className="text-white font-medium">₹{(res.remainingAmount !== undefined ? res.remainingAmount : 0).toLocaleString('en-IN')}</span></p>
                                 </div>
                               </td>
                               <td className="py-4 px-6 text-center">
@@ -2175,7 +2118,7 @@ export default function AdminDashboard() {
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Plan</p><p className="text-sm font-semibold">{selectedLead.plan}</p></div>
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Registered</p><p className="text-sm font-semibold">{new Date(selectedLead.createdAt).toLocaleString()}</p></div>
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">UTM Source / Campaign</p><p className="text-sm font-semibold">{selectedLead.utmSource || 'N/A'} / {selectedLead.utmCampaign || 'N/A'}</p></div>
-              <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Razorpay ID & Deposit</p><p className="text-sm font-semibold">{selectedLead.razorpayPaymentId || 'N/A'} (₹{selectedLead.amount})</p></div>
+              <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Razorpay ID & Paid Today</p><p className="text-sm font-semibold">{selectedLead.razorpayPaymentId || 'N/A'} (₹{(selectedLead.amountPaidToday || selectedLead.amount || 0).toLocaleString('en-IN')})</p></div>
             </div>
             <div className="grid gap-4 sm:grid-cols-3 mb-6">
               <label className="field-label">
