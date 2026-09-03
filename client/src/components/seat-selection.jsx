@@ -4,21 +4,25 @@ import { api } from '@/services/api';
 
 const WHATSAPP_HREF = 'https://wa.me/916260582852?text=Hi%2C%20I%27d%20like%20to%20pre-book%20more%20than%207%20founding%20seats%20at%20Deven%20Cowork.';
 
-export default function SeatSelection({ selectedSeats, onSeatsChange, preferredPlan, onPlanChange }) {
+export default function SeatSelection({ selectedSeats = [], onSeatsChange, preferredPlan, onPlanChange }) {
   const [seats, setSeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [zoomView, setZoomView] = useState('all'); // 'all', 't2-t3', 't4-t6', 't7', 'cabins'
+
+  const safeSelectedSeats = Array.isArray(selectedSeats) ? selectedSeats : [];
+  const safeSeats = Array.isArray(seats) ? seats : [];
 
   const loadSeats = async () => {
     setLoading(true);
     setError('');
     try {
       const res = await api.fetchSeats();
-      setSeats(res.data || []);
+      setSeats(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       setError('Failed to fetch seat layout map. Please try again.');
       console.error(err);
+      setSeats([]);
     } finally {
       setLoading(false);
     }
@@ -27,109 +31,118 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
   useEffect(() => {
     loadSeats();
 
-    // Setup WebSocket live sync connection
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    const ws = new WebSocket(`${protocol}//${host}`);
+    let ws = null;
+    try {
+      if (typeof window !== 'undefined' && window.WebSocket) {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.host;
+        ws = new WebSocket(`${protocol}//${host}`);
 
-    ws.onmessage = (event) => {
+        ws.onmessage = (event) => {
+          try {
+            const message = JSON.parse(event.data);
+            if (message.type === 'SEAT_UPDATE' && Array.isArray(message.seats)) {
+              setSeats((prev) => {
+                const updated = Array.isArray(prev) ? [...prev] : [];
+                message.seats.forEach((newSeat) => {
+                  const idx = updated.findIndex((s) => s.zone === newSeat.zone && s.label === newSeat.label);
+                  if (idx !== -1) {
+                    updated[idx] = newSeat;
+                  }
+                });
+                return updated;
+              });
+            }
+          } catch (err) {
+            console.warn('Error handling WebSocket message in seat-selection:', err);
+          }
+        };
+
+        ws.onerror = (err) => {
+          console.warn('WebSocket connection error in seat-selection:', err);
+        };
+      }
+    } catch (err) {
+      console.warn('WebSocket setup failed in seat-selection:', err);
+    }
+
+    return () => {
       try {
-        const message = JSON.parse(event.data);
-        if (message.type === 'SEAT_UPDATE') {
-          setSeats((prev) => {
-            const updated = [...prev];
-            message.seats.forEach((newSeat) => {
-              const idx = updated.findIndex((s) => s.zone === newSeat.zone && s.label === newSeat.label);
-              if (idx !== -1) {
-                updated[idx] = newSeat;
-              }
-            });
-            return updated;
-          });
+        if (ws && typeof ws.close === 'function') {
+          ws.close();
         }
-      } catch (err) {
-        console.error('Error handling WebSocket message in seat-selection:', err);
+      } catch (e) {
+        // Ignore WS cleanup error
       }
     };
-
-    return () => ws.close();
   }, []);
 
   const handleSeatClick = (seat) => {
-    if (seat.status === 'reserved' || seat.status === 'held' || seat.isStaff) return;
+    if (!seat || seat.status === 'reserved' || seat.status === 'held' || seat.isStaff) return;
 
     const seatId = `${seat.zone}-${seat.label}`;
-    const isSelected = selectedSeats.includes(seatId);
+    const isSelected = safeSelectedSeats.includes(seatId);
 
     if (isSelected) {
-      const updated = selectedSeats.filter((s) => s !== seatId);
-      onSeatsChange(updated);
-      if (updated.length === 0) {
-        onPlanChange('');
+      const updated = safeSelectedSeats.filter((s) => s !== seatId);
+      if (typeof onSeatsChange === 'function') {
+        onSeatsChange(updated);
       }
     } else {
-      if (selectedSeats.length >= 7) {
+      if (safeSelectedSeats.length >= 7) {
         return; // limit reached
       }
-      const updated = [...selectedSeats, seatId].sort();
-      onSeatsChange(updated);
-
-      // Auto-set pricing tier based on selected seat's zone type
-      if (seat.type === 'Hot Desk') {
-        onPlanChange('Hot Desk');
-      } else {
-        onPlanChange('Dedicated Desk');
+      const updated = [...safeSelectedSeats, seatId].sort();
+      if (typeof onSeatsChange === 'function') {
+        onSeatsChange(updated);
       }
     }
   };
 
-  const getZoneBaseStyle = (zoneName, label, isStaff) => {
-  if (zoneName.startsWith('C')) {
-    return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#04B8BB] hover:bg-white';
-  }
+  const getZoneBaseStyle = (zoneName = '', label = '', isStaff = false) => {
+    if (zoneName.startsWith('C')) {
+      return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#04B8BB] hover:bg-white';
+    }
 
-  switch (zoneName) {
-    case 'T2':
-      return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#04B8BB] hover:bg-white';
-    case 'T3':
-      return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#04B8BB] hover:bg-white';
-    case 'T4':
-      return 'bg-[#EBE8DF] text-[#024E5C] border-[#024E5C]/30 hover:border-[#04B8BB] hover:bg-white';
-    case 'T5':
-      return 'bg-[#EBE8DF] text-[#024E5C] border-[#024E5C]/30 hover:border-[#04B8BB] hover:bg-white';
-    case 'T6':
-      return 'bg-[#EBE8DF] text-[#024E5C] border-[#024E5C]/30 hover:border-[#04B8BB] hover:bg-white';
-    case 'T7':
-      return 'bg-[#EBE8DF] text-[#024E5C] border-[#024E5C]/30 hover:border-[#04B8BB] hover:bg-white';
-    default:
-      return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:bg-white';
-  }
-};
+    switch (zoneName) {
+      case 'T2':
+      case 'T3':
+        return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#04B8BB] hover:bg-white';
+      case 'T4':
+      case 'T5':
+      case 'T6':
+      case 'T7':
+        return 'bg-[#EBE8DF] text-[#024E5C] border-[#024E5C]/30 hover:border-[#04B8BB] hover:bg-white';
+      default:
+        return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:bg-white';
+    }
+  };
 
   const getSeatClass = (seat) => {
-  const seatId = `${seat.zone}-${seat.label}`;
-  const isSelected = selectedSeats.includes(seatId);
-  const baseStyle = getZoneBaseStyle(seat.zone, seat.label, seat.isStaff);
+    if (!seat) return '';
+    const seatId = `${seat.zone}-${seat.label}`;
+    const isSelected = safeSelectedSeats.includes(seatId);
+    const baseStyle = getZoneBaseStyle(seat.zone, seat.label, seat.isStaff);
 
-  if (seat.isStaff) {
-    return `bg-[#0C0C0C]/20 border-[rgba(2,78,92,0.15)] text-[#0C0C0C]/50 cursor-not-allowed select-none`;
-  }
-  if (seat.status === 'reserved' || seat.status === 'held') {
-    return `bg-[#0C0C0C]/10 border-transparent text-[#0C0C0C]/30 cursor-not-allowed select-none opacity-40`;
-  }
-  if (isSelected) {
-    return `${baseStyle} ring-2 ring-[#04B8BB] bg-[#04B8BB]/15 text-[#04B8BB] border-[#04B8BB] scale-[1.03] z-10 font-bold`;
-  }
-  const isCapReached = selectedSeats.length >= 7 && !isSelected;
-  if (isCapReached) {
-    return `bg-[#0C0C0C]/15 text-[#0C0C0C]/45 border-transparent cursor-not-allowed select-none`;
-  }
-  // Available
-  return `${baseStyle} cursor-pointer transition-all`;
-};
+    if (seat.isStaff) {
+      return `bg-[#0C0C0C]/20 border-[rgba(2,78,92,0.15)] text-[#0C0C0C]/50 cursor-not-allowed select-none`;
+    }
+    if (seat.status === 'reserved' || seat.status === 'held') {
+      return `bg-[#0C0C0C]/10 border-transparent text-[#0C0C0C]/30 cursor-not-allowed select-none opacity-40`;
+    }
+    if (isSelected) {
+      return `${baseStyle} ring-2 ring-[#04B8BB] bg-[#04B8BB]/15 text-[#04B8BB] border-[#04B8BB] scale-[1.03] z-10 font-bold`;
+    }
+    const isCapReached = safeSelectedSeats.length >= 7 && !isSelected;
+    if (isCapReached) {
+      return `bg-[#0C0C0C]/15 text-[#0C0C0C]/45 border-transparent cursor-not-allowed select-none`;
+    }
+    // Available
+    return `${baseStyle} cursor-pointer transition-all`;
+  };
 
   const findSeat = (zoneName, deskLabel) => {
-    return seats.find((s) => s.zone === zoneName && s.label === deskLabel);
+    return safeSeats.find((s) => s && s.zone === zoneName && s.label === deskLabel);
   };
 
 
@@ -139,7 +152,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
     const cols = ['L1', 'L2', 'L3', 'L4'];
 
     const getAvailableInZone = () => {
-      const zoneSeats = seats.filter((s) => s.zone === zoneName);
+      const zoneSeats = safeSeats.filter((s) => s && s.zone === zoneName);
       return zoneSeats.filter((s) => s.status === 'available' && !s.isStaff).length;
     };
 
@@ -160,7 +173,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
                 <button
                   key={lbl}
                   type="button"
-                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (selectedSeats.length >= 7 && !selectedSeats.includes(seat.zone + '-' + seat.label))}
+                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (safeSelectedSeats.length >= 7 && !safeSelectedSeats.includes(seat.zone + '-' + seat.label))}
                   onClick={() => handleSeatClick(seat)}
                   className={`h-7 w-7 rounded border text-[8px] flex items-center justify-center transition-all ${getSeatClass(seat)}`}
                   title={`${zoneName}-${lbl} (${seat.status})`}
@@ -185,7 +198,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
                 <button
                   key={lbl}
                   type="button"
-                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (selectedSeats.length >= 7 && !selectedSeats.includes(seat.zone + '-' + seat.label))}
+                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (safeSelectedSeats.length >= 7 && !safeSelectedSeats.includes(seat.zone + '-' + seat.label))}
                   onClick={() => handleSeatClick(seat)}
                   className={`h-7 w-7 rounded border text-[8px] flex items-center justify-center transition-all ${getSeatClass(seat)}`}
                   title={`${zoneName}-${lbl} (${seat.status})`}
@@ -206,7 +219,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
     const cols = ['L1', 'L2', 'L3', 'L4', 'L5'];
 
     const getAvailableInZone = () => {
-      const zoneSeats = seats.filter((s) => s.zone === zoneName);
+      const zoneSeats = safeSeats.filter((s) => s && s.zone === zoneName);
       return zoneSeats.filter((s) => s.status === 'available' && !s.isStaff).length;
     };
 
@@ -227,7 +240,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
                 <button
                   key={lbl}
                   type="button"
-                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (selectedSeats.length >= 7 && !selectedSeats.includes(seat.zone + '-' + seat.label))}
+                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (safeSelectedSeats.length >= 7 && !safeSelectedSeats.includes(seat.zone + '-' + seat.label))}
                   onClick={() => handleSeatClick(seat)}
                   className={`h-7 w-7 rounded border text-[8px] flex items-center justify-center transition-all ${getSeatClass(seat)}`}
                   title={`${zoneName}-${lbl} ${seat.isStaff ? '(Staff)' : `(${seat.status})`}`}
@@ -250,7 +263,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
                 <button
                   key={lbl}
                   type="button"
-                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (selectedSeats.length >= 7 && !selectedSeats.includes(seat.zone + '-' + seat.label))}
+                  disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (safeSelectedSeats.length >= 7 && !safeSelectedSeats.includes(seat.zone + '-' + seat.label))}
                   onClick={() => handleSeatClick(seat)}
                   className={`h-7 w-7 rounded border text-[8px] flex items-center justify-center transition-all ${getSeatClass(seat)}`}
                   title={`${zoneName}-${lbl} (${seat.status})`}
@@ -270,7 +283,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
     const desks = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10'];
 
     const getAvailableInZone = () => {
-      const zoneSeats = seats.filter((s) => s.zone === 'T7');
+      const zoneSeats = safeSeats.filter((s) => s && s.zone === 'T7');
       return zoneSeats.filter((s) => s.status === 'available' && !s.isStaff).length;
     };
 
@@ -289,7 +302,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
               <button
                 key={lbl}
                 type="button"
-                disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (selectedSeats.length >= 7 && !selectedSeats.includes(seat.zone + '-' + seat.label))}
+                disabled={seat.status === 'reserved' || seat.status === 'held' || seat.isStaff || (safeSelectedSeats.length >= 7 && !safeSelectedSeats.includes(seat.zone + '-' + seat.label))}
                 onClick={() => handleSeatClick(seat)}
                 className={`h-7 w-7 rounded border text-[8px] flex items-center justify-center transition-all ${getSeatClass(seat)}`}
                 title={`T7-${lbl} ${seat.isStaff ? '(Staff)' : `(${seat.status})`}`}
@@ -311,7 +324,7 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
             Interactive Floor Map
           </h3>
           <p className="text-[10px] text-[#0C0C0C]/75 mt-0.5">
-            Click to select a desk (refundable deposit ₹{(bookingAmount || 1000).toLocaleString('en-IN')}/seat). Max 7 desks. Selection is optional.
+            Click to select a desk. Max 7 desks. Selection is optional.
           </p>
         </div>
 
@@ -450,18 +463,18 @@ export default function SeatSelection({ selectedSeats, onSeatsChange, preferredP
               <p className="text-[#0C0C0C]/85 font-medium">
                 Selected Seats:{' '}
                 <strong className="text-[#04B8BB]">
-                  {[...new Set(selectedSeats)].length === 0 ? 'None' : [...new Set(selectedSeats)].join(', ')}
+                  {[...new Set(safeSelectedSeats)].length === 0 ? 'None' : [...new Set(safeSelectedSeats)].join(', ')}
                 </strong>
               </p>
               <p className="text-[10px] text-[#0C0C0C]/75 mt-0.5 font-medium">
                 Reservation Payable Today:{' '}
                 <strong className="text-[#0C0C0C]">
-                  {[...new Set(selectedSeats)].length === 0 ? '₹0' : `₹${([...new Set(selectedSeats)].length * 999).toLocaleString('en-IN')} (₹999/seat)`}
+                  {[...new Set(safeSelectedSeats)].length === 0 ? '₹0' : `₹${([...new Set(safeSelectedSeats)].length * 999).toLocaleString('en-IN')} (₹999/seat)`}
                 </strong>
               </p>
             </div>
 
-            {selectedSeats.length >= 7 && (
+            {safeSelectedSeats.length >= 7 && (
               <div className="border border-[#04B8BB]/35 bg-[#04B8BB]/10 p-2 rounded text-[10px] text-[#04B8BB] flex items-center gap-2">
                 <span>Limit reached. Need more?</span>
                 <a
