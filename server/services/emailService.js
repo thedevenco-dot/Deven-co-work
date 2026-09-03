@@ -102,7 +102,6 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
   const whatsappMsg = encodeURIComponent(`Hi Deven Co-Work, I have a question regarding my booking #${refId}`);
   const whatsappUrl = `https://wa.me/916260582852?text=${whatsappMsg}`;
 
-  return `
   const isReservation = booking.paymentMode === 'RESERVATION';
   const headerTitle = isReservation ? 'Reservation Confirmed' : 'Booking Confirmed';
   const sCount = booking.seatCount || (Array.isArray(booking.seatNumbers) && booking.seatNumbers.length > 0 ? booking.seatNumbers.length : 1);

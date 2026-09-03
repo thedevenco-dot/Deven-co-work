@@ -147,7 +147,7 @@ const serveDynamicHtml = async (req, res, next) => {
 
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath, { index: false }));
-  app.get('*', serveDynamicHtml);
+  app.use(serveDynamicHtml);
 } else {
   app.get('/', serveDynamicHtml);
 }
