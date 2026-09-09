@@ -15,6 +15,7 @@ import AdminLogin from '@/pages/admin-login';
 import AdminDashboard from '@/pages/admin-dashboard';
 import ThankYou from '@/pages/thank-you';
 import SeatSelection from '@/components/seat-selection';
+import OfficeCostCalculator from '@/components/OfficeCostCalculator';
 import { api } from '@/services/api';
 import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon } from '@/lib/utils';
 export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
@@ -265,9 +266,9 @@ const defaultContent = {
     ctaLabel: '',
     ctaUrl: '',
   },
-  sectionOrder: ['hero', 'problem', 'guide', 'plan', 'offerStack', 'valueStack', 'guarantee', 'socialProof', 'pricing', 'faq', 'finalCTA'],
+  sectionOrder: ['hero', 'calculator', 'problem', 'guide', 'plan', 'offerStack', 'valueStack', 'guarantee', 'socialProof', 'pricing', 'faq', 'finalCTA'],
   sectionVisibility: {
-    hero: true, problem: true, guide: true, plan: true, offerStack: true,
+    hero: true, calculator: true, problem: true, guide: true, plan: true, offerStack: true,
     valueStack: true, guarantee: true, socialProof: true, pricing: true, faq: true, finalCTA: true,
   },
 };
@@ -2331,11 +2332,21 @@ function Home() {
     setReserveOpen(true);
   };
 
-  const sectionOrder = content?.sectionOrder || defaultContent.sectionOrder;
+  let sectionOrder = content?.sectionOrder || defaultContent.sectionOrder;
+  if (!sectionOrder.includes('calculator')) {
+    const heroIndex = sectionOrder.indexOf('hero');
+    const insertPos = heroIndex !== -1 ? heroIndex + 1 : 1;
+    sectionOrder = [
+      ...sectionOrder.slice(0, insertPos),
+      'calculator',
+      ...sectionOrder.slice(insertPos)
+    ];
+  }
   const sectionViz = content?.sectionVisibility || defaultContent.sectionVisibility;
 
   const sectionComponents = {
     hero: <Hero key="hero" onReserve={scrollToReservation} hero={content?.hero} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    calculator: <OfficeCostCalculator key="calculator" />,
     problem: <Problems key="problem" problem={content?.problem} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     guide: <Guide key="guide" guide={content?.guide} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     plan: <Plan key="plan" plan={content?.plan} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,

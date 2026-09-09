@@ -500,10 +500,11 @@ const contentSchema = new mongoose.Schema(
     // ─── SECTION ORDER & VISIBILITY ───────────────────────────────────────────
     sectionOrder: {
       type: [String],
-      default: ['hero', 'problem', 'guide', 'plan', 'offerStack', 'valueStack', 'guarantee', 'socialProof', 'pricing', 'faq', 'finalCTA'],
+      default: ['hero', 'calculator', 'problem', 'guide', 'plan', 'offerStack', 'valueStack', 'guarantee', 'socialProof', 'pricing', 'faq', 'finalCTA'],
     },
     sectionVisibility: {
       hero: { type: Boolean, default: true },
+      calculator: { type: Boolean, default: true },
       problem: { type: Boolean, default: true },
       guide: { type: Boolean, default: true },
       plan: { type: Boolean, default: true },

@@ -12,6 +12,8 @@ import { api } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { useBranding } from '@/hooks/useBranding';
 import CmsEditor, { MediaField } from '@/components/cms-editor';
+import AdminCalculatorConfig from '@/components/admin-calculator-config';
+import AdminCalculatorLeads from '@/components/admin-calculator-leads';
 
 
 // ─── HELPER COMPONENTS ────────────────────────────────────────────────────────
@@ -498,6 +500,7 @@ function SectionManager({ cmsDraft, onChange }) {
 
   const SECTION_LABELS = {
     hero: 'Hero — Headline, CTA, Background Media',
+    calculator: 'Calculator — Office Cost Calculator',
     problem: 'Problem — Pain points & image',
     guide: 'Guide — Brand story & gallery',
     plan: 'Plan — 3-step process',
@@ -510,7 +513,8 @@ function SectionManager({ cmsDraft, onChange }) {
     finalCTA: 'Final CTA — Reservation form',
   };
 
-  const order = cmsDraft.sectionOrder || Object.keys(SECTION_LABELS);
+  const baseOrder = cmsDraft.sectionOrder || [];
+  const order = [...new Set([...baseOrder, ...Object.keys(SECTION_LABELS)])];
   const visibility = cmsDraft.sectionVisibility || {};
 
   const toggleVisibility = (key) => {
@@ -1488,6 +1492,7 @@ export default function AdminDashboard() {
         { id: 'plans', label: 'Plans & Pricing', icon: Tag },
         { id: 'sections', label: 'Section Manager', icon: Layers },
         { id: 'homepage', label: 'Homepage CMS', icon: Globe },
+        { id: 'calculator_config', label: 'Calculator Settings', icon: DollarSign },
         { id: 'navigation', label: 'Navigation', icon: Link },
         { id: 'global', label: 'Global Settings', icon: Settings },
         { id: 'seo', label: 'SEO', icon: Tag },
@@ -1504,6 +1509,7 @@ export default function AdminDashboard() {
       items: [
         { id: 'bookings', label: 'Booking Management', icon: Calendar },
         { id: 'leads', label: 'Leads & Payments', icon: Users },
+        { id: 'calculator_leads', label: 'Calculator Leads', icon: Users },
         { id: 'capacity', label: 'Capacity Settings', icon: Settings },
         { id: 'amount', label: 'Amount Management', icon: DollarSign },
         { id: 'seats', label: 'Seat Inventory', icon: Database },
@@ -1791,6 +1797,16 @@ export default function AdminDashboard() {
                   </div>
                 )}
               </div>
+            )}
+
+            {/* ── CALCULATOR CONFIGURATION ────────────────────────────────────── */}
+            {activePanel === 'calculator_config' && (
+              <AdminCalculatorConfig />
+            )}
+
+            {/* ── CALCULATOR LEADS ────────────────────────────────────────────── */}
+            {activePanel === 'calculator_leads' && (
+              <AdminCalculatorLeads />
             )}
 
             {/* ── PLANS & PRICING ───────────────────────────────────────────── */}

@@ -85,6 +85,49 @@ export const api = {
     return handleResponse(res);
   },
 
+  // ── Calculator ─────────────────────────────────────────────────────────────
+  async fetchCalculatorConfig() {
+    const res = await fetch(`${API_BASE}/calculator/config`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async submitCalculatorLead(formData) {
+    const res = await fetch(`${API_BASE}/calculator/leads`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(formData),
+    });
+    return handleResponse(res);
+  },
+
+  async fetchAdminCalculatorConfig() {
+    const res = await fetch(`${API_BASE}/admin/calculator/config`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async updateCalculatorConfig(configData) {
+    const res = await fetch(`${API_BASE}/admin/calculator/config`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(configData),
+    });
+    return handleResponse(res);
+  },
+
+  async fetchCalculatorLeads() {
+    const res = await fetch(`${API_BASE}/admin/calculator/leads`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
   // ── Auth ───────────────────────────────────────────────────────────────────
   async login(username, password) {
     const res = await fetch(`${API_BASE}/auth/login`, {

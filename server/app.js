@@ -11,6 +11,7 @@ import contentRoutes from './routes/contentRoutes.js';
 import webhookRoutes from './routes/webhookRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import planRoutes from './routes/planRoutes.js';
+import calculatorRoutes from './routes/calculatorRoutes.js';
 import { getSeats } from './controllers/reservationController.js';
 import Content from './models/Content.js';
 
@@ -85,6 +86,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/plans', planRoutes);
+app.use('/api/calculator', calculatorRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/admin', adminRoutes);
 app.get('/api/seats', getSeats);

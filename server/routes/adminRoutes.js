@@ -15,6 +15,11 @@ import {
   updatePlan,
   deletePlan,
 } from '../controllers/planController.js';
+import {
+  getAdminConfig,
+  updateConfig,
+  getLeads,
+} from '../controllers/calculatorController.js';
 
 const router = express.Router();
 
@@ -37,6 +42,11 @@ router.post('/bookings', authorize('SUPER_ADMIN', 'ADMIN'), createManualBooking)
 router.post('/seats/:id/:action', authorize('SUPER_ADMIN', 'ADMIN'), manageSeatState);
 
 router.post('/test-email', authorize('SUPER_ADMIN', 'ADMIN'), sendTestEmail);
+
+// Calculator Admin Routes
+router.get('/calculator/config', authorize('SUPER_ADMIN', 'ADMIN'), getAdminConfig);
+router.put('/calculator/config', authorize('SUPER_ADMIN', 'ADMIN'), updateConfig);
+router.get('/calculator/leads', authorize('SUPER_ADMIN', 'ADMIN'), getLeads);
 
 export default router;
 
