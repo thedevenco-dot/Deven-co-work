@@ -67,15 +67,15 @@ export default function OfficeCostCalculator() {
         return 0;
       };
 
-      const securityDeposit = getNonZeroTierVal(selectedFitout, 'securityDepositPerPerson', 'securityDeposit');
-      const broker = getNonZeroTierVal(selectedFitout, 'brokerCommissionPerPerson', 'brokerCommission');
-      const legal = getNonZeroTierVal(selectedFitout, 'legalStampDutyPerPerson', 'legalStampDuty', 'legalStamp');
-      const fitoutCost = getNonZeroTierVal(selectedFitout, 'interiorFitoutPerPerson', 'interiorFitout', 'fitout');
-      const furniture = getNonZeroTierVal(selectedFitout, 'furniturePerPerson', 'furniture');
-      const ac = getNonZeroTierVal(selectedFitout, 'acFansLightingPerPerson', 'acFansLighting', 'acLight');
-      const equipment = getNonZeroTierVal(selectedFitout, 'wifiPrinterEquipmentPerPerson', 'wifiPrinterEquipment', 'equipment');
-      const security = getNonZeroTierVal(selectedFitout, 'securitySystemPerPerson', 'securitySystem', 'security');
-      const govt = getNonZeroTierVal(selectedFitout, 'govtApprovalsLicensesPerPerson', 'govtApprovalsLicenses', 'govtApproval');
+      const securityDeposit = getNonZeroTierVal(selectedFitout, 'securityDepositPerPerson', 'securityDeposit') * people;
+      const broker = getNonZeroTierVal(selectedFitout, 'brokerCommissionPerPerson', 'brokerCommission') * people;
+      const legal = getNonZeroTierVal(selectedFitout, 'legalStampDutyPerPerson', 'legalStampDuty', 'legalStamp') * people;
+      const fitoutCost = getNonZeroTierVal(selectedFitout, 'interiorFitoutPerPerson', 'interiorFitout', 'fitout') * people;
+      const furniture = getNonZeroTierVal(selectedFitout, 'furniturePerPerson', 'furniture') * people;
+      const ac = getNonZeroTierVal(selectedFitout, 'acFansLightingPerPerson', 'acFansLighting', 'acLight') * people;
+      const equipment = getNonZeroTierVal(selectedFitout, 'wifiPrinterEquipmentPerPerson', 'wifiPrinterEquipment', 'equipment') * people;
+      const security = getNonZeroTierVal(selectedFitout, 'securitySystemPerPerson', 'securitySystem', 'security') * people;
+      const govt = getNonZeroTierVal(selectedFitout, 'govtApprovalsLicensesPerPerson', 'govtApprovalsLicenses', 'govtApproval') * people;
 
       const oneTimeCost = (
         securityDeposit +

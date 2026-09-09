@@ -79,8 +79,8 @@ export const submitLead = async (req, res) => {
       return 0;
     };
 
-    // Calculate One Time Cost from current MongoDB fitout tier values
-    const oneTimeCost = (
+    // Calculate One Time Cost from current MongoDB fitout tier values (Per-Person * team size)
+    const perPersonOneTimeCost = (
       getNonZeroTierVal(fitout, 'securityDepositPerPerson', 'securityDeposit') +
       getNonZeroTierVal(fitout, 'brokerCommissionPerPerson', 'brokerCommission') +
       getNonZeroTierVal(fitout, 'legalStampDutyPerPerson', 'legalStampDuty', 'legalStamp') +
@@ -91,6 +91,7 @@ export const submitLead = async (req, res) => {
       getNonZeroTierVal(fitout, 'securitySystemPerPerson', 'securitySystem', 'security') +
       getNonZeroTierVal(fitout, 'govtApprovalsLicensesPerPerson', 'govtApprovalsLicenses', 'govtApproval')
     );
+    const oneTimeCost = perPersonOneTimeCost * people;
 
     // Calculate Monthly Office Cost
     const monthlyOfficeCost = (config.rentPerPersonMonth + config.maintenanceAdminPerPersonMonth) * people;
