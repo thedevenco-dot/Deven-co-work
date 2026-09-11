@@ -368,6 +368,77 @@ function buildTrialConfirmationHtml(booking, logoUrl) {
 }
 
 /**
+ * Send email via Resend API with error handling, test mode fallback for unverified domains, and DB rollback.
+ */
+async function sendResendEmail({ from, to, replyTo, subject, html, headers = {} }) {
+  const resend = getResendClient();
+  if (!resend) {
+    console.warn('[EmailService] RESEND_API_KEY not configured. Skipping email dispatch.');
+    return { success: false, reason: 'RESEND_API_KEY missing' };
+  }
+
+  const recipient = (to || '').trim();
+  const testRecipient = process.env.TEST_EMAIL_RECIPIENT || 'saurabhrathore2005@gmail.com';
+
+  let { data, error } = await resend.emails.send({
+    from,
+    to: [recipient],
+    replyTo,
+    subject,
+    html,
+    headers,
+  });
+
+  // Handle Resend test mode restriction (403 validation_error for unverified domains e.g. onboarding@resend.dev)
+  if (
+    error &&
+    (error.statusCode === 403 ||
+      error.name === 'validation_error' ||
+      (error.message && error.message.includes('testing emails to your own email address')))
+  ) {
+    console.warn(
+      `[EmailService] Resend Test Mode restriction: Cannot send directly to "${recipient}" using domain "${from}". Rerouting email to account owner "${testRecipient}".`
+    );
+
+    const testBanner = `
+      <div style="background-color: #332b00; border: 1px solid #e6b800; color: #fff3cd; padding: 12px 16px; font-family: Arial, sans-serif; font-size: 13px; text-align: center; margin-bottom: 16px; border-radius: 4px;">
+        <strong>⚠️ [Resend Test Mode]</strong> This confirmation email was generated for <strong>${recipient}</strong>.<br/>
+        To enable direct delivery to all client email addresses, verify your domain at <a href="https://resend.com/domains" target="_blank" style="color: #04B8BB; font-weight: bold; text-decoration: underline;">resend.com/domains</a> and set <code>EMAIL_FROM</code> in <code>.env</code>.
+      </div>
+    `;
+
+    const modifiedHtml = testBanner + html;
+    const modifiedSubject = `[TEST MODE - For: ${recipient}] ${subject}`;
+
+    const retryResult = await resend.emails.send({
+      from,
+      to: [testRecipient],
+      replyTo,
+      subject: modifiedSubject,
+      html: modifiedHtml,
+      headers,
+    });
+
+    data = retryResult.data;
+    error = retryResult.error;
+
+    if (!error) {
+      console.log(
+        `[EmailService] Email successfully delivered to test recipient "${testRecipient}" for recipient "${recipient}" (ID: ${data?.id})`
+      );
+      return { success: true, messageId: data?.id, testModeRerouted: true };
+    }
+  }
+
+  if (error) {
+    console.error('[EmailService] Resend API error sending email:', error);
+    return { success: false, error };
+  }
+
+  return { success: true, messageId: data?.id };
+}
+
+/**
  * Send Seat Booking Confirmation Email safely
  */
 export async function sendBookingConfirmationEmail(booking) {
@@ -376,22 +447,22 @@ export async function sendBookingConfirmationEmail(booking) {
     return { success: false, reason: 'Missing email' };
   }
 
-  // Atomic duplicate check in DB to ensure single email dispatch per booking
-  const updatedDoc = await Reservation.findOneAndUpdate(
-    { _id: booking._id, confirmationEmailSent: { $ne: true } },
-    { $set: { confirmationEmailSent: true, confirmationEmailSentAt: new Date() } },
-    { new: true }
-  );
-
-  if (!updatedDoc) {
-    console.log(`[EmailService] Skipping duplicate booking confirmation email for #${booking._id}`);
-    return { success: true, skipped: true, reason: 'Already sent' };
-  }
-
-  const resend = getResendClient();
-  if (!resend) {
-    console.warn('[EmailService] RESEND_API_KEY not configured. Skipping email dispatch.');
-    return { success: false, reason: 'RESEND_API_KEY missing' };
+  let isExistingDbDoc = false;
+  if (booking._id) {
+    // Check if doc exists in DB
+    const existingDoc = await Reservation.findById(booking._id);
+    if (existingDoc) {
+      isExistingDbDoc = true;
+      if (existingDoc.confirmationEmailSent) {
+        console.log(`[EmailService] Skipping duplicate booking confirmation email for #${booking._id}`);
+        return { success: true, skipped: true, reason: 'Already sent' };
+      }
+      // Mark atomic claim
+      await Reservation.updateOne(
+        { _id: booking._id },
+        { $set: { confirmationEmailSent: true, confirmationEmailSentAt: new Date() } }
+      );
+    }
   }
 
   try {
@@ -401,27 +472,38 @@ export async function sendBookingConfirmationEmail(booking) {
     const replyTo = process.env.EMAIL_REPLY_TO || 'bookings@devencowork.com';
     const refId = getReferenceId(booking._id);
 
-    const { data, error } = await resend.emails.send({
+    const result = await sendResendEmail({
       from,
-      to: [booking.email.trim()],
+      to: booking.email,
       replyTo,
       subject: `Booking Confirmed — Deven Co-Work [Ref: #${refId}]`,
       html,
       headers: {
-        'X-Entity-Ref-ID': booking._id.toString(),
+        'X-Entity-Ref-ID': booking._id ? booking._id.toString() : 'TEST',
       },
     });
 
-    if (error) {
-      console.error('[EmailService] Resend API error sending booking confirmation:', error);
-      return { success: false, error };
+    if (!result.success && isExistingDbDoc) {
+      // Revert DB flag on failure so email can be retried
+      await Reservation.updateOne(
+        { _id: booking._id },
+        { $set: { confirmationEmailSent: false }, $unset: { confirmationEmailSentAt: 1 } }
+      );
     }
 
-    console.log(`[EmailService] Booking confirmation email successfully dispatched to ${booking.email} (ID: ${data?.id})`);
-    return { success: true, messageId: data?.id };
+    if (result.success) {
+      console.log(`[EmailService] Booking confirmation email successfully processed for ${booking.email} (ID: ${result.messageId})`);
+    }
+
+    return result;
   } catch (err) {
     console.error('[EmailService] Exception while sending booking confirmation email:', err.message || err);
-    // Return gracefully without throwing so payment flow is never broken
+    if (isExistingDbDoc) {
+      await Reservation.updateOne(
+        { _id: booking._id },
+        { $set: { confirmationEmailSent: false }, $unset: { confirmationEmailSentAt: 1 } }
+      );
+    }
     return { success: false, error: err.message };
   }
 }
@@ -435,22 +517,20 @@ export async function sendTrialConfirmationEmail(booking) {
     return { success: false, reason: 'Missing email' };
   }
 
-  // Atomic duplicate check in DB
-  const updatedDoc = await Reservation.findOneAndUpdate(
-    { _id: booking._id, confirmationEmailSent: { $ne: true } },
-    { $set: { confirmationEmailSent: true, confirmationEmailSentAt: new Date() } },
-    { new: true }
-  );
-
-  if (!updatedDoc) {
-    console.log(`[EmailService] Skipping duplicate trial confirmation email for #${booking._id}`);
-    return { success: true, skipped: true, reason: 'Already sent' };
-  }
-
-  const resend = getResendClient();
-  if (!resend) {
-    console.warn('[EmailService] RESEND_API_KEY not configured. Skipping email dispatch.');
-    return { success: false, reason: 'RESEND_API_KEY missing' };
+  let isExistingDbDoc = false;
+  if (booking._id) {
+    const existingDoc = await Reservation.findById(booking._id);
+    if (existingDoc) {
+      isExistingDbDoc = true;
+      if (existingDoc.confirmationEmailSent) {
+        console.log(`[EmailService] Skipping duplicate trial confirmation email for #${booking._id}`);
+        return { success: true, skipped: true, reason: 'Already sent' };
+      }
+      await Reservation.updateOne(
+        { _id: booking._id },
+        { $set: { confirmationEmailSent: true, confirmationEmailSentAt: new Date() } }
+      );
+    }
   }
 
   try {
@@ -460,26 +540,38 @@ export async function sendTrialConfirmationEmail(booking) {
     const replyTo = process.env.EMAIL_REPLY_TO || 'bookings@devencowork.com';
     const refId = getReferenceId(booking._id);
 
-    const { data, error } = await resend.emails.send({
+    const result = await sendResendEmail({
       from,
-      to: [booking.email.trim()],
+      to: booking.email,
       replyTo,
       subject: `Free Trial Confirmed — Deven Co-Work [Ref: #${refId}]`,
       html,
       headers: {
-        'X-Entity-Ref-ID': booking._id.toString(),
+        'X-Entity-Ref-ID': booking._id ? booking._id.toString() : 'TEST',
       },
     });
 
-    if (error) {
-      console.error('[EmailService] Resend API error sending trial confirmation:', error);
-      return { success: false, error };
+    if (!result.success && isExistingDbDoc) {
+      await Reservation.updateOne(
+        { _id: booking._id },
+        { $set: { confirmationEmailSent: false }, $unset: { confirmationEmailSentAt: 1 } }
+      );
     }
 
-    console.log(`[EmailService] Free Trial confirmation email successfully dispatched to ${booking.email} (ID: ${data?.id})`);
-    return { success: true, messageId: data?.id };
+    if (result.success) {
+      console.log(`[EmailService] Free Trial confirmation email successfully processed for ${booking.email} (ID: ${result.messageId})`);
+    }
+
+    return result;
   } catch (err) {
     console.error('[EmailService] Exception while sending trial confirmation email:', err.message || err);
+    if (isExistingDbDoc) {
+      await Reservation.updateOne(
+        { _id: booking._id },
+        { $set: { confirmationEmailSent: false }, $unset: { confirmationEmailSentAt: 1 } }
+      );
+    }
     return { success: false, error: err.message };
   }
 }
+
