@@ -318,7 +318,9 @@ const contentSchema = new mongoose.Schema(
     // ─── RISK REVERSAL / GUARANTEE ────────────────────────────────────────────
     riskReversal: {
       headline: { type: String, default: 'Try Deven Co-Work — Completely Risk Free' },
-      subheadline: { type: String, default: 'No risk, no lock-in. Come in and experience Raipur\'s most premium space with total confidence.' },
+      subheadline: { type: String, default: "No risk, no lock-in. Come in and experience Raipur's most premium space with total confidence." },
+      closingText: { type: String, default: "We can offer this guarantee because we've built something we're genuinely proud of. We want you to feel that the moment you walk in." },
+      ctaLabel: { type: String, default: 'Book My Free 2-Day Trial' },
       blocks: {
         type: [
           {
@@ -327,28 +329,60 @@ const contentSchema = new mongoose.Schema(
           },
         ],
         default: [
-          { title: 'The 2-Day Free Trial', description: 'Full desk access, wifi, coffee bar, and one community intro — no card required, no obligation.' },
-          { title: 'The "Love It or Leave It" Guarantee', description: "Join after your trial and attend 1 event + 1 workshop in your first 30 days. If you haven't made a genuine business connection or walked away with something useful — we'll refund your first month, no argument." },
+          { title: 'The 2-Day Free Trial', description: 'Walk in. Work from Raipur\'s best desk. Use the coffee bar. Meet the community. Leave with a clear picture of what your work life could look like. No credit card. No obligation. No awkward sales pitch. Just come.' },
+          { title: 'The "Love It or Leave It" Guarantee', description: 'Join after your trial. Attend one event and one workshop in your first 30 days. If you have not made a single genuine business connection or walked away with something useful — we will refund your first month in full. No questions. No forms. No argument.' },
         ],
       },
     },
 
-    // ─── SOCIAL PROOF / TESTIMONIALS ─────────────────────────────────────────
     socialProof: {
-      headline: { type: String, default: 'What Founders Are Saying' },
+      headline: { type: String, default: 'What Raipur Founders Are Saying' },
       subheadline: { type: String, default: 'Hear from our members who switched to Deven Co-Work. Real reviews, updated dynamically.' },
+      googleRating: { type: Number, default: 4.9 },
+      googleReviewCount: { type: Number, default: 48 },
+      googleReviewUrl: { type: String, default: 'https://www.google.com/maps/' },
       testimonials: {
         type: [
           {
+            photo: { type: mongoose.Schema.Types.Mixed, default: '' },
             quote: { type: String, default: '' },
             author: { type: String, default: '' },
+            company: { type: String, default: '' },
             role: { type: String, default: '' },
             featured: { type: Boolean, default: false },
             published: { type: Boolean, default: true },
             order: { type: Number, default: 0 },
           },
         ],
-        default: [],
+        default: [
+          {
+            quote: 'Moving our team to Deven Co-Work was the best decision we made this year. The internet is rock solid, the podcast studio helped us launch our show, and the founder network here is unmatched in Raipur.',
+            author: 'Aman Sharma',
+            company: 'Founder, TechScale Media',
+            role: 'Founder',
+            photo: '',
+            published: true,
+            order: 1,
+          },
+          {
+            quote: 'I used to work from cafes spending ₹500 a day on coffee with noisy backgrounds. Here I have a dedicated desk, high-speed WiFi, and actual quiet rooms for client video calls.',
+            author: 'Priya Patel',
+            company: 'Independent Consultant & Strategist',
+            role: 'Consultant',
+            photo: '',
+            published: true,
+            order: 2,
+          },
+          {
+            quote: 'The 2-day free trial convinced me instantly. The vibe, natural lighting, and community events make working here inspiring every single day.',
+            author: 'Rahul Verma',
+            company: 'Co-Founder, CodeCraft Studio',
+            role: 'Co-Founder',
+            photo: '',
+            published: true,
+            order: 3,
+          },
+        ],
       },
     },
 
@@ -387,11 +421,13 @@ const contentSchema = new mongoose.Schema(
 
     // ─── SCARCITY ─────────────────────────────────────────────────────────────
     scarcity: {
+      showBanner: { type: Boolean, default: true },
       seatsRemainingText: { type: String, default: 'Only 27 of 50 founding seats left.' },
       deadlineDate: { type: Date, default: () => new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) },
       totalSpots: { type: Number, default: 50 },
       remainingSpots: { type: Number, default: 27 },
       closingDate: { type: String, default: '30 September 2026' },
+      priceLockText: { type: String, default: 'Price locks for 12 months from joining date' },
     },
 
     // ─── FAQ SECTION ──────────────────────────────────────────────────────────

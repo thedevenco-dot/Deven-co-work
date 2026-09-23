@@ -3,8 +3,10 @@ import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronDown,
   Clock3, MapPin, MessageCircle, Phone, ShieldCheck, Users, X,
-  Wifi, Coffee, Briefcase, Home as HomeIcon, Zap, Star
+  Wifi, Coffee, Briefcase, Home as HomeIcon, Zap, Star,
+  BookOpen, Sparkles, TrendingUp
 } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -23,7 +25,7 @@ export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 
 const queryClient = new QueryClient();
 
-// ─── DEFAULT CONTENT ─────────────────────────────────────────────────────────
+// â”€â”€â”€ DEFAULT CONTENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const defaultContent = {
   globalSettings: {
     businessName: 'Deven Co-Work',
@@ -54,8 +56,12 @@ const defaultContent = {
   },
   navigation: {
     items: [
-      { label: 'Pricing', url: '#pricing', external: false, visible: true, order: 0 },
-      { label: 'Contact', url: '#reservation', external: false, visible: true, order: 2 },
+      { label: 'Our Space', url: '#space', external: false, visible: true, order: 0 },
+      { label: "Founder's OS", url: '#offer-stack', external: false, visible: true, order: 1 },
+      { label: 'How It Works', url: '#how-it-works', external: false, visible: true, order: 2 },
+      { label: 'Pricing', url: '#pricing', external: false, visible: true, order: 3 },
+      { label: 'FAQ', url: '#faq', external: false, visible: true, order: 4 },
+      { label: 'Contact', url: '#reservation', external: false, visible: true, order: 5 },
     ],
     ctaLabel: 'Book Free Trial',
     ctaUrl: '#reservation',
@@ -173,15 +179,48 @@ const defaultContent = {
   riskReversal: {
     headline: 'Try Deven Co-Work —\nCompletely Risk Free',
     subheadline: "No risk, no lock-in. Come in and experience Raipur's most premium space with total confidence.",
+    closingText: "We can offer this guarantee because we've built something we're genuinely proud of. We want you to feel that the moment you walk in.",
+    ctaLabel: 'Book My Free 2-Day Trial',
     blocks: [
-      { title: 'The 2-Day Free Trial', description: 'Full desk access, wifi, coffee bar, and one community intro — no card required, no obligation.' },
-      { title: 'The "Love It or Leave It" Guarantee', description: "Join after your trial and attend 1 event + 1 workshop in your first 30 days. If you haven't made a genuine business connection or walked away with something useful — we'll refund your first month, no argument." },
+      { title: 'The 2-Day Free Trial', description: 'Walk in. Work from Raipur\'s best desk. Use the coffee bar. Meet the community. Leave with a clear picture of what your work life could look like. No credit card. No obligation. No awkward sales pitch. Just come.' },
+      { title: 'The "Love It or Leave It" Guarantee', description: 'Join after your trial. Attend one event and one workshop in your first 30 days. If you have not made a single genuine business connection or walked away with something useful — we will refund your first month in full. No questions. No forms. No argument.' },
     ],
   },
   socialProof: {
-    headline: 'What Founders Are Saying',
-    subheadline: 'Hear from our members who switched to Deven Co-Work. Real reviews, updated dynamically.',
-    testimonials: [],
+    headline: "Don't Take Our Word For It",
+    subheadline: 'Hear from Raipur founders who switched to Deven Co-Work.',
+    googleRating: 4.9,
+    googleReviewCount: 48,
+    googleReviewUrl: 'https://www.google.com/maps/',
+    testimonials: [
+      {
+        quote: "Moving our team to Deven Co-Work was the best decision we made this year. The internet is rock solid, the podcast studio helped us launch our show, and the founder network here is unmatched in Raipur.",
+        author: "Aman Sharma",
+        company: "Founder, TechScale Media",
+        role: "Founder",
+        photo: "",
+        published: true,
+        order: 1
+      },
+      {
+        quote: "I used to work from cafes spending ₹500 a day on coffee with noisy backgrounds. Here I have a dedicated desk, high-speed WiFi, and actual quiet rooms for client video calls.",
+        author: "Priya Patel",
+        company: "Independent Consultant & Strategist",
+        role: "Consultant",
+        photo: "",
+        published: true,
+        order: 2
+      },
+      {
+        quote: "The 2-day free trial convinced me instantly. The vibe, natural lighting, and community events make working here inspiring every single day.",
+        author: "Rahul Verma",
+        company: "Co-Founder, CodeCraft Studio",
+        role: "Co-Founder",
+        photo: "",
+        published: true,
+        order: 3
+      }
+    ],
   },
   pricing: {
     headline: 'Choose the room that fits the way you work.',
@@ -196,23 +235,27 @@ const defaultContent = {
     ],
   },
   scarcity: {
+    showBanner: true,
     seatsRemainingText: 'Only 27 of 50 founding seats left.',
     deadlineDate: null,
     totalSpots: 50,
     remainingSpots: 27,
     closingDate: '30 September 2026',
+    priceLockText: 'Price locks for 12 months from joining date',
   },
   faqSection: {
-    headline: 'Before You Come In',
+    headline: 'Everything You Wanted to Ask',
     subheadline: 'Everything you need to know about memberships, pricing, rules, and billing details.',
   },
   faq: [
-    { question: 'Do I need to commit long-term?', answer: 'No. Month-to-month is available. Annual plans get 2 free months if you want to lock in the lowest rate.', published: true, order: 0 },
-    { question: 'What happens after the 2-day free trial?', answer: 'Nothing automatic — no card is charged. If you love it, our team helps you pick the right plan.', published: true, order: 1 },
-    { question: 'What if I want to cancel?', answer: "30 days' notice, no penalties, no hidden fees.", published: true, order: 2 },
-    { question: 'Can I upgrade later?', answer: 'Yes, anytime — Founding Members get priority access.', published: true, order: 3 },
-    { question: 'Is the Founding Member price really locked?', answer: 'Yes — for 12 months from the day you join, even as standard prices increase.', published: true, order: 4 },
-    { question: 'Where exactly is Deven Co-Work located?', answer: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001 — right in the heart of Raipur, easily reachable from anywhere in the city.', published: true, order: 5 },
+    { question: 'Do I need to commit to a long-term contract?', answer: 'No. Month-to-month is available on all plans. If you want the lowest possible rate, annual plans give you 2 months free — but there is absolutely no pressure to commit until you are ready.', published: true, order: 1 },
+    { question: 'What happens after my 2-day free trial?', answer: 'Nothing automatic. No card is charged. If you love it, our team will help you pick the right plan and get you moved in. If you are not ready, we will stay in touch — no pressure, ever.', published: true, order: 2 },
+    { question: 'What if I join and then want to cancel?', answer: '30 days notice, no penalties, no hidden fees. We want you here because you love it — not because we have trapped you.', published: true, order: 3 },
+    { question: 'Can I upgrade later — say, from Hot Desk to a Cabin?', answer: 'Yes, anytime. Founding Members get priority access when a spot opens at a higher tier.', published: true, order: 4 },
+    { question: 'Is the Founding Member price really locked for 12 months?', answer: 'Yes — locked from the day you join, even as standard prices increase. This is a genuine commitment from us, not a marketing trick.', published: true, order: 5 },
+    { question: 'Where exactly is Deven Co-Work located?', answer: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001 — right in the heart of Raipur, easily reachable from anywhere in the city.', published: true, order: 6 },
+    { question: 'Can I use the Content Studio and Meeting Room?', answer: 'Yes — both are included in your membership. Available on a booking basis — priority given to Founding Members.', published: true, order: 7 },
+    { question: 'I work irregular hours. Is that okay?', answer: 'Deven Co-Work is open 9 AM to 9 PM, 7 days a week. 12 hours of access, every single day — including weekends.', published: true, order: 8 },
   ],
   finalCTA: {
     headline: 'Your First Day Is Free. Come See Why Founders Are Switching.',
@@ -273,7 +316,7 @@ const defaultContent = {
   },
 };
 
-// ─── DEEP MERGE ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ DEEP MERGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function mergeContent(defaults, fetched) {
   if (!fetched) return defaults;
   const merged = { ...defaults };
@@ -295,7 +338,7 @@ function mergeContent(defaults, fetched) {
 }
 
 
-// ─── ANIMATION VARIANTS ───────────────────────────────────────────────────────
+// â”€â”€â”€ ANIMATION VARIANTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (delay = 0) => ({
@@ -310,7 +353,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.09 } },
 };
 
-// ─── SCROLL REVEAL WRAPPER ────────────────────────────────────────────────────
+// â”€â”€â”€ SCROLL REVEAL WRAPPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function RevealOnScroll({ children, className = '', delay = 0, once = true }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once, amount: 0.18 });
@@ -328,7 +371,7 @@ function RevealOnScroll({ children, className = '', delay = 0, once = true }) {
   );
 }
 
-// ─── HIGHLIGHT WORDS ──────────────────────────────────────────────────────────
+// â”€â”€â”€ HIGHLIGHT WORDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Wraps specified words in a yellow span. Words from CMS `highlightWords` or hard-coded list.
 function HighlightedText({ text, highlightWords = [] }) {
   if (!text) return null;
@@ -339,14 +382,14 @@ function HighlightedText({ text, highlightWords = [] }) {
     <>
       {parts.map((part, i) =>
         highlightWords.some(w => w.toLowerCase() === part.toLowerCase())
-          ? <span key={i} className="text-[#04B8BB]">{part}</span>
+          ? <span key={i} className="text-[#DF9716]">{part}</span>
           : <span key={i}>{part}</span>
       )}
     </>
   );
 }
 
-// ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
+// â”€â”€â”€ SHARED COMPONENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Button({ children, onClick, href, className = '', variant = 'primary', testId, disabled }) {
   const content = <>{children}<ArrowUpRight size={14} strokeWidth={2.5} /></>;
@@ -375,7 +418,7 @@ function Logo({ logoUrl }) {
   );
 }
 
-// ─── IMAGE WITH FALLBACK ──────────────────────────────────────────────────────
+// â”€â”€â”€ IMAGE WITH FALLBACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function SafeImage({ src, alt = '', className = '', style }) {
   const [failed, setFailed] = useState(false);
   if (!src || failed) return null;
@@ -391,7 +434,25 @@ function SafeImage({ src, alt = '', className = '', style }) {
   );
 }
 
-// ─── HEADER ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── FOUNDING BANNER ────────────────────────────────────────────────────────
+function FoundingBanner({ scarcity }) {
+  const s = scarcity || defaultContent.scarcity;
+  if (!s || s.showBanner === false || (s.remainingSpots !== undefined && s.remainingSpots <= 0)) {
+    return null;
+  }
+
+  const remaining = typeof s.remainingSpots === 'number' ? s.remainingSpots : 27;
+  const total = typeof s.totalSpots === 'number' ? s.totalSpots : 50;
+  const priceLock = s.priceLockText || 'Price locks for 12 months';
+
+  return (
+    <div className="bg-[#DF9716] text-[#0C0C0C] py-2 px-4 text-center text-xs font-bold tracking-wide border-b border-[#0C0C0C]/10 flex items-center justify-center gap-2 relative z-30">
+      <span>⚡ Only <span className="underline font-extrabold">{remaining} of {total}</span> Founding Member spots remaining &mdash; {priceLock}</span>
+    </div>
+  );
+}
+
 function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   const [solid, setSolid] = useState(false);
 
@@ -413,11 +474,10 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   if (!data) {
     return (
       <header
-        className={`fixed left-0 right-0 top-0 z-30 transition-all duration-300 ${
-          solid
+        className={`w-full transition-all duration-300 ${solid
             ? 'bg-[#024E5C]/95 backdrop-blur-md border-b border-[rgba(252,250,249,0.14)]'
-            : 'bg-transparent'
-        }`}
+            : 'bg-[#024E5C]/90 backdrop-blur-sm'
+          }`}
       >
         <div className="container-wide flex h-[70px] items-center justify-between gap-4">
           <Logo logoUrl="" />
@@ -436,11 +496,10 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
 
   return (
     <header
-      className={`fixed left-0 right-0 top-0 z-30 transition-all duration-300 ${
-        solid
+      className={`w-full transition-all duration-300 ${solid
           ? 'bg-[#024E5C]/95 backdrop-blur-md border-b border-[rgba(252,250,249,0.14)]'
-          : 'bg-transparent'
-      }`}
+          : 'bg-[#024E5C]/90 backdrop-blur-sm'
+        }`}
     >
       <div className="container-wide flex h-[70px] items-center justify-between gap-4">
         <Logo logoUrl={logoUrl} />
@@ -453,10 +512,10 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
               target={item.external ? '_blank' : undefined}
               rel={item.external ? 'noreferrer' : undefined}
               onClick={(e) => handleNavClick(e, item.url)}
-              className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
+              className="hover:text-[#DF9716] transition-colors relative group text-[#FCFAF9]/85"
             >
               {item.label}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#DF9716] transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
         </nav>
@@ -464,7 +523,7 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
         <div className="flex items-center gap-5">
           <a
             href={cleanPhoneHref}
-            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#04B8BB] transition-colors hover:text-white sm:inline"
+            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#DF9716] transition-colors hover:text-white sm:inline"
             data-testid="link-header-phone"
           >
             {phone}
@@ -485,7 +544,7 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   );
 }
 
-// ─── HERO ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [videoFailed, setVideoFailed] = useState(false);
   const [mediaReady, setMediaReady] = useState(false);
@@ -598,9 +657,9 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="section-label mb-8"
-          style={{ '--section-label-color': '#04B8BB' }}
+          style={{ '--section-label-color': '#DF9716' }}
         >
-          {data.eyebrow || "DEVEN WORKSPACE — RAIPUR"}
+          {data.eyebrow || "DEVEN WORKSPACE â€” RAIPUR"}
         </motion.div>
 
         {/* Main content grid */}
@@ -653,12 +712,56 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               </a>
             </motion.div>
 
+            {/* Trust bar â€” factual, from existing content */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.38 }}
+              className="mt-7 flex flex-wrap gap-x-6 gap-y-2"
+              data-testid="hero-trust-bar"
+            >
+              {[
+                { icon: <Check size={10} strokeWidth={3} />, text: '2-Day Free Trial â€” No card required' },
+                { icon: <Wifi size={10} strokeWidth={2.5} />, text: '500 Mbps WiFi' },
+                { icon: <MapPin size={10} strokeWidth={2.5} />, text: 'Raipur City Centre' },
+              ].map((item, i) => (
+                <span
+                  key={i}
+                  className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#FCFAF9]/60"
+                >
+                  <span className="text-[#DF9716]">{item.icon}</span>
+                  {item.text}
+                </span>
+              ))}
+            </motion.div>
+
+            {/* Guarantee hero badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.41 }}
+              className="mt-7"
+              data-testid="hero-guarantee-badge"
+            >
+              <div className="inline-flex items-center gap-3 bg-[#024E5C] border border-[#DF9716]/50 px-4 py-2.5 rounded-sm">
+                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#DF9716] flex items-center justify-center">
+                  <Check size={13} strokeWidth={3} className="text-black" />
+                </div>
+                <div>
+                  <div className="text-[9px] font-black uppercase tracking-[0.18em] text-[#DF9716]">Risk-Free Guarantee</div>
+                  <div className="text-[10px] font-semibold text-[#FCFAF9]/90 leading-tight mt-0.5">
+                    2-Day Free Trial &middot; Love It or Leave It
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
             {data.foundingPriceNote && (
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.42, duration: 0.5 }}
-                className="mt-7 text-[10px] text-[#FCFAF9]/60 uppercase tracking-[0.16em] font-bold"
+                transition={{ delay: 0.45, duration: 0.5 }}
+                className="mt-5 text-[10px] text-[#FCFAF9]/60 uppercase tracking-[0.16em] font-bold"
               >
                 {data.foundingPriceNote}
               </motion.p>
@@ -674,7 +777,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           >
             {floatingStats.map((stat, i) => (
               <div key={i} className="floating-card min-w-[160px]">
-                <div className="font-display font-black text-[28px] leading-none text-[#04B8BB]">
+                <div className="font-display font-black text-[28px] leading-none text-[#DF9716]">
                   {stat.value}
                 </div>
                 <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#FCFAF9]/75 mt-2">
@@ -722,7 +825,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-[52px] right-8 hidden items-center gap-2.5 text-[9px] uppercase tracking-[.22em] text-[#FCFAF9]/55 font-bold lg:flex">
-        <ArrowDownRight size={13} className="text-[#04B8BB]" />
+        <ArrowDownRight size={13} className="text-[#DF9716]" />
         Scroll to discover
       </div>
     </section>
@@ -743,18 +846,18 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
   const gallery = data.gallery || defaultContent.guide.gallery;
 
   return (
-    <section className="bg-[#024E5C] text-[#FCFAF9] border-y border-[rgba(252,250,249,0.16)] py-24 sm:py-36" data-testid="section-guide">
+    <section className="bg-[#024E5C] text-[#FCFAF9] border-y border-[rgba(252,250,249,0.16)] py-24 sm:py-36" id="space" data-testid="section-guide">
       <div className="container-wide">
         {/* Top: Brand statement */}
         <div className="grid gap-y-12 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-24 items-start">
           <RevealOnScroll>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-[#04B8BB] font-bold">02 — THE SPACE</div>
+            <div className="text-[10px] uppercase tracking-[0.28em] text-[#DF9716] font-bold">02 — THE SPACE</div>
             <h2 className="mt-6 font-display font-black leading-[1.01] text-[#FCFAF9] uppercase tracking-tight"
               style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}>
               {data.headline || 'We Built the Space Raipur Founders Actually Deserve.'}
             </h2>
             {/* Oversized watermark text */}
-            <div className="mt-10 flex flex-col gap-0 font-display font-black tracking-tighter leading-none select-none opacity-[0.05] text-[#04B8BB]"
+            <div className="mt-10 flex flex-col gap-0 font-display font-black tracking-tighter leading-none select-none opacity-[0.05] text-[#DF9716]"
               style={{ fontSize: 'clamp(52px, 8vw, 100px)' }}>
               <span>WORK</span>
               <span>SPACE</span>
@@ -791,7 +894,7 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
                   className="img-editorial img-zoom transition-opacity duration-500"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-4 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-black/65 backdrop-blur-sm">
-                  <div className="h-px w-8 bg-[#04B8BB] mb-2" />
+                  <div className="h-px w-8 bg-[#DF9716] mb-2" />
                   <span className="text-[9px] font-bold uppercase tracking-[.18em] text-white block">{gallery[0].label}</span>
                   {gallery[0].caption && <span className="text-[10px] text-white/70 mt-0.5 block">{gallery[0].caption}</span>}
                 </div>
@@ -807,7 +910,7 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
                   className="img-editorial img-zoom transition-opacity duration-500"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-3 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-black/65 backdrop-blur-sm">
-                  <div className="h-px w-5 bg-[#04B8BB] mb-1.5" />
+                  <div className="h-px w-5 bg-[#DF9716] mb-1.5" />
                   <span className="text-[9px] font-bold uppercase tracking-[.15em] text-white block">{item.label}</span>
                 </div>
               </RevealOnScroll>
@@ -854,7 +957,7 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
               {(data.headline || 'The problems we all\npretend are normal.').split('\n').map((line, i, arr) => (
                 <span key={i} className="block">
                   {i === arr.length - 1 ? (
-                    <><span className="text-[#0C0C0C]/60">{line.slice(0, -1)}</span><span className="text-[#04B8BB]">{line.slice(-1)}</span></>
+                    <><span className="text-[#0C0C0C]/60">{line.slice(0, -1)}</span><span className="text-[#DF9716]">{line.slice(-1)}</span></>
                   ) : line}
                 </span>
               ))}
@@ -882,7 +985,7 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
                     "{quoteText}"
                   </p>
                   {data.quoteAuthor && (
-                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#04B8BB]">
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#DF9716]">
                       — {data.quoteAuthor}
                     </p>
                   )}
@@ -921,173 +1024,216 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
               </motion.div>
             ))}
             {pointsToRender.length === 0 && (
-              <p className="py-8 text-[13px] text-[#555]">No problem points added yet.</p>
+              <div className="py-8 text-sm text-[#0C0C0C]/60 italic">No points listed.</div>
             )}
           </motion.div>
-
-          {showCta && (
-            <RevealOnScroll delay={0.2} className="mt-10 pt-8 border-t border-[rgba(12,12,12,0.14)]">
-              <Button
-                href={ctaUrl}
-                onClick={ctaUrl.startsWith('#') ? (e) => {
-                  e.preventDefault();
-                  if (ctaUrl === '#reservation') onReserve();
-                  else document.querySelector(ctaUrl)?.scrollIntoView({ behavior: 'smooth' });
-                } : undefined}
-                testId="button-problems-tour"
-              >
-                {ctaLabel}
-              </Button>
-            </RevealOnScroll>
-          )}
         </div>
       </div>
     </section>
   );
 }
 
+// ─── PLAN / 3-STEP PROCESS ───────────────────────────────────────────────────
 function Plan({ plan, onReserve, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? plan : (cmsFailed ? defaultContent.plan : null);
 
   if (!data) {
     return (
-      <section className="border-b border-[rgba(12,12,12,0.14)] bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36" data-testid="section-plan">
+      <section className="bg-[#0C0C0C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.14)]" data-testid="section-plan">
         <div className="container-wide min-h-[400px]" />
       </section>
     );
   }
 
-  const steps = data.steps || [];
+  const steps = data.steps && data.steps.length > 0 ? data.steps : defaultContent.plan.steps;
 
   return (
-    <section className="border-b border-[rgba(12,12,12,0.14)] bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36" data-testid="section-plan">
-      <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
-        <RevealOnScroll>
-          <div className="section-label mb-6">03 — THE PLAN</div>
+    <section className="bg-[#0C0C0C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.14)]" id="how-it-works" data-testid="section-plan">
+      <div className="container-wide">
+        <RevealOnScroll className="text-center max-w-[760px] mx-auto mb-16">
+          <div className="text-[10px] uppercase tracking-[0.28em] text-[#DF9716] font-bold mb-3">HOW IT WORKS</div>
           <h2
-            className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
-            style={{ fontSize: 'clamp(30px, 4vw, 50px)' }}
+            className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
+            style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
           >
             {data.headline || 'Getting Started Is Simple'}
           </h2>
-          <div className="mt-10">
-            <Button onClick={onReserve} testId="button-plan-reserve">
-              {data.ctaLabel || 'Start With Your Free Trial'}
-            </Button>
-          </div>
         </RevealOnScroll>
 
-        <div className="border-t border-[rgba(12,12,12,0.14)]">
-          {steps.map((step, index) => (
-            <RevealOnScroll key={index} delay={index * 0.1} className="border-b border-[rgba(12,12,12,0.14)] py-9 flex items-start gap-7">
-              <span
-                className="font-display font-black text-[#04B8BB] shrink-0 leading-none"
-                style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}
-              >
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <div>
-                <h4 className="font-display text-[16px] font-bold text-[#0C0C0C] uppercase tracking-[0.02em]">{step.title}</h4>
-                <p className="mt-3 text-[13px] leading-[1.7] text-[#0C0C0C]/75">{step.description}</p>
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-3">
+          {steps.map((step, idx) => (
+            <RevealOnScroll key={idx} delay={idx * 0.1} className="h-full">
+              <div className="bg-[#141414] border border-[rgba(252,250,249,0.12)] p-8 flex flex-col justify-between h-full rounded-sm relative group hover:border-[#DF9716]/60 transition-colors">
+                <div>
+                  <div className="font-display font-black text-3xl text-[#DF9716] mb-4">
+                    {String(idx + 1).padStart(2, '0')}
+                  </div>
+                  <h3 className="font-display text-[16px] font-bold text-[#FCFAF9] uppercase tracking-[0.05em] mb-3">
+                    {step.title}
+                  </h3>
+                  <p className="text-[13px] leading-[1.7] text-[#FCFAF9]/75">
+                    {step.description}
+                  </p>
+                </div>
               </div>
             </RevealOnScroll>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
 
-// ─── OFFER STACK ──────────────────────────────────────────────────────────────
-function OfferStack({ onReserve, offerStack, cmsLoaded, cmsFailed }) {
-  const [openIdx, setOpenIdx] = useState(null);
-  const data = cmsLoaded ? offerStack : (cmsFailed ? defaultContent.offerStack : null);
-
-  if (!data) {
-    return (
-      <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-offer">
-        <div className="container-wide min-h-[500px]" />
-      </section>
-    );
-  }
-
-  const tiers = data.tiers || [];
-
-  return (
-    <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-offer">
-      <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
-        <RevealOnScroll>
-          <div className="section-label mb-6">04 — THE FOUNDER'S OS</div>
-          <h2
-            className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
-            style={{ fontSize: 'clamp(28px, 3.8vw, 48px)' }}
+        <div className="mt-14 text-center">
+          <button
+            type="button"
+            onClick={onReserve}
+            className="button button-primary px-8 py-4 text-base font-bold shadow-lg"
+            data-testid="button-plan-cta"
           >
-            {data.headline || "Everything Included in The Deven Founder's OS"}
-          </h2>
-          <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[420px]">
-            {data.subheadline || 'Not a list of amenities. A complete system to work, grow, and be seen.'}
-          </p>
-          <div className="mt-10">
-            <Button onClick={onReserve} testId="button-offer-reserve">Claim Your Founding Spot</Button>
-          </div>
-        </RevealOnScroll>
-
-        <div className="border-t border-[rgba(252,250,249,0.16)] divide-y divide-[rgba(252,250,249,0.16)]">
-          {tiers.map((tier, index) => (
-            <div key={index}>
-              <button
-                type="button"
-                onClick={() => setOpenIdx(openIdx === index ? null : index)}
-                className="w-full py-7 flex items-center justify-between gap-4 text-left group"
-                aria-expanded={openIdx === index}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="font-display text-[10px] font-bold text-[#04B8BB]">{String(index + 1).padStart(2, '0')}</span>
-                  <h4 className="font-display text-[14px] font-bold text-[#FCFAF9] uppercase tracking-[0.05em] group-hover:text-[#04B8BB] transition-colors">
-                    {tier.heading}
-                  </h4>
-                  {tier.isDevenEdge && (
-                    <span className="hidden sm:inline text-[8px] font-black uppercase tracking-[.18em] bg-[#04B8BB] text-[#0C0C0C] px-2 py-0.5">
-                      DEVEN EDGE
-                    </span>
-                  )}
-                </div>
-                <ChevronDown
-                  size={15}
-                  className={`shrink-0 text-[#04B8BB] transition-transform duration-300 ${openIdx === index ? 'rotate-180' : ''}`}
-                />
-              </button>
-              <AnimatePresence>
-                {openIdx === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ overflow: 'hidden' }}
-                  >
-                    <div className="pb-8">
-                      <ul className="grid gap-x-8 gap-y-3 grid-cols-1 sm:grid-cols-2 text-[13px] leading-[1.65] text-[#FCFAF9]/75">
-                        {(tier.items || []).map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-3">
-                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#04B8BB]/60 shrink-0" />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+            {data.ctaLabel || 'Start With Your Free Trial'} &rarr;
+          </button>
         </div>
       </div>
     </section>
   );
 }
 
-// ─── VALUE STACK ──────────────────────────────────────────────────────────────
+// ─── OFFER STACK (6 ICON CARDS) & VALUE REVEAL ──────────────────────────────
+function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? offerStack : (cmsFailed ? defaultContent.offerStack : null);
+  const valData = cmsLoaded ? valueStack : (cmsFailed ? defaultContent.valueStack : null);
+
+  const fallbackData = defaultContent.offerStack;
+  const tiers = (data?.tiers && data.tiers.length > 0) ? data.tiers : fallbackData.tiers;
+
+  const totalValueStr = valData?.totalValue || defaultContent.valueStack.totalValue || '₹25,000+/month';
+  const foundingPriceStr = valData?.foundingPrice || defaultContent.valueStack.foundingPrice || 'From ₹5,999/month';
+
+  const categoryIcons = {
+    'THE WORKSPACE': Briefcase,
+    'THE GROWTH ENGINE': Zap,
+    'THE PERSONAL BRAND BOOST': Sparkles,
+    'THE LEARNING': BookOpen,
+    'COMMUNITY': Users,
+    'THE CONNECT': Users,
+    'THE RISK-FREE ENTRY': ShieldCheck,
+  };
+
+  const defaultIcons = [Briefcase, Zap, Sparkles, BookOpen, Users, ShieldCheck];
+
+  return (
+    <section className="bg-[#F9F9F9] text-[#0C0C0C] py-24 sm:py-36 border-b border-[rgba(12,12,12,0.12)]" id="offer-stack" data-testid="section-offer">
+      <div className="container-wide">
+        {/* Header */}
+        <RevealOnScroll className="text-center max-w-[760px] mx-auto mb-16">
+          <div className="text-[10px] uppercase tracking-[0.28em] text-[#024E5C] font-black mb-3">EVERYTHING YOU GET</div>
+          <h2
+            className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
+            style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
+          >
+            {data?.headline || "The Deven Founder's OS — Everything Included"}
+          </h2>
+          <p className="mt-5 text-[15px] leading-[1.75] text-[#0C0C0C]/70">
+            {data?.subheadline || "This is not a list of amenities. It's a complete system — built so you can focus on growing your business, not managing your workspace."}
+          </p>
+        </RevealOnScroll>
+
+        {/* 6 Icon Cards Grid: 2x3 Desktop, 1-col Mobile */}
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {tiers.slice(0, 6).map((tier, index) => {
+            const IconComponent = categoryIcons[tier.heading?.toUpperCase()] || defaultIcons[index % defaultIcons.length] || Briefcase;
+            // Display top 3-4 key items for quick scanning
+            const visibleItems = (tier.items || []).slice(0, 4);
+
+            return (
+              <RevealOnScroll key={index} delay={index * 0.08} className="h-full">
+                <div className="bg-white border border-[rgba(12,12,12,0.12)] hover:border-[#DF9716]/60 p-7 sm:p-8 flex flex-col justify-between h-full transition-all duration-300 shadow-sm hover:shadow-md relative group rounded-sm">
+                  {tier.isDevenEdge && (
+                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-[.18em] bg-[#DF9716] text-[#0C0C0C] px-2.5 py-1 rounded-xs">
+                      DEVEN EDGE
+                    </span>
+                  )}
+                  <div>
+                    {/* Icon */}
+                    <div className="w-12 h-12 rounded-full bg-[#024E5C]/10 border border-[#024E5C]/20 flex items-center justify-center text-[#024E5C] group-hover:bg-[#DF9716]/15 group-hover:text-[#0C0C0C] transition-colors mb-5">
+                      <IconComponent size={22} strokeWidth={2.2} />
+                    </div>
+
+                    {/* Tier Title */}
+                    <h3 className="font-display text-[15px] font-black text-[#0C0C0C] uppercase tracking-[0.05em] mb-4">
+                      {tier.heading}
+                    </h3>
+
+                    {/* Key Benefits */}
+                    <ul className="space-y-2.5 text-[13px] leading-[1.6] text-[#0C0C0C]/80 font-medium">
+                      {visibleItems.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <Check size={14} strokeWidth={3} className="text-[#024E5C] mt-0.5 shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {tier.items && tier.items.length > 4 && (
+                    <div className="mt-5 pt-3 border-t border-[rgba(12,12,12,0.06)] text-[10px] font-bold text-[#024E5C]/70 uppercase tracking-wider">
+                      + {tier.items.length - 4} more benefits included
+                    </div>
+                  )}
+                </div>
+              </RevealOnScroll>
+            );
+          })}
+        </div>
+
+        {/* Dramatic Value Reveal Block */}
+        <RevealOnScroll delay={0.2} className="mt-16">
+          <div className="bg-[#024E5C] border border-[#024E5C] p-8 sm:p-12 text-[#FCFAF9] text-center max-w-[880px] mx-auto rounded-sm relative overflow-hidden shadow-xl">
+            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#DF9716] mb-4">
+              TRUE MARKET VALUE VS FOUNDING MEMBER PRICE
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 my-6">
+              {/* Market Value */}
+              <div className="text-center sm:text-right">
+                <div className="text-[11px] font-bold text-[#FCFAF9]/60 uppercase tracking-widest mb-1">Total Market Value</div>
+                <div className="text-2xl sm:text-3xl font-mono font-bold text-[#FCFAF9]/50 line-through decoration-red-500 decoration-2">
+                  {totalValueStr}
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="text-2xl text-[#DF9716] font-bold hidden sm:block">➔</div>
+              <div className="text-xl text-[#DF9716] font-bold block sm:hidden">↓</div>
+
+              {/* Founding Price */}
+              <div className="text-center sm:text-left">
+                <div className="text-[11px] font-bold text-[#DF9716] uppercase tracking-widest mb-1">Your Founding Price</div>
+                <div className="font-display font-black text-3xl sm:text-5xl text-[#DF9716] tracking-tight leading-none">
+                  {foundingPriceStr}
+                </div>
+              </div>
+            </div>
+
+            <p className="text-[12px] text-[#FCFAF9]/75 mt-4 max-w-[500px] mx-auto">
+              Approved rate is locked for 12 months for the founding batch upon reservation.
+            </p>
+
+            <div className="mt-8">
+              <button
+                type="button"
+                onClick={onReserve}
+                className="button button-primary text-base px-8 py-4 font-bold shadow-lg"
+                data-testid="button-offer-value-reserve"
+              >
+                Claim Your Founding Spot &rarr;
+              </button>
+            </div>
+          </div>
+        </RevealOnScroll>
+      </div>
+    </section>
+  );
+}
+
+// â”€â”€â”€ VALUE STACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? valueStack : (cmsFailed ? defaultContent.valueStack : null);
 
@@ -1103,7 +1249,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
     ? data.valueItems.filter(item => item.visible !== false)
     : (data.rows || []).map(row => ({ title: row.inclusion, displayValue: row.val }));
 
-  // Parse headline — last word is the highlighted one ("desk.")
+  // Parse headline ── last word is the highlighted one ("desk.")
   const headlineLines = (data.headline || "Your desk\ncomes with\nmore than\na desk.").split('\n');
 
   return (
@@ -1112,7 +1258,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
 
         {/* Left */}
         <RevealOnScroll className="lg:sticky lg:top-28">
-          <div className="section-label mb-8">05 — THE VALUE</div>
+          <div className="section-label mb-8">05 â€” THE VALUE</div>
           <h2
             className="font-display font-black leading-[1.01] tracking-tight uppercase"
             style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
@@ -1121,7 +1267,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
               // Highlight the last line (assumed to be "a desk.")
               if (i === headlineLines.length - 1) {
                 return (
-                  <span key={i} className="block text-[#04B8BB]">{line}</span>
+                  <span key={i} className="block text-[#DF9716]">{line}</span>
                 );
               }
               return <span key={i} className="block">{line}</span>;
@@ -1164,7 +1310,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
               <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#0C0C0C]/50">TOTAL VALUE</span>
               <span className="font-display font-black text-[22px] text-[#0C0C0C]/75">{data.totalValue}</span>
             </div>
-            <div className="flex items-center justify-between bg-[#04B8BB] text-[#0C0C0C] p-6">
+            <div className="flex items-center justify-between bg-[#DF9716] text-[#0C0C0C] p-6">
               <div>
                 <span className="text-[9px] font-black uppercase tracking-[.2em] text-black/60 block">FOUNDING MEMBER RATE</span>
                 <span className="text-[10px] font-bold text-black/50 mt-0.5 block">Rate locked for 12 months</span>
@@ -1184,47 +1330,99 @@ function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
 
   if (!data) {
     return (
-      <section className="bg-[#04B8BB] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
+      <section className="bg-[#E8F4F4] text-[#0C0C0C] border-y border-[#024E5C]/15 py-24 sm:py-36" data-testid="section-guarantee">
         <div className="container-wide min-h-[400px]" />
       </section>
     );
   }
 
   const blocks = data.blocks || [];
+  const ctaLabel = data.ctaLabel || 'Book My Free 2-Day Trial';
+  const closingText = data.closingText || "We can offer this guarantee because we've built something we're genuinely proud of. We want you to feel that the moment you walk in.";
 
   return (
-    <section className="bg-[#04B8BB] text-[#0C0C0C] border-y border-[rgba(12,12,12,0.14)] py-24 sm:py-36" data-testid="section-guarantee">
-      <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-20 items-start">
+    <section className="bg-[#E8F4F4] text-[#0C0C0C] border-y border-[#024E5C]/15 py-24 sm:py-36" data-testid="section-guarantee">
+      <div className="container-wide">
+        {/* Section label */}
         <RevealOnScroll>
-          <div className="text-[10px] uppercase tracking-[0.28em] text-black/60 font-bold">06 — RISK FREE</div>
-          <h2
-            className="mt-6 font-display font-black leading-[1.02] text-black uppercase tracking-tight"
-            style={{ fontSize: 'clamp(34px, 5vw, 62px)' }}
-          >
-            {(data.headline || 'Try Deven Co-Work — Completely Risk Free').split('\n').map((line, i, arr) => (
-              <span key={i} className="block">{line}{i < arr.length - 1 && <br />}</span>
-            ))}
-          </h2>
-          <p className="mt-6 text-[14px] leading-[1.75] text-black/75 max-w-[420px]">
-            {data.subheadline || "No risk, no lock-in. Come in and experience Raipur's most premium space with total confidence."}
-          </p>
-          <div className="mt-10">
-            <button onClick={onReserve} className="button button-dark" data-testid="button-guarantee-reserve">
-              Book Your Free 2-Day Trial <ArrowUpRight size={14} />
-            </button>
-          </div>
+          <div className="text-[9px] uppercase tracking-[0.3em] text-[#024E5C]/60 font-black mb-2">ZERO RISK. COMPLETELY ZERO.</div>
         </RevealOnScroll>
 
-        <div className="border-t border-black/20 divide-y divide-black/12">
-          {blocks.map((block, index) => (
-            <RevealOnScroll key={index} delay={index * 0.1} className="py-9">
-              <h4 className="font-display text-[15px] font-bold text-black uppercase tracking-[0.03em] flex items-start gap-4">
-                <span className="text-[10px] font-bold text-black/40 mt-1">{String(index + 1).padStart(2, '0')}</span>
-                {block.title}
-              </h4>
-              <p className="mt-4 text-[13px] leading-[1.75] text-black/75 max-w-[520px] pl-7">{block.description}</p>
+        <div className="mt-8 grid gap-y-14 gap-x-16 lg:grid-cols-[auto_1fr] lg:gap-20 items-start">
+          {/* Left: Shield badge graphic */}
+          <RevealOnScroll className="flex justify-center lg:justify-start">
+            <div className="flex-shrink-0 flex flex-col items-center gap-4">
+              {/* Shield */}
+              <div
+                className="relative flex flex-col items-center justify-center text-center"
+                style={{
+                  width: 160, height: 190,
+                  background: '#024E5C',
+                  clipPath: 'polygon(50% 0%, 100% 15%, 100% 65%, 50% 100%, 0% 65%, 0% 15%)',
+                  border: 'none',
+                }}
+              >
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center"
+                  style={{
+                    clipPath: 'polygon(50% 0%, 100% 15%, 100% 65%, 50% 100%, 0% 65%, 0% 15%)',
+                  }}
+                >
+                  <Check size={32} strokeWidth={3} className="text-[#DF9716] mb-2" />
+                  <div className="text-[8px] font-black uppercase tracking-[0.18em] text-[#DF9716] leading-tight px-4">Risk Free</div>
+                  <div className="text-[7px] font-bold text-[#FCFAF9]/70 uppercase tracking-[0.1em] mt-1 px-4">Guaranteed</div>
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[#024E5C]">Deven Co-Work</div>
+                <div className="text-[8px] text-[#024E5C]/60 mt-0.5">Founding Member Promise</div>
+              </div>
+            </div>
+          </RevealOnScroll>
+
+          {/* Right: Content */}
+          <div>
+            <RevealOnScroll>
+              <h2
+                className="font-display font-black leading-[1.02] text-[#0C0C0C] uppercase tracking-tight"
+                style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
+              >
+                {(data.headline || 'Try Deven Co-Work — Completely Risk Free').split('\n').map((line, i, arr) => (
+                  <span key={i} className="block">{line}{i < arr.length - 1 && <br />}</span>
+                ))}
+              </h2>
             </RevealOnScroll>
-          ))}
+
+            <div className="mt-10 border-t border-[#024E5C]/15 divide-y divide-[#024E5C]/10">
+              {blocks.map((block, index) => (
+                <RevealOnScroll key={index} delay={index * 0.1} className="py-8">
+                  <h4 className="font-display text-[13px] font-black text-[#024E5C] uppercase tracking-[0.06em] flex items-start gap-3">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#DF9716] flex-shrink-0 flex items-center justify-center">
+                      <Check size={10} strokeWidth={3} className="text-black" />
+                    </span>
+                    {block.title}
+                  </h4>
+                  <p className="mt-4 text-[14px] leading-[1.8] text-[#0C0C0C]/75 max-w-[560px] pl-8">
+                    {block.description}
+                  </p>
+                </RevealOnScroll>
+              ))}
+            </div>
+
+            {closingText && (
+              <RevealOnScroll delay={0.2}>
+                <p className="mt-8 text-[13px] leading-[1.75] text-[#0C0C0C]/60 italic max-w-[520px]">
+                  &ldquo;{closingText}&rdquo;
+                </p>
+              </RevealOnScroll>
+            )}
+
+            <RevealOnScroll delay={0.25} className="mt-10">
+              <button onClick={onReserve} className="button button-dark" data-testid="button-guarantee-reserve">
+                {ctaLabel} <ArrowUpRight size={14} />
+              </button>
+            </RevealOnScroll>
+          </div>
         </div>
       </div>
     </section>
@@ -1232,209 +1430,349 @@ function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
 }
 
 // ─── SOCIAL PROOF ─────────────────────────────────────────────────────────────
+function TestimonialAvatar({ photo, name }) {
+  // Render photo if available, otherwise show initials fallback
+  const initials = (name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  if (photo && typeof photo === 'object' && photo.url) {
+    return <img src={photo.url} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#DF9716]/40" loading="lazy" />;
+  }
+  if (photo && typeof photo === 'string' && photo.startsWith('http')) {
+    return <img src={photo} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#DF9716]/40" loading="lazy" />;
+  }
+  return (
+    <div className="w-12 h-12 rounded-full bg-[#DF9716]/20 border-2 border-[#DF9716]/30 flex items-center justify-center flex-shrink-0">
+      <span className="text-[13px] font-black text-[#DF9716]">{initials}</span>
+    </div>
+  );
+}
+
 function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? socialProof : (cmsFailed ? defaultContent.socialProof : null);
 
+  const fallbackData = defaultContent.socialProof;
+  const rawTestimonials = (data?.testimonials && data.testimonials.length > 0)
+    ? data.testimonials
+    : fallbackData.testimonials;
+
+  const testimonials = [...(rawTestimonials || [])]
+    .filter(t => t.published !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  const displayTestimonials = testimonials.length > 0 ? testimonials : fallbackData.testimonials;
+
+  const googleRating = (data?.googleRating && data.googleRating > 0) ? data.googleRating : fallbackData.googleRating;
+  const googleReviewCount = (data?.googleReviewCount && data.googleReviewCount > 0) ? data.googleReviewCount : fallbackData.googleReviewCount;
+  const googleReviewUrl = data?.googleReviewUrl || fallbackData.googleReviewUrl;
+
+  const showGoogleBar = googleRating > 0;
+  const googleStars = showGoogleBar ? Math.round(googleRating) : 0;
+
+  return (
+    <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="social-proof" data-testid="section-social-proof">
+      <div className="container-wide">
+        {/* Header */}
+        <RevealOnScroll className="mb-16">
+          <div className="section-label mb-4">WHAT RAIPUR FOUNDERS ARE SAYING</div>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+            <h2
+              className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
+              style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
+            >
+              {data?.headline || fallbackData.headline}
+            </h2>
+            <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
+              {showGoogleBar ? (
+                <a
+                  href={googleReviewUrl || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-[#DF9716] text-[14px] tracking-tight">
+                    {'★'.repeat(googleStars)}{'☆'.repeat(5 - googleStars)}
+                  </span>
+                  <span className="text-[11px] text-[#FCFAF9]/80 font-semibold">
+                    {googleRating} on Google &middot; {googleReviewCount} Reviews
+                  </span>
+                </a>
+              ) : null}
+              <button onClick={onReserve} className="button button-primary text-sm" data-testid="button-social-reserve">
+                Book Your Free Trial
+              </button>
+            </div>
+          </div>
+        </RevealOnScroll>
+
+        {/* Testimonial cards: 3-col desktop, 1-col mobile */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={stagger}
+          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {displayTestimonials.map((t, idx) => (
+            <motion.div
+              key={idx}
+              variants={fadeUp}
+              className="border border-[rgba(252,250,249,0.16)] bg-[#024E5C] p-7 flex flex-col justify-between hover:border-[#DF9716]/40 transition-colors duration-300 rounded-sm"
+            >
+              <div>
+                <span className="font-display font-black text-[40px] leading-none text-[#DF9716]/25 block mb-3">&ldquo;</span>
+                <p className="text-[13px] leading-[1.75] text-[#FCFAF9]/90 font-medium">{t.quote}</p>
+              </div>
+              <div className="mt-8 border-t border-[rgba(252,250,249,0.12)] pt-5 flex items-center gap-3">
+                <TestimonialAvatar photo={t.photo} name={t.author} />
+                <div>
+                  <span className="font-display font-bold text-[#DF9716] text-[11px] uppercase tracking-wider block">{t.author}</span>
+                  <span className="text-[10px] text-[#FCFAF9]/60 uppercase tracking-wider mt-0.5 block font-semibold">
+                    {t.company || t.role}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ─── PRICING ──────────────────────────────────────────────────────────────────
+function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsFailed }) {
+  const data = cmsLoaded ? pricing : (cmsFailed ? defaultContent.pricing : null);
+  const s = scarcity || defaultContent.scarcity;
+  const waNumber = (globalSettings?.whatsapp || defaultContent.globalSettings.whatsapp || '').replace(/\D/g, '');
+
   if (!data) {
     return (
-      <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-social-proof">
-        <div className="container-wide min-h-[400px]" />
+      <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)] grid-paper-light" id="pricing" data-testid="section-pricing">
+        <div className="container-wide min-h-[500px]" />
       </section>
     );
   }
 
-  const testimonials = (data.testimonials || []).filter(t => t.published !== false);
+  const plans = data.plans || [];
+  const remaining = typeof s?.remainingSpots === 'number' ? s.remainingSpots : null;
+  const total = typeof s?.totalSpots === 'number' ? s.totalSpots : 50;
+  const closingDate = s?.closingDate || '';
+
+  // Determine if a plan is the cabin/contact plan
+  const isCabin = (plan) => /cabin|private/i.test(plan.name) || plan.isContactPlan;
+  // Determine Most Popular
+  const isMostPopular = (plan) => /dedicated/i.test(plan.name) || plan.badge === 'MOST POPULAR';
 
   return (
-    <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" data-testid="section-social-proof">
+    <section
+      className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)] grid-paper-light"
+      id="pricing"
+      data-testid="section-pricing"
+    >
+      <div className="container-wide">
+        {/* Header */}
+        <RevealOnScroll className="mb-16 max-w-[700px]">
+          <div className="text-[10px] uppercase tracking-[0.28em] text-[#0C0C0C]/50 font-bold mb-4">MEMBERSHIP</div>
+          <h2
+            className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
+            style={{ fontSize: 'clamp(30px, 4vw, 50px)' }}
+          >
+            {data.headline || 'Choose the room that fits the way you work.'}
+          </h2>
+          <p className="mt-5 text-[14px] leading-[1.75] text-[#0C0C0C]/60 max-w-[520px]">
+            {data.subheadline}
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 items-start">
+            <button type="button" onClick={onReserve} className="button button-dark" data-testid="button-pricing-reserve">
+              Book Your Free Trial <ArrowUpRight size={14} />
+            </button>
+          </div>
+        </RevealOnScroll>
+
+        {/* Plan cards: 3-col on desktop */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {plans.map((plan, index) => {
+            const popular = isMostPopular(plan);
+            const cabin = isCabin(plan);
+            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent("Hi, I'd like to know more about the Private Cabin at Deven Co-Work.")}`;
+
+            return (
+              <RevealOnScroll
+                key={index}
+                delay={index * 0.07}
+                className={[
+                  'relative flex flex-col border bg-white p-7',
+                  popular
+                    ? 'border-[#024E5C] shadow-lg ring-1 ring-[#024E5C]/20 -translate-y-2 sm:-translate-y-3'
+                    : 'border-[rgba(12,12,12,0.12)]',
+                ].join(' ')}
+              >
+                {/* Most Popular badge */}
+                {popular && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#DF9716] text-[#0C0C0C] text-[8.5px] font-black uppercase tracking-[0.2em] px-4 py-1">
+                    MOST POPULAR
+                  </div>
+                )}
+
+                {/* Plan name */}
+                <h3 className="font-display text-[14px] font-black uppercase tracking-[0.06em] text-[#0C0C0C]">{plan.name}</h3>
+
+                {/* Description */}
+                {plan.desc && (
+                  <p className="mt-2 text-[12px] leading-[1.7] text-[#0C0C0C]/55">{plan.desc}</p>
+                )}
+
+                {/* Pricing anchor */}
+                <div className="mt-6 border-t border-[rgba(12,12,12,0.08)] pt-5">
+                  {cabin ? (
+                    <div>
+                      <div className="text-[11px] font-semibold text-[#0C0C0C]/50 mb-1">Custom Pricing</div>
+                      <div className="font-display text-[16px] font-black text-[#0C0C0C]/70 leading-tight">
+                        Based on team size &amp; requirements
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      {plan.standard && (
+                        <span className="text-[12px] text-red-500 line-through font-mono font-semibold">
+                          {plan.standard}
+                        </span>
+                      )}
+                      {plan.founding && (
+                        <div className="flex items-baseline gap-2">
+                          <span className="font-display text-[24px] font-black text-[#0C0C0C] leading-none">
+                            {plan.founding}
+                          </span>
+                          <span className="text-[9px] font-black uppercase tracking-[0.14em] text-[#DF9716] bg-[#DF9716]/15 px-2 py-1">
+                            Founding Price
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Features list */}
+                {(plan.features || []).length > 0 && (
+                  <ul className="mt-5 space-y-2">
+                    {(plan.features || []).map((f, fi) => (
+                      <li key={fi} className="flex items-start gap-2 text-[12px] text-[#0C0C0C]/70">
+                        <Check size={11} strokeWidth={3} className="text-[#024E5C] mt-0.5 flex-shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* CTA */}
+                <div className="mt-auto pt-7">
+                  {cabin ? (
+                    <a
+                      href={waLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="button button-dark w-full text-center flex items-center justify-center gap-2"
+                      data-testid={`button-plan-cabin-${index}`}
+                    >
+                      Talk to Us About a Cabin <ArrowUpRight size={13} />
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={onReserve}
+                      className={`button w-full ${popular ? 'button-primary' : 'button-dark'}`}
+                      data-testid={`button-plan-${index}`}
+                    >
+                      Start Free Trial <ArrowUpRight size={13} />
+                    </button>
+                  )}
+                </div>
+              </RevealOnScroll>
+            );
+          })}
+        </div>
+
+        {/* Scarcity note below plans */}
+        {remaining !== null && remaining > 0 && (
+          <RevealOnScroll delay={0.15} className="mt-10">
+            <div className="border-l-2 border-[#DF9716] pl-5">
+              <p className="text-[13px] font-bold leading-[1.65] text-[#0C0C0C]">
+                ⚡ Only{' '}
+                <span className="bg-[#DF9716] text-[#0C0C0C] px-1.5 py-0.5 border border-[#0C0C0C] font-mono font-black">{remaining}</span>
+                {' '}of {total} founding spots remaining at this price
+                {closingDate ? <> &mdash; closes {closingDate}</> : null}.
+              </p>
+              <p className="mt-1 text-[10px] text-[#0C0C0C]/50 uppercase tracking-wider font-semibold">Maximum 7 seats per company.</p>
+            </div>
+          </RevealOnScroll>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed }) {
+  const [active, setActive] = useState(null);
+  const sectionData = cmsLoaded ? faqSection : (cmsFailed ? defaultContent.faqSection : null);
+  const rawData = cmsLoaded ? (faq || []).filter(f => f.published !== false) : (cmsFailed ? defaultContent.faq.filter(f => f.published !== false) : null);
+
+  const fallbackData = defaultContent.faq;
+  const data = (rawData && rawData.length > 0) ? rawData : fallbackData;
+
+  const waNumber = (globalSettings?.whatsapp || defaultContent.globalSettings.whatsapp || '').replace(/\D/g, '');
+  const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent("Hi, I have a question about Deven Co-Work membership.")}`;
+
+  return (
+    <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
       <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
         <RevealOnScroll>
-          <div className="section-label mb-6">07 — SOCIAL PROOF</div>
+          <div className="section-label mb-6 text-[#DF9716] font-black">COMMON QUESTIONS</div>
           <h2
             className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
           >
-            {data.headline || 'What Founders Are Saying'}
+            {sectionData?.headline || 'Everything You Wanted to Ask'}
           </h2>
           <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[380px]">
-            {data.subheadline || 'Hear from our members who switched to Deven Co-Work.'}
+            {sectionData?.subheadline || 'Everything you need to know about memberships, pricing, rules, and billing details.'}
           </p>
           <div className="mt-10">
-            <Button onClick={onReserve} testId="button-social-reserve">Book Your Free Trial</Button>
+            <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Trial</Button>
           </div>
         </RevealOnScroll>
 
-        <div>
-          {testimonials.length === 0 ? (
-            <RevealOnScroll className="border border-dashed border-[rgba(252,250,249,0.2)] p-14 text-center">
-              <p className="text-[13px] text-[#FCFAF9]/60">Testimonials coming soon.</p>
-              <p className="text-[11px] text-[#FCFAF9]/40 mt-2">Add them from Admin → CMS → Social Proof.</p>
-            </RevealOnScroll>
-          ) : (
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-              variants={stagger}
-              className="grid gap-4 sm:grid-cols-2"
-            >
-              {testimonials.map((t, idx) => (
-                <motion.div
-                  key={idx}
-                  variants={fadeUp}
-                  className="border border-[rgba(252,250,249,0.16)] bg-[#024E5C] p-7 flex flex-col justify-between hover:border-[#04B8BB]/40 transition-colors duration-300"
-                >
-                  <div>
-                    <span className="font-display font-black text-[48px] leading-none text-[#04B8BB]/20 block mb-2">"</span>
-                    <p className="text-[13px] leading-[1.7] text-[#FCFAF9]/90 font-medium">{t.quote}</p>
-                  </div>
-                  <div className="mt-8 border-t border-[rgba(252,250,249,0.12)] pt-5">
-                    <span className="font-display font-bold text-[#04B8BB] text-[10px] uppercase tracking-wider block">— {t.author}</span>
-                    <span className="text-[9.5px] text-[#FCFAF9]/60 uppercase tracking-wider mt-1 block font-semibold">{t.role}</span>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-            )}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // ─── PRICING ──────────────────────────────────────────────────────────────────
-  function Pricing({ onReserve, pricing, cmsLoaded, cmsFailed }) {
-    const data = cmsLoaded ? pricing : (cmsFailed ? defaultContent.pricing : null);
-
-    if (!data) {
-      return (
-        <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)] grid-paper-light" id="pricing" data-testid="section-pricing">
-          <div className="container-wide min-h-[500px]" />
-        </section>
-      );
-    }
-
-    const plans = data.plans || [];
-
-    return (
-      <section
-        className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)] grid-paper-light"
-        id="pricing"
-        data-testid="section-pricing"
-      >
-        <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
-          <RevealOnScroll>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-[#0C0C0C]/50 font-bold">08 — MEMBERSHIP</div>
-            <h2
-              className="mt-6 font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
-              style={{ fontSize: 'clamp(30px, 4vw, 50px)' }}
-            >
-              {data.headline || 'Choose the room that fits the way you work.'}
-            </h2>
-            <p className="mt-6 text-[14px] leading-[1.75] text-[#0C0C0C]/60 max-w-[420px]">
-              {data.subheadline}
-            </p>
-
-            <div className="mt-10 flex flex-col gap-5">
-              <button type="button" onClick={onReserve} className="button button-dark self-start" data-testid="button-pricing-reserve">
-                Book Your Free Trial <ArrowUpRight size={14} />
-              </button>
-              {(data.spotsLeft || data.closesDate) && (
-                <div className="border-l-2 border-[#0C0C0C] pl-5">
-                  <p className="text-[13px] font-bold leading-[1.65] text-[#0C0C0C]">
-                    ⚡ Only{' '}
-                    <span className="bg-[#04B8BB] text-[#0C0C0C] px-1.5 py-0.5 border border-[#0C0C0C] font-mono font-black">{data.spotsLeft}</span>
-                    {' '}of 50 founding seats left — closes {data.closesDate}.
-                  </p>
-                  <p className="mt-1 text-[10px] text-[#0C0C0C]/50 uppercase tracking-wider font-semibold">Maximum 7 seats per company.</p>
-                </div>
-              )}
-            </div>
-          </RevealOnScroll>
-
-          <div className="border-t border-[rgba(12,12,12,0.14)] divide-y divide-[rgba(12,12,12,0.08)]">
-            {plans.map((plan, index) => (
-              <RevealOnScroll key={index} delay={index * 0.07} className="py-8 flex items-start gap-5">
-                <span className="font-display text-[10px] font-bold text-[#0C0C0C]/35 mt-1 shrink-0">{String(index + 1).padStart(2, '0')}</span>
-                <div className="flex-1">
-                  <div className="flex justify-between items-baseline flex-wrap gap-3">
-                    <h4 className="font-display text-[16px] font-bold text-[#0C0C0C] uppercase tracking-[0.03em]">{plan.name}</h4>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[11px] text-[#0C0C0C]/35 line-through font-mono">{plan.standard}</span>
-                      <span className="font-display text-[15px] font-black text-[#0C0C0C] bg-[#04B8BB] px-2.5 py-1">
-                        {plan.founding}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="mt-3 text-[13px] text-[#0C0C0C]/60 leading-[1.7] max-w-[500px]">{plan.desc}</p>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // ─── FAQ ──────────────────────────────────────────────────────────────────────
-  function FAQ({ faq, faqSection, onReserve, cmsLoaded, cmsFailed }) {
-    const [active, setActive] = useState(null);
-    const sectionData = cmsLoaded ? faqSection : (cmsFailed ? defaultContent.faqSection : null);
-    const data = cmsLoaded ? (faq || []).filter(f => f.published !== false) : (cmsFailed ? defaultContent.faq.filter(f => f.published !== false) : null);
-
-    if (!sectionData || !data) {
-      return (
-        <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
-          <div className="container-wide min-h-[500px]" />
-        </section>
-      );
-    }
-
-    return (
-      <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
-        <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-          <RevealOnScroll>
-            <div className="section-label mb-6">09 — QUESTIONS</div>
-            <h2
-              className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
-              style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
-            >
-              {sectionData.headline || 'Before You Come In'}
-            </h2>
-            <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[380px]">
-              {sectionData.subheadline || 'Everything you need to know about memberships, pricing, rules, and billing details.'}
-            </p>
-            <div className="mt-10">
-              <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Trial</Button>
-            </div>
-          </RevealOnScroll>
-
+        <div className="flex flex-col justify-between">
           <div className="border-t border-[rgba(252,250,249,0.16)]">
             {data.map((item, index) => (
               <div key={index} className="border-b border-[rgba(252,250,249,0.16)]">
                 <button
                   type="button"
-                  className="flex py-7 w-full items-center justify-between gap-5 text-left group"
+                  className="flex py-6 w-full items-center justify-between gap-5 text-left group focus:outline-none focus:ring-1 focus:ring-[#DF9716]"
                   onClick={() => setActive(active === index ? null : index)}
                   aria-expanded={active === index}
+                  aria-controls={`faq-answer-${index}`}
+                  id={`faq-button-${index}`}
                   data-testid={`button-faq-${index}`}
                 >
-                  <div className="flex gap-5 items-start">
-                    <span className="font-display text-[10px] font-bold text-[#FCFAF9]/40 tracking-[.1em] mt-1 shrink-0">
+                  <div className="flex gap-4 items-start">
+                    <span className="font-display text-[10px] font-bold text-[#DF9716] tracking-[.1em] mt-1 shrink-0">
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    <span className="text-[14px] font-bold text-[#FCFAF9] uppercase tracking-[0.02em] group-hover:text-[#04B8BB] transition-colors">
+                    <span className="text-[15px] font-bold text-[#FCFAF9] tracking-[0.01em] group-hover:text-[#DF9716] transition-colors">
                       {item.question}
                     </span>
                   </div>
                   <ChevronDown
-                    size={15}
-                    className={`shrink-0 text-[#04B8BB] transition-transform duration-300 ${active === index ? 'rotate-180' : ''}`}
+                    size={16}
+                    className={`shrink-0 text-[#DF9716] transition-transform duration-300 ${active === index ? 'rotate-180' : ''}`}
                   />
                 </button>
                 <AnimatePresence>
                   {active === index && (
                     <motion.div
+                      id={`faq-answer-${index}`}
+                      role="region"
+                      aria-labelledby={`faq-button-${index}`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -1442,16 +1780,33 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
                       style={{ overflow: 'hidden' }}
                     >
                       <div
-                        className="max-w-[640px] pb-8 pl-10 pr-4 text-[13px] leading-[1.75] text-[#FCFAF9]/80 normal-case font-normal"
+                        className="max-w-[640px] pb-6 pl-9 pr-4 text-[14px] leading-[1.75] text-[#FCFAF9]/80 font-normal"
                         data-testid={`text-faq-answer-${index}`}
                       >
-                      {item.answer}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+                        {item.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+
+          {/* WhatsApp FAQ CTA */}
+          <div className="mt-10 pt-6 border-t border-[rgba(252,250,249,0.12)] text-left">
+            <p className="text-[14px] text-[#FCFAF9]/85 font-medium">
+              Still have a question?{' '}
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#DF9716] font-bold hover:underline inline-flex items-center gap-1.5 ml-1"
+                data-testid="link-faq-whatsapp"
+              >
+                Chat with us directly on WhatsApp &rarr;
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -1557,7 +1912,7 @@ function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 
   }
 }
 
-// ─── RESERVATION / FINAL CTA ──────────────────────────────────────────────────
+// â”€â”€â”€ RESERVATION / FINAL CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings, freeTrial, bookingAmount, cmsLoaded, cmsFailed }) {
   const [, setLocation] = useLocation();
   const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', email_confirm: '' });
@@ -1730,58 +2085,58 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
       seatNumbers: selectedSeats, plan: selectedPlan?.name || plan, planId: selectedPlanId,
       duration, email_confirm: form.email_confirm || '', ...utmData
     })
-    .then((res) => {
-      const { reservation: savedRes, razorpayOrder } = res;
-      if (!razorpayOrder) {
-        localStorage.setItem('last_reservation', JSON.stringify(savedRes));
-        setLocation('/thank-you');
-        return;
-      }
-      const options = {
-        key: razorpayOrder.key_id,
-        amount: razorpayOrder.amount,
-        currency: razorpayOrder.currency,
-        name: 'Deven Cowork',
-        description: `Booking: ${selectedPlan?.name || plan}${selectedSeats.length ? ` (${selectedSeats.join(', ')})` : ''}`,
-        order_id: razorpayOrder.id,
-        prefill: { name: form.name, contact: form.phone, email: form.email },
-        theme: { color: '#04B8BB' },
-        handler: async function (response) {
-          try {
-            setLoading(true);
-            const confirmRes = await api.confirmReservation({
-              reservationId: savedRes._id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            });
-            localStorage.setItem('last_reservation', JSON.stringify(confirmRes.data));
-            setLocation('/thank-you');
-          } catch (err) {
-            setError(err.message || 'Payment verification failed. Please contact support.');
-          } finally {
-            setLoading(false);
-          }
-        },
-        modal: {
-          ondismiss: async function () {
-            await api.failReservation(savedRes._id);
-            setError('Payment cancelled.');
-            setLoading(false);
+      .then((res) => {
+        const { reservation: savedRes, razorpayOrder } = res;
+        if (!razorpayOrder) {
+          localStorage.setItem('last_reservation', JSON.stringify(savedRes));
+          setLocation('/thank-you');
+          return;
+        }
+        const options = {
+          key: razorpayOrder.key_id,
+          amount: razorpayOrder.amount,
+          currency: razorpayOrder.currency,
+          name: 'Deven Cowork',
+          description: `Booking: ${selectedPlan?.name || plan}${selectedSeats.length ? ` (${selectedSeats.join(', ')})` : ''}`,
+          order_id: razorpayOrder.id,
+          prefill: { name: form.name, contact: form.phone, email: form.email },
+          theme: { color: '#DF9716' },
+          handler: async function (response) {
+            try {
+              setLoading(true);
+              const confirmRes = await api.confirmReservation({
+                reservationId: savedRes._id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              });
+              localStorage.setItem('last_reservation', JSON.stringify(confirmRes.data));
+              setLocation('/thank-you');
+            } catch (err) {
+              setError(err.message || 'Payment verification failed. Please contact support.');
+            } finally {
+              setLoading(false);
+            }
           },
-        },
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', async function (response) {
-        await api.failReservation(savedRes._id);
-        setError(`Payment failed: ${response.error.description}`);
+          modal: {
+            ondismiss: async function () {
+              await api.failReservation(savedRes._id);
+              setError('Payment cancelled.');
+              setLoading(false);
+            },
+          },
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', async function (response) {
+          await api.failReservation(savedRes._id);
+          setError(`Payment failed: ${response.error.description}`);
+          setLoading(false);
+        });
+        rzp.open();
+      })
+      .catch((err) => {
         setLoading(false);
+        setError(err.message || 'Failed to initialize reservation order. Please try again.');
       });
-      rzp.open();
-    })
-    .catch((err) => {
-      setLoading(false);
-      setError(err.message || 'Failed to initialize reservation order. Please try again.');
-    });
   };
 
   const headlineLines = (resData.reservationHeading || 'Lock in your\nfounding member\nseat.').split('\n');
@@ -1797,7 +2152,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
           {/* Left: Heading & scarcity */}
           <RevealOnScroll className="space-y-6 lg:sticky lg:top-24">
-            <div className="section-label">10 — RESERVE</div>
+            <div className="section-label">10 â€” RESERVE</div>
             <h2
               className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
               style={{ fontSize: 'clamp(32px, 4.5vw, 56px)' }}
@@ -1805,7 +2160,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
               {headlineLines.map((line, i) => (
                 <span key={i} className="block">
                   {i === headlineLines.length - 1
-                    ? <span className="text-[#04B8BB]">{line}</span>
+                    ? <span className="text-[#DF9716]">{line}</span>
                     : line}
                 </span>
               ))}
@@ -1816,19 +2171,18 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
             {/* Scarcity */}
             <div className="scarcity-badge flex-col items-start py-2">
-              <span className="text-[#04B8BB] text-[10px] font-black">FOUNDING BATCH</span>
+              <span className="text-[#DF9716] text-[10px] font-black">FOUNDING BATCH</span>
               <span className="text-[#0C0C0C]/75 text-[11px] mt-1 whitespace-pre-line">
                 {resData.scarcityText || scarcityText}
               </span>
             </div>
 
             {/* Trial availability badge */}
-            <div className={`inline-flex items-center gap-2 border px-4 py-3 text-[10px] font-bold uppercase tracking-[0.15em] ${
-              isFreeTrialAvailable
-                ? 'border-[#04B8BB]/40 text-[#04B8BB] bg-[#04B8BB]/5'
+            <div className={`inline-flex items-center gap-2 border px-4 py-3 text-[10px] font-bold uppercase tracking-[0.15em] ${isFreeTrialAvailable
+                ? 'border-[#DF9716]/40 text-[#DF9716] bg-[#DF9716]/5'
                 : 'border-[rgba(12,12,12,0.15)] text-[#0C0C0C]/55'
-            }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#04B8BB] animate-pulse' : 'bg-neutral-300'}`} />
+              }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#DF9716] animate-pulse' : 'bg-neutral-300'}`} />
               {isFreeTrialAvailable
                 ? `Free Trial Available Today (${todayInTZ})`
                 : `Free Trial: ${trialDays.join(' & ')} only`}
@@ -1919,7 +2273,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <button
                   type="button"
                   onClick={() => setShowMap(!showMap)}
-                  className="w-full border border-[rgba(2,78,92,0.25)] hover:border-[#04B8BB]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#024E5C] hover:text-[#04B8BB]"
+                  className="w-full border border-[rgba(2,78,92,0.25)] hover:border-[#DF9716]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#024E5C] hover:text-[#DF9716]"
                 >
                   <span>{showMap ? 'Hide Seating Floor Map (Optional)' : 'Select Specific Seat on Floor Map (Optional)'}</span>
                   <ChevronDown size={13} className={`transition-transform duration-300 ${showMap ? 'rotate-180' : ''}`} />
@@ -1952,7 +2306,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <div className="bg-[#024E5C]/5 border border-[#024E5C]/20 p-4 space-y-2 text-xs text-[#0C0C0C]">
                   <div className="flex justify-between items-center font-bold text-[#024E5C] border-b border-[#024E5C]/15 pb-2">
                     <span className="uppercase tracking-wider">Booking Summary</span>
-                    <span className={`font-mono font-black text-[10px] px-2 py-0.5 uppercase ${isReservationMode ? 'bg-[#04B8BB]/15 text-[#04B8BB] border border-[#04B8BB]/30' : 'bg-[#024E5C]/10 text-[#024E5C]'}`}>
+                    <span className={`font-mono font-black text-[10px] px-2 py-0.5 uppercase ${isReservationMode ? 'bg-[#DF9716]/15 text-[#DF9716] border border-[#DF9716]/30' : 'bg-[#024E5C]/10 text-[#024E5C]'}`}>
                       {isReservationMode ? 'RESERVATION MODE' : 'FULL PAYMENT'}
                     </span>
                   </div>
@@ -1983,7 +2337,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                             <span>Reservation Amount:</span>
                             <span className="font-semibold text-[#0C0C0C]">₹{reservationAmountPerSeat.toLocaleString('en-IN')} / seat</span>
                           </div>
-                          <div className="flex justify-between text-[#04B8BB] font-bold border-t border-[#024E5C]/10 pt-1.5">
+                          <div className="flex justify-between text-[#DF9716] font-bold border-t border-[#024E5C]/10 pt-1.5">
                             <span>Amount Payable Today:</span>
                             <span>₹{amountPayableToday.toLocaleString('en-IN')}</span>
                           </div>
@@ -2011,7 +2365,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
                   <div className="flex justify-between items-center text-sm font-black border-t border-[#024E5C]/15 pt-2 text-[#024E5C]">
                     <span>Total Amount Payable Today:</span>
-                    <span className="font-mono text-[#04B8BB] text-base">₹{amountPayableToday.toLocaleString('en-IN')}</span>
+                    <span className="font-mono text-[#DF9716] text-base">₹{amountPayableToday.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               )}
@@ -2036,8 +2390,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                       {isReservationMode && requiresSeats && seatCount === 0
                         ? 'SELECT A SEAT TO RESERVE'
                         : seatCount > 1
-                        ? 'RESERVE MY SEATS'
-                        : (resData.reserveButtonText || 'RESERVE MY SEAT')}
+                          ? 'RESERVE MY SEATS'
+                          : (resData.reserveButtonText || 'RESERVE MY SEAT')}
                     </span>
                     <span className="text-[10px] font-mono opacity-90">
                       Total ₹{amountPayableToday.toLocaleString('en-IN')}
@@ -2091,7 +2445,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   );
 }
 
-// ─── FOOTER ───────────────────────────────────────────────────────────────────
+// ────── FOOTER ───────────────────────────────────────────────────────────────
 function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? footer : (cmsFailed ? defaultContent.footer : null);
   const settings = cmsLoaded ? globalSettings : (cmsFailed ? defaultContent.globalSettings : null);
@@ -2123,7 +2477,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
           <p className="mt-7 text-[13px] leading-[1.75] text-[#FCFAF9]/75 max-w-[400px]">{data.tagline}</p>
           <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[10.5px] text-[#FCFAF9]/55">
             {(data.quickLinks || []).map((link, idx) => (
-              <a key={idx} href={link.href} className="hover:text-[#04B8BB] transition-colors">{link.label}</a>
+              <a key={idx} href={link.href} className="hover:text-[#DF9716] transition-colors">{link.label}</a>
             ))}
           </div>
         </div>
@@ -2142,9 +2496,9 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
             <div>
               <h4 className="font-display text-[13px] font-bold text-[#FCFAF9] tracking-[.05em] uppercase">Direct Contact</h4>
               <p className="mt-2.5 text-[12px] text-[#FCFAF9]/75 leading-[1.75]">
-                <a href={cleanPhoneHref} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors" data-testid="link-footer-phone">{phone}</a>
+                <a href={cleanPhoneHref} className="text-[#DF9716] hover:text-[#DF9716] transition-colors" data-testid="link-footer-phone">{phone}</a>
                 <br />
-                <a href={`mailto:${email}`} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors">{email}</a>
+                <a href={`mailto:${email}`} className="text-[#DF9716] hover:text-[#DF9716] transition-colors">{email}</a>
               </p>
             </div>
           </div>
@@ -2169,10 +2523,10 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
                   href={mapsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-[11px] font-bold text-[#04B8BB] hover:text-[#04B8BB] transition-colors"
+                  className="mt-3 inline-block text-[11px] font-bold text-[#DF9716] hover:text-[#DF9716] transition-colors"
                   data-testid="link-footer-directions"
                 >
-                  Get Directions ↗
+                  Get Directions â†—
                 </a>
               )}
             </div>
@@ -2188,28 +2542,45 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
   );
 }
 
-// ─── WHATSAPP FLOAT ───────────────────────────────────────────────────────────
+// â”€â”€â”€ WHATSAPP FLOAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
   if (!cmsLoaded && !cmsFailed) return null;
   const number = whatsapp || (cmsFailed ? '+91 62605 82852' : '');
   if (!number) return null;
   const cleanNumber = number.replaceAll(' ', '').replaceAll('+', '');
-  const text = encodeURIComponent(message || "Hi, I'd like to reserve a seat at Deven Co-Work");
+  const waMessage = encodeURIComponent(
+    'Hi, I saw Deven Co-Work online and wanted to know more about the Free Trial.'
+  );
   return (
     <a
-      href={`https://wa.me/${cleanNumber}?text=${text}`}
+      href={`https://wa.me/${cleanNumber}?text=${waMessage}`}
       target="_blank"
       rel="noreferrer"
-      className="fixed bottom-5 right-4 z-30 flex min-h-11 items-center gap-2 border border-[#04B8BB] bg-[#024E5C] px-5 text-[10.5px] font-bold text-[#FCFAF9] shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all hover:bg-[#024E5C]/90 hover:border-[#04B8BB] sm:right-5"
+      aria-label="Chat on WhatsApp"
+      className="wa-float-btn"
       data-testid="link-floating-whatsapp"
     >
-      <MessageCircle size={15} className="text-[#04B8BB]" />
-      <span className="hidden sm:inline">Chat on WhatsApp →</span>
+      <FaWhatsapp size={26} color="#ffffff" />
     </a>
   );
 }
 
-// ─── HOME PAGE ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ MOBILE STICKY CTA BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function MobileStickyCTA({ onReserve }) {
+  return (
+    <button
+      type="button"
+      onClick={onReserve}
+      className="mobile-sticky-cta"
+      aria-label="Book Free Trial â€” open reservation form"
+      data-testid="button-mobile-sticky-cta"
+    >
+      Book Free Trial â†’
+    </button>
+  );
+}
+
+// â”€â”€â”€ HOME PAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Home() {
   const [content, setContent] = useState(null);
   const [cmsLoaded, setCmsLoaded] = useState(false);
@@ -2342,7 +2713,20 @@ function Home() {
       ...sectionOrder.slice(insertPos)
     ];
   }
-  const sectionViz = content?.sectionVisibility || defaultContent.sectionVisibility;
+  if (!sectionOrder.includes('socialProof')) {
+    const pricingIndex = sectionOrder.indexOf('pricing');
+    const insertPos = pricingIndex !== -1 ? pricingIndex : sectionOrder.length - 2;
+    sectionOrder = [
+      ...sectionOrder.slice(0, insertPos),
+      'socialProof',
+      ...sectionOrder.slice(insertPos)
+    ];
+  }
+  const sectionViz = {
+    socialProof: true,
+    ...(defaultContent.sectionVisibility || {}),
+    ...(content?.sectionVisibility || {}),
+  };
 
   const sectionComponents = {
     hero: <Hero key="hero" onReserve={scrollToReservation} hero={content?.hero} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
@@ -2350,12 +2734,12 @@ function Home() {
     problem: <Problems key="problem" problem={content?.problem} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     guide: <Guide key="guide" guide={content?.guide} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     plan: <Plan key="plan" plan={content?.plan} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
-    offerStack: <OfferStack key="offerStack" offerStack={content?.offerStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    offerStack: <OfferStack key="offerStack" offerStack={content?.offerStack} valueStack={content?.valueStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     valueStack: <ValueStack key="valueStack" valueStack={content?.valueStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     guarantee: <Guarantee key="guarantee" guarantee={content?.riskReversal} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     socialProof: <SocialProof key="socialProof" socialProof={content?.socialProof} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
-    pricing: <Pricing key="pricing" onReserve={scrollToReservation} pricing={content?.pricing} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
-    faq: <FAQ key="faq" faq={content?.faq} faqSection={content?.faqSection} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    pricing: <Pricing key="pricing" onReserve={scrollToReservation} pricing={content?.pricing} scarcity={content?.scarcity} globalSettings={content?.globalSettings} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    faq: <FAQ key="faq" faq={content?.faq} faqSection={content?.faqSection} globalSettings={content?.globalSettings} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     finalCTA: (
       <Reservation
         key="finalCTA"
@@ -2374,7 +2758,10 @@ function Home() {
 
   return (
     <div className="site-noise min-h-[100dvh] bg-[#0C0C0C]">
-      <Header onReserve={scrollToReservation} content={content} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />
+      <div className="sticky top-0 z-40 w-full">
+        <FoundingBanner scarcity={content?.scarcity} />
+        <Header onReserve={scrollToReservation} content={content} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />
+      </div>
       <main>
         {sectionOrder
           .filter(key => sectionViz[key] !== false)
@@ -2387,12 +2774,13 @@ function Home() {
         cmsLoaded={cmsLoaded}
         cmsFailed={cmsFailed}
       />
+      <MobileStickyCTA onReserve={scrollToReservation} />
       {reserveOpen && <span className="sr-only" aria-live="polite">Reservation form is in view.</span>}
     </div>
   );
 }
 
-// ─── ROUTING ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ ROUTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Router() {
   return (
     <Switch>

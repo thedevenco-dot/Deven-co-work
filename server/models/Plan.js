@@ -87,6 +87,16 @@ const planSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // ── Display / CRO fields (Phase 2) ────────────────────────────────────────
+    // Standard (strikethrough) price label shown on plan card, e.g. "₹8,999/mo"
+    standardPrice: { type: String, default: '' },
+    // Badge text on card, e.g. "MOST POPULAR"
+    badge: { type: String, default: '' },
+    // Bullet feature list for plan card
+    features: { type: [String], default: [] },
+    // If true, CTA routes to WhatsApp/contact instead of self-serve booking
+    isContactPlan: { type: Boolean, default: false },
+
   },
   {
     timestamps: true,

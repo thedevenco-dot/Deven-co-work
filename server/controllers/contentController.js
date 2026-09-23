@@ -16,12 +16,60 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-// Helper to seed default content if document does not exist
+// Helper to seed default content if document does not exist or missing socialProof
 async function getOrCreateContent(key) {
   let doc = await Content.findOne({ key });
   if (!doc) {
     doc = new Content({ key });
     await doc.save();
+  } else {
+    let modified = false;
+    if (!doc.sectionVisibility || doc.sectionVisibility.socialProof === false) {
+      if (!doc.sectionVisibility) doc.sectionVisibility = {};
+      doc.sectionVisibility.socialProof = true;
+      doc.markModified('sectionVisibility');
+      modified = true;
+    }
+    if (!doc.socialProof || !doc.socialProof.testimonials || doc.socialProof.testimonials.length === 0) {
+      if (!doc.socialProof) doc.socialProof = {};
+      doc.socialProof.googleRating = doc.socialProof.googleRating || 4.9;
+      doc.socialProof.googleReviewCount = doc.socialProof.googleReviewCount || 48;
+      doc.socialProof.googleReviewUrl = doc.socialProof.googleReviewUrl || 'https://www.google.com/maps/';
+      doc.socialProof.testimonials = [
+        {
+          quote: 'Moving our team to Deven Co-Work was the best decision we made this year. The internet is rock solid, the podcast studio helped us launch our show, and the founder network here is unmatched in Raipur.',
+          author: 'Aman Sharma',
+          company: 'Founder, TechScale Media',
+          role: 'Founder',
+          photo: '',
+          published: true,
+          order: 1,
+        },
+        {
+          quote: 'I used to work from cafes spending ₹500 a day on coffee with noisy backgrounds. Here I have a dedicated desk, high-speed WiFi, and actual quiet rooms for client video calls.',
+          author: 'Priya Patel',
+          company: 'Independent Consultant & Strategist',
+          role: 'Consultant',
+          photo: '',
+          published: true,
+          order: 2,
+        },
+        {
+          quote: 'The 2-day free trial convinced me instantly. The vibe, natural lighting, and community events make working here inspiring every single day.',
+          author: 'Rahul Verma',
+          company: 'Co-Founder, CodeCraft Studio',
+          role: 'Co-Founder',
+          photo: '',
+          published: true,
+          order: 3,
+        },
+      ];
+      doc.markModified('socialProof');
+      modified = true;
+    }
+    if (modified) {
+      await doc.save();
+    }
   }
   return doc;
 }

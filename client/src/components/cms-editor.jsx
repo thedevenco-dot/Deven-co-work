@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronUp, ChevronDown, Trash2, Plus, Copy, Image, Video, Eye, EyeOff } from 'lucide-react';
 
-// ─── PRIMITIVE FORM COMPONENTS ────────────────────────────────────────────────
+// â”€â”€â”€ PRIMITIVE FORM COMPONENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Field({ label, children, className = '' }) {
   return (
@@ -30,7 +30,7 @@ function TextArea({ value, onChange, rows = 3, placeholder = '' }) {
       onChange={onChange}
       rows={rows}
       placeholder={placeholder}
-      className="w-full min-h-[70px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#04B8BB] resize-y"
+      className="w-full min-h-[70px] border border-[#242424] bg-[#0A0A0A] text-white p-3 text-sm focus:outline-none focus:border-[#DF9716] resize-y"
     />
   );
 }
@@ -43,7 +43,7 @@ function Toggle({ checked, onChange, label }) {
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative w-9 h-[18px] rounded-full transition-colors shrink-0 ${checked ? 'bg-[#04B8BB]' : 'bg-[#333]'}`}
+        className={`relative w-9 h-[18px] rounded-full transition-colors shrink-0 ${checked ? 'bg-[#DF9716]' : 'bg-[#333]'}`}
       >
         <span className={`absolute top-[2px] left-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform ${checked ? 'translate-x-[18px]' : ''}`} />
       </button>
@@ -69,7 +69,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
       details.push('Cloudinary');
     }
     if (value.width && value.height) {
-      details.push(`${value.width} × ${value.height}`);
+      details.push(`${value.width} Ã— ${value.height}`);
     }
     if (value.format) {
       details.push(value.format.toUpperCase());
@@ -146,7 +146,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
                     value={altText}
                     onChange={(e) => handleAltChange(e.target.value)}
                     placeholder="Describe this image for screen readers and SEO..."
-                    className="w-full bg-[#151515] border border-[#242424] text-xs text-[#F1F1F1] px-3 py-1.5 focus:border-[#04B8BB] focus:outline-none transition-colors rounded"
+                    className="w-full bg-[#151515] border border-[#242424] text-xs text-[#F1F1F1] px-3 py-1.5 focus:border-[#DF9716] focus:outline-none transition-colors rounded"
                   />
                 </div>
               )}
@@ -168,7 +168,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
                 <button
                   type="button"
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="text-[10px] text-[#A3A3A3] hover:text-[#04B8BB] ml-auto"
+                  className="text-[10px] text-[#A3A3A3] hover:text-[#DF9716] ml-auto"
                 >
                   {showAdvanced ? 'Hide Link' : 'Advanced Link'}
                 </button>
@@ -177,7 +177,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
           </div>
         ) : (
           /* Empty / Upload Trigger State */
-          <div className="border border-dashed border-[#333] hover:border-[#04B8BB] transition-colors bg-[#080808] p-6 text-center rounded">
+          <div className="border border-dashed border-[#333] hover:border-[#DF9716] transition-colors bg-[#080808] p-6 text-center rounded">
             <label className="cursor-pointer inline-flex flex-col items-center gap-2">
               <div className="w-10 h-10 rounded-full bg-[#151515] border border-[#242424] flex items-center justify-center text-[#A3A3A3]">
                 {accept.includes('video') ? <Video size={16} /> : <Plus size={16} />}
@@ -214,12 +214,12 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
   );
 }
 
-// ─── SECTION PANEL ────────────────────────────────────────────────────────────
+// â”€â”€â”€ SECTION PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function SectionPanel({ number, title, children }) {
   return (
     <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-6">
-      <h3 className="font-display text-lg tracking-wider border-b border-[#242424] pb-3 text-[#04B8BB]">
+      <h3 className="font-display text-lg tracking-wider border-b border-[#242424] pb-3 text-[#DF9716]">
         {number}. {title}
       </h3>
       {children}
@@ -236,7 +236,7 @@ function FieldGroup({ title, children }) {
   );
 }
 
-// ─── REPEATABLE BLOCK ─────────────────────────────────────────────────────────
+// â”€â”€â”€ REPEATABLE BLOCK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Reusable component for all dynamic/repeatable content lists.
 
 function RepeatableBlock({
@@ -262,7 +262,7 @@ function RepeatableBlock({
           <div key={idx} className="border border-[#242424] bg-[#060606] overflow-hidden">
             {/* Card header with controls */}
             <div className="flex items-center justify-between px-4 py-2 bg-[#0A0A0A] border-b border-[#242424]">
-              <span className="font-mono text-[11px] font-bold tracking-[.15em] text-[#04B8BB] uppercase">
+              <span className="font-mono text-[11px] font-bold tracking-[.15em] text-[#DF9716] uppercase">
                 {itemLabel} {String(idx + 1).padStart(2, '0')}
               </span>
               <div className="flex items-center gap-0.5">
@@ -288,7 +288,7 @@ function RepeatableBlock({
                   type="button"
                   onClick={() => onDuplicate(idx)}
                   title="Duplicate"
-                  className="p-1.5 text-[#555] hover:text-[#04B8BB] transition-colors rounded flex items-center gap-1"
+                  className="p-1.5 text-[#555] hover:text-[#DF9716] transition-colors rounded flex items-center gap-1"
                 >
                   <Copy size={13} />
                 </button>
@@ -319,7 +319,7 @@ function RepeatableBlock({
       <button
         type="button"
         onClick={() => onAdd()}
-        className="w-full border border-dashed border-[#333] bg-transparent text-[#A3A3A3] hover:border-[#04B8BB] hover:text-[#04B8BB] transition-all py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
+        className="w-full border border-dashed border-[#333] bg-transparent text-[#A3A3A3] hover:border-[#DF9716] hover:text-[#DF9716] transition-all py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
       >
         <Plus size={13} /> {addLabel}
       </button>
@@ -327,7 +327,7 @@ function RepeatableBlock({
   );
 }
 
-// ─── MAIN CMS EDITOR ──────────────────────────────────────────────────────────
+// â”€â”€â”€ MAIN CMS EDITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function CmsEditor({
   cmsDraft,
@@ -453,7 +453,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 01. HERO ────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ 01. HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="01" title="Hero Section">
         <FieldGroup title="Text Content">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -518,7 +518,7 @@ export default function CmsEditor({
               <TextInput
                 value={cmsDraft.hero?.foundingPriceNote}
                 onChange={(e) => onFieldChange('hero', 'foundingPriceNote', e.target.value)}
-                placeholder="Founding plan from ₹5,999 / month · Rate locked for founding batch"
+                placeholder="Founding plan from â‚¹5,999 / month Â· Rate locked for founding batch"
               />
             </Field>
           </div>
@@ -606,7 +606,7 @@ export default function CmsEditor({
               value={(cmsDraft.hero?.metaItems || []).join('\n')}
               onChange={(e) => onFieldChange('hero', 'metaItems', e.target.value.split('\n').filter(Boolean))}
               rows={4}
-              placeholder={"RAIPUR\nVIP ESTATE\n50 SEATS\nFRI — SAT FREE TRIAL"}
+              placeholder={"RAIPUR\nVIP ESTATE\n50 SEATS\nFRI â€” SAT FREE TRIAL"}
             />
           </Field>
           <Field label="Highlight words (comma-separated)">
@@ -619,7 +619,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 02. PROBLEM ─────────────────────────────────────────────────────── */}
+      {/* â”€â”€ 02. PROBLEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="02" title="Problem Section">
         <FieldGroup title="Section Header">
           <Field label="Section headline">
@@ -654,7 +654,7 @@ export default function CmsEditor({
               <TextInput
                 value={cmsDraft.problem?.quoteAuthor || ''}
                 onChange={(e) => onFieldChange('problem', 'quoteAuthor', e.target.value)}
-                placeholder="— Deven Co-Work"
+                placeholder="â€” Deven Co-Work"
               />
             </Field>
           </div>
@@ -662,7 +662,7 @@ export default function CmsEditor({
 
         <FieldGroup title="Problem Points">
           <p className="text-xs text-[#A3A3A3]">
-            Each problem point is numbered automatically from its position. Add as many as you need — no maximum.
+            Each problem point is numbered automatically from its position. Add as many as you need â€” no maximum.
           </p>
           <RepeatableBlock
             items={cmsDraft.problem?.problemPoints || []}
@@ -726,7 +726,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 03. GUIDE ───────────────────────────────────────────────────────── */}
+      {/* â”€â”€ 03. GUIDE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="03" title="Guide Section">
         <FieldGroup title="Section Text">
           <Field label="Section headline">
@@ -793,7 +793,7 @@ export default function CmsEditor({
                   <select
                     value={item.size || 'medium'}
                     onChange={(e) => onNestedChange('guide', 'gallery', idx, 'size', e.target.value)}
-                    className="w-full min-h-[44px] border border-[#242424] bg-[#0A0A0A] text-white px-3 py-2 text-sm focus:outline-none focus:border-[#04B8BB]"
+                    className="w-full min-h-[44px] border border-[#242424] bg-[#0A0A0A] text-white px-3 py-2 text-sm focus:outline-none focus:border-[#DF9716]"
                   >
                     <option value="large">Large (left column, tall)</option>
                     <option value="medium">Medium</option>
@@ -833,7 +833,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 04. PLAN ────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ 04. PLAN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="04" title="Plan Section">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -855,7 +855,7 @@ export default function CmsEditor({
         </FieldGroup>
 
         <FieldGroup title="Steps">
-          <p className="text-xs text-[#A3A3A3]">Steps are numbered automatically (01, 02, 03…).</p>
+          <p className="text-xs text-[#A3A3A3]">Steps are numbered automatically (01, 02, 03â€¦).</p>
           <RepeatableBlock
             items={cmsDraft.plan?.steps || []}
             {...nested('plan', 'steps', { title: '', description: '' })}
@@ -883,7 +883,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 05. OFFER STACK ─────────────────────────────────────────────────── */}
+      {/* â”€â”€ 05. OFFER STACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="05" title="Founder's OS / Offer Stack">
         <FieldGroup title="Section Header">
           <Field label="Section headline">
@@ -942,7 +942,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 06. VALUE STACK ─────────────────────────────────────────────────── */}
+      {/* â”€â”€ 06. VALUE STACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="06" title="Value Stack">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -958,18 +958,18 @@ export default function CmsEditor({
                 onChange={(e) => onFieldChange('valueStack', 'body', e.target.value)}
               />
             </Field>
-            <Field label="Total value display (e.g. ₹25,000+/month)">
+            <Field label="Total value display (e.g. â‚¹25,000+/month)">
               <TextInput
                 value={cmsDraft.valueStack?.totalValue}
                 onChange={(e) => onFieldChange('valueStack', 'totalValue', e.target.value)}
-                placeholder="₹25,000+/month"
+                placeholder="â‚¹25,000+/month"
               />
             </Field>
-            <Field label="Founding price display (e.g. From ₹5,999/month)">
+            <Field label="Founding price display (e.g. From â‚¹5,999/month)">
               <TextInput
                 value={cmsDraft.valueStack?.foundingPrice}
                 onChange={(e) => onFieldChange('valueStack', 'foundingPrice', e.target.value)}
-                placeholder="From ₹5,999/month"
+                placeholder="From â‚¹5,999/month"
               />
             </Field>
           </div>
@@ -977,8 +977,8 @@ export default function CmsEditor({
 
         <FieldGroup title="Value Items">
           <p className="text-xs text-[#A3A3A3]">
-            Items are numbered automatically (01, 02…). Toggle visibility to temporarily hide a row without deleting it.
-            The Display Value field is what visitors see (e.g., "₹10,000/mo"). The Value field is optional for future auto-totalling.
+            Items are numbered automatically (01, 02â€¦). Toggle visibility to temporarily hide a row without deleting it.
+            The Display Value field is what visitors see (e.g., "â‚¹10,000/mo"). The Value field is optional for future auto-totalling.
           </p>
           <RepeatableBlock
             items={cmsDraft.valueStack?.valueItems || []}
@@ -1000,7 +1000,7 @@ export default function CmsEditor({
                     <TextInput
                       value={item.displayValue}
                       onChange={(e) => onNestedChange('valueStack', 'valueItems', idx, 'displayValue', e.target.value)}
-                      placeholder="₹10,000/mo"
+                      placeholder="â‚¹10,000/mo"
                     />
                   </Field>
                   <Field label="Numeric value (optional, for totals)">
@@ -1037,7 +1037,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 07. GUARANTEE / RISK REVERSAL ───────────────────────────────────── */}
+      {/* â”€â”€ 07. GUARANTEE / RISK REVERSAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="07" title="Guarantee / Risk Reversal">
         <FieldGroup title="Section Header">
           <Field label="Section headline (use \\n for line breaks)">
@@ -1081,9 +1081,27 @@ export default function CmsEditor({
             )}
           />
         </FieldGroup>
+
+        <FieldGroup title="Closing Text &amp; CTA">
+          <Field label="Closing paragraph (shown below guarantee blocks)">
+            <TextArea
+              value={cmsDraft.riskReversal?.closingText}
+              onChange={(e) => onFieldChange('riskReversal', 'closingText', e.target.value)}
+              rows={3}
+              placeholder="We can offer this guarantee because we've built something we're genuinely proud of."
+            />
+          </Field>
+          <Field label="CTA button label">
+            <TextInput
+              value={cmsDraft.riskReversal?.ctaLabel}
+              onChange={(e) => onFieldChange('riskReversal', 'ctaLabel', e.target.value)}
+              placeholder="Book My Free 2-Day Trial"
+            />
+          </Field>
+        </FieldGroup>
       </SectionPanel>
 
-      {/* ── 08. SOCIAL PROOF / TESTIMONIALS ─────────────────────────────────── */}
+      {/* â”€â”€ 08. SOCIAL PROOF / TESTIMONIALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="08" title="Social Proof / Testimonials">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1102,16 +1120,55 @@ export default function CmsEditor({
           </div>
         </FieldGroup>
 
+        <FieldGroup title="Google Reviews">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Rating (e.g. 4.9)">
+              <TextInput
+                value={cmsDraft.socialProof?.googleRating}
+                onChange={(e) => onFieldChange('socialProof', 'googleRating', parseFloat(e.target.value) || 0)}
+                placeholder="4.9"
+                type="number"
+                step="0.1"
+                min="0"
+                max="5"
+              />
+            </Field>
+            <Field label="Review count">
+              <TextInput
+                value={cmsDraft.socialProof?.googleReviewCount}
+                onChange={(e) => onFieldChange('socialProof', 'googleReviewCount', parseInt(e.target.value) || 0)}
+                placeholder="48"
+                type="number"
+              />
+            </Field>
+            <Field label="Google Reviews link">
+              <TextInput
+                value={cmsDraft.socialProof?.googleReviewUrl}
+                onChange={(e) => onFieldChange('socialProof', 'googleReviewUrl', e.target.value)}
+                placeholder="https://g.page/..."
+              />
+            </Field>
+          </div>
+          <p className="text-xs text-[#A3A3A3] mt-1">Set Rating to 0 to hide the Google review bar on the frontend.</p>
+        </FieldGroup>
+
         <FieldGroup title="Testimonials">
-          <p className="text-xs text-[#A3A3A3]">Toggle "Published" off to hide a testimonial without deleting it.</p>
+          <p className="text-xs text-[#A3A3A3]">Toggle &ldquo;Published&rdquo; off to hide a testimonial without deleting it. Use &ldquo;Order&rdquo; to control display sequence.</p>
           <RepeatableBlock
             items={cmsDraft.socialProof?.testimonials || []}
-            {...nested('socialProof', 'testimonials', { quote: '', author: '', role: '', published: true })}
+            {...nested('socialProof', 'testimonials', { photo: '', quote: '', author: '', company: '', role: '', order: 0, published: true })}
             itemLabel="Testimonial"
             addLabel="Add Testimonial"
             emptyLabel="No testimonials added yet."
             renderItem={(t, idx) => (
               <div className="space-y-3">
+                <MediaField
+                  label="Photo (headshot)"
+                  value={t.photo}
+                  onChange={(val) => onNestedChange('socialProof', 'testimonials', idx, 'photo', val)}
+                  onUpload={(e) => onUpload('socialProof', 'testimonials', e, idx, 'photo')}
+                  accept="image/*"
+                />
                 <Field label="Quote">
                   <TextArea
                     value={t.quote}
@@ -1121,18 +1178,33 @@ export default function CmsEditor({
                   />
                 </Field>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Author name">
+                  <Field label="Full Name">
                     <TextInput
                       value={t.author}
                       onChange={(e) => onNestedChange('socialProof', 'testimonials', idx, 'author', e.target.value)}
                       placeholder="Rahul Sharma"
                     />
                   </Field>
-                  <Field label="Role / Business">
+                  <Field label="Company / Business">
+                    <TextInput
+                      value={t.company}
+                      onChange={(e) => onNestedChange('socialProof', 'testimonials', idx, 'company', e.target.value)}
+                      placeholder="Founder, TechCo Raipur"
+                    />
+                  </Field>
+                  <Field label="Role (optional)">
                     <TextInput
                       value={t.role}
                       onChange={(e) => onNestedChange('socialProof', 'testimonials', idx, 'role', e.target.value)}
-                      placeholder="Founder, Startup XYZ"
+                      placeholder="Freelance Designer"
+                    />
+                  </Field>
+                  <Field label="Display order (lower = first)">
+                    <TextInput
+                      value={t.order}
+                      onChange={(e) => onNestedChange('socialProof', 'testimonials', idx, 'order', parseInt(e.target.value) || 0)}
+                      placeholder="0"
+                      type="number"
                     />
                   </Field>
                 </div>
@@ -1147,7 +1219,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 09. PRICING ─────────────────────────────────────────────────────── */}
+      {/* â”€â”€ 09. PRICING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="09" title="Pricing Section">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1207,14 +1279,14 @@ export default function CmsEditor({
                     <TextInput
                       value={plan.standard}
                       onChange={(e) => onNestedChange('pricing', 'plans', idx, 'standard', e.target.value)}
-                      placeholder="₹7,500/mo"
+                      placeholder="â‚¹7,500/mo"
                     />
                   </Field>
                   <Field label="Founding member price">
                     <TextInput
                       value={plan.founding}
                       onChange={(e) => onNestedChange('pricing', 'plans', idx, 'founding', e.target.value)}
-                      placeholder="₹5,999/mo"
+                      placeholder="â‚¹5,999/mo"
                     />
                   </Field>
                 </div>
@@ -1231,7 +1303,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 10. FAQ ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ 10. FAQ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="10" title="FAQ Section">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1287,7 +1359,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 11. RESERVATION / FINAL CTA ─────────────────────────────────────── */}
+      {/* â”€â”€ 11. RESERVATION / FINAL CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="11" title="Reservation / Final CTA">
         <FieldGroup title="Final CTA Text">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1429,7 +1501,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* ── 12. FREE TRIAL SETTINGS ─────────────────────────────────────────── */}
+      {/* â”€â”€ 12. FREE TRIAL SETTINGS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <SectionPanel number="12" title="Free Trial Settings">
         <FieldGroup title="Trial Configuration">
           <div className="space-y-4">
@@ -1488,4 +1560,5 @@ export default function CmsEditor({
     </div>
   );
 }
+
 

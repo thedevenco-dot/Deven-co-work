@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { Users, Eye } from 'lucide-react';
 
@@ -30,7 +30,7 @@ export default function AdminCalculatorLeads() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase flex items-center gap-3">
-          <Users size={24} className="text-[#04B8BB]" /> Calculator Leads
+          <Users size={24} className="text-[#DF9716]" /> Calculator Leads
         </h2>
       </div>
 
@@ -56,7 +56,7 @@ export default function AdminCalculatorLeads() {
                     <td className="py-4 px-6">
                       <div className="font-semibold text-[#F1F1F1]">{lead.name}</div>
                       <div className="text-[10px] text-[#A3A3A3] mt-0.5">{new Date(lead.createdAt).toLocaleString()}</div>
-                      {lead.companyProjectName && <div className="text-xs text-[#04B8BB] mt-1">{lead.companyProjectName}</div>}
+                      {lead.companyProjectName && <div className="text-xs text-[#DF9716] mt-1">{lead.companyProjectName}</div>}
                     </td>
                     <td className="py-4 px-6 text-[#b5b1a7]">
                       <div>{lead.phone}</div>
@@ -64,9 +64,9 @@ export default function AdminCalculatorLeads() {
                     </td>
                     <td className="py-4 px-6 text-[#F1F1F1] font-medium">{lead.teamSizeLabel}</td>
                     <td className="py-4 px-6 text-[#F1F1F1]">{lead.fitoutTier}</td>
-                    <td className="py-4 px-6 text-[#04B8BB] font-bold">{formatCurrency(lead.estimatedSavings)}</td>
+                    <td className="py-4 px-6 text-[#DF9716] font-bold">{formatCurrency(lead.estimatedSavings)}</td>
                     <td className="py-4 px-6 text-right">
-                      <button onClick={() => setSelectedLead(lead)} className="text-xs font-bold uppercase tracking-wider text-[#04B8BB] hover:text-white flex items-center justify-end gap-1 w-full">
+                      <button onClick={() => setSelectedLead(lead)} className="text-xs font-bold uppercase tracking-wider text-[#DF9716] hover:text-white flex items-center justify-end gap-1 w-full">
                         <Eye size={14} /> View
                       </button>
                     </td>
@@ -81,7 +81,7 @@ export default function AdminCalculatorLeads() {
       {selectedLead && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg bg-[#0A0A0A] border border-[#242424] p-6 relative">
-            <button onClick={() => setSelectedLead(null)} className="absolute right-4 top-4 text-[#A3A3A3] hover:text-white">✕</button>
+            <button onClick={() => setSelectedLead(null)} className="absolute right-4 top-4 text-[#A3A3A3] hover:text-white">âœ•</button>
             <h2 className="font-display text-2xl tracking-wider text-white mb-6 border-b border-[#242424] pb-4">
               Lead: {selectedLead.name}
             </h2>
@@ -94,7 +94,7 @@ export default function AdminCalculatorLeads() {
               <p><strong>Fitout Tier:</strong> <span className="text-white">{selectedLead.fitoutTier} - {selectedLead.fitoutLabel}</span></p>
               <div className="h-px bg-[#242424] my-2" />
               <p><strong>Private Office Year 1:</strong> <span className="text-[#ef4444] font-bold">{formatCurrency(selectedLead.estimatedOfficeYear1Cost)}</span></p>
-              <p><strong>Deven Year 1:</strong> <span className="text-[#04B8BB] font-bold">{formatCurrency(selectedLead.estimatedDevenYear1Cost)}</span></p>
+              <p><strong>Deven Year 1:</strong> <span className="text-[#DF9716] font-bold">{formatCurrency(selectedLead.estimatedDevenYear1Cost)}</span></p>
               <p><strong>Estimated Savings:</strong> <span className="text-white font-bold">{formatCurrency(selectedLead.estimatedSavings)}</span></p>
             </div>
             <div className="mt-6 flex justify-end">
@@ -106,3 +106,4 @@ export default function AdminCalculatorLeads() {
     </div>
   );
 }
+

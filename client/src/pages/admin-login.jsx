@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { api } from '@/services/api';
@@ -79,7 +79,7 @@ export default function AdminLogin() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   autoComplete="current-password"
                 />
               </label>
@@ -103,7 +103,7 @@ export default function AdminLogin() {
           </form>
 
           <div className="mt-6 border-t border-[#024E5C] pt-4 flex justify-between items-center text-xs text-[#A3A3A3]">
-            <a href="/" className="inline-flex items-center gap-1 hover:text-[#04B8BB] transition-colors">
+            <a href="/" className="inline-flex items-center gap-1 hover:text-[#DF9716] transition-colors">
               <ArrowLeft size={12} /> Back to Site
             </a>
             <span className="inline-flex items-center gap-1">
@@ -115,3 +115,4 @@ export default function AdminLogin() {
     </div>
   );
 }
+

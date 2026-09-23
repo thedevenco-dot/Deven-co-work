@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:is(.dark *));
 
-/* ─── DESIGN TOKENS ─────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ DESIGN TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -28,8 +28,8 @@
   /* New Theme Colors */
   --color-white: #FCFAF9;
   --color-teal: #024E5C;
-  --color-cyan: #04B8BB;
-  --color-gold: #04B8BB;
+  --color-cyan: #DF9716;
+  --color-gold: #DF9716;
   --color-black: #0C0C0C;
 }
 
@@ -39,26 +39,26 @@
   --foreground: 20 20% 98%;             /* #FCFAF9 off-white */
   --border: 190 96% 18% / 16%;          /* #024E5C teal at 16% */
   --input: 190 96% 18% / 15%;           /* #024E5C teal at 15% */
-  --ring: 181 96% 37%;                  /* #04B8BB cyan */
+  --ring: 39 93% 47%;                  /* #DF9716 cyan */
   --card: 190 96% 18%;                  /* #024E5C deep teal */
   --card-foreground: 20 20% 98%;        /* #FCFAF9 off-white */
-  --primary: 181 96% 37%;               /* #04B8BB cyan */
+  --primary: 39 93% 47%;               /* #DF9716 cyan */
   --primary-foreground: 0 0% 5%;        /* #0C0C0C black */
   --secondary: 190 96% 18%;             /* Deep Teal */
   --secondary-foreground: 20 20% 98%;   /* Off-white */
   --muted: 20 20% 90%;
   --muted-foreground: 20 10% 65%;
-  --accent: 181 96% 37%;                /* Cyan */
+  --accent: 39 93% 47%;                /* Cyan */
   --accent-foreground: 0 0% 5%;
 
   /* Brand Palette */
   --cream: #FCFAF9;
   --teal: #024E5C;
-  --cyan: #04B8BB;
-  --gold: #04B8BB;
+  --cyan: #DF9716;
+  --gold: #DF9716;
   --black: #0C0C0C;
 
-  --yellow: #04B8BB;
+  --yellow: #DF9716;
   --yellow-dim: rgba(4,184,187,0.15);
   --near-black: #0C0C0C;
   --surface: #024E5C;
@@ -76,7 +76,7 @@
   --radius: 0px;
 }
 
-/* ─── BASE ───────────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ BASE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @layer base {
   * { @apply border-border; box-sizing: border-box; }
   html { scroll-behavior: smooth; background: #0C0C0C; }
@@ -87,8 +87,8 @@
     font-size: 16px;
     line-height: 1.6;
   }
-  ::selection { color: #0C0C0C; background: #04B8BB; }
-  :focus-visible { outline: 2px solid #04B8BB; outline-offset: 3px; }
+  ::selection { color: #0C0C0C; background: #DF9716; }
+  :focus-visible { outline: 2px solid #DF9716; outline-offset: 3px; }
   button, a, input, select { -webkit-tap-highlight-color: transparent; }
 
   img {
@@ -97,7 +97,7 @@
   }
 }
 
-/* ─── UTILITIES ──────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ UTILITIES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @layer utilities {
   .font-display { font-family: var(--app-font-display); }
 
@@ -110,7 +110,7 @@
     font-size: 10px;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--section-label-color, #04B8BB);
+    color: var(--section-label-color, #DF9716);
     font-weight: 700;
     font-family: var(--app-font-sans);
   }
@@ -122,18 +122,18 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.28em;
-    color: var(--section-label-color, #04B8BB);
+    color: var(--section-label-color, #DF9716);
   }
   .section-label::before {
     content: '';
     display: block;
     width: 20px;
     height: 1px;
-    background: var(--section-label-color, #04B8BB);
+    background: var(--section-label-color, #DF9716);
     flex-shrink: 0;
   }
 
-  /* Editorial Headline — fluid large type */
+  /* Editorial Headline â€” fluid large type */
   .editorial-headline {
     font-family: var(--app-font-display);
     font-weight: 800;
@@ -145,8 +145,8 @@
 
   /* Text utilities */
   .text-balance { text-wrap: balance; }
-  .text-yellow { color: #04B8BB; }
-  .text-cyan { color: #04B8BB; }
+  .text-yellow { color: #DF9716; }
+  .text-cyan { color: #DF9716; }
   .text-muted { color: rgba(12,12,12,0.65); }
   .text-dim { color: #555555; }
 
@@ -154,13 +154,13 @@
   .bg-near-black { background-color: #0C0C0C; }
   .bg-surface { background-color: #024E5C; }
   .bg-elevated { background-color: #035E6F; }
-  .bg-yellow-brand { background-color: #04B8BB; }
-  .bg-cyan-brand { background-color: #04B8BB; }
+  .bg-yellow-brand { background-color: #DF9716; }
+  .bg-cyan-brand { background-color: #DF9716; }
   .bg-off-white { background-color: #FCFAF9; }
 
   /* Border utilities */
   .border-subtle { border-color: rgba(252,250,249,0.16); }
-  .border-brand { border-color: #04B8BB; }
+  .border-brand { border-color: #DF9716; }
 
   /* Brutalist helper classes */
   .text-dark { color: #000000; }
@@ -224,7 +224,7 @@
   }
 }
 
-/* ─── SITE-WIDE GRAIN ─────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ SITE-WIDE GRAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .site-noise::after {
   content: '';
   position: fixed;
@@ -235,7 +235,7 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
 }
 
-/* ─── GRID PAPER TEXTURE ─────────────────────────────────────────────────────── */
+/* â”€â”€â”€ GRID PAPER TEXTURE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .grid-paper {
   background-color: #0C0C0C;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%23ffffff' stroke-opacity='.04'/%3E%3C/svg%3E");
@@ -245,7 +245,7 @@
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%23000000' stroke-opacity='.04'/%3E%3C/svg%3E");
 }
 
-/* ─── LOGO ─────────────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ LOGO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .logo {
   display: inline-flex;
   align-items: center;
@@ -264,7 +264,7 @@
 .logo-mark span:first-child {
   position: absolute;
   inset: 0;
-  background: #04B8BB;
+  background: #DF9716;
 }
 .logo-mark span:last-child {
   position: absolute;
@@ -275,7 +275,7 @@
   background: #0C0C0C;
 }
 
-/* ─── BUTTONS ─────────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .button {
   display: inline-flex;
   min-height: 52px;
@@ -298,7 +298,7 @@
 }
 .button:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 3px 3px 0 0 var(--btn-shadow-color, #04B8BB);
+  box-shadow: 3px 3px 0 0 var(--btn-shadow-color, #DF9716);
 }
 .button:active {
   transform: translate(0, 0);
@@ -312,33 +312,33 @@
 }
 
 .button-primary {
-  background: #04B8BB;
+  background: #DF9716;
   color: #0C0C0C;
-  border-color: #04B8BB;
-  --btn-shadow-color: rgba(12,12,12,0.3);
+  border-color: #DF9716;
+  --btn-shadow-color: rgba(223,151,22,0.35);
 }
 .button-primary:hover {
-  background: #024E5C;
+  background: #b08530;
   color: #FCFAF9;
-  border-color: #024E5C;
+  border-color: #b08530;
 }
 
 .button-dark {
   background: #0C0C0C;
-  color: #04B8BB;
+  color: #DF9716;
   border-color: #0C0C0C;
-  --btn-shadow-color: #04B8BB;
+  --btn-shadow-color: #DF9716;
 }
 .button-dark:hover { background: #024E5C; color: #FCFAF9; }
 
 .button-outline {
   border-color: rgba(252,250,249,0.25);
   color: #FCFAF9;
-  --btn-shadow-color: #04B8BB;
+  --btn-shadow-color: #DF9716;
 }
 .button-outline:hover {
-  border-color: #04B8BB;
-  color: #04B8BB;
+  border-color: #DF9716;
+  color: #DF9716;
 }
 
 .button-outline-dark {
@@ -352,13 +352,13 @@
 .button-xs    { min-height: 36px; padding-inline: 14px; font-size: 9.5px; }
 .button-full  { width: 100%; }
 
-/* ─── TEXT LINK ────────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ TEXT LINK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .text-link {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
   gap: 8px;
-  color: #04B8BB;
+  color: #DF9716;
   font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
@@ -368,7 +368,7 @@
 }
 .text-link:hover { border-color: #FCFAF9; color: #FCFAF9; }
 
-/* ─── FORM FIELDS ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ FORM FIELDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .field-label {
   display: flex;
   flex-direction: column;
@@ -396,12 +396,12 @@
 .field-label input:focus,
 .field-label select:focus,
 .field-label textarea:focus {
-  border-color: #04B8BB;
+  border-color: #DF9716;
   outline: none;
 }
 .field-label select option { background: #FFFFFF; color: #0C0C0C; }
 
-/* ─── VALUE STACK DOTTED LEADER ──────────────────────────────────────────────── */
+/* â”€â”€â”€ VALUE STACK DOTTED LEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .value-row {
   display: flex;
   align-items: baseline;
@@ -443,7 +443,7 @@
   text-align: right;
 }
 
-/* ─── SECTION REVEAL ANIMATIONS ─────────────────────────────────────────────── */
+/* â”€â”€â”€ SECTION REVEAL ANIMATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .reveal {
   animation: reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -457,7 +457,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── FLOATING CARD ──────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ FLOATING CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .floating-card {
   background: rgba(2,78,92,0.9);
   border: 1px solid rgba(4,184,187,0.35);
@@ -466,12 +466,12 @@
   padding: 16px 20px;
 }
 
-/* ─── SCARCITY BADGE ──────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ SCARCITY BADGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .scarcity-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border-left: 2px solid #04B8BB;
+  border-left: 2px solid #DF9716;
   padding-left: 12px;
   font-size: 10px;
   font-weight: 700;
@@ -479,21 +479,21 @@
   letter-spacing: 0.15em;
 }
 
-/* ─── ACCORDION ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ ACCORDION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .accordion-content {
   overflow: hidden;
 }
 
-/* ─── QUOTE CARD ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ QUOTE CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .quote-card {
   background: rgba(252,250,249,0.96);
   border: 1px solid rgba(2,78,92,0.2);
-  border-left: 3px solid #04B8BB;
+  border-left: 3px solid #DF9716;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* ─── FOOTER MAP ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ FOOTER MAP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .map-embed {
   filter: grayscale(1) contrast(1.1);
   opacity: 0.3;
@@ -501,7 +501,7 @@
 }
 .map-embed:hover { opacity: 0.45; }
 
-/* ─── RESPONSIVE ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (min-width: 768px) {
   .container-wide  { width: min(100% - 80px, 1280px); }
   .container-tight { width: min(100% - 80px, 960px); }
@@ -512,6 +512,73 @@
 @media (max-width: 767px) {
   .button { min-height: 50px; padding-inline: 18px; }
   .editorial-headline { letter-spacing: -0.02em; }
+  /* Prevent content from being hidden behind the sticky mobile CTA bar */
+  body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* â”€â”€â”€ MOBILE STICKY CTA BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.mobile-sticky-cta {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 56px;
+  background: #DF9716;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  /* iOS safe area inset */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.18s ease;
+}
+.mobile-sticky-cta:hover,
+.mobile-sticky-cta:active {
+  background: #b08530;
+}
+@media (max-width: 767px) {
+  .mobile-sticky-cta { display: flex; }
+}
+
+/* â”€â”€â”€ WHATSAPP CIRCULAR FLOAT BUTTON â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.wa-float-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 76px;
+  z-index: 999;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.35), 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.wa-float-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px rgba(37,211,102,0.45), 0 2px 10px rgba(0,0,0,0.4);
+}
+.wa-float-btn:active {
+  transform: scale(0.96);
+}
+@media (max-width: 767px) {
+  /* On mobile, sit above the 56px sticky bar + safe area */
+  .wa-float-btn {
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* Reduced motion */

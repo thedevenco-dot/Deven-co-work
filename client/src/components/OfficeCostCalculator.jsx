@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ShieldCheck, Users, Briefcase, Zap, AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
@@ -170,7 +170,7 @@ export default function OfficeCostCalculator() {
           <p className="text-sm text-[#0C0C0C]/60 mb-4">{error}</p>
           <button 
             onClick={loadConfig} 
-            className="px-5 py-2.5 bg-[#04B8BB] text-white font-medium rounded-lg hover:bg-[#024E5C] transition-colors"
+            className="px-5 py-2.5 bg-[#DF9716] text-white font-medium rounded-lg hover:bg-[#024E5C] transition-colors"
           >
             Retry Loading
           </button>
@@ -186,7 +186,7 @@ export default function OfficeCostCalculator() {
         
         {/* Header */}
         <div className="max-w-3xl mb-12">
-          <div className="section-label mb-4 text-[#04B8BB] font-semibold tracking-wider text-sm">
+          <div className="section-label mb-4 text-[#DF9716] font-semibold tracking-wider text-sm">
             {config.sectionEyebrow}
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-[#0C0C0C] mb-6 tracking-tight">
@@ -204,7 +204,7 @@ export default function OfficeCostCalculator() {
             {/* Step 1: Team Size */}
             <div className="space-y-4">
               <h3 className="text-xl font-semibold flex items-center gap-2 text-[#0C0C0C]">
-                <Users className="w-5 h-5 text-[#04B8BB]" />
+                <Users className="w-5 h-5 text-[#DF9716]" />
                 1. How many people need seats?
               </h3>
               <div className="grid grid-cols-2 gap-3">
@@ -214,8 +214,8 @@ export default function OfficeCostCalculator() {
                     onClick={() => setTeamSize(t.label)}
                     className={`p-4 text-left border rounded-xl transition-all duration-200 ${
                       teamSize === t.label 
-                      ? 'border-[#04B8BB] bg-[#04B8BB]/5 shadow-sm ring-1 ring-[#04B8BB]' 
-                      : 'border-[#0C0C0C]/10 hover:border-[#04B8BB]/40 hover:bg-[#0C0C0C]/5 bg-white'
+                      ? 'border-[#DF9716] bg-[#DF9716]/5 shadow-sm ring-1 ring-[#DF9716]' 
+                      : 'border-[#0C0C0C]/10 hover:border-[#DF9716]/40 hover:bg-[#0C0C0C]/5 bg-white'
                     }`}
                   >
                     <div className="font-bold text-lg mb-1 text-[#0C0C0C]">{t.label}</div>
@@ -234,7 +234,7 @@ export default function OfficeCostCalculator() {
                   className="space-y-4"
                 >
                   <h3 className="text-xl font-semibold flex items-center gap-2 text-[#0C0C0C]">
-                    <Briefcase className="w-5 h-5 text-[#04B8BB]" />
+                    <Briefcase className="w-5 h-5 text-[#DF9716]" />
                     2. What quality of fit-out?
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
@@ -244,8 +244,8 @@ export default function OfficeCostCalculator() {
                         onClick={() => setFitout(f.name)}
                         className={`p-4 text-left border rounded-xl transition-all duration-200 flex flex-col ${
                           fitout === f.name 
-                          ? 'border-[#04B8BB] bg-[#04B8BB]/5 shadow-sm ring-1 ring-[#04B8BB]' 
-                          : 'border-[#0C0C0C]/10 hover:border-[#04B8BB]/40 hover:bg-[#0C0C0C]/5 bg-white'
+                          ? 'border-[#DF9716] bg-[#DF9716]/5 shadow-sm ring-1 ring-[#DF9716]' 
+                          : 'border-[#0C0C0C]/10 hover:border-[#DF9716]/40 hover:bg-[#0C0C0C]/5 bg-white'
                         }`}
                       >
                         <div className="font-bold text-lg mb-1 text-[#0C0C0C]">{f.name}</div>
@@ -265,8 +265,8 @@ export default function OfficeCostCalculator() {
               
               {!results ? (
                 <div className="h-64 flex flex-col items-center justify-center text-center px-4">
-                  <div className="w-16 h-16 rounded-full bg-[#04B8BB]/10 flex items-center justify-center mb-4">
-                    <Zap className="w-8 h-8 text-[#04B8BB]" />
+                  <div className="w-16 h-16 rounded-full bg-[#DF9716]/10 flex items-center justify-center mb-4">
+                    <Zap className="w-8 h-8 text-[#DF9716]" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2 text-[#0C0C0C]">Select your requirements</h3>
                   <p className="text-[#0C0C0C]/60 max-w-sm">
@@ -282,7 +282,7 @@ export default function OfficeCostCalculator() {
                       <p className="text-[#FCFAF9]/80 text-sm md:text-base font-medium mb-2 uppercase tracking-wider">
                         {config.savingsHeading}
                       </p>
-                      <h3 className="text-4xl md:text-5xl font-bold text-[#04B8BB] mb-4">
+                      <h3 className="text-4xl md:text-5xl font-bold text-[#DF9716] mb-4">
                         {formatINRCurrency(results.savings)}
                       </h3>
                       <p className="text-[#FCFAF9]/90">
@@ -297,8 +297,8 @@ export default function OfficeCostCalculator() {
                       <p className="text-sm text-[#0C0C0C]/60 mb-1">{config.moveInTimeLabelOffice}</p>
                       <p className="text-lg font-semibold text-[#0C0C0C]">{results.moveInTimeOffice}</p>
                     </div>
-                    <div className="border border-[#04B8BB]/30 rounded-xl p-4 bg-[#04B8BB]/5">
-                      <p className="text-sm text-[#04B8BB] font-medium mb-1">{config.moveInTimeLabelDeven}</p>
+                    <div className="border border-[#DF9716]/30 rounded-xl p-4 bg-[#DF9716]/5">
+                      <p className="text-sm text-[#DF9716] font-medium mb-1">{config.moveInTimeLabelDeven}</p>
                       <p className="text-lg font-bold text-[#024E5C]">{config.moveInTimeDevenValue}</p>
                     </div>
                   </div>
@@ -307,7 +307,7 @@ export default function OfficeCostCalculator() {
                   {!isUnlocked ? (
                     <div className="border border-[#0C0C0C]/10 rounded-xl p-6 bg-[#FCFAF9]">
                       <div className="text-center mb-6">
-                        <ShieldCheck className="w-10 h-10 text-[#04B8BB] mx-auto mb-3" />
+                        <ShieldCheck className="w-10 h-10 text-[#DF9716] mx-auto mb-3" />
                         <h4 className="text-xl font-bold mb-2 text-[#0C0C0C]">{config.formHeading}</h4>
                         <p className="text-[#0C0C0C]/60 text-sm">{config.formDescription}</p>
                       </div>
@@ -319,7 +319,7 @@ export default function OfficeCostCalculator() {
                             <input 
                               type="text" required 
                               value={form.name} onChange={e => setForm({...form, name: e.target.value})}
-                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
+                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#DF9716] focus:ring-1 focus:ring-[#DF9716] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
                               placeholder="Your full name"
                             />
                           </div>
@@ -328,7 +328,7 @@ export default function OfficeCostCalculator() {
                             <input 
                               type="tel" required 
                               value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
-                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
+                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#DF9716] focus:ring-1 focus:ring-[#DF9716] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
                               placeholder="10-digit number"
                             />
                           </div>
@@ -339,7 +339,7 @@ export default function OfficeCostCalculator() {
                             <input 
                               type="email" required 
                               value={form.email} onChange={e => setForm({...form, email: e.target.value})}
-                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
+                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#DF9716] focus:ring-1 focus:ring-[#DF9716] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
                               placeholder="work@company.com"
                             />
                           </div>
@@ -348,7 +348,7 @@ export default function OfficeCostCalculator() {
                             <input 
                               type="text" 
                               value={form.companyProjectName} onChange={e => setForm({...form, companyProjectName: e.target.value})}
-                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
+                              className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#DF9716] focus:ring-1 focus:ring-[#DF9716] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
                               placeholder="Optional"
                             />
                           </div>
@@ -384,66 +384,66 @@ export default function OfficeCostCalculator() {
                             <tr className="border-b border-[#0C0C0C]/10 text-xs md:text-sm text-[#0C0C0C]/60 uppercase tracking-wider font-semibold">
                               <th className="pb-2.5 font-semibold w-1/2">Cost Component</th>
                               <th className="pb-2.5 font-semibold">Private Office</th>
-                              <th className="pb-2.5 font-semibold text-[#04B8BB]">Deven Co-Work</th>
+                              <th className="pb-2.5 font-semibold text-[#DF9716]">Deven Co-Work</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-[#0C0C0C]/5 text-xs md:text-sm text-[#0C0C0C]">
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Security Deposit</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.securityDeposit)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Broker Commission</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.broker)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Legal / Stamp</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.legal)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Fit-out</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.fitout)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Furniture</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.furniture)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">AC / Light</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.ac)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Equipment</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.equipment)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Security</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.security)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-1.5 md:py-2 font-medium text-[#0C0C0C]">Govt Approval</td>
                               <td className="py-1.5 md:py-2 text-[#0C0C0C]">{formatINRCurrency(results.fitoutCosts.govt)}</td>
-                              <td className="py-1.5 md:py-2 text-[#04B8BB] font-semibold">{formatINRCurrency(0)}</td>
+                              <td className="py-1.5 md:py-2 text-[#DF9716] font-semibold">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr className="bg-[#0C0C0C]/5 border-t border-b border-[#0C0C0C]/10 text-xs md:text-sm">
                               <td className="py-2.5 px-2 font-bold text-[#0C0C0C]">Total Capital Expense</td>
                               <td className="py-2.5 px-2 font-bold text-[#0C0C0C]">{formatINRCurrency(results.oneTimeCost)}</td>
-                              <td className="py-2.5 px-2 font-bold text-[#04B8BB]">{formatINRCurrency(0)}</td>
+                              <td className="py-2.5 px-2 font-bold text-[#DF9716]">{formatINRCurrency(0)}</td>
                             </tr>
                             <tr>
                               <td className="py-2 md:py-2.5 font-medium text-[#0C0C0C]">Monthly Rent & Maintenance</td>
                               <td className="py-2 md:py-2.5 text-[#0C0C0C]">{formatINRCurrency(results.monthlyOfficeCost)} / mo</td>
-                              <td className="py-2 md:py-2.5 text-[#04B8BB] font-semibold">{formatINRCurrency(results.devenMonthly)} / mo</td>
+                              <td className="py-2 md:py-2.5 text-[#DF9716] font-semibold">{formatINRCurrency(results.devenMonthly)} / mo</td>
                             </tr>
-                            <tr className="bg-[#04B8BB]/10 border-t-2 border-[#04B8BB]/20">
+                            <tr className="bg-[#DF9716]/10 border-t-2 border-[#DF9716]/20">
                               <td className="py-3 px-2 font-bold text-sm md:text-base text-[#0C0C0C]">Year 1 Total</td>
                               <td className="py-3 px-2 font-bold text-sm md:text-base text-[#0C0C0C]">{formatINRCurrency(results.officeYear1Cost)}</td>
                               <td className="py-3 px-2 font-bold text-sm md:text-base text-[#024E5C]">{formatINRCurrency(results.devenYear1Cost)}</td>
@@ -453,12 +453,12 @@ export default function OfficeCostCalculator() {
                       </div>
 
                       <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                        <a href="#reservation" className="flex-1 py-3 bg-[#04B8BB] hover:bg-[#024E5C] text-white text-center rounded-lg font-medium transition-colors">
+                        <a href="#reservation" className="flex-1 py-3 bg-[#DF9716] hover:bg-[#024E5C] text-white text-center rounded-lg font-medium transition-colors">
                           {config.freeTrialCtaText}
                         </a>
                         <button 
                           onClick={() => window.open(`https://wa.me/916260582852?text=Hi, I just calculated my savings of ${formatINRCurrency(results.savings)} on Deven's website. I'd like to know more.`, '_blank')}
-                          className="flex-1 py-3 border border-[#04B8BB] text-[#024E5C] hover:bg-[#04B8BB]/5 text-center rounded-lg font-medium transition-colors"
+                          className="flex-1 py-3 border border-[#DF9716] text-[#024E5C] hover:bg-[#DF9716]/5 text-center rounded-lg font-medium transition-colors"
                         >
                           {config.whatsappCtaText}
                         </button>
@@ -480,3 +480,4 @@ export default function OfficeCostCalculator() {
     </section>
   );
 }
+
