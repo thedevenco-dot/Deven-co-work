@@ -319,7 +319,7 @@ const defaultContent = {
 // â”€â”€â”€ DEEP MERGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function mergeContent(defaults, fetched) {
   if (!fetched) return defaults;
-  const merged = { ...defaults };
+  const merged = { ...defaults, ...fetched };
   for (const key in defaults) {
     if (fetched[key] !== undefined && fetched[key] !== null) {
       if (
@@ -436,8 +436,8 @@ function SafeImage({ src, alt = '', className = '', style }) {
 
 // â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ─── FOUNDING BANNER ────────────────────────────────────────────────────────
-function FoundingBanner({ scarcity }) {
-  const s = scarcity || defaultContent.scarcity;
+function FoundingBanner({ scarcity, cmsLoaded, cmsFailed }) {
+  const s = cmsLoaded ? scarcity : (cmsFailed ? defaultContent.scarcity : null);
   if (!s || s.showBanner === false || (s.remainingSpots !== undefined && s.remainingSpots <= 0)) {
     return null;
   }
@@ -1100,6 +1100,8 @@ function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed })
   const data = cmsLoaded ? offerStack : (cmsFailed ? defaultContent.offerStack : null);
   const valData = cmsLoaded ? valueStack : (cmsFailed ? defaultContent.valueStack : null);
 
+  if (!data) return null;
+
   const fallbackData = defaultContent.offerStack;
   const tiers = (data?.tiers && data.tiers.length > 0) ? data.tiers : fallbackData.tiers;
 
@@ -1449,6 +1451,8 @@ function TestimonialAvatar({ photo, name }) {
 function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? socialProof : (cmsFailed ? defaultContent.socialProof : null);
 
+  if (!data) return null;
+
   const fallbackData = defaultContent.socialProof;
   const rawTestimonials = (data?.testimonials && data.testimonials.length > 0)
     ? data.testimonials
@@ -1715,6 +1719,8 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
   const [active, setActive] = useState(null);
   const sectionData = cmsLoaded ? faqSection : (cmsFailed ? defaultContent.faqSection : null);
   const rawData = cmsLoaded ? (faq || []).filter(f => f.published !== false) : (cmsFailed ? defaultContent.faq.filter(f => f.published !== false) : null);
+
+  if (!sectionData && !rawData) return null;
 
   const fallbackData = defaultContent.faq;
   const data = (rawData && rawData.length > 0) ? rawData : fallbackData;
@@ -2654,8 +2660,6 @@ function Home() {
       updateFavicon(faviconUrl);
     };
 
-    applySEO(defaultContent.seo, defaultContent.globalSettings);
-
     const params = new URLSearchParams(window.location.search);
     const utmSource = params.get('utm_source') || '';
     const utmMedium = params.get('utm_medium') || '';
@@ -2673,12 +2677,14 @@ function Home() {
           setCmsLoaded(true);
         } else {
           setContent(defaultContent);
+          applySEO(defaultContent.seo, defaultContent.globalSettings);
           setCmsFailed(true);
         }
       })
       .catch((err) => {
         console.error('Failed to load published content. Using defaults.', err);
         setContent(defaultContent);
+        applySEO(defaultContent.seo, defaultContent.globalSettings);
         setCmsFailed(true);
       });
 
@@ -2702,6 +2708,19 @@ function Home() {
     document.getElementById('reservation')?.scrollIntoView({ behavior: 'smooth' });
     setReserveOpen(true);
   };
+
+  if (!cmsLoaded && !cmsFailed) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0C0C0C] text-[#FCFAF9]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#DF9716] border-t-transparent" />
+          <p className="font-display text-xs font-bold tracking-widest text-[#FCFAF9]/70 uppercase">
+            Loading...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   let sectionOrder = content?.sectionOrder || defaultContent.sectionOrder;
   if (!sectionOrder.includes('calculator')) {
@@ -2759,7 +2778,7 @@ function Home() {
   return (
     <div className="site-noise min-h-[100dvh] bg-[#0C0C0C]">
       <div className="sticky top-0 z-40 w-full">
-        <FoundingBanner scarcity={content?.scarcity} />
+        <FoundingBanner scarcity={content?.scarcity} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />
         <Header onReserve={scrollToReservation} content={content} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />
       </div>
       <main>
