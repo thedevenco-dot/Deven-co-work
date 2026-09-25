@@ -20,6 +20,7 @@ import SeatSelection from '@/components/seat-selection';
 import OfficeCostCalculator from '@/components/OfficeCostCalculator';
 import { api } from '@/services/api';
 import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon } from '@/lib/utils';
+import { trackPixelEvent } from '@/lib/metaPixel';
 export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 
 
@@ -382,7 +383,7 @@ function HighlightedText({ text, highlightWords = [] }) {
     <>
       {parts.map((part, i) =>
         highlightWords.some(w => w.toLowerCase() === part.toLowerCase())
-          ? <span key={i} className="text-[#DF9716]">{part}</span>
+          ? <span key={i} className="text-[#04B8BB]">{part}</span>
           : <span key={i}>{part}</span>
       )}
     </>
@@ -447,7 +448,7 @@ function FoundingBanner({ scarcity, cmsLoaded, cmsFailed }) {
   const priceLock = s.priceLockText || 'Price locks for 12 months';
 
   return (
-    <div className="bg-[#DF9716] text-[#0C0C0C] py-2 px-4 text-center text-xs font-bold tracking-wide border-b border-[#0C0C0C]/10 flex items-center justify-center gap-2 relative z-30">
+    <div className="bg-white text-[#0C0C0C] py-2 px-4 text-center text-xs font-bold tracking-wide border-b border-[#0C0C0C]/10 flex items-center justify-center gap-2 relative z-30">
       <span>⚡ Only <span className="underline font-extrabold">{remaining} of {total}</span> Founding Member spots remaining &mdash; {priceLock}</span>
     </div>
   );
@@ -512,10 +513,10 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
               target={item.external ? '_blank' : undefined}
               rel={item.external ? 'noreferrer' : undefined}
               onClick={(e) => handleNavClick(e, item.url)}
-              className="hover:text-[#DF9716] transition-colors relative group text-[#FCFAF9]/85"
+              className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
             >
               {item.label}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#DF9716] transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
         </nav>
@@ -523,7 +524,8 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
         <div className="flex items-center gap-5">
           <a
             href={cleanPhoneHref}
-            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#DF9716] transition-colors hover:text-white sm:inline"
+            onClick={() => trackPixelEvent('Contact')}
+            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#04B8BB] transition-colors hover:text-white sm:inline"
             data-testid="link-header-phone"
           >
             {phone}
@@ -657,7 +659,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="section-label mb-8"
-          style={{ '--section-label-color': '#DF9716' }}
+          style={{ '--section-label-color': '#04B8BB' }}
         >
           {data.eyebrow || "DEVEN WORKSPACE â€” RAIPUR"}
         </motion.div>
@@ -729,7 +731,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
                   key={i}
                   className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#FCFAF9]/60"
                 >
-                  <span className="text-[#DF9716]">{item.icon}</span>
+                  <span className="text-[#04B8BB]">{item.icon}</span>
                   {item.text}
                 </span>
               ))}
@@ -743,12 +745,12 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               className="mt-7"
               data-testid="hero-guarantee-badge"
             >
-              <div className="inline-flex items-center gap-3 bg-[#024E5C] border border-[#DF9716]/50 px-4 py-2.5 rounded-sm">
-                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#DF9716] flex items-center justify-center">
+              <div className="inline-flex items-center gap-3 bg-[#024E5C] border border-[#04B8BB]/50 px-4 py-2.5 rounded-sm">
+                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#04B8BB] flex items-center justify-center">
                   <Check size={13} strokeWidth={3} className="text-black" />
                 </div>
                 <div>
-                  <div className="text-[9px] font-black uppercase tracking-[0.18em] text-[#DF9716]">Risk-Free Guarantee</div>
+                  <div className="text-[9px] font-black uppercase tracking-[0.18em] text-[#04B8BB]">Risk-Free Guarantee</div>
                   <div className="text-[10px] font-semibold text-[#FCFAF9]/90 leading-tight mt-0.5">
                     2-Day Free Trial &middot; Love It or Leave It
                   </div>
@@ -777,7 +779,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           >
             {floatingStats.map((stat, i) => (
               <div key={i} className="floating-card min-w-[160px]">
-                <div className="font-display font-black text-[28px] leading-none text-[#DF9716]">
+                <div className="font-display font-black text-[28px] leading-none text-[#04B8BB]">
                   {stat.value}
                 </div>
                 <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#FCFAF9]/75 mt-2">
@@ -825,7 +827,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-[52px] right-8 hidden items-center gap-2.5 text-[9px] uppercase tracking-[.22em] text-[#FCFAF9]/55 font-bold lg:flex">
-        <ArrowDownRight size={13} className="text-[#DF9716]" />
+        <ArrowDownRight size={13} className="text-[#04B8BB]" />
         Scroll to discover
       </div>
     </section>
@@ -851,13 +853,13 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
         {/* Top: Brand statement */}
         <div className="grid gap-y-12 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-24 items-start">
           <RevealOnScroll>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-[#DF9716] font-bold">02 — THE SPACE</div>
+            <div className="text-[10px] uppercase tracking-[0.28em] text-[#04B8BB] font-bold">02 — THE SPACE</div>
             <h2 className="mt-6 font-display font-black leading-[1.01] text-[#FCFAF9] uppercase tracking-tight"
               style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}>
               {data.headline || 'We Built the Space Raipur Founders Actually Deserve.'}
             </h2>
             {/* Oversized watermark text */}
-            <div className="mt-10 flex flex-col gap-0 font-display font-black tracking-tighter leading-none select-none opacity-[0.05] text-[#DF9716]"
+            <div className="mt-10 flex flex-col gap-0 font-display font-black tracking-tighter leading-none select-none opacity-[0.05] text-[#04B8BB]"
               style={{ fontSize: 'clamp(52px, 8vw, 100px)' }}>
               <span>WORK</span>
               <span>SPACE</span>
@@ -894,7 +896,7 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
                   className="img-editorial img-zoom transition-opacity duration-500"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-4 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-black/65 backdrop-blur-sm">
-                  <div className="h-px w-8 bg-[#DF9716] mb-2" />
+                  <div className="h-px w-8 bg-[#04B8BB] mb-2" />
                   <span className="text-[9px] font-bold uppercase tracking-[.18em] text-white block">{gallery[0].label}</span>
                   {gallery[0].caption && <span className="text-[10px] text-white/70 mt-0.5 block">{gallery[0].caption}</span>}
                 </div>
@@ -910,7 +912,7 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
                   className="img-editorial img-zoom transition-opacity duration-500"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-3 z-10 translate-y-full group-hover:translate-y-0 transition-transform duration-400 bg-black/65 backdrop-blur-sm">
-                  <div className="h-px w-5 bg-[#DF9716] mb-1.5" />
+                  <div className="h-px w-5 bg-[#04B8BB] mb-1.5" />
                   <span className="text-[9px] font-bold uppercase tracking-[.15em] text-white block">{item.label}</span>
                 </div>
               </RevealOnScroll>
@@ -957,7 +959,7 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
               {(data.headline || 'The problems we all\npretend are normal.').split('\n').map((line, i, arr) => (
                 <span key={i} className="block">
                   {i === arr.length - 1 ? (
-                    <><span className="text-[#0C0C0C]/60">{line.slice(0, -1)}</span><span className="text-[#DF9716]">{line.slice(-1)}</span></>
+                    <><span className="text-[#0C0C0C]/60">{line.slice(0, -1)}</span><span className="text-[#04B8BB]">{line.slice(-1)}</span></>
                   ) : line}
                 </span>
               ))}
@@ -985,7 +987,7 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
                     "{quoteText}"
                   </p>
                   {data.quoteAuthor && (
-                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#DF9716]">
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#04B8BB]">
                       — {data.quoteAuthor}
                     </p>
                   )}
@@ -1051,7 +1053,7 @@ function Plan({ plan, onReserve, cmsLoaded, cmsFailed }) {
     <section className="bg-[#0C0C0C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.14)]" id="how-it-works" data-testid="section-plan">
       <div className="container-wide">
         <RevealOnScroll className="text-center max-w-[760px] mx-auto mb-16">
-          <div className="text-[10px] uppercase tracking-[0.28em] text-[#DF9716] font-bold mb-3">HOW IT WORKS</div>
+          <div className="text-[10px] uppercase tracking-[0.28em] text-[#04B8BB] font-bold mb-3">HOW IT WORKS</div>
           <h2
             className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 52px)' }}
@@ -1063,9 +1065,9 @@ function Plan({ plan, onReserve, cmsLoaded, cmsFailed }) {
         <div className="grid gap-8 grid-cols-1 md:grid-cols-3">
           {steps.map((step, idx) => (
             <RevealOnScroll key={idx} delay={idx * 0.1} className="h-full">
-              <div className="bg-[#141414] border border-[rgba(252,250,249,0.12)] p-8 flex flex-col justify-between h-full rounded-sm relative group hover:border-[#DF9716]/60 transition-colors">
+              <div className="bg-[#141414] border border-[rgba(252,250,249,0.12)] p-8 flex flex-col justify-between h-full rounded-sm relative group hover:border-[#04B8BB]/60 transition-colors">
                 <div>
-                  <div className="font-display font-black text-3xl text-[#DF9716] mb-4">
+                  <div className="font-display font-black text-3xl text-[#04B8BB] mb-4">
                     {String(idx + 1).padStart(2, '0')}
                   </div>
                   <h3 className="font-display text-[16px] font-bold text-[#FCFAF9] uppercase tracking-[0.05em] mb-3">
@@ -1146,15 +1148,15 @@ function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed })
 
             return (
               <RevealOnScroll key={index} delay={index * 0.08} className="h-full">
-                <div className="bg-white border border-[rgba(12,12,12,0.12)] hover:border-[#DF9716]/60 p-7 sm:p-8 flex flex-col justify-between h-full transition-all duration-300 shadow-sm hover:shadow-md relative group rounded-sm">
+                <div className="bg-white border border-[rgba(12,12,12,0.12)] hover:border-[#04B8BB]/60 p-7 sm:p-8 flex flex-col justify-between h-full transition-all duration-300 shadow-sm hover:shadow-md relative group rounded-sm">
                   {tier.isDevenEdge && (
-                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-[.18em] bg-[#DF9716] text-[#0C0C0C] px-2.5 py-1 rounded-xs">
+                    <span className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-[.18em] bg-[#04B8BB] text-[#0C0C0C] px-2.5 py-1 rounded-xs">
                       DEVEN EDGE
                     </span>
                   )}
                   <div>
                     {/* Icon */}
-                    <div className="w-12 h-12 rounded-full bg-[#024E5C]/10 border border-[#024E5C]/20 flex items-center justify-center text-[#024E5C] group-hover:bg-[#DF9716]/15 group-hover:text-[#0C0C0C] transition-colors mb-5">
+                    <div className="w-12 h-12 rounded-full bg-[#024E5C]/10 border border-[#024E5C]/20 flex items-center justify-center text-[#024E5C] group-hover:bg-[#04B8BB]/15 group-hover:text-[#0C0C0C] transition-colors mb-5">
                       <IconComponent size={22} strokeWidth={2.2} />
                     </div>
 
@@ -1188,7 +1190,7 @@ function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed })
         {/* Dramatic Value Reveal Block */}
         <RevealOnScroll delay={0.2} className="mt-16">
           <div className="bg-[#024E5C] border border-[#024E5C] p-8 sm:p-12 text-[#FCFAF9] text-center max-w-[880px] mx-auto rounded-sm relative overflow-hidden shadow-xl">
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#DF9716] mb-4">
+            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#04B8BB] mb-4">
               TRUE MARKET VALUE VS FOUNDING MEMBER PRICE
             </div>
 
@@ -1202,13 +1204,13 @@ function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed })
               </div>
 
               {/* Arrow */}
-              <div className="text-2xl text-[#DF9716] font-bold hidden sm:block">➔</div>
-              <div className="text-xl text-[#DF9716] font-bold block sm:hidden">↓</div>
+              <div className="text-2xl text-[#04B8BB] font-bold hidden sm:block">➔</div>
+              <div className="text-xl text-[#04B8BB] font-bold block sm:hidden">↓</div>
 
               {/* Founding Price */}
               <div className="text-center sm:text-left">
-                <div className="text-[11px] font-bold text-[#DF9716] uppercase tracking-widest mb-1">Your Founding Price</div>
-                <div className="font-display font-black text-3xl sm:text-5xl text-[#DF9716] tracking-tight leading-none">
+                <div className="text-[11px] font-bold text-[#04B8BB] uppercase tracking-widest mb-1">Your Founding Price</div>
+                <div className="font-display font-black text-3xl sm:text-5xl text-[#04B8BB] tracking-tight leading-none">
                   {foundingPriceStr}
                 </div>
               </div>
@@ -1269,7 +1271,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
               // Highlight the last line (assumed to be "a desk.")
               if (i === headlineLines.length - 1) {
                 return (
-                  <span key={i} className="block text-[#DF9716]">{line}</span>
+                  <span key={i} className="block text-[#04B8BB]">{line}</span>
                 );
               }
               return <span key={i} className="block">{line}</span>;
@@ -1312,7 +1314,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
               <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#0C0C0C]/50">TOTAL VALUE</span>
               <span className="font-display font-black text-[22px] text-[#0C0C0C]/75">{data.totalValue}</span>
             </div>
-            <div className="flex items-center justify-between bg-[#DF9716] text-[#0C0C0C] p-6">
+            <div className="flex items-center justify-between bg-[#04B8BB] text-[#0C0C0C] p-6">
               <div>
                 <span className="text-[9px] font-black uppercase tracking-[.2em] text-black/60 block">FOUNDING MEMBER RATE</span>
                 <span className="text-[10px] font-bold text-black/50 mt-0.5 block">Rate locked for 12 months</span>
@@ -1370,8 +1372,8 @@ function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
                     clipPath: 'polygon(50% 0%, 100% 15%, 100% 65%, 50% 100%, 0% 65%, 0% 15%)',
                   }}
                 >
-                  <Check size={32} strokeWidth={3} className="text-[#DF9716] mb-2" />
-                  <div className="text-[8px] font-black uppercase tracking-[0.18em] text-[#DF9716] leading-tight px-4">Risk Free</div>
+                  <Check size={32} strokeWidth={3} className="text-[#04B8BB] mb-2" />
+                  <div className="text-[8px] font-black uppercase tracking-[0.18em] text-[#04B8BB] leading-tight px-4">Risk Free</div>
                   <div className="text-[7px] font-bold text-[#FCFAF9]/70 uppercase tracking-[0.1em] mt-1 px-4">Guaranteed</div>
                 </div>
               </div>
@@ -1399,7 +1401,7 @@ function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
               {blocks.map((block, index) => (
                 <RevealOnScroll key={index} delay={index * 0.1} className="py-8">
                   <h4 className="font-display text-[13px] font-black text-[#024E5C] uppercase tracking-[0.06em] flex items-start gap-3">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#DF9716] flex-shrink-0 flex items-center justify-center">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#04B8BB] flex-shrink-0 flex items-center justify-center">
                       <Check size={10} strokeWidth={3} className="text-black" />
                     </span>
                     {block.title}
@@ -1436,14 +1438,14 @@ function TestimonialAvatar({ photo, name }) {
   // Render photo if available, otherwise show initials fallback
   const initials = (name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
   if (photo && typeof photo === 'object' && photo.url) {
-    return <img src={photo.url} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#DF9716]/40" loading="lazy" />;
+    return <img src={photo.url} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#04B8BB]/40" loading="lazy" />;
   }
   if (photo && typeof photo === 'string' && photo.startsWith('http')) {
-    return <img src={photo} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#DF9716]/40" loading="lazy" />;
+    return <img src={photo} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#04B8BB]/40" loading="lazy" />;
   }
   return (
-    <div className="w-12 h-12 rounded-full bg-[#DF9716]/20 border-2 border-[#DF9716]/30 flex items-center justify-center flex-shrink-0">
-      <span className="text-[13px] font-black text-[#DF9716]">{initials}</span>
+    <div className="w-12 h-12 rounded-full bg-[#04B8BB]/20 border-2 border-[#04B8BB]/30 flex items-center justify-center flex-shrink-0">
+      <span className="text-[13px] font-black text-[#04B8BB]">{initials}</span>
     </div>
   );
 }
@@ -1492,7 +1494,7 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                 >
-                  <span className="text-[#DF9716] text-[14px] tracking-tight">
+                  <span className="text-[#04B8BB] text-[14px] tracking-tight">
                     {'★'.repeat(googleStars)}{'☆'.repeat(5 - googleStars)}
                   </span>
                   <span className="text-[11px] text-[#FCFAF9]/80 font-semibold">
@@ -1519,16 +1521,16 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
             <motion.div
               key={idx}
               variants={fadeUp}
-              className="border border-[rgba(252,250,249,0.16)] bg-[#024E5C] p-7 flex flex-col justify-between hover:border-[#DF9716]/40 transition-colors duration-300 rounded-sm"
+              className="border border-[rgba(252,250,249,0.16)] bg-[#024E5C] p-7 flex flex-col justify-between hover:border-[#04B8BB]/40 transition-colors duration-300 rounded-sm"
             >
               <div>
-                <span className="font-display font-black text-[40px] leading-none text-[#DF9716]/25 block mb-3">&ldquo;</span>
+                <span className="font-display font-black text-[40px] leading-none text-[#04B8BB]/25 block mb-3">&ldquo;</span>
                 <p className="text-[13px] leading-[1.75] text-[#FCFAF9]/90 font-medium">{t.quote}</p>
               </div>
               <div className="mt-8 border-t border-[rgba(252,250,249,0.12)] pt-5 flex items-center gap-3">
                 <TestimonialAvatar photo={t.photo} name={t.author} />
                 <div>
-                  <span className="font-display font-bold text-[#DF9716] text-[11px] uppercase tracking-wider block">{t.author}</span>
+                  <span className="font-display font-bold text-[#04B8BB] text-[11px] uppercase tracking-wider block">{t.author}</span>
                   <span className="text-[10px] text-[#FCFAF9]/60 uppercase tracking-wider mt-0.5 block font-semibold">
                     {t.company || t.role}
                   </span>
@@ -1544,6 +1546,10 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
 
 // ─── PRICING ──────────────────────────────────────────────────────────────────
 function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsFailed }) {
+  useEffect(() => {
+    trackPixelEvent('ViewContent', { content_name: 'Pricing' });
+  }, []);
+
   const data = cmsLoaded ? pricing : (cmsFailed ? defaultContent.pricing : null);
   const s = scarcity || defaultContent.scarcity;
   const waNumber = (globalSettings?.whatsapp || defaultContent.globalSettings.whatsapp || '').replace(/\D/g, '');
@@ -1612,7 +1618,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
               >
                 {/* Most Popular badge */}
                 {popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#DF9716] text-[#0C0C0C] text-[8.5px] font-black uppercase tracking-[0.2em] px-4 py-1">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#04B8BB] text-[#0C0C0C] text-[8.5px] font-black uppercase tracking-[0.2em] px-4 py-1">
                     MOST POPULAR
                   </div>
                 )}
@@ -1646,7 +1652,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
                           <span className="font-display text-[24px] font-black text-[#0C0C0C] leading-none">
                             {plan.founding}
                           </span>
-                          <span className="text-[9px] font-black uppercase tracking-[0.14em] text-[#DF9716] bg-[#DF9716]/15 px-2 py-1">
+                          <span className="text-[9px] font-black uppercase tracking-[0.14em] text-[#04B8BB] bg-[#04B8BB]/15 px-2 py-1">
                             Founding Price
                           </span>
                         </div>
@@ -1674,6 +1680,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
                       href={waLink}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
                       className="button button-dark w-full text-center flex items-center justify-center gap-2"
                       data-testid={`button-plan-cabin-${index}`}
                     >
@@ -1698,10 +1705,10 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
         {/* Scarcity note below plans */}
         {remaining !== null && remaining > 0 && (
           <RevealOnScroll delay={0.15} className="mt-10">
-            <div className="border-l-2 border-[#DF9716] pl-5">
+            <div className="border-l-2 border-[#04B8BB] pl-5">
               <p className="text-[13px] font-bold leading-[1.65] text-[#0C0C0C]">
                 ⚡ Only{' '}
-                <span className="bg-[#DF9716] text-[#0C0C0C] px-1.5 py-0.5 border border-[#0C0C0C] font-mono font-black">{remaining}</span>
+                <span className="bg-[#04B8BB] text-[#0C0C0C] px-1.5 py-0.5 border border-[#0C0C0C] font-mono font-black">{remaining}</span>
                 {' '}of {total} founding spots remaining at this price
                 {closingDate ? <> &mdash; closes {closingDate}</> : null}.
               </p>
@@ -1732,7 +1739,7 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
     <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
       <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
         <RevealOnScroll>
-          <div className="section-label mb-6 text-[#DF9716] font-black">COMMON QUESTIONS</div>
+          <div className="section-label mb-6 text-[#04B8BB] font-black">COMMON QUESTIONS</div>
           <h2
             className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
@@ -1753,7 +1760,7 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
               <div key={index} className="border-b border-[rgba(252,250,249,0.16)]">
                 <button
                   type="button"
-                  className="flex py-6 w-full items-center justify-between gap-5 text-left group focus:outline-none focus:ring-1 focus:ring-[#DF9716]"
+                  className="flex py-6 w-full items-center justify-between gap-5 text-left group focus:outline-none focus:ring-1 focus:ring-[#04B8BB]"
                   onClick={() => setActive(active === index ? null : index)}
                   aria-expanded={active === index}
                   aria-controls={`faq-answer-${index}`}
@@ -1761,16 +1768,16 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
                   data-testid={`button-faq-${index}`}
                 >
                   <div className="flex gap-4 items-start">
-                    <span className="font-display text-[10px] font-bold text-[#DF9716] tracking-[.1em] mt-1 shrink-0">
+                    <span className="font-display text-[10px] font-bold text-[#04B8BB] tracking-[.1em] mt-1 shrink-0">
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    <span className="text-[15px] font-bold text-[#FCFAF9] tracking-[0.01em] group-hover:text-[#DF9716] transition-colors">
+                    <span className="text-[15px] font-bold text-[#FCFAF9] tracking-[0.01em] group-hover:text-[#04B8BB] transition-colors">
                       {item.question}
                     </span>
                   </div>
                   <ChevronDown
                     size={16}
-                    className={`shrink-0 text-[#DF9716] transition-transform duration-300 ${active === index ? 'rotate-180' : ''}`}
+                    className={`shrink-0 text-[#04B8BB] transition-transform duration-300 ${active === index ? 'rotate-180' : ''}`}
                   />
                 </button>
                 <AnimatePresence>
@@ -1806,7 +1813,8 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#DF9716] font-bold hover:underline inline-flex items-center gap-1.5 ml-1"
+                onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
+                className="text-[#25D366] font-bold hover:underline inline-flex items-center gap-1.5 ml-1"
                 data-testid="link-faq-whatsapp"
               >
                 Chat with us directly on WhatsApp &rarr;
@@ -2040,6 +2048,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
         name: form.name, phone: form.phone, email: form.email,
         company: form.company, email_confirm: form.email_confirm, ...utmData
       });
+      trackPixelEvent('Lead', { content_name: 'Free Trial Form' });
+      trackPixelEvent('Schedule');
       localStorage.setItem('last_reservation', JSON.stringify({ ...res.data, isLead: true }));
       setLocation('/thank-you');
     } catch (err) {
@@ -2050,6 +2060,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
   };
 
   const handleWhatsApp = async () => {
+    trackPixelEvent('Lead', { content_name: 'WhatsApp' });
     if (!form.name.trim() || !form.phone.trim()) {
       setError('Please provide at least Name and Phone to continue.');
       return;
@@ -2094,6 +2105,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
       .then((res) => {
         const { reservation: savedRes, razorpayOrder } = res;
         if (!razorpayOrder) {
+          trackPixelEvent('Lead', { content_name: 'Reservation Form' });
+          trackPixelEvent('Schedule');
           localStorage.setItem('last_reservation', JSON.stringify(savedRes));
           setLocation('/thank-you');
           return;
@@ -2106,7 +2119,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
           description: `Booking: ${selectedPlan?.name || plan}${selectedSeats.length ? ` (${selectedSeats.join(', ')})` : ''}`,
           order_id: razorpayOrder.id,
           prefill: { name: form.name, contact: form.phone, email: form.email },
-          theme: { color: '#DF9716' },
+          theme: { color: '#04B8BB' },
           handler: async function (response) {
             try {
               setLoading(true);
@@ -2115,6 +2128,8 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
               });
+              trackPixelEvent('Lead', { content_name: 'Reservation Form' });
+              trackPixelEvent('Schedule');
               localStorage.setItem('last_reservation', JSON.stringify(confirmRes.data));
               setLocation('/thank-you');
             } catch (err) {
@@ -2166,7 +2181,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
               {headlineLines.map((line, i) => (
                 <span key={i} className="block">
                   {i === headlineLines.length - 1
-                    ? <span className="text-[#DF9716]">{line}</span>
+                    ? <span className="text-[#04B8BB]">{line}</span>
                     : line}
                 </span>
               ))}
@@ -2177,7 +2192,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
             {/* Scarcity */}
             <div className="scarcity-badge flex-col items-start py-2">
-              <span className="text-[#DF9716] text-[10px] font-black">FOUNDING BATCH</span>
+              <span className="text-[#04B8BB] text-[10px] font-black">FOUNDING BATCH</span>
               <span className="text-[#0C0C0C]/75 text-[11px] mt-1 whitespace-pre-line">
                 {resData.scarcityText || scarcityText}
               </span>
@@ -2185,10 +2200,10 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
             {/* Trial availability badge */}
             <div className={`inline-flex items-center gap-2 border px-4 py-3 text-[10px] font-bold uppercase tracking-[0.15em] ${isFreeTrialAvailable
-                ? 'border-[#DF9716]/40 text-[#DF9716] bg-[#DF9716]/5'
+                ? 'border-[#04B8BB]/40 text-[#04B8BB] bg-[#04B8BB]/5'
                 : 'border-[rgba(12,12,12,0.15)] text-[#0C0C0C]/55'
               }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#DF9716] animate-pulse' : 'bg-neutral-300'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#04B8BB] animate-pulse' : 'bg-neutral-300'}`} />
               {isFreeTrialAvailable
                 ? `Free Trial Available Today (${todayInTZ})`
                 : `Free Trial: ${trialDays.join(' & ')} only`}
@@ -2279,7 +2294,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <button
                   type="button"
                   onClick={() => setShowMap(!showMap)}
-                  className="w-full border border-[rgba(2,78,92,0.25)] hover:border-[#DF9716]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#024E5C] hover:text-[#DF9716]"
+                  className="w-full border border-[rgba(2,78,92,0.25)] hover:border-[#04B8BB]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#024E5C] hover:text-[#04B8BB]"
                 >
                   <span>{showMap ? 'Hide Seating Floor Map (Optional)' : 'Select Specific Seat on Floor Map (Optional)'}</span>
                   <ChevronDown size={13} className={`transition-transform duration-300 ${showMap ? 'rotate-180' : ''}`} />
@@ -2312,7 +2327,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <div className="bg-[#024E5C]/5 border border-[#024E5C]/20 p-4 space-y-2 text-xs text-[#0C0C0C]">
                   <div className="flex justify-between items-center font-bold text-[#024E5C] border-b border-[#024E5C]/15 pb-2">
                     <span className="uppercase tracking-wider">Booking Summary</span>
-                    <span className={`font-mono font-black text-[10px] px-2 py-0.5 uppercase ${isReservationMode ? 'bg-[#DF9716]/15 text-[#DF9716] border border-[#DF9716]/30' : 'bg-[#024E5C]/10 text-[#024E5C]'}`}>
+                    <span className={`font-mono font-black text-[10px] px-2 py-0.5 uppercase ${isReservationMode ? 'bg-[#04B8BB]/15 text-[#04B8BB] border border-[#04B8BB]/30' : 'bg-[#024E5C]/10 text-[#024E5C]'}`}>
                       {isReservationMode ? 'RESERVATION MODE' : 'FULL PAYMENT'}
                     </span>
                   </div>
@@ -2343,7 +2358,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                             <span>Reservation Amount:</span>
                             <span className="font-semibold text-[#0C0C0C]">₹{reservationAmountPerSeat.toLocaleString('en-IN')} / seat</span>
                           </div>
-                          <div className="flex justify-between text-[#DF9716] font-bold border-t border-[#024E5C]/10 pt-1.5">
+                          <div className="flex justify-between text-[#04B8BB] font-bold border-t border-[#024E5C]/10 pt-1.5">
                             <span>Amount Payable Today:</span>
                             <span>₹{amountPayableToday.toLocaleString('en-IN')}</span>
                           </div>
@@ -2371,7 +2386,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
                   <div className="flex justify-between items-center text-sm font-black border-t border-[#024E5C]/15 pt-2 text-[#024E5C]">
                     <span>Total Amount Payable Today:</span>
-                    <span className="font-mono text-[#DF9716] text-base">₹{amountPayableToday.toLocaleString('en-IN')}</span>
+                    <span className="font-mono text-[#04B8BB] text-base">₹{amountPayableToday.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               )}
@@ -2433,8 +2448,9 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                       type="button"
                       disabled={loading}
                       onClick={handleWhatsApp}
-                      className="button button-outline-dark w-full justify-center py-3.5 text-[10px] font-bold uppercase tracking-[0.14em] border-[#22c55e]/35 text-[#22c55e] hover:bg-[#22c55e]/5 hover:border-[#22c55e]/50"
+                      className="button w-full justify-center py-3.5 text-[11px] font-bold uppercase tracking-[0.14em] bg-[#25D366] hover:bg-[#20bd5a] text-[#0C0C0C] border border-[#20bd5a] shadow-sm transition-all flex items-center gap-2"
                     >
+                      <FaWhatsapp className="text-base" />
                       {resData.whatsappButtonText || 'BOOK VIA WHATSAPP'}
                     </button>
                     <p className="text-[8.5px] text-[#0C0C0C]/60 uppercase text-center font-bold tracking-wider">
@@ -2483,7 +2499,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
           <p className="mt-7 text-[13px] leading-[1.75] text-[#FCFAF9]/75 max-w-[400px]">{data.tagline}</p>
           <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[10.5px] text-[#FCFAF9]/55">
             {(data.quickLinks || []).map((link, idx) => (
-              <a key={idx} href={link.href} className="hover:text-[#DF9716] transition-colors">{link.label}</a>
+              <a key={idx} href={link.href} className="hover:text-[#04B8BB] transition-colors">{link.label}</a>
             ))}
           </div>
         </div>
@@ -2502,9 +2518,9 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
             <div>
               <h4 className="font-display text-[13px] font-bold text-[#FCFAF9] tracking-[.05em] uppercase">Direct Contact</h4>
               <p className="mt-2.5 text-[12px] text-[#FCFAF9]/75 leading-[1.75]">
-                <a href={cleanPhoneHref} className="text-[#DF9716] hover:text-[#DF9716] transition-colors" data-testid="link-footer-phone">{phone}</a>
+                <a href={cleanPhoneHref} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors" data-testid="link-footer-phone">{phone}</a>
                 <br />
-                <a href={`mailto:${email}`} className="text-[#DF9716] hover:text-[#DF9716] transition-colors">{email}</a>
+                <a href={`mailto:${email}`} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors">{email}</a>
               </p>
             </div>
           </div>
@@ -2529,7 +2545,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
                   href={mapsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-[11px] font-bold text-[#DF9716] hover:text-[#DF9716] transition-colors"
+                  className="mt-3 inline-block text-[11px] font-bold text-[#04B8BB] hover:text-[#04B8BB] transition-colors"
                   data-testid="link-footer-directions"
                 >
                   Get Directions â†—
@@ -2713,7 +2729,7 @@ function Home() {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0C0C0C] text-[#FCFAF9]">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#DF9716] border-t-transparent" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#04B8BB] border-t-transparent" />
           <p className="font-display text-xs font-bold tracking-widest text-[#FCFAF9]/70 uppercase">
             Loading...
           </p>
@@ -2817,11 +2833,27 @@ function RoutedErrorBoundary({ children }) {
   return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;
 }
 
+function MetaPixelRouteTracker() {
+  const [location] = useLocation();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    trackPixelEvent('PageView');
+  }, [location]);
+
+  return null;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL ? import.meta.env.BASE_URL.replace(/\/$/, '') : ''}>
+          <MetaPixelRouteTracker />
           <RoutedErrorBoundary>
             <Router />
           </RoutedErrorBoundary>

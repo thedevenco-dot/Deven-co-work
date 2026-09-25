@@ -1,8 +1,9 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { api } from '@/services/api';
 import { useBranding } from '@/hooks/useBranding';
+import { trackPixelEvent } from '@/lib/metaPixel';
 
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
@@ -24,6 +25,7 @@ export default function AdminLogin() {
 
     try {
       await api.login(username, password);
+      trackPixelEvent('Lead', { content_name: 'Admin Login Form' });
       setLocation('/admin');
     } catch (err) {
       setError(err.message || 'Invalid username or password.');
@@ -103,7 +105,7 @@ export default function AdminLogin() {
           </form>
 
           <div className="mt-6 border-t border-[#024E5C] pt-4 flex justify-between items-center text-xs text-[#A3A3A3]">
-            <a href="/" className="inline-flex items-center gap-1 hover:text-[#DF9716] transition-colors">
+            <a href="/" className="inline-flex items-center gap-1 hover:text-[#04B8BB] transition-colors">
               <ArrowLeft size={12} /> Back to Site
             </a>
             <span className="inline-flex items-center gap-1">

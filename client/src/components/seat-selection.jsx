@@ -1,6 +1,7 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Armchair, MessageCircle, RefreshCw, Lock } from 'lucide-react';
 import { api } from '@/services/api';
+import { trackPixelEvent } from '@/lib/metaPixel';
 
 const WHATSAPP_HREF = 'https://wa.me/916260582852?text=Hi%2C%20I%27d%20like%20to%20pre-book%20more%20than%207%20founding%20seats%20at%20Deven%20Cowork.';
 
@@ -102,18 +103,18 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
 
   const getZoneBaseStyle = (zoneName = '', label = '', isStaff = false) => {
     if (zoneName.startsWith('C')) {
-      return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#DF9716] hover:bg-white';
+      return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#04B8BB] hover:bg-white';
     }
 
     switch (zoneName) {
       case 'T2':
       case 'T3':
-        return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#DF9716] hover:bg-white';
+        return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:border-[#04B8BB] hover:bg-white';
       case 'T4':
       case 'T5':
       case 'T6':
       case 'T7':
-        return 'bg-[#EBE8DF] text-[#024E5C] border-[#024E5C]/30 hover:border-[#DF9716] hover:bg-white';
+        return 'bg-[#EBE8DF] text-[#024E5C] border-[#024E5C]/30 hover:border-[#04B8BB] hover:bg-white';
       default:
         return 'bg-[#F1EFEA] text-[#024E5C] border-[#024E5C]/20 hover:bg-white';
     }
@@ -132,7 +133,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
       return `bg-[#0C0C0C]/10 border-transparent text-[#0C0C0C]/30 cursor-not-allowed select-none opacity-40`;
     }
     if (isSelected) {
-      return `${baseStyle} ring-2 ring-[#DF9716] bg-[#DF9716]/15 text-[#DF9716] border-[#DF9716] scale-[1.03] z-10 font-bold`;
+      return `${baseStyle} ring-2 ring-[#04B8BB] bg-[#04B8BB]/15 text-[#04B8BB] border-[#04B8BB] scale-[1.03] z-10 font-bold`;
     }
     const isCapReached = safeSelectedSeats.length >= 7 && !isSelected;
     if (isCapReached) {
@@ -161,7 +162,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
       <div className="border border-[rgba(2,78,92,0.15)] bg-[#FCFAF9]/80 p-2.5 rounded space-y-2">
         <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-[#A3A3A3] font-bold">
           <span>Zone {zoneName}</span>
-          <span className="text-[#DF9716] font-semibold">{getAvailableInZone()} Open</span>
+          <span className="text-[#04B8BB] font-semibold">{getAvailableInZone()} Open</span>
         </div>
 
         <div className="flex items-center justify-center gap-1.5 py-1">
@@ -228,7 +229,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
       <div className="border border-[rgba(2,78,92,0.15)] bg-[#FCFAF9]/80 p-2.5 rounded space-y-2">
         <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-[#A3A3A3] font-bold">
           <span>Zone {zoneName}</span>
-          <span className="text-[#DF9716] font-semibold">{getAvailableInZone()} Open</span>
+          <span className="text-[#04B8BB] font-semibold">{getAvailableInZone()} Open</span>
         </div>
 
         <div className="flex flex-col gap-1 items-center py-1">
@@ -292,7 +293,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
       <div className="border border-[rgba(2,78,92,0.15)] bg-[#FCFAF9]/80 p-2.5 rounded space-y-2">
         <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-[#A3A3A3] font-bold">
           <span>Zone T7 (Dedicated)</span>
-          <span className="text-[#DF9716] font-semibold">{getAvailableInZone()} Open</span>
+          <span className="text-[#04B8BB] font-semibold">{getAvailableInZone()} Open</span>
         </div>
 
         <div className="flex flex-wrap gap-1 justify-center py-1">
@@ -360,7 +361,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
                 type="button"
                 onClick={() => setZoomView(v)}
                 className={`px-2.5 py-1 text-[9px] font-bold uppercase rounded transition-all whitespace-nowrap ${
-                  zoomView === v ? 'bg-[#DF9716] text-[#0C0C0C]' : 'bg-black/5 text-[#0C0C0C]/75'
+                  zoomView === v ? 'bg-[#04B8BB] text-[#0C0C0C]' : 'bg-black/5 text-[#0C0C0C]/75'
                 }`}
               >
                 {v === 'all' ? 'ðŸ—ºï¸ Full Map' : v === 't2-t3' ? 'Hot Desks (T2/T3)' : v === 't4-t6' ? 'Dedicated (T4/5/6)' : 'Dedicated (T7)'}
@@ -375,8 +376,8 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
               {/* TOP ROW: Stage / Screen Area */}
               {(zoomView === 'all') && (
                 <div className="grid grid-cols-1 gap-4 items-center border-b border-[rgba(2,78,92,0.15)] pb-3">
-                  <div className="border border-dashed border-[#DF9716]/40 bg-[#DF9716]/10 h-14 rounded flex flex-col items-center justify-center text-center p-2">
-                    <span className="font-display text-xs text-[#DF9716] font-bold tracking-wider uppercase">STAGE & PRESENTATION SCREEN</span>
+                  <div className="border border-dashed border-[#04B8BB]/40 bg-[#04B8BB]/10 h-14 rounded flex flex-col items-center justify-center text-center p-2">
+                    <span className="font-display text-xs text-[#04B8BB] font-bold tracking-wider uppercase">STAGE & PRESENTATION SCREEN</span>
                     <span className="text-[7px] text-[#0C0C0C]/60 mt-0.5 uppercase tracking-wider font-semibold"> Raipur Founders Launch Hub</span>
                   </div>
                 </div>
@@ -441,7 +442,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
               <span>Available</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded bg-[#DF9716] border border-[#024E5C] inline-block" />
+              <span className="w-3 h-3 rounded bg-[#04B8BB] border border-[#024E5C] inline-block" />
               <span>Your Selection</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -463,7 +464,7 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
             <div>
               <p className="text-[#0C0C0C]/85 font-medium">
                 Selected Seats:{' '}
-                <strong className="text-[#DF9716]">
+                <strong className="text-[#04B8BB]">
                   {[...new Set(safeSelectedSeats)].length === 0 ? 'None' : [...new Set(safeSelectedSeats)].join(', ')}
                 </strong>
               </p>
@@ -476,15 +477,16 @@ export default function SeatSelection({ selectedSeats = [], onSeatsChange, prefe
             </div>
 
             {safeSelectedSeats.length >= 7 && (
-              <div className="border border-[#DF9716]/35 bg-[#DF9716]/10 p-2 rounded text-[10px] text-[#DF9716] flex items-center gap-2">
+              <div className="border border-[#25D366]/40 bg-[#25D366]/10 p-2 rounded text-[10px] text-[#25D366] flex items-center gap-2">
                 <span>Limit reached. Need more?</span>
                 <a
                   href={WHATSAPP_HREF}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-1 px-2 py-1 bg-[#DF9716] text-[#0C0C0C] font-bold rounded hover:opacity-90 transition-all text-[9px] uppercase tracking-wider"
+                  onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
+                  className="flex items-center gap-1.5 px-2.5 py-1 bg-[#25D366] text-[#0C0C0C] font-extrabold rounded hover:bg-[#20bd5a] transition-all text-[9.5px] uppercase tracking-wider shadow-sm"
                 >
-                  <MessageCircle size={10} /> WhatsApp
+                  <MessageCircle size={12} /> WhatsApp
                 </a>
               </div>
             )}

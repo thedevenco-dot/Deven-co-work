@@ -52,14 +52,14 @@ export default function AdminCalculatorConfig() {
       </div>
 
       {message && (
-        <div className="bg-[#DF9716]/10 text-[#DF9716] border border-[#DF9716]/20 p-3 flex items-center gap-2">
+        <div className="bg-[#04B8BB]/10 text-[#04B8BB] border border-[#04B8BB]/20 p-3 flex items-center gap-2">
           <CheckCircle2 size={16} /> {message}
         </div>
       )}
 
       {/* Main Settings */}
       <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-4">
-        <h3 className="font-semibold text-[#DF9716] border-b border-[#242424] pb-2">Main Content</h3>
+        <h3 className="font-semibold text-[#04B8BB] border-b border-[#242424] pb-2">Main Content</h3>
         <label className="flex items-center gap-2 cursor-pointer mb-4">
           <input type="checkbox" checked={config.active} onChange={e => handleChange('active', e.target.checked)} />
           <span className="text-sm">Calculator Section Active</span>
@@ -83,7 +83,7 @@ export default function AdminCalculatorConfig() {
       {/* Team Sizes */}
       <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-4">
         <div className="flex justify-between items-center border-b border-[#242424] pb-2">
-          <h3 className="font-semibold text-[#DF9716]">Team Sizes</h3>
+          <h3 className="font-semibold text-[#04B8BB]">Team Sizes</h3>
           <button onClick={() => {
             const newSizes = [...config.teamSizes, { label: 'New Size', minPeople: 1, maxPeople: 5, midpoint: 3, order: config.teamSizes.length }];
             handleChange('teamSizes', newSizes);
@@ -129,7 +129,7 @@ export default function AdminCalculatorConfig() {
       {/* Fitout Options */}
       <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-4">
         <div className="flex justify-between items-center border-b border-[#242424] pb-2">
-          <h3 className="font-semibold text-[#DF9716]">Fitout Tiers & Per-Person Costs</h3>
+          <h3 className="font-semibold text-[#04B8BB]">Fitout Tiers & Per-Person Costs</h3>
           <button onClick={() => {
             const newTiers = [...config.fitoutTiers, { name: 'New Tier', securityDepositPerPerson: 0, order: config.fitoutTiers.length }];
             handleChange('fitoutTiers', newTiers);
@@ -177,7 +177,7 @@ export default function AdminCalculatorConfig() {
 
       {/* Assumptions */}
       <div className="border border-[#242424] bg-[#0A0A0A] p-6 space-y-4">
-        <h3 className="font-semibold text-[#DF9716] border-b border-[#242424] pb-2">Global Cost Assumptions</h3>
+        <h3 className="font-semibold text-[#04B8BB] border-b border-[#242424] pb-2">Global Cost Assumptions</h3>
         <div className="grid sm:grid-cols-2 gap-4 text-sm text-[#A3A3A3]">
           <label className="block">
             Rent Per Person / Month (Office)
