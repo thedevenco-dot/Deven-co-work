@@ -2518,7 +2518,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
             <div>
               <h4 className="font-display text-[13px] font-bold text-[#FCFAF9] tracking-[.05em] uppercase">Direct Contact</h4>
               <p className="mt-2.5 text-[12px] text-[#FCFAF9]/75 leading-[1.75]">
-                <a href={cleanPhoneHref} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors" data-testid="link-footer-phone">{phone}</a>
+                <a href={cleanPhoneHref} onClick={() => trackPixelEvent('Contact')} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors" data-testid="link-footer-phone">{phone}</a>
                 <br />
                 <a href={`mailto:${email}`} className="text-[#04B8BB] hover:text-[#04B8BB] transition-colors">{email}</a>
               </p>
@@ -2579,6 +2579,7 @@ function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat on WhatsApp"
+      onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
       className="wa-float-btn"
       data-testid="link-floating-whatsapp"
     >
