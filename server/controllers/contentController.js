@@ -16,6 +16,72 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
+// ─── MOJIBAKE SANITIZER ───────────────────────────────────────────────────────
+// Fixes double-encoded UTF-8 sequences that occur when UTF-8 text is mistakenly
+// decoded as Latin-1/Windows-1252 and then re-saved. Runs recursively over all
+// string values in any object/array to clean existing and new content uniformly.
+//
+// Common patterns fixed (Latin-1 mis-read → correct character):
+//   Â©  → ©   (copyright)
+//   Â·  → ·   (middle dot)
+//   â€" → —   (em dash)
+//   â€™ → '   (right single quote)
+//   â€˜ → '   (left single quote)
+//   â€œ → "   (left double quote)
+//   â€  → "   (right double quote)
+//   â†' → →   (right arrow)
+//   â†— → ↗   (upper-right arrow)
+//   â†" → ↓   (down arrow)
+//   â‚¹  → ₹   (Indian Rupee sign)
+//   â€¢  → •   (bullet)
+//   â€" → –   (en dash)
+const MOJIBAKE_MAP = [
+  ['\u00c3\u00a2\u00c2\u0080\u00c2\u0094', '\u2014'], // em dash —
+  ['\u00c3\u00a2\u00c2\u0080\u00c2\u0093', '\u2013'], // en dash –
+  ['\u00c3\u00a2\u00c2\u0080\u00c2\u0099', '\u2019'], // right single quote '
+  ['\u00c3\u00a2\u00c2\u0080\u00c2\u0098', '\u2018'], // left single quote '
+  ['\u00c3\u00a2\u00c2\u0080\u00c2\u009c', '\u201c'], // left double quote "
+  ['\u00c3\u00a2\u00c2\u0080\u00c2\u009d', '\u201d'], // right double quote "
+  ['\u00c3\u00a2\u00c2\u0086\u00c2\u0092', '\u2192'], // right arrow →
+  ['\u00c3\u00a2\u00c2\u0086\u00c2\u0097', '\u2197'], // upper-right arrow ↗
+  ['\u00c3\u00a2\u00c2\u0086\u00c2\u0093', '\u2193'], // down arrow ↓
+  ['\u00c3\u00a2\u00c2\u0086\u00c2\u0091', '\u2191'], // up arrow ↑
+  ['\u00c3\u00a2\u00c2\u0082\u00c2\u00b9', '\u20b9'], // rupee ₹
+  ['\u00c3\u00a2\u00c2\u0080\u00c2\u00a2', '\u2022'], // bullet •
+  ['\u00c3\u0082\u00c2\u00a9', '\u00a9'],              // copyright ©
+  ['\u00c3\u0082\u00c2\u00b7', '\u00b7'],              // middle dot ·
+  ['\u00c3\u0082\u00c2\u00ae', '\u00ae'],              // registered ®
+  ['\u00c3\u0082\u00c2\u00bb', '\u00bb'],              // » right guillemet
+  ['\u00c3\u0082\u00c2\u00ab', '\u00ab'],              // « left guillemet
+  // Also handle simpler 2-byte mojibake (Â prefix)
+  ['\u00c3\u0082\u00e2\u0086\u0097', '\u2197'],        // Â↗ (Â + ↗)
+  ['\u00c3\u0082\u00e2\u0086\u0092', '\u2192'],        // Â→ (Â + →)
+];
+
+function fixMojibakeString(str) {
+  if (typeof str !== 'string') return str;
+  for (const [from, to] of MOJIBAKE_MAP) {
+    if (str.includes(from)) {
+      str = str.split(from).join(to);
+    }
+  }
+  return str;
+}
+
+function sanitizeMojibake(value) {
+  if (typeof value === 'string') return fixMojibakeString(value);
+  if (Array.isArray(value)) return value.map(sanitizeMojibake);
+  if (value !== null && typeof value === 'object') {
+    const result = {};
+    for (const [k, v] of Object.entries(value)) {
+      result[k] = sanitizeMojibake(v);
+    }
+    return result;
+  }
+  return value;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Helper to seed default content if document does not exist or missing socialProof
 async function getOrCreateContent(key) {
   let doc = await Content.findOne({ key });
@@ -82,9 +148,11 @@ async function getOrCreateContent(key) {
 export async function getPublishedContent(req, res) {
   try {
     const content = await getOrCreateContent('published');
+    // Sanitize any mojibake that may already be stored in the DB before sending to client
+    const sanitized = sanitizeMojibake(content.toObject ? content.toObject() : content);
     res.json({
       success: true,
-      data: content,
+      data: sanitized,
     });
   } catch (error) {
     res.status(500).json({
@@ -102,9 +170,11 @@ export async function getPublishedContent(req, res) {
 export async function getDraftContent(req, res) {
   try {
     const content = await getOrCreateContent('draft');
+    // Sanitize any mojibake stored in the DB before returning to admin editor
+    const sanitized = sanitizeMojibake(content.toObject ? content.toObject() : content);
     res.json({
       success: true,
-      data: content,
+      data: sanitized,
     });
   } catch (error) {
     res.status(500).json({
@@ -124,12 +194,15 @@ export async function saveDraftContent(req, res) {
     const draft = await getOrCreateContent('draft');
 
     // Whitelist update fields to avoid overwriting key/id/timestamps
-    const updateData = { ...req.body };
+    let updateData = { ...req.body };
     delete updateData.key;
     delete updateData._id;
     delete updateData.__v;
     delete updateData.createdAt;
     delete updateData.updatedAt;
+
+    // Sanitize any mojibake (double-encoded UTF-8) in incoming data before saving
+    updateData = sanitizeMojibake(updateData);
 
     // Assign updates and explicitly mark every modified section as changed.
     // Mongoose does NOT auto-detect changes inside Mixed-type fields (e.g. hero.videoUrl

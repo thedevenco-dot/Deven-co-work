@@ -518,7 +518,7 @@ export default function CmsEditor({
               <TextInput
                 value={cmsDraft.hero?.foundingPriceNote}
                 onChange={(e) => onFieldChange('hero', 'foundingPriceNote', e.target.value)}
-                placeholder="Founding plan from â‚¹5,999 / month Â· Rate locked for founding batch"
+                placeholder="Founding plan from ₹5,999 / month · Rate locked for founding batch"
               />
             </Field>
           </div>

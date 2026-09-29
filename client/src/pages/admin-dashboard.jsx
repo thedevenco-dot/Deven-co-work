@@ -495,7 +495,7 @@ function GlobalSettingsEditor({ cmsDraft, onFieldChange, onUpload }) {
 
       <SectionCard title="Footer">
         <Field label="Copyright text ({year} will be replaced with current year)">
-          <TextInput value={gs.copyright} onChange={e => onFieldChange('globalSettings', 'copyright', e.target.value)} placeholder="Â© {year} Deven Co-Work" />
+          <TextInput value={gs.copyright} onChange={e => onFieldChange('globalSettings', 'copyright', e.target.value)} placeholder="© {year} Deven Co-Work" />
         </Field>
       </SectionCard>
     </div>

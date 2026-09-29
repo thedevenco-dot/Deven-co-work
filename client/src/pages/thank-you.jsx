@@ -200,7 +200,7 @@ export default function ThankYou() {
       {/* Footer */}
       <footer className="border-t border-[rgba(12,12,12,0.12)] bg-[#0C0C0C] py-8 text-center text-xs text-[#FCFAF9]/70">
         <div className="container-wide">
-          <p>Â© {new Date().getFullYear()} Deven Cowork Â· Pre-launch Pre-booking Confirmation</p>
+          <p>© {new Date().getFullYear()} Deven Cowork · Pre-launch Pre-booking Confirmation</p>
         </div>
       </footer>
     </div>
