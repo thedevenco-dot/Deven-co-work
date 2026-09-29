@@ -364,21 +364,153 @@ export default function CmsEditor({
   return (
     <div className="space-y-8">
       <SectionPanel number="00" title="Header & Footer">
-        <FieldGroup title="Header">
+        <FieldGroup title="Header Branding & Contact">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Header phone number">
+            <Field label="Header Phone Number">
               <TextInput
                 value={cmsDraft.header?.phone}
                 onChange={(e) => onFieldChange('header', 'phone', e.target.value)}
+                placeholder="+91 62605 82852"
               />
             </Field>
-            <Field label="Footer tagline">
+            <MediaField
+              label="Header Logo"
+              value={cmsDraft.globalSettings?.logo || cmsDraft.header?.logo}
+              onChange={(e) => onNestedChange('globalSettings', 'logo', e.target.value)}
+              onUpload={onUpload}
+              accept="image/*"
+            />
+          </div>
+        </FieldGroup>
+
+        <FieldGroup title="Header Navigation Links">
+          <div className="space-y-4">
+            {(cmsDraft.navigation?.items || []).map((item, idx) => (
+              <div key={idx} className="border border-[#242424] p-4 space-y-3 bg-[#0D0D0D]">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[#04B8BB] font-semibold uppercase">Link {idx + 1}</span>
+                    <div className="flex items-center gap-1 ml-2">
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => {
+                          const updated = [...cmsDraft.navigation.items];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx - 1];
+                          updated[idx - 1] = temp;
+                          onFieldChange('navigation', 'items', updated);
+                        }}
+                        className="p-1 text-[#A3A3A3] hover:text-white disabled:opacity-30"
+                        title="Move Up"
+                      >
+                        <ChevronUp size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === (cmsDraft.navigation.items || []).length - 1}
+                        onClick={() => {
+                          const updated = [...cmsDraft.navigation.items];
+                          const temp = updated[idx];
+                          updated[idx] = updated[idx + 1];
+                          updated[idx + 1] = temp;
+                          onFieldChange('navigation', 'items', updated);
+                        }}
+                        className="p-1 text-[#A3A3A3] hover:text-white disabled:opacity-30"
+                        title="Move Down"
+                      >
+                        <ChevronDown size={14} />
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = (cmsDraft.navigation.items || []).filter((_, i) => i !== idx);
+                      onFieldChange('navigation', 'items', updated);
+                    }}
+                    className="text-xs text-[#ef4444] hover:text-white flex items-center gap-1"
+                  >
+                    <Trash2 size={12} /> Remove
+                  </button>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="Label">
+                    <TextInput
+                      value={item.label}
+                      onChange={(e) => {
+                        const updated = (cmsDraft.navigation.items || []).map((it, i) => i === idx ? { ...it, label: e.target.value } : it);
+                        onFieldChange('navigation', 'items', updated);
+                      }}
+                      placeholder="e.g. Pricing"
+                    />
+                  </Field>
+                  <Field label="URL">
+                    <TextInput
+                      value={item.url}
+                      onChange={(e) => {
+                        const updated = (cmsDraft.navigation.items || []).map((it, i) => i === idx ? { ...it, url: e.target.value } : it);
+                        onFieldChange('navigation', 'items', updated);
+                      }}
+                      placeholder="#pricing or /contact"
+                    />
+                  </Field>
+                </div>
+                <div className="flex gap-6">
+                  <Toggle
+                    checked={item.visible !== false}
+                    onChange={(v) => {
+                      const updated = (cmsDraft.navigation.items || []).map((it, i) => i === idx ? { ...it, visible: v } : it);
+                      onFieldChange('navigation', 'items', updated);
+                    }}
+                    label="Visible in Header"
+                  />
+                  <Toggle
+                    checked={!!item.external}
+                    onChange={(v) => {
+                      const updated = (cmsDraft.navigation.items || []).map((it, i) => i === idx ? { ...it, external: v } : it);
+                      onFieldChange('navigation', 'items', updated);
+                    }}
+                    label="Open in new tab"
+                  />
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => {
+                const current = cmsDraft.navigation?.items || [];
+                onFieldChange('navigation', 'items', [...current, { label: 'New Link', url: '#', visible: true }]);
+              }}
+              className="button button-outline button-small gap-2 w-full"
+            >
+              <Plus size={14} /> Add Navigation Link
+            </button>
+          </div>
+        </FieldGroup>
+
+        <FieldGroup title="Header CTA Button">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="CTA Button Text">
               <TextInput
-                value={cmsDraft.footer?.tagline}
-                onChange={(e) => onFieldChange('footer', 'tagline', e.target.value)}
+                value={cmsDraft.navigation?.ctaLabel}
+                onChange={(e) => onFieldChange('navigation', 'ctaLabel', e.target.value)}
+                placeholder="Book Free Trial"
+              />
+            </Field>
+            <Field label="CTA Button Target URL">
+              <TextInput
+                value={cmsDraft.navigation?.ctaUrl}
+                onChange={(e) => onFieldChange('navigation', 'ctaUrl', e.target.value)}
+                placeholder="#reservation"
               />
             </Field>
           </div>
+          <Toggle
+            checked={cmsDraft.navigation?.ctaVisible !== false}
+            onChange={(v) => onFieldChange('navigation', 'ctaVisible', v)}
+            label="Show CTA button in Header"
+          />
         </FieldGroup>
 
         <FieldGroup title="Footer Contact">

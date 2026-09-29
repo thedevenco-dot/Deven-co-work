@@ -289,10 +289,11 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
 }
 
 // â”€â”€â”€ NAVIGATION EDITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange }) {
+function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange, onUpload }) {
   if (!cmsDraft) return null;
   const nav = cmsDraft.navigation || {};
   const items = nav.items || [];
+  const header = cmsDraft.header || {};
 
   const updateItem = (idx, key, val) => {
     const updated = items.map((it, i) => (i === idx ? { ...it, [key]: val } : it));
@@ -301,26 +302,79 @@ function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange }) {
   const addItem = () => onFieldChange('navigation', 'items', [...items, { label: 'New Link', url: '#', visible: true }]);
   const removeItem = (idx) => onFieldChange('navigation', 'items', items.filter((_, i) => i !== idx));
 
+  const moveItem = (idx, direction) => {
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= items.length) return;
+    const updated = [...items];
+    const temp = updated[idx];
+    updated[idx] = updated[targetIdx];
+    updated[targetIdx] = temp;
+    onFieldChange('navigation', 'items', updated);
+  };
+
   return (
     <div className="space-y-6">
-      <SectionCard title="Navigation Links">
+      <SectionCard title="Header Branding & Contact">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Header Phone Number">
+            <TextInput
+              value={header.phone}
+              onChange={e => onFieldChange('header', 'phone', e.target.value)}
+              placeholder="+91 62605 82852"
+            />
+          </Field>
+          <MediaField
+            label="Header Logo"
+            value={cmsDraft.globalSettings?.logo || header.logo}
+            onChange={e => onNestedChange('globalSettings', 'logo', e.target.value)}
+            onUpload={onUpload}
+            accept="image/*"
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard title="Header Navigation Links">
         <div className="space-y-4">
           {items.map((item, idx) => (
-            <div key={idx} className="border border-[#242424] p-4 space-y-3">
+            <div key={idx} className="border border-[#242424] p-4 space-y-3 bg-[#0D0D0D]">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-[#04B8BB] font-semibold uppercase">Link {idx + 1}</span>
-                <button onClick={() => removeItem(idx)} className="text-xs text-[#ef4444] hover:text-white">Remove</button>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[#04B8BB] font-semibold uppercase">Link {idx + 1}</span>
+                  <div className="flex items-center gap-1 ml-2">
+                    <button
+                      type="button"
+                      disabled={idx === 0}
+                      onClick={() => moveItem(idx, -1)}
+                      className="p-1 text-[#A3A3A3] hover:text-white disabled:opacity-30"
+                      title="Move Up"
+                    >
+                      <ChevronUp size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={idx === items.length - 1}
+                      onClick={() => moveItem(idx, 1)}
+                      className="p-1 text-[#A3A3A3] hover:text-white disabled:opacity-30"
+                      title="Move Down"
+                    >
+                      <ChevronDown size={14} />
+                    </button>
+                  </div>
+                </div>
+                <button onClick={() => removeItem(idx)} className="text-xs text-[#ef4444] hover:text-white flex items-center gap-1">
+                  <Trash2 size={12} /> Remove
+                </button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Label">
-                  <TextInput value={item.label} onChange={e => updateItem(idx, 'label', e.target.value)} />
+                  <TextInput value={item.label} onChange={e => updateItem(idx, 'label', e.target.value)} placeholder="e.g. Pricing" />
                 </Field>
                 <Field label="URL">
-                  <TextInput value={item.url} onChange={e => updateItem(idx, 'url', e.target.value)} placeholder="#section or /page" />
+                  <TextInput value={item.url} onChange={e => updateItem(idx, 'url', e.target.value)} placeholder="#pricing or /contact" />
                 </Field>
               </div>
               <div className="flex gap-6">
-                <Toggle checked={item.visible !== false} onChange={v => updateItem(idx, 'visible', v)} label="Visible" />
+                <Toggle checked={item.visible !== false} onChange={v => updateItem(idx, 'visible', v)} label="Visible in Header" />
                 <Toggle checked={!!item.external} onChange={v => updateItem(idx, 'external', v)} label="Open in new tab" />
               </div>
             </div>
@@ -333,14 +387,14 @@ function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange }) {
 
       <SectionCard title="Header CTA Button">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="CTA Label">
-            <TextInput value={nav.ctaLabel} onChange={e => onFieldChange('navigation', 'ctaLabel', e.target.value)} />
+          <Field label="CTA Button Text">
+            <TextInput value={nav.ctaLabel} onChange={e => onFieldChange('navigation', 'ctaLabel', e.target.value)} placeholder="Book Free Trial" />
           </Field>
-          <Field label="CTA URL">
-            <TextInput value={nav.ctaUrl} onChange={e => onFieldChange('navigation', 'ctaUrl', e.target.value)} />
+          <Field label="CTA Button Target URL">
+            <TextInput value={nav.ctaUrl} onChange={e => onFieldChange('navigation', 'ctaUrl', e.target.value)} placeholder="#reservation" />
           </Field>
         </div>
-        <Toggle checked={nav.ctaVisible !== false} onChange={v => onFieldChange('navigation', 'ctaVisible', v)} label="Show CTA button" />
+        <Toggle checked={nav.ctaVisible !== false} onChange={v => onFieldChange('navigation', 'ctaVisible', v)} label="Show CTA button in Header" />
       </SectionCard>
     </div>
   );
@@ -1955,7 +2009,12 @@ export default function AdminDashboard() {
                 {cmsLoading ? (
                   <div className="py-20 text-center text-[#A3A3A3] animate-pulse">Loading...</div>
                 ) : cmsDraft ? (
-                  <NavigationEditor cmsDraft={cmsDraft} onFieldChange={handleCMSFieldChange} onNestedChange={handleNestedChange} />
+                  <NavigationEditor
+                    cmsDraft={cmsDraft}
+                    onFieldChange={handleCMSFieldChange}
+                    onNestedChange={handleNestedChange}
+                    onUpload={handleCMSImageUpload}
+                  />
                 ) : (
                   <button onClick={fetchCMSContent} className="button button-primary">Load CMS Data</button>
                 )}
