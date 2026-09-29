@@ -97,6 +97,11 @@ const planSchema = new mongoose.Schema(
     // If true, CTA routes to WhatsApp/contact instead of self-serve booking
     isContactPlan: { type: Boolean, default: false },
 
+    // ── Plan card image (Cloudinary secure_url) ────────────────────────────────
+    // Admin-managed per-plan image. Stored as a Cloudinary secure_url string.
+    // Empty string means no image assigned for this plan.
+    imageUrl: { type: String, default: '' },
+
   },
   {
     timestamps: true,

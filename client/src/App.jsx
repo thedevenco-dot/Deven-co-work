@@ -1610,7 +1610,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
                 key={index}
                 delay={index * 0.07}
                 className={[
-                  'relative flex flex-col border bg-white p-7',
+                  'relative flex flex-col border bg-white overflow-hidden',
                   popular
                     ? 'border-[#024E5C] shadow-lg ring-1 ring-[#024E5C]/20 -translate-y-2 sm:-translate-y-3'
                     : 'border-[rgba(12,12,12,0.12)]',
@@ -1618,84 +1618,100 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
               >
                 {/* Most Popular badge */}
                 {popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#04B8BB] text-[#0C0C0C] text-[8.5px] font-black uppercase tracking-[0.2em] px-4 py-1">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-[#04B8BB] text-[#0C0C0C] text-[8.5px] font-black uppercase tracking-[0.2em] px-4 py-1 mt-3">
                     MOST POPULAR
                   </div>
                 )}
 
-                {/* Plan name */}
-                <h3 className="font-display text-[14px] font-black uppercase tracking-[0.06em] text-[#0C0C0C]">{plan.name}</h3>
-
-                {/* Description */}
-                {plan.desc && (
-                  <p className="mt-2 text-[12px] leading-[1.7] text-[#0C0C0C]/55">{plan.desc}</p>
+                {/* Plan image — CMS-managed, one per plan. Hidden when no imageUrl set. */}
+                {plan.imageUrl && (
+                  <div className="w-full overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                    <img
+                      src={plan.imageUrl}
+                      alt={`${plan.name} at Deven Co-Work`}
+                      loading={index < 3 ? 'eager' : 'lazy'}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement.style.display = 'none'; }}
+                    />
+                  </div>
                 )}
 
-                {/* Pricing anchor */}
-                <div className="mt-6 border-t border-[rgba(12,12,12,0.08)] pt-5">
-                  {cabin ? (
-                    <div>
-                      <div className="text-[11px] font-semibold text-[#0C0C0C]/50 mb-1">Custom Pricing</div>
-                      <div className="font-display text-[16px] font-black text-[#0C0C0C]/70 leading-tight">
-                        Based on team size &amp; requirements
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-1">
-                      {plan.standard && (
-                        <span className="text-[12px] text-red-500 line-through font-mono font-semibold">
-                          {plan.standard}
-                        </span>
-                      )}
-                      {plan.founding && (
-                        <div className="flex items-baseline gap-2">
-                          <span className="font-display text-[24px] font-black text-[#0C0C0C] leading-none">
-                            {plan.founding}
-                          </span>
-                          <span className="text-[9px] font-black uppercase tracking-[0.14em] text-[#04B8BB] bg-[#04B8BB]/15 px-2 py-1">
-                            Founding Price
-                          </span>
+                {/* Card body */}
+                <div className="p-7 flex flex-col flex-1">
+                  {/* Plan name */}
+                  <h3 className="font-display text-[14px] font-black uppercase tracking-[0.06em] text-[#0C0C0C]">{plan.name}</h3>
+
+                  {/* Description */}
+                  {plan.desc && (
+                    <p className="mt-2 text-[12px] leading-[1.7] text-[#0C0C0C]/55">{plan.desc}</p>
+                  )}
+
+                  {/* Pricing anchor */}
+                  <div className="mt-6 border-t border-[rgba(12,12,12,0.08)] pt-5">
+                    {cabin ? (
+                      <div>
+                        <div className="text-[11px] font-semibold text-[#0C0C0C]/50 mb-1">Custom Pricing</div>
+                        <div className="font-display text-[16px] font-black text-[#0C0C0C]/70 leading-tight">
+                          Based on team size &amp; requirements
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-1">
+                        {plan.standard && (
+                          <span className="text-[12px] text-red-500 line-through font-mono font-semibold">
+                            {plan.standard}
+                          </span>
+                        )}
+                        {plan.founding && (
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-display text-[24px] font-black text-[#0C0C0C] leading-none">
+                              {plan.founding}
+                            </span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.14em] text-[#04B8BB] bg-[#04B8BB]/15 px-2 py-1">
+                              Founding Price
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
-                {/* Features list */}
-                {(plan.features || []).length > 0 && (
-                  <ul className="mt-5 space-y-2">
-                    {(plan.features || []).map((f, fi) => (
-                      <li key={fi} className="flex items-start gap-2 text-[12px] text-[#0C0C0C]/70">
-                        <Check size={11} strokeWidth={3} className="text-[#024E5C] mt-0.5 flex-shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {/* CTA */}
-                <div className="mt-auto pt-7">
-                  {cabin ? (
-                    <a
-                      href={waLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
-                      className="button button-dark w-full text-center flex items-center justify-center gap-2"
-                      data-testid={`button-plan-cabin-${index}`}
-                    >
-                      Talk to Us About a Cabin <ArrowUpRight size={13} />
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={onReserve}
-                      className={`button w-full ${popular ? 'button-primary' : 'button-dark'}`}
-                      data-testid={`button-plan-${index}`}
-                    >
-                      Start Free Trial <ArrowUpRight size={13} />
-                    </button>
+                  {/* Features list */}
+                  {(plan.features || []).length > 0 && (
+                    <ul className="mt-5 space-y-2">
+                      {(plan.features || []).map((f, fi) => (
+                        <li key={fi} className="flex items-start gap-2 text-[12px] text-[#0C0C0C]/70">
+                          <Check size={11} strokeWidth={3} className="text-[#024E5C] mt-0.5 flex-shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
                   )}
+
+                  {/* CTA */}
+                  <div className="mt-auto pt-7">
+                    {cabin ? (
+                      <a
+                        href={waLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
+                        className="button button-dark w-full text-center flex items-center justify-center gap-2"
+                        data-testid={`button-plan-cabin-${index}`}
+                      >
+                        Talk to Us About a Cabin <ArrowUpRight size={13} />
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={onReserve}
+                        className={`button w-full ${popular ? 'button-primary' : 'button-dark'}`}
+                        data-testid={`button-plan-${index}`}
+                      >
+                        Start Free Trial <ArrowUpRight size={13} />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </RevealOnScroll>
             );

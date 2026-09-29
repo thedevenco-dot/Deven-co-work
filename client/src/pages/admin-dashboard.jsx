@@ -591,8 +591,11 @@ function PlansManager() {
     requiresSeatSelection: false,
     requiresPayment: true,
     usesDeposit: false,
+    imageUrl: '',
   };
   const [formData, setFormData] = useState(initialForm);
+  const [imageUploading, setImageUploading] = useState(false);
+  const planImageInputRef = useRef(null);
 
   const fetchPlans = useCallback(async () => {
     setLoading(true);
@@ -636,6 +639,7 @@ function PlansManager() {
       requiresSeatSelection: !!plan.requiresSeatSelection,
       requiresPayment: plan.requiresPayment !== false,
       usesDeposit: !!plan.usesDeposit,
+      imageUrl: plan.imageUrl || '',
     });
     setModalOpen(true);
   };
@@ -666,6 +670,7 @@ function PlansManager() {
       price: numPrice,
       paymentMode: formData.paymentMode === 'RESERVATION' ? 'RESERVATION' : 'FULL_PAYMENT',
       reservationAmount: formData.paymentMode === 'RESERVATION' ? (Number(formData.reservationAmount) || 999) : 0,
+      imageUrl: formData.imageUrl || '',
     };
 
     setSubmitting(true);
@@ -980,6 +985,86 @@ function PlansManager() {
                   onChange={(v) => setFormData({ ...formData, usesDeposit: v })}
                   label="Uses Refundable Seat Deposit"
                 />
+              </div>
+
+              {/* ── Plan Image ──────────────────────────────────────────────── */}
+              <div className="border-t border-[#242424] pt-4 space-y-3">
+                <div className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider flex items-center gap-2">
+                  <Image size={12} /> Plan Image
+                </div>
+
+                {/* Preview */}
+                {formData.imageUrl ? (
+                  <div className="relative w-full overflow-hidden border border-[#242424] bg-[#111]" style={{ aspectRatio: '16/9' }}>
+                    <img
+                      src={formData.imageUrl}
+                      alt="Plan image preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full border border-dashed border-[#333] bg-[#0A0A0A] flex items-center justify-center text-[#555] text-[10px] uppercase tracking-wider" style={{ aspectRatio: '16/9' }}>
+                    <span className="flex flex-col items-center gap-2">
+                      <Image size={20} />
+                      No image — upload one below
+                    </span>
+                  </div>
+                )}
+
+                {/* Hidden file input */}
+                <input
+                  ref={planImageInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  id={`plan-image-upload-${editingPlan?._id || 'new'}`}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onloadend = async () => {
+                      setImageUploading(true);
+                      try {
+                        toast({ title: 'Uploading image...', description: 'Please wait.' });
+                        const res = await api.uploadFile(file.name, file.type, reader.result, `${formData.name || 'Plan'} at Deven Co-Work`);
+                        if (res.success && res.url) {
+                          setFormData(prev => ({ ...prev, imageUrl: res.url }));
+                          toast({ title: 'Image uploaded', description: 'Image ready. Click Save to persist.' });
+                        }
+                      } catch (err) {
+                        toast({ title: 'Upload failed', description: err.message || 'Server error', variant: 'destructive' });
+                      } finally {
+                        setImageUploading(false);
+                        e.target.value = '';
+                      }
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                />
+
+                {/* Action buttons */}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    disabled={imageUploading}
+                    onClick={() => planImageInputRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider border border-[#333] text-[#A3A3A3] hover:border-[#04B8BB] hover:text-white transition-colors disabled:opacity-50"
+                  >
+                    <Upload size={11} />
+                    {imageUploading ? 'Uploading...' : formData.imageUrl ? 'Replace Image' : 'Upload Image'}
+                  </button>
+                  {formData.imageUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, imageUrl: '' }))}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider border border-[#333] text-[#A3A3A3] hover:border-[#ef4444] hover:text-[#ef4444] transition-colors"
+                    >
+                      <Trash2 size={11} /> Remove Image
+                    </button>
+                  )}
+                </div>
+                <p className="text-[10px] text-[#555]">Uploads to Cloudinary. Click Save Plan to persist the change.</p>
               </div>
 
               <div className="flex gap-3 justify-end border-t border-[#242424] pt-4">

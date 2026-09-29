@@ -263,6 +263,7 @@ export async function createPlan(req, res) {
       allowsQuantity = true,
       requiresDate = false,
       requiresTime = false,
+      imageUrl = '',
     } = req.body;
 
     if (!name || !name.trim()) {
@@ -311,6 +312,7 @@ export async function createPlan(req, res) {
       allowsQuantity: Boolean(allowsQuantity),
       requiresDate: Boolean(requiresDate),
       requiresTime: Boolean(requiresTime),
+      imageUrl: typeof imageUrl === 'string' ? imageUrl.trim() : '',
     });
 
     await plan.save();
@@ -361,6 +363,7 @@ export async function updatePlan(req, res) {
       allowsQuantity,
       requiresDate,
       requiresTime,
+      imageUrl,
     } = req.body;
 
     if (name !== undefined) {
@@ -420,6 +423,8 @@ export async function updatePlan(req, res) {
     if (allowsQuantity !== undefined) plan.allowsQuantity = Boolean(allowsQuantity);
     if (requiresDate !== undefined) plan.requiresDate = Boolean(requiresDate);
     if (requiresTime !== undefined) plan.requiresTime = Boolean(requiresTime);
+    // imageUrl: accept empty string to clear, or a new Cloudinary URL to set
+    if (imageUrl !== undefined) plan.imageUrl = typeof imageUrl === 'string' ? imageUrl.trim() : '';
 
     await plan.save();
 
