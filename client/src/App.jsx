@@ -2231,8 +2231,8 @@ function MobileStickyCTA({ onReserve }) {
 
 // â”€â”€â”€ HOME PAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Home() {
-  const [content, setContent] = useState(null);
-  const [cmsLoaded, setCmsLoaded] = useState(false);
+  const [content, setContent] = useState(defaultContent);
+  const [cmsLoaded, setCmsLoaded] = useState(true);
   const [cmsFailed, setCmsFailed] = useState(false);
   const [utm, setUtm] = useState({ source: '', medium: '', campaign: '' });
   const [reserveOpen, setReserveOpen] = useState(false);
@@ -2343,18 +2343,27 @@ function Home() {
 
     fetchLiveSeatsCount();
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    const ws = new WebSocket(`${protocol}//${host}`);
-    ws.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-        if (message.type === 'SEAT_UPDATE') fetchLiveSeatsCount();
-      } catch (err) {
-        console.error('Error in App.jsx WS message listener', err);
+    let ws = null;
+    try {
+      if (typeof window !== 'undefined' && window.WebSocket) {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.host;
+        ws = new WebSocket(`${protocol}//${host}`);
+        ws.onmessage = (event) => {
+          try {
+            const message = JSON.parse(event.data);
+            if (message.type === 'SEAT_UPDATE') fetchLiveSeatsCount();
+          } catch (err) {
+            console.error('Error in App.jsx WS message listener', err);
+          }
+        };
       }
+    } catch (e) {
+      console.warn('WebSocket init skipped or failed in current environment:', e);
+    }
+    return () => {
+      if (ws) ws.close();
     };
-    return () => ws.close();
   }, []);
 
   // Automatic tour popup delay (~7 seconds)

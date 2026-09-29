@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import prerender from '@prerenderer/rollup-plugin';
+import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -10,7 +12,14 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss()
+    tailwindcss(),
+    prerender({
+      routes: ['/', '/thank-you'],
+      renderer: new PuppeteerRenderer({
+        renderAfterTime: 2500,
+        headless: true,
+      }),
+    })
   ],
   resolve: {
     alias: {
