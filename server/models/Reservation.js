@@ -29,7 +29,23 @@ const reservationSchema = new mongoose.Schema(
     requestType: {
       type: String,
       required: true,
-      enum: ['seat_reservation', 'free_trial', 'whatsapp'],
+      enum: ['seat_reservation', 'free_trial', 'whatsapp', 'tour'],
+    },
+    preferredDate: {
+      type: String,
+      default: '',
+    },
+    preferredTime: {
+      type: String,
+      default: '',
+    },
+    numberOfPeople: {
+      type: Number,
+      default: 1,
+    },
+    message: {
+      type: String,
+      default: '',
     },
     seatNumbers: {
       type: [String],
@@ -130,7 +146,7 @@ const reservationSchema = new mongoose.Schema(
     leadStatus: {
       type: String,
       required: true,
-      enum: ['NEW', 'CONTACTED', 'TRIAL', 'PAYMENT_PENDING', 'CONFIRMED', 'CANCELLED', 'LOST'],
+      enum: ['NEW', 'CONTACTED', 'TRIAL', 'PAYMENT_PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED', 'LOST'],
       default: 'NEW',
     },
     notes: {

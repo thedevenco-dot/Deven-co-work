@@ -2112,8 +2112,8 @@ export default function AdminDashboard() {
                                 </div>
                               </td>
                               <td className="py-4 px-6 text-center">
-                                <span className={`inline-block px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[#F1F1F1] bg-[#242424] border border-[#333]`}>
-                                  {res.requestType === 'seat_reservation' ? 'Reservation' : res.requestType === 'free_trial' ? 'Free Trial' : res.requestType === 'whatsapp' ? 'WhatsApp' : 'Unknown'}
+                                <span className={`inline-block px-2 py-1 text-[9px] font-bold uppercase tracking-wider ${res.requestType === 'tour' ? 'text-[#04B8BB] bg-[#04B8BB]/10 border border-[#04B8BB]/30' : 'text-[#F1F1F1] bg-[#242424] border border-[#333]'}`}>
+                                  {res.requestType === 'tour' ? 'Free Tour' : res.requestType === 'seat_reservation' ? 'Reservation' : res.requestType === 'free_trial' ? 'Free Trial' : res.requestType === 'whatsapp' ? 'WhatsApp' : 'Unknown'}
                                 </span>
                               </td>
                               <td className="py-4 px-6 text-right">
@@ -2218,11 +2218,16 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-2xl bg-[#0A0A0A] border border-[#242424] p-6 relative max-h-[90vh] overflow-y-auto">
             <button onClick={() => setSelectedLead(null)} className="absolute right-4 top-4 text-[#A3A3A3] hover:text-white"><X size={20} /></button>
-            <h2 className="font-display text-2xl tracking-wider text-white mb-6 border-b border-[#242424] pb-4">
-              Lead Detail: {selectedLead.name}
+            <h2 className="font-display text-2xl tracking-wider text-white mb-6 border-b border-[#242424] pb-4 flex items-center justify-between">
+              <span>Lead Detail: {selectedLead.name}</span>
+              {selectedLead.requestType === 'tour' && <span className="text-xs font-mono bg-[#04B8BB]/20 text-[#04B8BB] border border-[#04B8BB]/40 px-2.5 py-1 uppercase font-bold">FREE TOUR</span>}
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 mb-6">
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Phone</p><p className="text-sm font-semibold">{selectedLead.phone}</p></div>
+              <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Email</p><p className="text-sm font-semibold text-[#04B8BB]">{selectedLead.email || 'N/A'}</p></div>
+              {selectedLead.company && <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Company</p><p className="text-sm font-semibold">{selectedLead.company}</p></div>}
+              {selectedLead.preferredDate && <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Preferred Date & Time</p><p className="text-sm font-semibold text-[#04B8BB]">{selectedLead.preferredDate} ({selectedLead.preferredTime || 'Anytime'})</p></div>}
+              {selectedLead.numberOfPeople && <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Number of People</p><p className="text-sm font-semibold">{selectedLead.numberOfPeople} Person(s)</p></div>}
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Seats Selected</p><p className="text-sm font-semibold text-[#04B8BB]">{selectedLead.seatNumbers?.join(', ') || 'None'}</p></div>
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Plan</p><p className="text-sm font-semibold">{selectedLead.plan}</p></div>
               <div><p className="text-xs uppercase text-[#A3A3A3] tracking-wider mb-1">Registered</p><p className="text-sm font-semibold">{new Date(selectedLead.createdAt).toLocaleString()}</p></div>
@@ -2233,10 +2238,13 @@ export default function AdminDashboard() {
               <label className="field-label">
                 <span>Lead Status</span>
                 <select value={modalStatus} onChange={(e) => setModalStatus(e.target.value)}>
+                  <option value="NEW">NEW</option>
+                  <option value="CONTACTED">CONTACTED</option>
+                  <option value="CONFIRMED">CONFIRMED</option>
+                  <option value="COMPLETED">COMPLETED</option>
+                  <option value="CANCELLED">CANCELLED</option>
                   <option value="new">New</option>
                   <option value="contacted">Contacted</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="cancelled">Cancelled</option>
                   <option value="refunded">Refunded</option>
                 </select>
               </label>

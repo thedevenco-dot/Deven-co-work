@@ -49,6 +49,15 @@ export const api = {
     return handleResponse(res);
   },
 
+  async bookTour(formData) {
+    const res = await fetch(`${API_BASE}/reservations/tour`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(formData),
+    });
+    return handleResponse(res);
+  },
+
   async submitFreeTrial(formData) {
     const res = await fetch(`${API_BASE}/reservations/free-trial`, {
       method: 'POST',

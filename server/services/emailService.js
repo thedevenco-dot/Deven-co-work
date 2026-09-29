@@ -575,3 +575,274 @@ export async function sendTrialConfirmationEmail(booking) {
   }
 }
 
+/**
+ * Build HTML template for Free Tour Confirmation (User Email)
+ */
+function buildTourConfirmationHtml(tourData, logoUrl) {
+  const whatsappMsg = encodeURIComponent(`Hi Deven Co-Work, I have a query about my Free Tour booking.`);
+  const whatsappUrl = `https://wa.me/916260582852?text=${whatsappMsg}`;
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Your Free Tour — Deven Co-Work</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0C0C0C; font-family: Arial, sans-serif; color: #FCFAF9;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #0C0C0C; padding: 20px 10px;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #121212; border: 1px solid #024E5C; border-radius: 8px; overflow: hidden;">
+              
+              <!-- Header -->
+              <tr>
+                <td>
+                  ${getEmailHeaderHtml(logoUrl, 'Free Tour Booked')}
+                </td>
+              </tr>
+
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 30px 24px;">
+                  <h1 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 700; color: #FCFAF9; letter-spacing: 0.5px;">
+                    Your Free Tour is Booked!
+                  </h1>
+                  <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #A3A3A3;">
+                    Hi <strong style="color: #FCFAF9;">${tourData.name}</strong>,
+                  </p>
+                  <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 1.6; color: #A3A3A3;">
+                    Your free tour at Deven Co-Work has been successfully requested.
+                  </p>
+                  <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #A3A3A3;">
+                    Our team will contact you shortly to confirm your preferred date and time and guide you through the next steps.
+                  </p>
+
+                  <!-- Details Box -->
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #1A1A1A; border: 1px solid #2B2B2B; border-radius: 6px; margin-bottom: 24px;">
+                    <tr>
+                      <td style="padding: 16px 20px; border-bottom: 1px solid #2B2B2B;">
+                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #04B8BB; font-weight: 700;">Tour Booking Details</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 14px 20px;">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Name:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; text-align: right; padding-bottom: 6px;">${tourData.name}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Phone:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${tourData.phone}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Email:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${tourData.email}</td>
+                          </tr>
+                          ${tourData.company ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Company / Project:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${tourData.company}</td>
+                          </tr>
+                          ` : ''}
+                          ${tourData.preferredDate ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Preferred Date:</td>
+                            <td style="font-size: 13px; color: #04B8BB; font-weight: 700; text-align: right; padding-bottom: 6px;">${tourData.preferredDate}</td>
+                          </tr>
+                          ` : ''}
+                          ${tourData.preferredTime ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Preferred Time:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${tourData.preferredTime}</td>
+                          </tr>
+                          ` : ''}
+                          ${tourData.numberOfPeople ? `
+                          <tr>
+                            <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 6px;">Number of People:</td>
+                            <td style="font-size: 13px; color: #FCFAF9; text-align: right; padding-bottom: 6px;">${tourData.numberOfPeople}</td>
+                          </tr>
+                          ` : ''}
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #A3A3A3;">
+                    We look forward to showing you around Deven Co-Work.
+                  </p>
+
+                  <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #FCFAF9;">
+                    Regards,<br>
+                    <strong>Deven Co-Work Team</strong>
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td>
+                  ${getEmailFooterHtml(whatsappUrl)}
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+/**
+ * Build HTML template for Free Tour Admin Notification Email
+ */
+function buildTourAdminNotificationHtml(tourData, logoUrl) {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Free Tour Request — ${tourData.name}</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #0C0C0C; font-family: Arial, sans-serif; color: #FCFAF9;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #0C0C0C; padding: 20px 10px;">
+        <tr>
+          <td align="center">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #121212; border: 1px solid #024E5C; border-radius: 8px; overflow: hidden;">
+              
+              <!-- Header -->
+              <tr>
+                <td>
+                  ${getEmailHeaderHtml(logoUrl, 'New Lead Alert')}
+                </td>
+              </tr>
+
+              <!-- Content Body -->
+              <tr>
+                <td style="padding: 30px 24px;">
+                  <h1 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: #FCFAF9;">
+                    New Free Tour Request Received
+                  </h1>
+                  <p style="margin: 0 0 20px 0; font-size: 14px; color: #A3A3A3;">
+                    A new visitor has requested a free tour of Deven Co-Work. Details below:
+                  </p>
+
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #1A1A1A; border: 1px solid #2B2B2B; border-radius: 6px; padding: 16px; margin-bottom: 24px;">
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Name:</strong></td>
+                      <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; padding-bottom: 8px;">${tourData.name}</td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Phone:</strong></td>
+                      <td style="font-size: 13px; color: #04B8BB; font-weight: 700; padding-bottom: 8px;"><a href="tel:${tourData.phone}" style="color: #04B8BB; text-decoration: none;">${tourData.phone}</a></td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Email:</strong></td>
+                      <td style="font-size: 13px; color: #FCFAF9; padding-bottom: 8px;"><a href="mailto:${tourData.email}" style="color: #04B8BB; text-decoration: none;">${tourData.email}</a></td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Company:</strong></td>
+                      <td style="font-size: 13px; color: #FCFAF9; padding-bottom: 8px;">${tourData.company || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Preferred Date:</strong></td>
+                      <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; padding-bottom: 8px;">${tourData.preferredDate || 'Not specified'}</td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Preferred Time:</strong></td>
+                      <td style="font-size: 13px; color: #FCFAF9; font-weight: 600; padding-bottom: 8px;">${tourData.preferredTime || 'Not specified'}</td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Number of People:</strong></td>
+                      <td style="font-size: 13px; color: #FCFAF9; padding-bottom: 8px;">${tourData.numberOfPeople || 1}</td>
+                    </tr>
+                    ${tourData.message ? `
+                    <tr>
+                      <td style="font-size: 13px; color: #A3A3A3; padding-bottom: 8px;"><strong>Message:</strong></td>
+                      <td style="font-size: 13px; color: #FCFAF9; padding-bottom: 8px;">${tourData.message}</td>
+                    </tr>
+                    ` : ''}
+                  </table>
+
+                  <p style="margin: 0; font-size: 12px; color: #666666;">
+                    Please follow up promptly to confirm dates and guide the prospective member.
+                  </p>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+/**
+ * Send Free Tour Confirmation Email to User
+ */
+export async function sendTourUserConfirmationEmail(tourData) {
+  if (!tourData || !tourData.email) {
+    console.warn('[EmailService] Cannot send tour email: missing email');
+    return { success: false, reason: 'Missing email' };
+  }
+
+  try {
+    const logoUrl = await getCmsLogoUrl();
+    const html = buildTourConfirmationHtml(tourData, logoUrl);
+    const from = process.env.EMAIL_FROM || 'Deven Co-Work <onboarding@resend.dev>';
+    const replyTo = process.env.EMAIL_REPLY_TO || 'bookings@devencowork.com';
+
+    const result = await sendResendEmail({
+      from,
+      to: tourData.email,
+      replyTo,
+      subject: `Your Free Tour at Deven Co-Work is Booked`,
+      html,
+    });
+
+    if (result.success) {
+      console.log(`[EmailService] Free tour user email sent to ${tourData.email}`);
+    }
+    return result;
+  } catch (err) {
+    console.error('[EmailService] Exception sending tour user email:', err.message || err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Send Free Tour Admin Notification Email
+ */
+export async function sendTourAdminNotificationEmail(tourData) {
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.TEST_EMAIL_RECIPIENT || 'bookings@devencowork.com';
+
+  try {
+    const logoUrl = await getCmsLogoUrl();
+    const html = buildTourAdminNotificationHtml(tourData, logoUrl);
+    const from = process.env.EMAIL_FROM || 'Deven Co-Work <onboarding@resend.dev>';
+
+    const result = await sendResendEmail({
+      from,
+      to: adminEmail,
+      subject: `New Free Tour Request — ${tourData.name}`,
+      html,
+    });
+
+    if (result.success) {
+      console.log(`[EmailService] Admin tour notification sent to ${adminEmail}`);
+    }
+    return result;
+  } catch (err) {
+    console.error('[EmailService] Exception sending admin tour email:', err.message || err);
+    return { success: false, error: err.message };
+  }
+}
+
+

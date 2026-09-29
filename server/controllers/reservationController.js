@@ -6,7 +6,12 @@ import Seat from '../models/Seat.js';
 import Content from '../models/Content.js';
 import Plan from '../models/Plan.js';
 import { broadcast } from '../socket.js';
-import { sendBookingConfirmationEmail, sendTrialConfirmationEmail } from '../services/emailService.js';
+import {
+  sendBookingConfirmationEmail,
+  sendTrialConfirmationEmail,
+  sendTourUserConfirmationEmail,
+  sendTourAdminNotificationEmail,
+} from '../services/emailService.js';
 
 /**
  * Authoritative Backend Booking Payment Calculator
@@ -921,3 +926,101 @@ export async function createWhatsAppLead(req, res) {
     });
   }
 }
+
+/**
+ * @desc    Create a new Free Tour booking lead
+ * @route   POST /api/reservations/tour
+ * @access  Public
+ */
+export async function createTourBooking(req, res) {
+  const {
+    name,
+    phone,
+    email,
+    company,
+    preferredDate,
+    preferredTime,
+    numberOfPeople,
+    message,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    email_confirm,
+  } = req.body;
+
+  if (email_confirm) {
+    res.status(400).json({ success: false, message: 'Spam submission detected.' });
+    return;
+  }
+
+  if (!name || !name.trim() || !phone || !phone.trim() || !email || !email.trim()) {
+    res.status(400).json({
+      success: false,
+      message: 'Please provide required fields: Name, Phone, and Email address.',
+    });
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email.trim())) {
+    res.status(400).json({
+      success: false,
+      message: 'Please enter a valid email address.',
+    });
+    return;
+  }
+
+  try {
+    const tourLead = new Reservation({
+      name: name.trim(),
+      phone: phone.trim(),
+      email: email.trim().toLowerCase(),
+      company: (company || '').trim(),
+      preferredDate: (preferredDate || '').trim(),
+      preferredTime: (preferredTime || '').trim(),
+      numberOfPeople: Math.max(1, parseInt(numberOfPeople) || 1),
+      message: (message || '').trim(),
+      requestType: 'tour',
+      leadStatus: 'NEW',
+      paymentStatus: 'N/A',
+      amount: 0,
+      amountPaid: 0,
+      amountPaidToday: 0,
+      totalAmount: 0,
+      utmSource: utmSource || '',
+      utmMedium: utmMedium || '',
+      utmCampaign: utmCampaign || '',
+    });
+
+    await tourLead.save();
+
+    // Send confirmation email to user safely (non-blocking)
+    sendTourUserConfirmationEmail(tourLead).catch((err) => {
+      console.error('[ReservationController] Error sending tour user confirmation email:', err);
+    });
+
+    // Send admin notification email safely (non-blocking)
+    sendTourAdminNotificationEmail(tourLead).catch((err) => {
+      console.error('[ReservationController] Error sending tour admin notification email:', err);
+    });
+
+    // Notify admin dashboard via WebSockets
+    broadcast({
+      type: 'NEW_LEAD',
+      lead: tourLead,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Tour booking requested successfully.',
+      data: tourLead,
+    });
+  } catch (error) {
+    console.error('[ReservationController] Error creating tour lead:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An unexpected error occurred while processing your tour request. Please try again.',
+    });
+  }
+}
+

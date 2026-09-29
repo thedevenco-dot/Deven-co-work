@@ -26,12 +26,13 @@ export default function ThankYou() {
     }
   }, []);
 
-  const isFreeTrial = data?.type === 'FREE_TRIAL' || data?.isLead;
+  const isTour = data?.type === 'TOUR' || data?.requestType === 'tour';
+  const isFreeTrial = !isTour && (data?.type === 'FREE_TRIAL' || data?.isLead);
 
   // Prefilled WhatsApp message
   const waMessage = data?.name
-    ? `Hi, I'm ${data.name}. My pre-booking details are submitted on Deven Cowork.`
-    : `Hi, my pre-booking details are submitted on Deven Cowork.`;
+    ? `Hi, I'm ${data.name}. I just booked a free tour of Deven Co-Work.`
+    : `Hi, I just booked a free tour of Deven Co-Work.`;
   const waHref = `https://wa.me/916260582852?text=${encodeURIComponent(waMessage)}`;
 
   return (
@@ -68,16 +69,77 @@ export default function ThankYou() {
           <div className="space-y-3">
             <div className="eyebrow flex items-center gap-3 text-[#04B8BB] uppercase text-[10px] tracking-widest font-bold">
               <span className="h-px w-8 bg-[#04B8BB]" /> 
-              {isFreeTrial ? 'Free Trial Registered' : 'Founding Member Seat Reserved'}
+              {isTour ? 'Free Tour Request Received' : isFreeTrial ? 'Free Trial Registered' : 'Founding Member Seat Reserved'}
             </div>
             <h1 className="font-display text-3xl md:text-[40px] font-bold leading-[1.05] tracking-wider text-[#0C0C0C] uppercase">
-              {isFreeTrial ? 'Your Free Trial is Booked.' : 'Reservation Confirmed'}
+              {isTour ? 'YOUR TOUR IS BOOKED.' : isFreeTrial ? 'Your Free Trial is Booked.' : 'Reservation Confirmed'}
             </h1>
           </div>
 
           {/* Dynamic Card Body */}
           {data ? (
-            isFreeTrial ? (
+            isTour ? (
+              /* FREE TOUR STATE */
+              <div className="space-y-6">
+                <p className="text-base font-semibold text-[#0C0C0C]">
+                  Thanks, {data.name}.
+                </p>
+
+                <div className="border-y border-[rgba(2,78,92,0.15)] py-6 space-y-4 text-sm text-[#0C0C0C]/75">
+                  <div className="flex justify-between">
+                    <span>Name:</span>
+                    <strong className="text-[#0C0C0C]">{data.name}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Phone:</span>
+                    <strong className="text-[#0C0C0C]">{data.phone}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Email:</span>
+                    <strong className="text-[#0C0C0C]">{data.email || 'N/A'}</strong>
+                  </div>
+                  {data.company && (
+                    <div className="flex justify-between">
+                      <span>Company / Project:</span>
+                      <strong className="text-[#0C0C0C]">{data.company}</strong>
+                    </div>
+                  )}
+                  {data.preferredDate && (
+                    <div className="flex justify-between">
+                      <span className="flex items-center gap-1.5"><Calendar size={14} /> Preferred Date:</span>
+                      <strong className="text-[#04B8BB] font-bold">{data.preferredDate}</strong>
+                    </div>
+                  )}
+                  {data.preferredTime && (
+                    <div className="flex justify-between">
+                      <span>Preferred Slot:</span>
+                      <strong className="text-[#0C0C0C]">{data.preferredTime}</strong>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span>Tour Fee:</span>
+                    <strong className="text-[#04B8BB] font-bold uppercase tracking-wider text-[10px] bg-[#04B8BB]/10 border border-[#04B8BB]/20 px-2 py-0.5">
+                      ₹0 (Free Tour)
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-sm leading-6 text-[#0C0C0C]/80 font-normal">
+                    Your free tour request has been received. Our team will contact you shortly to confirm the date and time and help you with the next steps.
+                  </p>
+                  <p className="text-xs font-semibold text-[#04B8BB]">
+                    Looking forward to welcoming you to Deven Co-Work.
+                  </p>
+                  <button
+                    onClick={() => setLocation('/')}
+                    className="button button-primary w-full justify-center text-xs uppercase tracking-widest font-bold py-3.5"
+                  >
+                    BACK TO HOME
+                  </button>
+                </div>
+              </div>
+            ) : isFreeTrial ? (
               /* FREE TRIAL STATE */
               <div className="space-y-6">
                 <div className="border-y border-[rgba(2,78,92,0.15)] py-6 space-y-4 text-sm text-[#0C0C0C]/75">

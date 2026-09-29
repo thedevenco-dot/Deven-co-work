@@ -8,6 +8,7 @@ import {
   updateSeatStatus,
   createFreeTrial,
   createWhatsAppLead,
+  createTourBooking,
 } from '../controllers/reservationController.js';
 import { protect } from '../middleware/auth.js';
 
@@ -19,6 +20,7 @@ router.post('/confirm', confirmReservation);
 router.post('/fail', failReservation);
 router.post('/free-trial', createFreeTrial);
 router.post('/whatsapp-lead', createWhatsAppLead);
+router.post('/tour', createTourBooking);
 
 // Admin-only protected routes
 router.get('/', protect, getReservations);

@@ -18,6 +18,7 @@ import AdminDashboard from '@/pages/admin-dashboard';
 import ThankYou from '@/pages/thank-you';
 import SeatSelection from '@/components/seat-selection';
 import OfficeCostCalculator from '@/components/OfficeCostCalculator';
+import TourBookingModal from '@/components/TourBookingModal';
 import { api } from '@/services/api';
 import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon } from '@/lib/utils';
 import { trackPixelEvent } from '@/lib/metaPixel';
@@ -64,7 +65,7 @@ const defaultContent = {
       { label: 'FAQ', url: '#faq', external: false, visible: true, order: 4 },
       { label: 'Contact', url: '#reservation', external: false, visible: true, order: 5 },
     ],
-    ctaLabel: 'Book Free Trial',
+    ctaLabel: 'BOOK YOUR TOUR',
     ctaUrl: '#reservation',
     ctaVisible: true,
   },
@@ -77,7 +78,7 @@ const defaultContent = {
     location: 'VIP ESTATE, A1, VIP COLONY, SHANKAR NAGAR, RAIPUR, CHHATTISGARH 492001',
     headline: "Raipur's most\nbeautiful office.\nNow yours.",
     subheadline: "Raipur's most premium coworking space — a content studio, a real community, and everything you need to grow, not just work.",
-    primaryCtaLabel: 'Book Your Free 2-Day Trial',
+    primaryCtaLabel: 'BOOK YOUR TOUR',
     primaryCtaUrl: '#reservation',
     secondaryCtaLabel: 'See Founding Member Pricing',
     secondaryCtaUrl: '#pricing',
@@ -89,9 +90,9 @@ const defaultContent = {
       { value: '50', label: 'Founding Seats' },
       { value: '₹1,000', label: 'Refundable Deposit' },
     ],
-    metaItems: ['RAIPUR', 'VIP ESTATE', '50 SEATS', 'FRI — SAT FREE TRIAL'],
+    metaItems: ['RAIPUR', 'VIP ESTATE', '50 SEATS', 'FREE TOUR'],
     stats: [
-      { main: '2-Day Free Trial', sub: 'No card required' },
+      { main: 'Free Tour Available', sub: 'Experience Deven' },
       { main: '500 Mbps Wifi', sub: 'High Speed' },
       { main: '9 AM–9 PM, 7 Days', sub: 'Access Hours' },
       { main: 'Central Raipur Location', sub: 'City Centre' },
@@ -114,7 +115,7 @@ const defaultContent = {
       { title: 'You look smaller on a video call than your business actually is.', description: 'The wrong background signals the wrong thing. First impressions in remote work are everything.' },
     ],
     cta: {
-      label: 'Book Your Free 2-Day Trial',
+      label: 'BOOK YOUR TOUR',
       url: '#reservation',
       enabled: true,
     },
@@ -140,10 +141,10 @@ const defaultContent = {
   },
   plan: {
     headline: 'Getting Started Is Simple',
-    ctaLabel: 'Start With Your Free Trial',
+    ctaLabel: 'BOOK YOUR TOUR',
     ctaUrl: '#reservation',
     steps: [
-      { title: 'Book Your Free 2-Day Trial', description: 'No card, no pressure, just come work from here.' },
+      { title: 'Book Your Free Tour', description: 'No pressure, come experience the space in person.' },
       { title: 'Pick Your Plan', description: 'Hot Desk or Dedicated Desk — whatever fits.' },
       { title: 'Move In & Grow', description: 'Join a real community, not just a shared room.' },
     ],
@@ -157,7 +158,7 @@ const defaultContent = {
       { heading: 'THE PERSONAL BRAND BOOST', items: ['Content Studio Access', '1 Professional Founder Podcast Episode', '1 Instagram Collaboration/Month', '1 Professional Founder Photoshoot Every 6 Months', 'Founding Member Badge', 'Annual Deven Awards Night Invite'], isDevenEdge: true },
       { heading: 'THE LEARNING', items: ['1 AI Workshop/Month', '1 Book Reading Workshop/Month', 'Deven Library — 100+ Books', '1 Ask Me Anything Session/Month'], isDevenEdge: true },
       { heading: 'THE CONNECT', items: ["Founder's Growth WhatsApp Community", '2 Events/Month — 1 Fun + 1 Educational'], isDevenEdge: false },
-      { heading: 'THE RISK-FREE ENTRY', items: ['2-Day Free Trial', '7-Day "Love It or Leave It" Guarantee'], isDevenEdge: false },
+      { heading: 'THE RISK-FREE ENTRY', items: ['Free Guided Tour', '7-Day "Love It or Leave It" Guarantee'], isDevenEdge: false },
     ],
   },
   valueStack: {
@@ -181,10 +182,10 @@ const defaultContent = {
     headline: 'Try Deven Co-Work —\nCompletely Risk Free',
     subheadline: "No risk, no lock-in. Come in and experience Raipur's most premium space with total confidence.",
     closingText: "We can offer this guarantee because we've built something we're genuinely proud of. We want you to feel that the moment you walk in.",
-    ctaLabel: 'Book My Free 2-Day Trial',
+    ctaLabel: 'BOOK YOUR TOUR',
     blocks: [
-      { title: 'The 2-Day Free Trial', description: 'Walk in. Work from Raipur\'s best desk. Use the coffee bar. Meet the community. Leave with a clear picture of what your work life could look like. No credit card. No obligation. No awkward sales pitch. Just come.' },
-      { title: 'The "Love It or Leave It" Guarantee', description: 'Join after your trial. Attend one event and one workshop in your first 30 days. If you have not made a single genuine business connection or walked away with something useful — we will refund your first month in full. No questions. No forms. No argument.' },
+      { title: 'The Free Tour', description: 'Walk in. Tour Raipur\'s best desk options. Use the coffee bar. Meet the community. Leave with a clear picture of what your work life could look like. No obligation. No awkward sales pitch. Just come.' },
+      { title: 'The "Love It or Leave It" Guarantee', description: 'Join after your tour. Attend one event and one workshop in your first 30 days. If you have not made a single genuine business connection or walked away with something useful — we will refund your first month in full. No questions. No forms. No argument.' },
     ],
   },
   socialProof: {
@@ -213,7 +214,7 @@ const defaultContent = {
         order: 2
       },
       {
-        quote: "The 2-day free trial convinced me instantly. The vibe, natural lighting, and community events make working here inspiring every single day.",
+        quote: "Taking a free tour convinced me instantly. The vibe, natural lighting, and community events make working here inspiring every single day.",
         author: "Rahul Verma",
         company: "Co-Founder, CodeCraft Studio",
         role: "Co-Founder",
@@ -250,7 +251,7 @@ const defaultContent = {
   },
   faq: [
     { question: 'Do I need to commit to a long-term contract?', answer: 'No. Month-to-month is available on all plans. If you want the lowest possible rate, annual plans give you 2 months free — but there is absolutely no pressure to commit until you are ready.', published: true, order: 1 },
-    { question: 'What happens after my 2-day free trial?', answer: 'Nothing automatic. No card is charged. If you love it, our team will help you pick the right plan and get you moved in. If you are not ready, we will stay in touch — no pressure, ever.', published: true, order: 2 },
+    { question: 'What happens after my free tour?', answer: 'Nothing automatic. If you love it, our team will help you pick the right plan and get you moved in. If you are not ready, we will stay in touch — no pressure, ever.', published: true, order: 2 },
     { question: 'What if I join and then want to cancel?', answer: '30 days notice, no penalties, no hidden fees. We want you here because you love it — not because we have trapped you.', published: true, order: 3 },
     { question: 'Can I upgrade later — say, from Hot Desk to a Cabin?', answer: 'Yes, anytime. Founding Members get priority access when a spot opens at a higher tier.', published: true, order: 4 },
     { question: 'Is the Founding Member price really locked for 12 months?', answer: 'Yes — locked from the day you join, even as standard prices increase. This is a genuine commitment from us, not a marketing trick.', published: true, order: 5 },
@@ -259,30 +260,30 @@ const defaultContent = {
     { question: 'I work irregular hours. Is that okay?', answer: 'Deven Co-Work is open 9 AM to 9 PM, 7 days a week. 12 hours of access, every single day — including weekends.', published: true, order: 8 },
   ],
   finalCTA: {
-    headline: 'Your First Day Is Free. Come See Why Founders Are Switching.',
-    body: "No card. No pressure. Just come work from Raipur's most premium coworking space for 2 full days, completely free.",
-    primaryCtaLabel: 'Book Your Free 2-Day Trial',
+    headline: 'Experience Deven Co-Work In Person.',
+    body: "No credit card. No pressure. Just come tour Raipur's most premium coworking space for free.",
+    primaryCtaLabel: 'BOOK YOUR TOUR',
     primaryCtaUrl: '#reservation',
   },
   reservation: {
-    step1Title: 'Step 1: Choose Your founding desks on live map',
-    step2Title: 'Step 2: Enter Contact details',
-    depositNote: 'Deposit required: ₹1,000 per seat · Refundable · UPI-first Checkout',
-    whatsappMessage: "Hi, I'd like to learn more about Deven Co-Work",
-    scarcityNote: 'Only {remaining} founding desks left in Raipur founding batch. Capped at max 7 per company.',
-    reservationHeading: 'Lock in your\nfounding member\nseat.',
-    reservationDescription: 'Only 50 seats are available in the founding batch. Choose your next step below.',
-    scarcityText: "FOUNDING BATCH\nLimited seats available",
+    step1Title: 'Step 1: Enter Contact details',
+    step2Title: 'Step 2: Choose preferred date & slot',
+    depositNote: '100% Free · No Payment Required',
+    whatsappMessage: "Hi, I'd like to book a free tour of Deven Co-Work",
+    scarcityNote: 'Only {remaining} founding desks left in Raipur founding batch.',
+    reservationHeading: 'Book Your\nFree Tour.',
+    reservationDescription: 'Experience Deven Co-Work in person. Fill out the details below to request your free guided tour.',
+    scarcityText: "FOUNDING BATCH\nFree Guided Tour Available",
     totalFoundingSeats: 50,
 
     joiningDate: '15 September 2026',
-    trialButtonText: 'GET 2 DAYS FREE TRIAL',
+    trialButtonText: 'BOOK YOUR TOUR',
     whatsappButtonText: 'BOOK VIA WHATSAPP',
-    reserveButtonText: 'RESERVE MY SEAT',
-    trialConfirmationTitle: 'Your 2-Day Free Trial is Booked.',
-    trialConfirmationMessage: 'Thanks for booking your free trial. Our team will call you shortly to confirm your visit and guide you through the next steps.',
-    paymentConfirmationTitle: 'RESERVATION CONFIRMED',
-    paymentConfirmationMessage: "You're officially in. Your founding member seat has been reserved successfully. Your invoice has been sent to your email.",
+    reserveButtonText: 'BOOK YOUR TOUR',
+    trialConfirmationTitle: 'Your Free Tour is Booked.',
+    trialConfirmationMessage: 'Thanks for booking your tour. Our team will call you shortly to confirm your visit and guide you through the next steps.',
+    paymentConfirmationTitle: 'TOUR BOOKED',
+    paymentConfirmationMessage: "Your free tour request has been received. Our team will contact you shortly to confirm the date and time.",
     whatsappNumber: '+91 62605 82852',
     reservationEmailSettings: 'bookings@devencowork.com',
   },
@@ -1502,8 +1503,8 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
                   </span>
                 </a>
               ) : null}
-              <button onClick={onReserve} className="button button-primary text-sm" data-testid="button-social-reserve">
-                Book Your Free Trial
+              <button onClick={onReserve} className="button button-primary text-sm font-bold tracking-wider uppercase" data-testid="button-social-reserve">
+                BOOK YOUR TOUR
               </button>
             </div>
           </div>
@@ -1593,7 +1594,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 items-start">
             <button type="button" onClick={onReserve} className="button button-dark" data-testid="button-pricing-reserve">
-              Book Your Free Trial <ArrowUpRight size={14} />
+              BOOK YOUR TOUR <ArrowUpRight size={14} />
             </button>
           </div>
         </RevealOnScroll>
@@ -1696,7 +1697,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
-                        className="button button-dark w-full text-center flex items-center justify-center gap-2"
+                        className="button button-dark w-full text-center flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider"
                         data-testid={`button-plan-cabin-${index}`}
                       >
                         Talk to Us About a Cabin <ArrowUpRight size={13} />
@@ -1705,10 +1706,10 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
                       <button
                         type="button"
                         onClick={onReserve}
-                        className={`button w-full ${popular ? 'button-primary' : 'button-dark'}`}
+                        className={`button w-full text-xs font-bold uppercase tracking-wider ${popular ? 'button-primary' : 'button-dark'}`}
                         data-testid={`button-plan-${index}`}
                       >
-                        Start Free Trial <ArrowUpRight size={13} />
+                        BOOK YOUR TOUR <ArrowUpRight size={13} />
                       </button>
                     )}
                   </div>
@@ -1820,217 +1821,39 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
               </div>
             ))}
           </div>
-
-          {/* WhatsApp FAQ CTA */}
-          <div className="mt-10 pt-6 border-t border-[rgba(252,250,249,0.12)] text-left">
-            <p className="text-[14px] text-[#FCFAF9]/85 font-medium">
-              Still have a question?{' '}
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackPixelEvent('Lead', { content_name: 'WhatsApp' })}
-                className="text-[#25D366] font-bold hover:underline inline-flex items-center gap-1.5 ml-1"
-                data-testid="link-faq-whatsapp"
-              >
-                Chat with us directly on WhatsApp &rarr;
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/**
- * Authoritative Frontend Booking Payment Calculator
- */
-function getBookingCalculation({ selectedPlan, selectedSeats = [], duration = 1 }) {
-  const uniqueSelectedSeats = Array.isArray(selectedSeats)
-    ? [...new Set(selectedSeats.filter(Boolean))]
-    : [];
-
-  if (!selectedPlan) {
-    return {
-      uniqueSelectedSeats: [],
-      seatCount: 0,
-      effectiveSeatCount: 0,
-      isReservationMode: false,
-      requiresSeats: false,
-      reservationAmountPerSeat: 0,
-      amountPayableToday: 0,
-      totalAmount: 0,
-      amountPaidToday: 0,
-      amount: 0,
-      totalMembershipValue: 0,
-      fullMembershipAmount: 0,
-      remainingAmountAtJoining: 0,
-      remainingAmount: 0,
-    };
-  }
-
-  const seatCount = uniqueSelectedSeats.length;
-  const isReservationMode = selectedPlan.paymentMode === 'RESERVATION';
-  const requiresSeats = selectedPlan.requiresSeatSelection || selectedPlan.usesDeposit || isReservationMode;
-  const durationVal = Math.max(1, parseInt(duration) || 1);
-
-  if (isReservationMode) {
-    const reservationAmountPerSeat = Number(selectedPlan.reservationAmount || 0);
-    const planPrice = Number(selectedPlan.price || 0);
-
-    if (requiresSeats && seatCount === 0) {
-      return {
-        uniqueSelectedSeats: [],
-        seatCount: 0,
-        effectiveSeatCount: 0,
-        isReservationMode: true,
-        requiresSeats: true,
-        reservationAmountPerSeat,
-        amountPayableToday: 0,
-        totalAmount: 0,
-        amountPaidToday: 0,
-        amount: 0,
-        totalMembershipValue: 0,
-        fullMembershipAmount: 0,
-        remainingAmountAtJoining: 0,
-        remainingAmount: 0,
-      };
-    }
-
-    const effectiveCount = seatCount > 0 ? seatCount : 1;
-    const amountPayableToday = reservationAmountPerSeat * effectiveCount;
-    const totalMembershipValue = planPrice * effectiveCount;
-    const remainingAmountAtJoining = Math.max(0, totalMembershipValue - amountPayableToday);
-
-    return {
-      uniqueSelectedSeats,
-      seatCount: effectiveCount,
-      effectiveSeatCount: effectiveCount,
-      isReservationMode: true,
-      requiresSeats,
-      reservationAmountPerSeat,
-      amountPayableToday,
-      totalAmount: amountPayableToday,
-      amountPaidToday: amountPayableToday,
-      amount: amountPayableToday,
-      totalMembershipValue,
-      fullMembershipAmount: totalMembershipValue,
-      remainingAmountAtJoining,
-      remainingAmount: remainingAmountAtJoining,
-    };
-  } else {
-    const planPrice = Number(selectedPlan.price || 0);
-    const amountPayableToday = planPrice * durationVal;
-
-    return {
-      uniqueSelectedSeats: [],
-      seatCount: 0,
-      effectiveSeatCount: 0,
-      isReservationMode: false,
-      requiresSeats: false,
-      reservationAmountPerSeat: 0,
-      amountPayableToday,
-      totalAmount: amountPayableToday,
-      amountPaidToday: amountPayableToday,
-      amount: amountPayableToday,
-      totalMembershipValue: amountPayableToday,
-      fullMembershipAmount: amountPayableToday,
-      remainingAmountAtJoining: 0,
-      remainingAmount: 0,
-    };
-  }
-}
-
-// â”€â”€â”€ RESERVATION / FINAL CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── RESERVATION SECTION ─────────────────────────────────────────────────────
 function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings, freeTrial, bookingAmount, cmsLoaded, cmsFailed }) {
   const [, setLocation] = useLocation();
-  const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', email_confirm: '' });
-  const [selectedSeats, setSelectedSeats] = useState([]);
-  const [plan, setPlan] = useState('');
-  const [plans, setPlans] = useState([]);
-  const [plansLoading, setPlansLoading] = useState(true);
-  const [plansError, setPlansError] = useState('');
-  const [selectedPlanId, setSelectedPlanId] = useState('');
-  const [duration, setDuration] = useState(1);
-  const [showMap, setShowMap] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    company: '',
+    numberOfPeople: '1',
+    preferredDate: '',
+    preferredTime: 'Morning (10 AM - 1 PM)',
+    message: '',
+    email_confirm: '',
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    let active = true;
-    setPlansLoading(true);
-    api.fetchPlans()
-      .then((res) => {
-        if (active && res.success) {
-          const list = res.data || [];
-          setPlans(list);
-          const activePlans = list.filter(p => p.isActive !== false);
-          if (activePlans.length > 0) {
-            const defaultPlan = activePlans.find(p => p.slug === 'founders-seats') || activePlans[0];
-            setSelectedPlanId(defaultPlan._id);
-            setPlan(defaultPlan.name);
-          }
-        }
-      })
-      .catch((err) => {
-        if (active) {
-          setPlansError(err.message || 'Failed to load membership plans.');
-        }
-      })
-      .finally(() => {
-        if (active) setPlansLoading(false);
-      });
-    return () => { active = false; };
-  }, []);
-
-  const selectedPlan = plans.find(p => p._id === selectedPlanId) || null;
-
-  const handlePlanSelect = (id) => {
-    setSelectedPlanId(id);
-    const p = plans.find(item => item._id === id);
-    if (p) {
-      setPlan(p.name);
-      setDuration(1);
-      setSelectedSeats([]); // Reset seat choices when switching plans
-    }
-  };
-
-  const calc = getBookingCalculation({ selectedPlan, selectedSeats, duration });
-  const {
-    uniqueSelectedSeats,
-    seatCount,
-    effectiveSeatCount,
-    isReservationMode,
-    requiresSeats,
-    reservationAmountPerSeat,
-    amountPayableToday,
-    totalAmount,
-    amountPaidToday,
-    amount,
-    totalMembershipValue,
-    fullMembershipAmount,
-    remainingAmountAtJoining,
-    remainingAmount,
-  } = calc;
-
-  const ctaData = cmsLoaded ? finalCTA : (cmsFailed ? defaultContent.finalCTA : null);
   const resData = cmsLoaded ? reservation : (cmsFailed ? defaultContent.reservation : null);
   const settings = cmsLoaded ? globalSettings : (cmsFailed ? defaultContent.globalSettings : null);
-  const freeTrialData = cmsLoaded ? freeTrial : (cmsFailed ? defaultContent.freeTrial : null);
 
-  if (!ctaData || !resData || !settings || !freeTrialData) {
+  if (!resData || !settings) {
     return (
       <section className="border-t border-[rgba(12,12,12,0.14)] bg-[#FCFAF9] py-20 sm:py-28 text-[#0C0C0C]" id="reservation" data-testid="section-reservation">
         <div className="container-wide min-h-[600px]" />
       </section>
     );
   }
-
-  const totalSeats = resData.totalFoundingSeats || 50;
-  const remainingSeats = reservedCount !== undefined ? totalSeats - reservedCount : 27;
-  const scarcityText = (resData.scarcityNote || 'Only {remaining} founding desks left.')
-    .replace('{remaining}', remainingSeats);
 
   const update = (key, value) => setForm(current => ({ ...current, [key]: value }));
 
@@ -2040,143 +1863,40 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
     utmCampaign: utm?.campaign || '',
   };
 
-  const locationTimeZone = settings?.timeZone || 'Asia/Kolkata';
-  const trialDays = (freeTrialData?.days && freeTrialData.days.length > 0)
-    ? freeTrialData.days
-    : ['Friday', 'Saturday'];
-  const todayInTZ = new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: locationTimeZone }).format(new Date());
-  const isFreeTrialAvailable = (freeTrialData?.enabled !== false) && trialDays.includes(todayInTZ);
-
-  const handleFreeTrial = async (e) => {
+  const handleSubmitTour = async (e) => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) {
       setError('Please complete Name, Phone, and Email fields.');
       return;
     }
-    if (!isFreeTrialAvailable) {
-      setError(`Free trial is available ${trialDays.join(' & ')} only.`);
-      return;
-    }
     setError('');
     setLoading(true);
     try {
-      const res = await api.submitFreeTrial({
-        name: form.name, phone: form.phone, email: form.email,
-        company: form.company, email_confirm: form.email_confirm, ...utmData
+      const res = await api.bookTour({
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        company: form.company.trim(),
+        numberOfPeople: parseInt(form.numberOfPeople, 10) || 1,
+        preferredDate: form.preferredDate,
+        preferredTime: form.preferredTime,
+        message: form.message.trim(),
+        email_confirm: form.email_confirm || '',
+        ...utmData,
       });
-      trackPixelEvent('Lead', { content_name: 'Free Trial Form' });
+      trackPixelEvent('Lead', { content_name: 'Book Your Tour Section' });
       trackPixelEvent('Schedule');
-      localStorage.setItem('last_reservation', JSON.stringify({ ...res.data, isLead: true }));
+      localStorage.setItem('last_reservation', JSON.stringify({ ...res.data, type: 'TOUR' }));
+      sessionStorage.setItem('tourPopupShown', 'true');
       setLocation('/thank-you');
     } catch (err) {
-      setError(err.message || 'Failed to submit free trial request.');
+      setError(err.message || 'Failed to submit tour booking request.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleWhatsApp = async () => {
-    trackPixelEvent('Lead', { content_name: 'WhatsApp' });
-    if (!form.name.trim() || !form.phone.trim()) {
-      setError('Please provide at least Name and Phone to continue.');
-      return;
-    }
-    setError('');
-    setLoading(true);
-    try {
-      await api.submitWhatsAppLead({
-        name: form.name, phone: form.phone,
-        email: form.email || 'N/A', company: form.company || 'N/A', ...utmData
-      });
-    } catch (e) {
-      console.warn('Failed to log WhatsApp inquiry lead:', e);
-    } finally {
-      setLoading(false);
-    }
-    const waNum = (resData.whatsappNumber || settings.whatsapp || '+91 62605 82852').replace('+', '');
-    const userIntro = form.name ? `Hi, I'm ${form.name.trim()}. ` : 'Hi, ';
-    const waText = encodeURIComponent(
-      `${userIntro}I'm interested in joining Deven Cowork. I'd like to know more about the founding member plans.`
-    );
-    window.open(`https://wa.me/${waNum}?text=${waText}`, '_blank');
-  };
-
-  const handlePaidReservation = (e) => {
-    e.preventDefault();
-    if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) {
-      setError('Please complete Name, Phone, and Email fields.');
-      return;
-    }
-    if (!selectedPlanId && !plan) {
-      setError('Please select a preferred membership plan.');
-      return;
-    }
-    setError('');
-    setLoading(true);
-    api.submitReservation({
-      name: form.name, phone: form.phone, email: form.email, company: form.company,
-      seatNumbers: selectedSeats, plan: selectedPlan?.name || plan, planId: selectedPlanId,
-      duration, email_confirm: form.email_confirm || '', ...utmData
-    })
-      .then((res) => {
-        const { reservation: savedRes, razorpayOrder } = res;
-        if (!razorpayOrder) {
-          trackPixelEvent('Lead', { content_name: 'Reservation Form' });
-          trackPixelEvent('Schedule');
-          localStorage.setItem('last_reservation', JSON.stringify(savedRes));
-          setLocation('/thank-you');
-          return;
-        }
-        const options = {
-          key: razorpayOrder.key_id,
-          amount: razorpayOrder.amount,
-          currency: razorpayOrder.currency,
-          name: 'Deven Cowork',
-          description: `Booking: ${selectedPlan?.name || plan}${selectedSeats.length ? ` (${selectedSeats.join(', ')})` : ''}`,
-          order_id: razorpayOrder.id,
-          prefill: { name: form.name, contact: form.phone, email: form.email },
-          theme: { color: '#04B8BB' },
-          handler: async function (response) {
-            try {
-              setLoading(true);
-              const confirmRes = await api.confirmReservation({
-                reservationId: savedRes._id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-              });
-              trackPixelEvent('Lead', { content_name: 'Reservation Form' });
-              trackPixelEvent('Schedule');
-              localStorage.setItem('last_reservation', JSON.stringify(confirmRes.data));
-              setLocation('/thank-you');
-            } catch (err) {
-              setError(err.message || 'Payment verification failed. Please contact support.');
-            } finally {
-              setLoading(false);
-            }
-          },
-          modal: {
-            ondismiss: async function () {
-              await api.failReservation(savedRes._id);
-              setError('Payment cancelled.');
-              setLoading(false);
-            },
-          },
-        };
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', async function (response) {
-          await api.failReservation(savedRes._id);
-          setError(`Payment failed: ${response.error.description}`);
-          setLoading(false);
-        });
-        rzp.open();
-      })
-      .catch((err) => {
-        setLoading(false);
-        setError(err.message || 'Failed to initialize reservation order. Please try again.');
-      });
-  };
-
-  const headlineLines = (resData.reservationHeading || 'Lock in your\nfounding member\nseat.').split('\n');
+  const headlineLines = (resData.reservationHeading || 'Book Your\nFree Tour.').split('\n');
 
   return (
     <section
@@ -2187,9 +1907,9 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
       <div className="container-wide">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20 items-start">
 
-          {/* Left: Heading & scarcity */}
+          {/* Left: Heading & Info */}
           <RevealOnScroll className="space-y-6 lg:sticky lg:top-24">
-            <div className="section-label">10 â€” RESERVE</div>
+            <div className="section-label">10 — TOUR BOOKING</div>
             <h2
               className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
               style={{ fontSize: 'clamp(32px, 4.5vw, 56px)' }}
@@ -2203,32 +1923,20 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
               ))}
             </h2>
             <p className="text-[14px] leading-[1.75] text-[#0C0C0C]/75 max-w-[440px]">
-              {resData.reservationDescription}
+              {resData.reservationDescription || 'Experience Deven Co-Work in person. Book a free tour and experience the space before you decide.'}
             </p>
 
-            {/* Scarcity */}
-            <div className="scarcity-badge flex-col items-start py-2">
-              <span className="text-[#04B8BB] text-[10px] font-black">FOUNDING BATCH</span>
-              <span className="text-[#0C0C0C]/75 text-[11px] mt-1 whitespace-pre-line">
-                {resData.scarcityText || scarcityText}
+            <div className="scarcity-badge flex-col items-start py-2 border border-[#04B8BB]/30 bg-[#04B8BB]/5 p-4 rounded-none">
+              <span className="text-[#04B8BB] text-[10px] font-black uppercase tracking-wider">100% FREE TOUR</span>
+              <span className="text-[#0C0C0C]/75 text-[11px] mt-1">
+                No payment or credit card required. Experience Raipur's most inspiring work environment first-hand.
               </span>
-            </div>
-
-            {/* Trial availability badge */}
-            <div className={`inline-flex items-center gap-2 border px-4 py-3 text-[10px] font-bold uppercase tracking-[0.15em] ${isFreeTrialAvailable
-                ? 'border-[#04B8BB]/40 text-[#04B8BB] bg-[#04B8BB]/5'
-                : 'border-[rgba(12,12,12,0.15)] text-[#0C0C0C]/55'
-              }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isFreeTrialAvailable ? 'bg-[#04B8BB] animate-pulse' : 'bg-neutral-300'}`} />
-              {isFreeTrialAvailable
-                ? `Free Trial Available Today (${todayInTZ})`
-                : `Free Trial: ${trialDays.join(' & ')} only`}
             </div>
           </RevealOnScroll>
 
-          {/* Right: Form */}
+          {/* Right: Tour Form */}
           <RevealOnScroll delay={0.1} className="space-y-5 min-w-0 w-full overflow-hidden">
-            <form className="space-y-4 w-full min-w-0" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-4 w-full min-w-0 bg-white p-6 sm:p-8 border border-[rgba(2,78,92,0.2)] shadow-sm" onSubmit={handleSubmitTour}>
               {/* Honeypot */}
               <input type="text" name="email_confirm" style={{ display: 'none' }} tabIndex={-1} autoComplete="off"
                 onChange={(e) => update('email_confirm', e.target.value)} value={form.email_confirm || ''} />
@@ -2241,7 +1949,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 </label>
                 <label className="field-label col-span-2 sm:col-span-1">
                   <span>Phone Number *</span>
-                  <input type="tel" placeholder="+91" value={form.phone}
+                  <input type="tel" placeholder="+91 98765 43210" value={form.phone}
                     onChange={(e) => update('phone', e.target.value)} required disabled={loading} />
                 </label>
               </div>
@@ -2252,160 +1960,65 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                   onChange={(e) => update('email', e.target.value)} required disabled={loading} />
               </label>
 
-              <label className="field-label">
-                <span>Company / Project Name (Optional)</span>
-                <input type="text" placeholder="Your Startup" value={form.company}
-                  onChange={(e) => update('company', e.target.value)} disabled={loading} />
-              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <label className="field-label col-span-2 sm:col-span-1">
+                  <span>Company / Project Name</span>
+                  <input type="text" placeholder="Your Startup / Project" value={form.company}
+                    onChange={(e) => update('company', e.target.value)} disabled={loading} />
+                </label>
 
-              {/* Dynamic CMS Plan Selector */}
-              <label className="field-label">
-                <span>Preferred Membership Plan *</span>
-                {plansLoading ? (
-                  <div className="p-3 text-xs text-[#0C0C0C]/60 bg-neutral-100 border border-neutral-200 animate-pulse">
-                    Loading plans from CMS...
-                  </div>
-                ) : plansError ? (
-                  <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200">
-                    {plansError}
-                  </div>
-                ) : (
+                <label className="field-label col-span-2 sm:col-span-1">
+                  <span>Number of People</span>
                   <select
-                    value={selectedPlanId}
-                    onChange={(e) => handlePlanSelect(e.target.value)}
-                    required
+                    value={form.numberOfPeople}
+                    onChange={(e) => update('numberOfPeople', e.target.value)}
                     disabled={loading}
                   >
-                    <option value="">Select plan type...</option>
-                    {plans.map((p) => (
-                      <option key={p._id} value={p._id}>
-                        {p.name} — {p.pricingLabel || `₹${p.price.toLocaleString('en-IN')}/${p.billingPeriod === 'hour' ? 'hr' : p.billingPeriod === 'day' ? 'day' : 'mo'}`}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </label>
-
-              {/* Duration Selector for Hourly / Daily plans */}
-              {selectedPlan && (selectedPlan.billingPeriod === 'hour' || selectedPlan.billingPeriod === 'day') && (
-                <label className="field-label">
-                  <span>Duration ({selectedPlan.billingPeriod === 'hour' ? 'Hours' : 'Days'}) *</span>
-                  <select
-                    value={duration}
-                    onChange={(e) => setDuration(Number(e.target.value))}
-                    required
-                    disabled={loading}
-                  >
-                    {(selectedPlan.billingPeriod === 'hour' ? [1, 2, 3, 4, 5, 6, 8, 10, 12] : [1, 2, 3, 4, 5, 7, 10, 14, 30]).map((num) => (
-                      <option key={num} value={num}>
-                        {num} {selectedPlan.billingPeriod === 'hour' ? (num > 1 ? 'Hours' : 'Hour') : (num > 1 ? 'Days' : 'Day')}
-                      </option>
-                    ))}
+                    <option value="1">1 Person</option>
+                    <option value="2">2 - 4 People</option>
+                    <option value="5">5 - 10 People</option>
+                    <option value="10">10+ People / Team</option>
                   </select>
                 </label>
-              )}
-
-              {/* Seat map toggle */}
-              <div className="pt-1">
-                <button
-                  type="button"
-                  onClick={() => setShowMap(!showMap)}
-                  className="w-full border border-[rgba(2,78,92,0.25)] hover:border-[#04B8BB]/40 transition-colors bg-white py-3.5 px-5 flex justify-between items-center text-[10px] font-bold tracking-[0.15em] uppercase text-[#024E5C] hover:text-[#04B8BB]"
-                >
-                  <span>{showMap ? 'Hide Seating Floor Map (Optional)' : 'Select Specific Seat on Floor Map (Optional)'}</span>
-                  <ChevronDown size={13} className={`transition-transform duration-300 ${showMap ? 'rotate-180' : ''}`} />
-                </button>
-                <AnimatePresence>
-                  {showMap && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      style={{ overflow: 'hidden' }}
-                    >
-                      <div className="mt-3">
-                        <SeatSelection
-                          selectedSeats={selectedSeats}
-                          onSeatsChange={setSelectedSeats}
-                          preferredPlan={selectedPlan?.name || plan}
-                          onPlanChange={setPlan}
-                          reservationAmount={reservationAmountPerSeat}
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
-              {/* Booking Summary Card */}
-              {selectedPlan && (
-                <div className="bg-[#024E5C]/5 border border-[#024E5C]/20 p-4 space-y-2 text-xs text-[#0C0C0C]">
-                  <div className="flex justify-between items-center font-bold text-[#024E5C] border-b border-[#024E5C]/15 pb-2">
-                    <span className="uppercase tracking-wider">Booking Summary</span>
-                    <span className={`font-mono font-black text-[10px] px-2 py-0.5 uppercase ${isReservationMode ? 'bg-[#04B8BB]/15 text-[#04B8BB] border border-[#04B8BB]/30' : 'bg-[#024E5C]/10 text-[#024E5C]'}`}>
-                      {isReservationMode ? 'RESERVATION MODE' : 'FULL PAYMENT'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[#0C0C0C]/80">
-                    <span>Plan:</span>
-                    <span className="font-semibold text-[#0C0C0C]">{selectedPlan.name}</span>
-                  </div>
-                  <div className="flex justify-between text-[#0C0C0C]/80">
-                    <span>{isReservationMode ? 'Membership Price:' : 'Plan Rate:'}</span>
-                    <span className="font-semibold text-[#0C0C0C]">
-                      ₹{selectedPlan.price.toLocaleString('en-IN')}{isReservationMode ? ' / seat / month' : `/${selectedPlan.billingPeriod === 'hour' ? 'hr' : selectedPlan.billingPeriod === 'day' ? 'day' : 'mo'}`}
-                    </span>
-                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                <label className="field-label col-span-2 sm:col-span-1">
+                  <span>Preferred Date</span>
+                  <input
+                    type="date"
+                    value={form.preferredDate}
+                    onChange={(e) => update('preferredDate', e.target.value)}
+                    disabled={loading}
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </label>
 
-                  {isReservationMode ? (
-                    <>
-                      <div className="flex justify-between text-[#0C0C0C]/80">
-                        <span>Selected Seats:</span>
-                        <span className="font-semibold text-[#0C0C0C]">{seatCount} {uniqueSelectedSeats.length > 0 ? `(${uniqueSelectedSeats.join(', ')})` : '(None)'}</span>
-                      </div>
-                      {seatCount > 0 ? (
-                        <>
-                          <div className="flex justify-between text-[#0C0C0C]/80">
-                            <span>Total Membership Value:</span>
-                            <span className="font-semibold text-[#0C0C0C]">₹{totalMembershipValue.toLocaleString('en-IN')} / month</span>
-                          </div>
-                          <div className="flex justify-between text-[#0C0C0C]/80">
-                            <span>Reservation Amount:</span>
-                            <span className="font-semibold text-[#0C0C0C]">₹{reservationAmountPerSeat.toLocaleString('en-IN')} / seat</span>
-                          </div>
-                          <div className="flex justify-between text-[#04B8BB] font-bold border-t border-[#024E5C]/10 pt-1.5">
-                            <span>Amount Payable Today:</span>
-                            <span>₹{amountPayableToday.toLocaleString('en-IN')}</span>
-                          </div>
-                          <div className="flex justify-between text-[#0C0C0C]/80 font-medium">
-                            <span>Remaining Amount at Joining:</span>
-                            <span>₹{remainingAmountAtJoining.toLocaleString('en-IN')}</span>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="text-[11px] text-[#024E5C] font-semibold italic border-t border-[#024E5C]/10 pt-1.5">
-                          Please select at least 1 seat above to view reservation amount.
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    (selectedPlan.billingPeriod === 'hour' || selectedPlan.billingPeriod === 'day') && (
-                      <div className="flex justify-between text-[#0C0C0C]/80">
-                        <span>Duration:</span>
-                        <span className="font-semibold text-[#0C0C0C]">
-                          {duration} {selectedPlan.billingPeriod === 'hour' ? (duration > 1 ? 'hours' : 'hour') : (duration > 1 ? 'days' : 'day')}
-                        </span>
-                      </div>
-                    )
-                  )}
+                <label className="field-label col-span-2 sm:col-span-1">
+                  <span>Preferred Time Slot</span>
+                  <select
+                    value={form.preferredTime}
+                    onChange={(e) => update('preferredTime', e.target.value)}
+                    disabled={loading}
+                  >
+                    <option value="Morning (10 AM - 1 PM)">Morning (10 AM - 1 PM)</option>
+                    <option value="Afternoon (1 PM - 5 PM)">Afternoon (1 PM - 5 PM)</option>
+                    <option value="Evening (5 PM - 8 PM)">Evening (5 PM - 8 PM)</option>
+                  </select>
+                </label>
+              </div>
 
-                  <div className="flex justify-between items-center text-sm font-black border-t border-[#024E5C]/15 pt-2 text-[#024E5C]">
-                    <span>Total Amount Payable Today:</span>
-                    <span className="font-mono text-[#04B8BB] text-base">₹{amountPayableToday.toLocaleString('en-IN')}</span>
-                  </div>
-                </div>
-              )}
+              <label className="field-label">
+                <span>Any specific requirement or message? (Optional)</span>
+                <textarea
+                  rows={2}
+                  placeholder="e.g. Private cabin enquiry, podcast studio tour..."
+                  value={form.message}
+                  onChange={(e) => update('message', e.target.value)}
+                  disabled={loading}
+                  className="w-full border border-[rgba(2,78,92,0.2)] bg-white text-[#0C0C0C] p-3 text-xs focus:outline-none focus:border-[#04B8BB]"
+                />
+              </label>
 
               {error && (
                 <p className="text-[11px] text-red-600 bg-red-50 p-3.5 border border-red-200">
@@ -2413,67 +2026,14 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 </p>
               )}
 
-              {/* Three action buttons */}
-              <div className="space-y-3 pt-2">
-                {/* Primary: Reserve My Seat */}
-                <div className="space-y-1.5">
-                  <button
-                    type="button"
-                    disabled={loading || (isReservationMode && requiresSeats && seatCount === 0)}
-                    onClick={handlePaidReservation}
-                    className="button button-primary w-full justify-between py-4 text-[10.5px] font-bold uppercase tracking-[0.15em] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span>
-                      {isReservationMode && requiresSeats && seatCount === 0
-                        ? 'SELECT A SEAT TO RESERVE'
-                        : seatCount > 1
-                          ? 'RESERVE MY SEATS'
-                          : (resData.reserveButtonText || 'RESERVE MY SEAT')}
-                    </span>
-                    <span className="text-[10px] font-mono opacity-90">
-                      Total ₹{amountPayableToday.toLocaleString('en-IN')}
-                    </span>
-                  </button>
-                  <p className="text-[9px] text-[#0C0C0C]/60 uppercase tracking-[0.14em] text-center font-bold">
-                    UPI-first Checkout · Balance Payable at Joining
-                  </p>
-                </div>
-
-                {/* Secondary + Tertiary */}
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {/* Free Trial */}
-                  <div className="space-y-1.5">
-                    <button
-                      type="button"
-                      disabled={loading}
-                      onClick={handleFreeTrial}
-                      className="button button-outline-dark w-full justify-center py-3.5 text-[10px] font-bold uppercase tracking-[0.14em]"
-                    >
-                      {resData.trialButtonText || 'GET 2-DAY FREE TRIAL'}
-                    </button>
-                    <p className="text-[8.5px] text-[#0C0C0C]/60 uppercase text-center font-bold tracking-wider">
-                      {isFreeTrialAvailable
-                        ? `✓ Available today · ${trialDays.join(' & ')}`
-                        : `${trialDays.join(' & ')} only`}
-                    </p>
-                  </div>
-
-                  {/* WhatsApp */}
-                  <div className="space-y-1.5">
-                    <button
-                      type="button"
-                      disabled={loading}
-                      onClick={handleWhatsApp}
-                      className="button w-full justify-center py-3.5 text-[11px] font-bold uppercase tracking-[0.14em] bg-[#25D366] hover:bg-[#20bd5a] text-[#0C0C0C] border border-[#20bd5a] shadow-sm transition-all flex items-center gap-2"
-                    >
-                      <FaWhatsapp className="text-base" />
-                      {resData.whatsappButtonText || 'BOOK VIA WHATSAPP'}
-                    </button>
-                    <p className="text-[8.5px] text-[#0C0C0C]/60 uppercase text-center font-bold tracking-wider">
-                      Chat directly with our team
-                    </p>
-                  </div>
-                </div>
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="button button-primary w-full justify-center py-4 text-[11px] font-bold uppercase tracking-[0.15em] disabled:opacity-50"
+                >
+                  {loading ? 'Submitting...' : 'BOOK YOUR TOUR'}
+                </button>
               </div>
             </form>
           </RevealOnScroll>
@@ -2611,10 +2171,10 @@ function MobileStickyCTA({ onReserve }) {
       type="button"
       onClick={onReserve}
       className="mobile-sticky-cta"
-      aria-label="Book Free Trial â€” open reservation form"
+      aria-label="Book Your Tour — open tour modal"
       data-testid="button-mobile-sticky-cta"
     >
-      Book Free Trial â†’
+      BOOK YOUR TOUR →
     </button>
   );
 }
@@ -2628,6 +2188,7 @@ function Home() {
   const [reserveOpen, setReserveOpen] = useState(false);
   const [reservedCount, setReservedCount] = useState(23);
   const [bookingAmount, setBookingAmount] = useState(null);
+  const [tourModalOpen, setTourModalOpen] = useState(false);
 
   const fetchLiveSeatsCount = () => {
     api.fetchSeats()
@@ -2737,9 +2298,18 @@ function Home() {
     return () => ws.close();
   }, []);
 
+  // Automatic tour popup delay (~7 seconds)
+  useEffect(() => {
+    if (sessionStorage.getItem('tourPopupShown')) return;
+    const timer = setTimeout(() => {
+      setTourModalOpen(true);
+      sessionStorage.setItem('tourPopupShown', 'true');
+    }, 7000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const scrollToReservation = () => {
-    document.getElementById('reservation')?.scrollIntoView({ behavior: 'smooth' });
-    setReserveOpen(true);
+    setTourModalOpen(true);
   };
 
   if (!cmsLoaded && !cmsFailed) {
@@ -2827,6 +2397,7 @@ function Home() {
         cmsFailed={cmsFailed}
       />
       <MobileStickyCTA onReserve={scrollToReservation} />
+      <TourBookingModal isOpen={tourModalOpen} onClose={() => setTourModalOpen(false)} utm={utm} />
       {reserveOpen && <span className="sr-only" aria-live="polite">Reservation form is in view.</span>}
     </div>
   );
