@@ -1545,8 +1545,8 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
   );
 }
 
-// ─── PRICING ──────────────────────────────────────────────────────────────────
-function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsFailed }) {
+// ─── PRICING / MEMBERSHIP ───────────────────────────────────────────────────
+function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSettings, cmsLoaded, cmsFailed }) {
   useEffect(() => {
     trackPixelEvent('ViewContent', { content_name: 'Pricing' });
   }, []);
@@ -1555,7 +1555,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
   const s = scarcity || defaultContent.scarcity;
   const waNumber = (globalSettings?.whatsapp || defaultContent.globalSettings.whatsapp || '').replace(/\D/g, '');
 
-  if (!data) {
+  if (!data && (!dbPlans || dbPlans.length === 0)) {
     return (
       <section className="bg-[#FCFAF9] text-[#0C0C0C] py-24 sm:py-36 border-y border-[rgba(12,12,12,0.14)] grid-paper-light" id="pricing" data-testid="section-pricing">
         <div className="container-wide min-h-[500px]" />
@@ -1563,7 +1563,34 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
     );
   }
 
-  const plans = data.plans || [];
+  const cmsPlans = data?.plans || [];
+  const activeDbPlans = (dbPlans || []).filter(p => p.isActive !== false);
+
+  // Dynamic connection: map database plans to membership section cards
+  let plans = [];
+  if (activeDbPlans.length > 0) {
+    plans = activeDbPlans.map(dbPlan => {
+      const cmsMatch = cmsPlans.find(cp =>
+        (cp.slug && dbPlan.slug && cp.slug === dbPlan.slug) ||
+        cp.name.toLowerCase().trim() === dbPlan.name.toLowerCase().trim()
+      );
+      return {
+        _id: dbPlan._id,
+        name: dbPlan.name,
+        slug: dbPlan.slug,
+        desc: dbPlan.description || cmsMatch?.desc || '',
+        founding: dbPlan.pricingLabel || (dbPlan.price ? `₹${dbPlan.price.toLocaleString('en-IN')}/mo` : cmsMatch?.founding || ''),
+        standard: dbPlan.standardPrice || cmsMatch?.standard || '',
+        imageUrl: dbPlan.imageUrl || cmsMatch?.imageUrl || '',
+        badge: dbPlan.badge || cmsMatch?.badge || (dbPlan.slug === 'dedicated-desk' ? 'MOST POPULAR' : ''),
+        features: (dbPlan.features && dbPlan.features.length > 0) ? dbPlan.features : (cmsMatch?.features || []),
+        isContactPlan: dbPlan.isContactPlan || (cmsMatch ? /cabin|private/i.test(cmsMatch.name) : false),
+      };
+    });
+  } else {
+    plans = cmsPlans;
+  }
+
   const remaining = typeof s?.remainingSpots === 'number' ? s.remainingSpots : null;
   const total = typeof s?.totalSpots === 'number' ? s.totalSpots : 50;
   const closingDate = s?.closingDate || '';
@@ -1587,10 +1614,10 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
             className="font-display font-black leading-[1.04] text-[#0C0C0C] uppercase tracking-tight"
             style={{ fontSize: 'clamp(30px, 4vw, 50px)' }}
           >
-            {data.headline || 'Choose the room that fits the way you work.'}
+            {data?.headline || 'Choose the room that fits the way you work.'}
           </h2>
           <p className="mt-5 text-[14px] leading-[1.75] text-[#0C0C0C]/60 max-w-[520px]">
-            {data.subheadline}
+            {data?.subheadline || 'Choose the membership tier that fits your workflow. Experience Deven Co-Work in person.'}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 items-start">
             <button type="button" onClick={onReserve} className="button button-dark" data-testid="button-pricing-reserve">
@@ -1608,7 +1635,7 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
 
             return (
               <RevealOnScroll
-                key={index}
+                key={plan._id || index}
                 delay={index * 0.07}
                 className={[
                   'relative flex flex-col border bg-white overflow-hidden',
@@ -1624,18 +1651,18 @@ function Pricing({ onReserve, pricing, scarcity, globalSettings, cmsLoaded, cmsF
                   </div>
                 )}
 
-                {/* Plan image — CMS-managed, one per plan. Hidden when no imageUrl set. */}
-                {plan.imageUrl && (
-                  <div className="w-full overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                {/* Membership Plan Image — Fetched dynamically from Backend/Database Plan model */}
+                {plan.imageUrl ? (
+                  <div className="w-full overflow-hidden border-b border-[rgba(12,12,12,0.08)] bg-[#f4f4f4]" style={{ aspectRatio: '16/9' }}>
                     <img
-                      src={plan.imageUrl}
+                      src={getMediaUrl(plan.imageUrl)}
                       alt={`${plan.name} at Deven Co-Work`}
                       loading={index < 3 ? 'eager' : 'lazy'}
-                      className="w-full h-full object-cover"
-                      onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement.style.display = 'none'; }}
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; if (e.currentTarget.parentElement) e.currentTarget.parentElement.style.display = 'none'; }}
                     />
                   </div>
-                )}
+                ) : null}
 
                 {/* Card body */}
                 <div className="p-7 flex flex-col flex-1">
@@ -2212,6 +2239,7 @@ function Home() {
   const [reservedCount, setReservedCount] = useState(23);
   const [bookingAmount, setBookingAmount] = useState(null);
   const [tourModalOpen, setTourModalOpen] = useState(false);
+  const [dbPlans, setDbPlans] = useState([]);
 
   const fetchLiveSeatsCount = () => {
     api.fetchSeats()
@@ -2305,6 +2333,14 @@ function Home() {
         setCmsFailed(true);
       });
 
+    api.fetchPlans()
+      .then((res) => {
+        if (res.success && res.data) {
+          setDbPlans(res.data);
+        }
+      })
+      .catch((err) => console.error('Failed to fetch DB plans', err));
+
     fetchLiveSeatsCount();
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -2383,7 +2419,7 @@ function Home() {
     valueStack: <ValueStack key="valueStack" valueStack={content?.valueStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     guarantee: <Guarantee key="guarantee" guarantee={content?.riskReversal} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     socialProof: <SocialProof key="socialProof" socialProof={content?.socialProof} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
-    pricing: <Pricing key="pricing" onReserve={scrollToReservation} pricing={content?.pricing} scarcity={content?.scarcity} globalSettings={content?.globalSettings} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
+    pricing: <Pricing key="pricing" onReserve={scrollToReservation} pricing={content?.pricing} dbPlans={dbPlans} scarcity={content?.scarcity} globalSettings={content?.globalSettings} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     faq: <FAQ key="faq" faq={content?.faq} faqSection={content?.faqSection} globalSettings={content?.globalSettings} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     finalCTA: (
       <Reservation
