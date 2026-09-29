@@ -1,5 +1,107 @@
 import mongoose from 'mongoose';
 
+const navItemSchema = new mongoose.Schema({
+  label: { type: String, default: '' },
+  url: { type: String, default: '#' },
+  external: { type: Boolean, default: false },
+  visible: { type: Boolean, default: true },
+  order: { type: Number, default: 0 },
+}, { _id: false });
+
+const statSchema = new mongoose.Schema({
+  main: { type: String, default: '' },
+  sub: { type: String, default: '' },
+}, { _id: false });
+
+const floatingStatSchema = new mongoose.Schema({
+  value: { type: String, default: '' },
+  label: { type: String, default: '' },
+}, { _id: false });
+
+const problemBlockSchema = new mongoose.Schema({
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
+  icon: { type: String, default: '' },
+}, { _id: false });
+
+const problemPointSchema = new mongoose.Schema({
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
+}, { _id: false });
+
+const galleryItemSchema = new mongoose.Schema({
+  image: { type: mongoose.Schema.Types.Mixed, default: '' },
+  label: { type: String, default: '' },
+  caption: { type: String, default: '' },
+  size: { type: String, default: 'medium' },
+}, { _id: false });
+
+const guideBlockSchema = new mongoose.Schema({
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
+}, { _id: false });
+
+const stepSchema = new mongoose.Schema({
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
+}, { _id: false });
+
+const tierSchema = new mongoose.Schema({
+  heading: { type: String, default: '' },
+  items: { type: [String], default: [] },
+  isDevenEdge: { type: Boolean, default: false },
+}, { _id: false });
+
+const rowSchema = new mongoose.Schema({
+  inclusion: { type: String, default: '' },
+  val: { type: String, default: '' },
+}, { _id: false });
+
+const valueItemSchema = new mongoose.Schema({
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
+  value: { type: Number, default: 0 },
+  displayValue: { type: String, default: '' },
+  visible: { type: Boolean, default: true },
+  highlighted: { type: Boolean, default: false },
+  icon: { type: String, default: '' },
+}, { _id: false });
+
+const riskBlockSchema = new mongoose.Schema({
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
+}, { _id: false });
+
+const testimonialSchema = new mongoose.Schema({
+  photo: { type: mongoose.Schema.Types.Mixed, default: '' },
+  quote: { type: String, default: '' },
+  author: { type: String, default: '' },
+  company: { type: String, default: '' },
+  role: { type: String, default: '' },
+  featured: { type: Boolean, default: false },
+  published: { type: Boolean, default: true },
+  order: { type: Number, default: 0 },
+}, { _id: false });
+
+const planSchema = new mongoose.Schema({
+  name: { type: String, default: '' },
+  standard: { type: String, default: '' },
+  founding: { type: String, default: '' },
+  desc: { type: String, default: '' },
+}, { _id: false });
+
+const faqSchema = new mongoose.Schema({
+  question: { type: String, default: '' },
+  answer: { type: String, default: '' },
+  published: { type: Boolean, default: true },
+  order: { type: Number, default: 0 },
+}, { _id: false });
+
+const quickLinkSchema = new mongoose.Schema({
+  label: { type: String, default: '' },
+  href: { type: String, default: '#' },
+}, { _id: false });
+
 const contentSchema = new mongoose.Schema(
   {
     key: {
@@ -30,7 +132,6 @@ const contentSchema = new mongoose.Schema(
       logo: { type: mongoose.Schema.Types.Mixed, default: '' },
       logoWhite: { type: mongoose.Schema.Types.Mixed, default: '' },
       ogImage: { type: mongoose.Schema.Types.Mixed, default: '' },
-      // Analytics (non-secret IDs only — never expose secrets here)
       gaId: { type: String, default: '' },
       gtmId: { type: String, default: '' },
       metaPixelId: { type: String, default: '' },
@@ -52,15 +153,7 @@ const contentSchema = new mongoose.Schema(
     // ─── NAVIGATION ───────────────────────────────────────────────────────────
     navigation: {
       items: {
-        type: [
-          {
-            label: { type: String, default: '' },
-            url: { type: String, default: '#' },
-            external: { type: Boolean, default: false },
-            visible: { type: Boolean, default: true },
-            order: { type: Number, default: 0 },
-          },
-        ],
+        type: [navItemSchema],
         default: [
           { label: 'Pricing', url: '#pricing', external: false, visible: true, order: 0 },
           { label: 'Contact', url: '#reservation', external: false, visible: true, order: 2 },
@@ -91,12 +184,7 @@ const contentSchema = new mongoose.Schema(
       videoUrl: { type: mongoose.Schema.Types.Mixed, default: '/assets/hero-workspace.mp4' },
       imageUrl: { type: mongoose.Schema.Types.Mixed, default: '/assets/hero-fallback.png' },
       stats: {
-        type: [
-          {
-            main: { type: String, default: '' },
-            sub: { type: String, default: '' },
-          },
-        ],
+        type: [statSchema],
         default: [
           { main: '2-Day Free Trial', sub: 'No card required' },
           { main: '500 Mbps Wifi', sub: 'High Speed' },
@@ -104,25 +192,17 @@ const contentSchema = new mongoose.Schema(
           { main: 'Central Raipur Location', sub: 'City Centre' },
         ],
       },
-      // Floating info cards on hero image (e.g. "50 / FOUNDING SEATS")
       floatingStats: {
-        type: [
-          {
-            value: { type: String, default: '' },
-            label: { type: String, default: '' },
-          },
-        ],
+        type: [floatingStatSchema],
         default: [
           { value: '50', label: 'Founding Seats' },
           { value: '₹1,000', label: 'Refundable Deposit' },
         ],
       },
-      // Bottom metadata strip items
       metaItems: {
         type: [String],
         default: ['RAIPUR', 'VIP ESTATE', '50 SEATS', 'FRI — SAT FREE TRIAL'],
       },
-      // Words to highlight in cyan accent (comma-separated)
       highlightWords: { type: String, default: '' },
     },
 
@@ -131,31 +211,18 @@ const contentSchema = new mongoose.Schema(
       headline: { type: String, default: 'Still Working From Your Dining Table, a Noisy Café, or a Cramped Office?' },
       body: { type: String, default: "You've outgrown working from home. The wifi drops during client calls. There's nowhere professional to host a meeting. And every \"coworking space\" you've seen in Raipur feels like a leftover office with some beanbags thrown in.\n\nYou didn't start your business to work like this." },
       imageUrl: { type: mongoose.Schema.Types.Mixed, default: '' },
-      // Overlapping quote card on the image
       quoteText: { type: String, default: "You're not lazy. Your environment is holding you back." },
       quoteAuthor: { type: String, default: '' },
       blocks: {
-        type: [
-          {
-            title: { type: String, default: '' },
-            description: { type: String, default: '' },
-            icon: { type: String, default: '' },
-          },
-        ],
+        type: [problemBlockSchema],
         default: [
           { title: 'The Dining Table Trap', description: 'Your family loves you, but they are also your loudest distractions. You cannot build a company between laundry cycles and kitchen noise.', icon: 'Home' },
           { title: 'The Noisy Café Tax', description: 'Buying ₹300 lattes just to borrow WiFi for two hours is not a business model. It is a slow leak in your runway.', icon: 'Coffee' },
           { title: 'The Cramped Office Prison', description: 'Renting a tiny, windowless room in a commercial building is depressing. It kills your creativity and makes client meetings awkward.', icon: 'Briefcase' },
         ],
       },
-      // Canonical repeatable problem points (replaces blocks)
       problemPoints: {
-        type: [
-          {
-            title: { type: String, default: '' },
-            description: { type: String, default: '' },
-          },
-        ],
+        type: [problemPointSchema],
         default: [],
       },
       cta: {
@@ -172,15 +239,7 @@ const contentSchema = new mongoose.Schema(
       body2: { type: String, default: "Deven Co-Work is Raipur's most premium coworking space — right in the heart of the city, built for founders, freelancers, consultants, and teams who refuse to compromise on how they work." },
       galleryTitle: { type: String, default: 'A Space Built for Professional Work' },
       gallery: {
-        type: [
-          {
-            image: { type: mongoose.Schema.Types.Mixed, default: '' },
-            label: { type: String, default: '' },
-            caption: { type: String, default: '' },
-            // 'large' | 'medium' | 'small' — hints for masonry layout
-            size: { type: String, default: 'medium' },
-          },
-        ],
+        type: [galleryItemSchema],
         default: [
           { image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80', label: 'MAIN AREA', caption: 'The main workspace floor', size: 'large' },
           { image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=400&q=80', label: 'PODCAST DESK', caption: 'Content studio setup', size: 'small' },
@@ -191,12 +250,7 @@ const contentSchema = new mongoose.Schema(
         ],
       },
       blocks: {
-        type: [
-          {
-            title: { type: String, default: '' },
-            description: { type: String, default: '' },
-          },
-        ],
+        type: [guideBlockSchema],
         default: [
           { title: 'Built by Founders', description: 'Solving the exact address, internet, and client meeting problems we faced.' },
           { title: 'Raipur City Center', description: 'Located in Shankar Nagar (VIP Estate), easily reachable from anywhere.' },
@@ -211,12 +265,7 @@ const contentSchema = new mongoose.Schema(
       ctaLabel: { type: String, default: 'Start With Your Free Trial' },
       ctaUrl: { type: String, default: '#reservation' },
       steps: {
-        type: [
-          {
-            title: { type: String, default: '' },
-            description: { type: String, default: '' },
-          },
-        ],
+        type: [stepSchema],
         default: [
           { title: 'Book Your Free 2-Day Trial', description: 'No card, no pressure, just come work from here.' },
           { title: 'Pick Your Plan', description: 'Hot Desk or Dedicated Desk — whatever fits.' },
@@ -230,13 +279,7 @@ const contentSchema = new mongoose.Schema(
       headline: { type: String, default: "Everything Included in The Deven Founder's OS" },
       subheadline: { type: String, default: 'Not a list of amenities. A complete system to work, grow, and be seen.' },
       tiers: {
-        type: [
-          {
-            heading: { type: String, default: '' },
-            items: { type: [String], default: [] },
-            isDevenEdge: { type: Boolean, default: false },
-          },
-        ],
+        type: [tierSchema],
         default: [
           {
             heading: 'THE WORKSPACE',
@@ -278,12 +321,7 @@ const contentSchema = new mongoose.Schema(
       body: { type: String, default: 'No inflated comparison price, no hidden bundle. We publish our true market value transparently.' },
       subheadline: { type: String, default: '' },
       rows: {
-        type: [
-          {
-            inclusion: { type: String, default: '' },
-            val: { type: String, default: '' }, // legacy string like '₹6,000/mo'
-          },
-        ],
+        type: [rowSchema],
         default: [
           { inclusion: 'Dedicated Workspace, 9 AM–9 PM, 7 Days', val: '₹6,000/mo' },
           { inclusion: '500 Mbps Wifi, Printer, Locker, Charging Points', val: 'Priceless' },
@@ -295,20 +333,8 @@ const contentSchema = new mongoose.Schema(
           { inclusion: 'Professional Photoshoot — every 6 months', val: '₹15,000 one-time' },
         ],
       },
-      // Canonical repeatable value items (replaces rows)
       valueItems: {
-        type: [
-          {
-            title: { type: String, default: '' },
-            description: { type: String, default: '' },
-            value: { type: Number, default: 0 },
-            displayValue: { type: String, default: '' },
-            visible: { type: Boolean, default: true },
-            // Highlighted state — used for total/founding price rows
-            highlighted: { type: Boolean, default: false },
-            icon: { type: String, default: '' },
-          },
-        ],
+        type: [valueItemSchema],
         default: [],
       },
       totalValue: { type: String, default: '₹25,000+/month' },
@@ -322,12 +348,7 @@ const contentSchema = new mongoose.Schema(
       closingText: { type: String, default: "We can offer this guarantee because we've built something we're genuinely proud of. We want you to feel that the moment you walk in." },
       ctaLabel: { type: String, default: 'Book My Free 2-Day Trial' },
       blocks: {
-        type: [
-          {
-            title: { type: String, default: '' },
-            description: { type: String, default: '' },
-          },
-        ],
+        type: [riskBlockSchema],
         default: [
           { title: 'The 2-Day Free Trial', description: 'Walk in. Work from Raipur\'s best desk. Use the coffee bar. Meet the community. Leave with a clear picture of what your work life could look like. No credit card. No obligation. No awkward sales pitch. Just come.' },
           { title: 'The "Love It or Leave It" Guarantee', description: 'Join after your trial. Attend one event and one workshop in your first 30 days. If you have not made a single genuine business connection or walked away with something useful — we will refund your first month in full. No questions. No forms. No argument.' },
@@ -342,18 +363,7 @@ const contentSchema = new mongoose.Schema(
       googleReviewCount: { type: Number, default: 48 },
       googleReviewUrl: { type: String, default: 'https://www.google.com/maps/' },
       testimonials: {
-        type: [
-          {
-            photo: { type: mongoose.Schema.Types.Mixed, default: '' },
-            quote: { type: String, default: '' },
-            author: { type: String, default: '' },
-            company: { type: String, default: '' },
-            role: { type: String, default: '' },
-            featured: { type: Boolean, default: false },
-            published: { type: Boolean, default: true },
-            order: { type: Number, default: 0 },
-          },
-        ],
+        type: [testimonialSchema],
         default: [
           {
             quote: 'Moving our team to Deven Co-Work was the best decision we made this year. The internet is rock solid, the podcast studio helped us launch our show, and the founder network here is unmatched in Raipur.',
@@ -395,14 +405,7 @@ const contentSchema = new mongoose.Schema(
       stickyScarcityNote: { type: String, default: '23 of 50 founding seats reserved. Maximum 7 seats per business. Founding pricing closes soon.' },
       foundingPriceNote: { type: String, default: '' },
       plans: {
-        type: [
-          {
-            name: { type: String, default: '' },
-            standard: { type: String, default: '' },
-            founding: { type: String, default: '' },
-            desc: { type: String, default: '' },
-          },
-        ],
+        type: [planSchema],
         default: [
           { name: 'Hot Desk', standard: '₹7,500/mo', founding: '₹5,999/mo', desc: 'Flexible access for focused days. Includes shared workspace, meeting rooms, coffee bar, and community membership.' },
           { name: 'Dedicated Desk', standard: '₹11,000/mo', founding: '₹8,999/mo', desc: 'Your own place to build from. Includes 24/7 dedicated desk, studio + growth engine, photoshoot, and member network.' },
@@ -410,7 +413,6 @@ const contentSchema = new mongoose.Schema(
           { name: 'Studio Hourly', standard: '₹1,500/hr', founding: '₹999/hr', desc: 'Professional audio/video podcast and content recording setup. High-grade gear, lighting, and audio backdrops.' },
         ],
       },
-      // Legacy numeric fields kept for backwards compat
       hotDeskMonthly: { type: Number, default: 5999 },
       hotDeskQuarterly: { type: Number, default: 16497 },
       hotDeskAnnual: { type: Number, default: 59990 },
@@ -438,14 +440,7 @@ const contentSchema = new mongoose.Schema(
 
     // ─── FAQ ITEMS (array at top level) ───────────────────────────────────────
     faq: {
-      type: [
-        {
-          question: { type: String, default: '' },
-          answer: { type: String, default: '' },
-          published: { type: Boolean, default: true },
-          order: { type: Number, default: 0 },
-        },
-      ],
+      type: [faqSchema],
       default: [
         { question: 'Do I need to commit long-term?', answer: 'No. Month-to-month is available. Annual plans get 2 free months if you want to lock in the lowest rate.', published: true, order: 0 },
         { question: 'What happens after the 2-day free trial?', answer: 'Nothing automatic — no card is charged. If you love it, our team helps you pick the right plan.', published: true, order: 1 },
@@ -471,8 +466,6 @@ const contentSchema = new mongoose.Schema(
       depositNote: { type: String, default: 'Deposit required: ₹1,000 per seat · Refundable · UPI-first Checkout' },
       whatsappMessage: { type: String, default: "Hi, I'd like to learn more about Deven Co-Work" },
       scarcityNote: { type: String, default: 'Only {remaining} founding desks left in Raipur founding batch. Capped at max 7 per company.' },
-      
-      // New customizable fields for refactored reservation flow
       reservationHeading: { type: String, default: 'LOCK IN YOUR FOUNDING MEMBER SEAT TODAY.' },
       reservationDescription: { type: String, default: 'Only 50 seats are available in the founding batch. Choose your next step below.' },
       scarcityText: { type: String, default: "FOUNDING BATCH\nLimited seats available" },
@@ -503,12 +496,7 @@ const contentSchema = new mongoose.Schema(
     footer: {
       tagline: { type: String, default: "Raipur's Most Premium Coworking Space" },
       quickLinks: {
-        type: [
-          {
-            label: { type: String, default: '' },
-            href: { type: String, default: '#' },
-          },
-        ],
+        type: [quickLinkSchema],
         default: [
           { label: 'Pricing', href: '#pricing' },
           { label: 'Contact', href: '#reservation' },

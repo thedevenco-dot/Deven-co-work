@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
 import Content from '../models/Content.js';
 import Media from '../models/Media.js';
 import cloudinary from '../config/cloudinary.js';
@@ -80,6 +81,43 @@ function sanitizeMojibake(value) {
   }
   return value;
 }
+
+function is24Hex(str) {
+  return typeof str === 'string' && /^[0-9a-fA-F]{24}$/.test(str);
+}
+
+function cleanNestedIds(value, isTopLevel = false) {
+  if (value === null || typeof value !== 'object') return value;
+  if (value instanceof Date) return value;
+  if (Buffer.isBuffer(value)) return undefined;
+  if (Array.isArray(value)) {
+    return value.map(item => cleanNestedIds(item, false)).filter(item => item !== undefined);
+  }
+  
+  const result = {};
+  for (const [k, v] of Object.entries(value)) {
+    if (k === '_id' || k === 'id') {
+      if (isTopLevel && k === '_id') {
+        result[k] = v;
+        continue;
+      } else {
+        if (!is24Hex(v && v.toString ? v.toString() : '')) {
+          continue;
+        }
+      }
+    }
+    
+    if ((k === 'createdAt' || k === 'updatedAt' || k === 'deadlineDate') && v !== null && typeof v === 'object' && Object.keys(v).length === 0) {
+      continue;
+    }
+    
+    const cleaned = cleanNestedIds(v, false);
+    if (cleaned !== undefined) {
+      result[k] = cleaned;
+    }
+  }
+  return result;
+}
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Helper to seed default content if document does not exist or missing socialProof
@@ -148,8 +186,7 @@ async function getOrCreateContent(key) {
 export async function getPublishedContent(req, res) {
   try {
     const content = await getOrCreateContent('published');
-    // Sanitize any mojibake that may already be stored in the DB before sending to client
-    const sanitized = sanitizeMojibake(content.toObject ? content.toObject() : content);
+    const sanitized = cleanNestedIds(sanitizeMojibake(content.toObject ? content.toObject() : content));
     res.json({
       success: true,
       data: sanitized,
@@ -170,8 +207,7 @@ export async function getPublishedContent(req, res) {
 export async function getDraftContent(req, res) {
   try {
     const content = await getOrCreateContent('draft');
-    // Sanitize any mojibake stored in the DB before returning to admin editor
-    const sanitized = sanitizeMojibake(content.toObject ? content.toObject() : content);
+    const sanitized = cleanNestedIds(sanitizeMojibake(content.toObject ? content.toObject() : content));
     res.json({
       success: true,
       data: sanitized,
@@ -201,12 +237,11 @@ export async function saveDraftContent(req, res) {
     delete updateData.createdAt;
     delete updateData.updatedAt;
 
-    // Sanitize any mojibake (double-encoded UTF-8) in incoming data before saving
+    // Clean any corrupted/serialized subdocument _id objects ({ buffer: ... }) & sanitize mojibake
+    updateData = cleanNestedIds(updateData);
     updateData = sanitizeMojibake(updateData);
 
     // Assign updates and explicitly mark every modified section as changed.
-    // Mongoose does NOT auto-detect changes inside Mixed-type fields (e.g. hero.videoUrl
-    // stored as a Cloudinary object), so we must call markModified for each key.
     Object.assign(draft, updateData);
     Object.keys(updateData).forEach((key) => draft.markModified(key));
     await draft.save();
@@ -235,15 +270,18 @@ export async function publishContent(req, res) {
     const published = await getOrCreateContent('published');
 
     // Copy draft contents into published document
-    const draftObj = draft.toObject();
+    let draftObj = draft.toObject();
     delete draftObj._id;
     delete draftObj.key;
     delete draftObj.createdAt;
     delete draftObj.updatedAt;
     delete draftObj.__v;
 
+    // Clean any corrupted subdocument _id objects & sanitize mojibake
+    draftObj = cleanNestedIds(draftObj);
+    draftObj = sanitizeMojibake(draftObj);
+
     // Assign and explicitly mark every key as modified so Mongoose persists
-    // Mixed-type nested fields (e.g. hero.videoUrl as a Cloudinary object).
     Object.assign(published, draftObj);
     Object.keys(draftObj).forEach((key) => published.markModified(key));
     await published.save();
