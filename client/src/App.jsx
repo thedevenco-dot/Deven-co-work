@@ -1936,92 +1936,115 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
           {/* Right: Tour Form */}
           <RevealOnScroll delay={0.1} className="space-y-5 min-w-0 w-full overflow-hidden">
-            <form className="space-y-4 w-full min-w-0 bg-white p-6 sm:p-8 border border-[rgba(2,78,92,0.2)] shadow-sm" onSubmit={handleSubmitTour}>
+            <form className="space-y-4 w-full min-w-0 bg-[#0F0F10] p-6 sm:p-8 border border-[#222224] rounded-2xl shadow-xl text-[#FCFAF9]" onSubmit={handleSubmitTour}>
               {/* Honeypot */}
               <input type="text" name="email_confirm" style={{ display: 'none' }} tabIndex={-1} autoComplete="off"
                 onChange={(e) => update('email_confirm', e.target.value)} value={form.email_confirm || ''} />
 
-              <div className="grid grid-cols-2 gap-4">
-                <label className="field-label col-span-2 sm:col-span-1">
-                  <span>Full Name *</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Full Name *
+                  </label>
                   <input type="text" placeholder="Rahul Sharma" value={form.name}
-                    onChange={(e) => update('name', e.target.value)} required disabled={loading} />
-                </label>
-                <label className="field-label col-span-2 sm:col-span-1">
-                  <span>Phone Number *</span>
+                    onChange={(e) => update('name', e.target.value)} required disabled={loading}
+                    className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Phone Number *
+                  </label>
                   <input type="tel" placeholder="+91 98765 43210" value={form.phone}
-                    onChange={(e) => update('phone', e.target.value)} required disabled={loading} />
-                </label>
+                    onChange={(e) => update('phone', e.target.value)} required disabled={loading}
+                    className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
+                </div>
               </div>
 
-              <label className="field-label">
-                <span>Email Address *</span>
+              <div>
+                <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  Email Address *
+                </label>
                 <input type="email" placeholder="rahul@company.com" value={form.email}
-                  onChange={(e) => update('email', e.target.value)} required disabled={loading} />
-              </label>
-
-              <div className="grid grid-cols-2 gap-4">
-                <label className="field-label col-span-2 sm:col-span-1">
-                  <span>Company / Project Name</span>
-                  <input type="text" placeholder="Your Startup / Project" value={form.company}
-                    onChange={(e) => update('company', e.target.value)} disabled={loading} />
-                </label>
-
-                <label className="field-label col-span-2 sm:col-span-1">
-                  <span>Number of People</span>
-                  <select
-                    value={form.numberOfPeople}
-                    onChange={(e) => update('numberOfPeople', e.target.value)}
-                    disabled={loading}
-                  >
-                    <option value="1">1 Person</option>
-                    <option value="2">2 - 4 People</option>
-                    <option value="5">5 - 10 People</option>
-                    <option value="10">10+ People / Team</option>
-                  </select>
-                </label>
+                  onChange={(e) => update('email', e.target.value)} required disabled={loading}
+                  className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <label className="field-label col-span-2 sm:col-span-1">
-                  <span>Preferred Date</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Preferred Date
+                  </label>
                   <input
                     type="date"
                     value={form.preferredDate}
                     onChange={(e) => update('preferredDate', e.target.value)}
                     disabled={loading}
                     min={new Date().toISOString().split('T')[0]}
+                    className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all"
                   />
-                </label>
+                </div>
 
-                <label className="field-label col-span-2 sm:col-span-1">
-                  <span>Preferred Time Slot</span>
+                <div>
+                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Preferred Time Slot
+                  </label>
                   <select
                     value={form.preferredTime}
                     onChange={(e) => update('preferredTime', e.target.value)}
                     disabled={loading}
+                    className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all appearance-none"
                   >
                     <option value="Morning (10 AM - 1 PM)">Morning (10 AM - 1 PM)</option>
                     <option value="Afternoon (1 PM - 5 PM)">Afternoon (1 PM - 5 PM)</option>
                     <option value="Evening (5 PM - 8 PM)">Evening (5 PM - 8 PM)</option>
                   </select>
-                </label>
+                </div>
               </div>
 
-              <label className="field-label">
-                <span>Any specific requirement or message? (Optional)</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Company / Project (Optional)
+                  </label>
+                  <input type="text" placeholder="Your Startup / Project" value={form.company}
+                    onChange={(e) => update('company', e.target.value)} disabled={loading}
+                    className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Number of People
+                  </label>
+                  <select
+                    value={form.numberOfPeople}
+                    onChange={(e) => update('numberOfPeople', e.target.value)}
+                    disabled={loading}
+                    className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all appearance-none"
+                  >
+                    <option value="1">1 Person</option>
+                    <option value="2">2 - 4 People</option>
+                    <option value="5">5 - 10 People</option>
+                    <option value="10">10+ People / Team</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  Specific Requirements (Optional)
+                </label>
                 <textarea
                   rows={2}
                   placeholder="e.g. Private cabin enquiry, podcast studio tour..."
                   value={form.message}
                   onChange={(e) => update('message', e.target.value)}
                   disabled={loading}
-                  className="w-full border border-[rgba(2,78,92,0.2)] bg-white text-[#0C0C0C] p-3 text-xs focus:outline-none focus:border-[#04B8BB]"
+                  className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 p-3 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all"
                 />
-              </label>
+              </div>
 
               {error && (
-                <p className="text-[11px] text-red-600 bg-red-50 p-3.5 border border-red-200">
+                <p className="text-[11px] text-red-300 bg-red-950/70 p-3 rounded-lg border border-red-500/40">
                   {error}
                 </p>
               )}
@@ -2030,7 +2053,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 <button
                   type="submit"
                   disabled={loading}
-                  className="button button-primary w-full justify-center py-4 text-[11px] font-bold uppercase tracking-[0.15em] disabled:opacity-50"
+                  className="w-full bg-[#04B8BB] hover:bg-[#039da0] text-[#0C0C0C] font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#04B8BB]/20 disabled:opacity-50"
                 >
                   {loading ? 'Submitting...' : 'BOOK YOUR TOUR'}
                 </button>
