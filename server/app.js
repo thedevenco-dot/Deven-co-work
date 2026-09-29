@@ -111,7 +111,7 @@ const serveDynamicHtml = async (req, res, next) => {
 
     let html = fs.readFileSync(indexPath, 'utf8');
 
-    // Query published content for CMS Favicon
+    // Query published content for CMS Favicon & initial CMS state injection
     const published = await Content.findOne({ key: 'published' }).lean();
     let faviconUrl = '';
     if (published && published.globalSettings && published.globalSettings.favicon) {
@@ -138,6 +138,20 @@ const serveDynamicHtml = async (req, res, next) => {
     html = html.replace(/<meta property="og:image" content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${finalSocialUrl}" />`);
     html = html.replace(/<meta name="twitter:image" content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${finalSocialUrl}" />`);
     html = html.replace(/<link rel="icon" [^>]*>/i, `<link rel="icon" type="image/svg+xml" href="${finalSocialUrl}" />`);
+
+    // Inject published CMS data as window.__INITIAL_CMS_DATA__ to guarantee instant zero-flash render
+    if (published) {
+      const initialPayload = JSON.parse(JSON.stringify(published));
+      delete initialPayload._id;
+      delete initialPayload.__v;
+      delete initialPayload.key;
+      const initialScript = `<script>window.__INITIAL_CMS_DATA__ = ${JSON.stringify(initialPayload).replace(/</g, '\\u003c')};</script>`;
+      if (html.includes('</head>')) {
+        html = html.replace('</head>', `${initialScript}\n</head>`);
+      } else {
+        html = initialScript + html;
+      }
+    }
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.send(html);

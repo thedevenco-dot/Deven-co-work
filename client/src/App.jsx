@@ -2231,9 +2231,17 @@ function MobileStickyCTA({ onReserve }) {
 }
 
 // â”€â”€â”€ HOME PAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const getInitialCmsData = () => {
+  if (typeof window !== 'undefined' && window.__INITIAL_CMS_DATA__) {
+    return mergeContent(defaultContent, window.__INITIAL_CMS_DATA__);
+  }
+  return null;
+};
+
 function Home() {
-  const [content, setContent] = useState(defaultContent);
-  const [cmsLoaded, setCmsLoaded] = useState(true);
+  const initialData = getInitialCmsData();
+  const [content, setContent] = useState(() => initialData || defaultContent);
+  const [cmsLoaded, setCmsLoaded] = useState(!!initialData);
   const [cmsFailed, setCmsFailed] = useState(false);
   const [utm, setUtm] = useState({ source: '', medium: '', campaign: '' });
   const [reserveOpen, setReserveOpen] = useState(false);
