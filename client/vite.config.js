@@ -1,8 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-import prerender from '@prerenderer/rollup-plugin';
-import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -13,18 +11,11 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    prerender({
-      routes: ['/', '/thank-you'],
-      renderer: new PuppeteerRenderer({
-        renderAfterTime: 2500,
-        headless: true,
-      }),
-    })
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
+      '@': path.resolve(__dirname, 'src'),
+    },
   },
   server: {
     port: process.env.PORT ? Number(process.env.PORT) : 3000,
@@ -32,8 +23,16 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:5000',
-        changeOrigin: true
-      }
-    }
-  }
+        changeOrigin: true,
+      },
+    },
+  },
+  // When building the SSR bundle, do not bundle packages that
+  // must run in Node and/or have no browser equivalent.
+  ssr: {
+    noExternal: [
+      // keep these inlined so the SSR bundle is self-contained
+      'wouter',
+    ],
+  },
 });

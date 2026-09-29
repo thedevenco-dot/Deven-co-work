@@ -9,6 +9,7 @@ import {
 import { FaWhatsapp } from 'react-icons/fa';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
+import { memoryLocation } from 'wouter/memory-location';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -2504,12 +2505,16 @@ function MetaPixelRouteTracker() {
   return null;
 }
 
-function App() {
+function App({ ssrLocation } = {}) {
+  const routerProps = ssrLocation
+    ? { hook: memoryLocation({ path: ssrLocation, static: true }).hook }
+    : { base: import.meta.env.BASE_URL ? import.meta.env.BASE_URL.replace(/\/$/, '') : '' };
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL ? import.meta.env.BASE_URL.replace(/\/$/, '') : ''}>
-          <MetaPixelRouteTracker />
+        <WouterRouter {...routerProps}>
+          {!ssrLocation && <MetaPixelRouteTracker />}
           <RoutedErrorBoundary>
             <Router />
           </RoutedErrorBoundary>

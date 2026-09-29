@@ -10,7 +10,9 @@ function getHeaders(contentType = 'application/json') {
   if (contentType) {
     headers['Content-Type'] = contentType;
   }
-  const token = localStorage.getItem('admin_token');
+  const token = typeof localStorage !== 'undefined'
+    ? localStorage.getItem('admin_token')
+    : null;
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }

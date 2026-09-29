@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
+    "build:client": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -66,8 +67,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@prerenderer/renderer-puppeteer": "^1.2.4",
-    "@prerenderer/rollup-plugin": "^0.3.12",
     "@tailwindcss/vite": "^4.1.14",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
