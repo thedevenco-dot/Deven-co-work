@@ -419,7 +419,7 @@ function SEOEditor({ cmsDraft, onFieldChange, onUpload }) {
         </Field>
       </SectionCard>
 
-      <SectionCard title="Open Graph (Social Preview)">
+      <SectionCard title="Open Graph (Social Preview — Google, WhatsApp, Facebook)">
         <Field label="OG Title (leave blank to use page title)">
           <TextInput value={seo.ogTitle} onChange={e => onFieldChange('seo', 'ogTitle', e.target.value)} />
         </Field>
@@ -427,7 +427,7 @@ function SEOEditor({ cmsDraft, onFieldChange, onUpload }) {
           <TextArea value={seo.ogDescription} onChange={e => onFieldChange('seo', 'ogDescription', e.target.value)} rows={2} />
         </Field>
         <MediaField
-          label="OG Image (1200Ã—630 recommended)"
+          label="OG Image ← This shows in Google Search & WhatsApp (1200×630 px recommended)"
           value={seo.ogImage}
           onChange={(e) => onFieldChange('seo', 'ogImage', e.target.value)}
           onUpload={(e) => onUpload?.('seo', 'ogImage', e)}
@@ -475,7 +475,7 @@ function GlobalSettingsEditor({ cmsDraft, onFieldChange, onUpload }) {
             accept="image/*"
           />
           <MediaField
-            label="Favicon & Social Sharing Preview Image (PNG / ICO / SVG)"
+            label="Favicon (Browser Tab Icon — PNG / ICO / SVG)"
             value={gs.favicon}
             onChange={(e) => onFieldChange('globalSettings', 'favicon', e.target.value)}
             onUpload={(e) => onUpload?.('globalSettings', 'favicon', e)}

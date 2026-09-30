@@ -96,7 +96,7 @@ app.get('/api/healthz', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Production / Static Serving: Inject dynamic CMS Favicon into initial HTML for social crawlers (WhatsApp, Facebook, Twitter)
+// Production / Static Serving: Inject dynamic CMS metadata into initial HTML for social crawlers (WhatsApp, Facebook, Twitter, Google)
 const clientBuildPath = path.resolve(__dirname, '../client/dist');
 
 const serveDynamicHtml = async (req, res, next) => {
@@ -111,33 +111,50 @@ const serveDynamicHtml = async (req, res, next) => {
 
     let html = fs.readFileSync(indexPath, 'utf8');
 
-    // Query published content for CMS Favicon & initial CMS state injection
+    // Query published content for CMS metadata & initial CMS state injection
     const published = await Content.findOne({ key: 'published' }).lean();
-    let faviconUrl = '';
-    if (published && published.globalSettings && published.globalSettings.favicon) {
-      const val = published.globalSettings.favicon;
-      if (typeof val === 'string') faviconUrl = val;
-      else if (typeof val === 'object' && val !== null) faviconUrl = val.url || '';
-    }
 
-    if (!faviconUrl) {
-      faviconUrl = 'https://www.devencowork.com/favicon.svg';
-    } else if (!faviconUrl.startsWith('http://') && !faviconUrl.startsWith('https://')) {
+    const resolveMediaUrl = (val) => {
+      if (!val) return '';
+      if (typeof val === 'string') return val;
+      if (typeof val === 'object' && val !== null) return val.url || '';
+      return '';
+    };
+
+    const makeAbsolute = (url) => {
+      if (!url) return '';
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
       const host = req.get('host') || 'www.devencowork.com';
       const protocol = req.protocol || 'https';
-      faviconUrl = `${protocol}://${host}${faviconUrl.startsWith('/') ? '' : '/'}${faviconUrl}`;
-    }
+      return `${protocol}://${host}${url.startsWith('/') ? '' : '/'}${url}`;
+    };
 
-    const updatedAt = published && published.updatedAt ? new Date(published.updatedAt).getTime() : '';
-    let finalSocialUrl = faviconUrl;
-    if (updatedAt) {
-      finalSocialUrl += (faviconUrl.includes('?') ? '&' : '?') + `v=${updatedAt}`;
-    }
+    // ── Favicon (browser tab icon) ────────────────────────────────────────────
+    let faviconUrl = resolveMediaUrl(published?.globalSettings?.favicon);
+    if (!faviconUrl) faviconUrl = 'https://www.devencowork.com/favicon.svg';
+    faviconUrl = makeAbsolute(faviconUrl);
 
-    // Dynamically replace og:image, twitter:image, and icon tags in initial HTML
-    html = html.replace(/<meta property="og:image" content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${finalSocialUrl}" />`);
-    html = html.replace(/<meta name="twitter:image" content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${finalSocialUrl}" />`);
-    html = html.replace(/<link rel="icon" [^>]*>/i, `<link rel="icon" type="image/svg+xml" href="${finalSocialUrl}" />`);
+    // ── OG / Social Image (used in Google Search, WhatsApp, Facebook, Twitter)
+    // Priority: seo.ogImage → globalSettings.ogImage → fallback static og-image
+    let ogImageUrl =
+      resolveMediaUrl(published?.seo?.ogImage) ||
+      resolveMediaUrl(published?.globalSettings?.ogImage) ||
+      'https://www.devencowork.com/og-image.png';
+    ogImageUrl = makeAbsolute(ogImageUrl);
+
+    // Append cache-busting version param based on last publish timestamp
+    const updatedAt = published?.updatedAt ? new Date(published.updatedAt).getTime() : '';
+    const withVersion = (url) => updatedAt ? url + (url.includes('?') ? '&' : '?') + `v=${updatedAt}` : url;
+
+    const finalFaviconUrl = withVersion(faviconUrl);
+    const finalOgImageUrl = withVersion(ogImageUrl);
+
+    // ── Inject into HTML ──────────────────────────────────────────────────────
+    // og:image and twitter:image → social preview image (NOT the favicon)
+    html = html.replace(/<meta property="og:image" content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${finalOgImageUrl}" />`);
+    html = html.replace(/<meta name="twitter:image" content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${finalOgImageUrl}" />`);
+    // Browser tab icon → favicon only
+    html = html.replace(/<link rel="icon" [^>]*>/i, `<link rel="icon" type="image/png" href="${finalFaviconUrl}" />`);
 
     // Inject published CMS data as window.__INITIAL_CMS_DATA__ to guarantee instant zero-flash render
     if (published) {
