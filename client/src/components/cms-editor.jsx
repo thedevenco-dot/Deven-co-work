@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronUp, ChevronDown, Trash2, Plus, Copy, Image, Video, Eye, EyeOff } from 'lucide-react';
 
-// â”€â”€â”€ PRIMITIVE FORM COMPONENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ PRIMITIVE FORM COMPONENTS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 function Field({ label, children, className = '' }) {
   return (
@@ -214,7 +214,7 @@ export function MediaField({ label, value, onChange, onUpload, accept = 'image/*
   );
 }
 
-// â”€â”€â”€ SECTION PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ SECTION PANEL â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 function SectionPanel({ number, title, children }) {
   return (
@@ -236,7 +236,7 @@ function FieldGroup({ title, children }) {
   );
 }
 
-// â”€â”€â”€ REPEATABLE BLOCK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ REPEATABLE BLOCK â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 // Reusable component for all dynamic/repeatable content lists.
 
 function RepeatableBlock({
@@ -327,7 +327,7 @@ function RepeatableBlock({
   );
 }
 
-// â”€â”€â”€ MAIN CMS EDITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ MAIN CMS EDITOR â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 export default function CmsEditor({
   cmsDraft,
@@ -585,7 +585,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 01. HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 01. HERO â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="01" title="Hero Section">
         <FieldGroup title="Text Content">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -738,7 +738,7 @@ export default function CmsEditor({
               value={(cmsDraft.hero?.metaItems || []).join('\n')}
               onChange={(e) => onFieldChange('hero', 'metaItems', e.target.value.split('\n').filter(Boolean))}
               rows={4}
-              placeholder={"RAIPUR\nVIP ESTATE\n50 SEATS\nFRI â€” SAT FREE TRIAL"}
+              placeholder={"RAIPUR\nVIP ESTATE\n50 SEATS\nFRI - SAT FREE TRIAL"}
             />
           </Field>
           <Field label="Highlight words (comma-separated)">
@@ -751,7 +751,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 02. PROBLEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 02. PROBLEM â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="02" title="Problem Section">
         <FieldGroup title="Section Header">
           <Field label="Section headline">
@@ -786,7 +786,7 @@ export default function CmsEditor({
               <TextInput
                 value={cmsDraft.problem?.quoteAuthor || ''}
                 onChange={(e) => onFieldChange('problem', 'quoteAuthor', e.target.value)}
-                placeholder="â€” Deven Co-Work"
+                placeholder=" - Deven Co-Work"
               />
             </Field>
           </div>
@@ -794,7 +794,7 @@ export default function CmsEditor({
 
         <FieldGroup title="Problem Points">
           <p className="text-xs text-[#A3A3A3]">
-            Each problem point is numbered automatically from its position. Add as many as you need â€” no maximum.
+            Each problem point is numbered automatically from its position. Add as many as you need - no maximum.
           </p>
           <RepeatableBlock
             items={cmsDraft.problem?.problemPoints || []}
@@ -858,7 +858,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 03. GUIDE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 03. GUIDE â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="03" title="Guide Section">
         <FieldGroup title="Section Text">
           <Field label="Section headline">
@@ -965,7 +965,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 04. PLAN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 04. PLAN â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="04" title="Plan Section">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -987,7 +987,7 @@ export default function CmsEditor({
         </FieldGroup>
 
         <FieldGroup title="Steps">
-          <p className="text-xs text-[#A3A3A3]">Steps are numbered automatically (01, 02, 03â€¦).</p>
+          <p className="text-xs text-[#A3A3A3]">Steps are numbered automatically (01, 02, 03 - ¦).</p>
           <RepeatableBlock
             items={cmsDraft.plan?.steps || []}
             {...nested('plan', 'steps', { title: '', description: '' })}
@@ -1015,7 +1015,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 05. OFFER STACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 05. OFFER STACK â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="05" title="Founder's OS / Offer Stack">
         <FieldGroup title="Section Header">
           <Field label="Section headline">
@@ -1074,7 +1074,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 06. VALUE STACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 06. VALUE STACK â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="06" title="Value Stack">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1109,7 +1109,7 @@ export default function CmsEditor({
 
         <FieldGroup title="Value Items">
           <p className="text-xs text-[#A3A3A3]">
-            Items are numbered automatically (01, 02â€¦). Toggle visibility to temporarily hide a row without deleting it.
+            Items are numbered automatically (01, 02 - ¦). Toggle visibility to temporarily hide a row without deleting it.
             The Display Value field is what visitors see (e.g., "â‚¹10,000/mo"). The Value field is optional for future auto-totalling.
           </p>
           <RepeatableBlock
@@ -1169,7 +1169,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 07. GUARANTEE / RISK REVERSAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 07. GUARANTEE / RISK REVERSAL â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="07" title="Guarantee / Risk Reversal">
         <FieldGroup title="Section Header">
           <Field label="Section headline (use \\n for line breaks)">
@@ -1233,7 +1233,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 08. SOCIAL PROOF / TESTIMONIALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 08. SOCIAL PROOF / TESTIMONIALS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="08" title="Social Proof / Testimonials">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1351,7 +1351,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 09. PRICING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 09. PRICING â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="09" title="Pricing Section">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1435,7 +1435,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 10. FAQ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 10. FAQ â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="10" title="FAQ Section">
         <FieldGroup title="Section Header">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1491,7 +1491,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 11. RESERVATION / FINAL CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 11. RESERVATION / FINAL CTA â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="11" title="Reservation / Final CTA">
         <FieldGroup title="Final CTA Text">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -1633,7 +1633,7 @@ export default function CmsEditor({
         </FieldGroup>
       </SectionPanel>
 
-      {/* â”€â”€ 12. FREE TRIAL SETTINGS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* â"€â"€ 12. FREE TRIAL SETTINGS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
       <SectionPanel number="12" title="Free Trial Settings">
         <FieldGroup title="Trial Configuration">
           <div className="space-y-4">

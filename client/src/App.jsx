@@ -28,7 +28,7 @@ export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 
 const queryClient = new QueryClient();
 
-// â”€â”€â”€ DEFAULT CONTENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ DEFAULT CONTENT â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 const defaultContent = {
   globalSettings: {
     businessName: 'Deven Co-Work',
@@ -319,7 +319,7 @@ const defaultContent = {
   },
 };
 
-// â”€â”€â”€ DEEP MERGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ DEEP MERGE â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function mergeContent(defaults, fetched) {
   if (!fetched) return defaults;
   const merged = { ...defaults, ...fetched };
@@ -341,7 +341,7 @@ function mergeContent(defaults, fetched) {
 }
 
 
-// â”€â”€â”€ ANIMATION VARIANTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ ANIMATION VARIANTS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (delay = 0) => ({
@@ -356,7 +356,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.09 } },
 };
 
-// â”€â”€â”€ SCROLL REVEAL WRAPPER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ SCROLL REVEAL WRAPPER â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function RevealOnScroll({ children, className = '', delay = 0, once = true }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once, amount: 0.18 });
@@ -374,7 +374,7 @@ function RevealOnScroll({ children, className = '', delay = 0, once = true }) {
   );
 }
 
-// â”€â”€â”€ HIGHLIGHT WORDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ HIGHLIGHT WORDS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 // Wraps specified words in a yellow span. Words from CMS `highlightWords` or hard-coded list.
 function HighlightedText({ text, highlightWords = [] }) {
   if (!text) return null;
@@ -392,7 +392,7 @@ function HighlightedText({ text, highlightWords = [] }) {
   );
 }
 
-// â”€â”€â”€ SHARED COMPONENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ SHARED COMPONENTS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 function Button({ children, onClick, href, className = '', variant = 'primary', testId, disabled }) {
   const content = <>{children}<ArrowUpRight size={14} strokeWidth={2.5} /></>;
@@ -421,7 +421,7 @@ function Logo({ logoUrl }) {
   );
 }
 
-// â”€â”€â”€ IMAGE WITH FALLBACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ IMAGE WITH FALLBACK â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function SafeImage({ src, alt = '', className = '', style }) {
   const [failed, setFailed] = useState(false);
   if (!src || failed) return null;
@@ -437,7 +437,7 @@ function SafeImage({ src, alt = '', className = '', style }) {
   );
 }
 
-// â”€â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ HEADER â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 // ─── FOUNDING BANNER ────────────────────────────────────────────────────────
 function FoundingBanner({ scarcity, cmsLoaded, cmsFailed }) {
   const s = cmsLoaded ? scarcity : (cmsFailed ? defaultContent.scarcity : null);
@@ -548,7 +548,7 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   );
 }
 
-// â”€â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ HERO â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [videoFailed, setVideoFailed] = useState(false);
   const [mediaReady, setMediaReady] = useState(false);
@@ -663,7 +663,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           className="section-label mb-8"
           style={{ '--section-label-color': '#04B8BB' }}
         >
-          {data.eyebrow || "DEVEN WORKSPACE â€” RAIPUR"}
+          {data.eyebrow || "DEVEN WORKSPACE - RAIPUR"}
         </motion.div>
 
         {/* Main content grid */}
@@ -716,7 +716,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               </a>
             </motion.div>
 
-            {/* Trust bar â€” factual, from existing content */}
+            {/* Trust bar - factual, from existing content */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -725,7 +725,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               data-testid="hero-trust-bar"
             >
               {[
-                { icon: <Check size={10} strokeWidth={3} />, text: 'Free Tour â€” No card required' },
+                { icon: <Check size={10} strokeWidth={3} />, text: 'Free Tour - No card required' },
                 { icon: <Wifi size={10} strokeWidth={2.5} />, text: '500 Mbps WiFi' },
                 { icon: <MapPin size={10} strokeWidth={2.5} />, text: 'Raipur City Centre' },
               ].map((item, i) => (
@@ -1239,7 +1239,7 @@ function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed })
   );
 }
 
-// â”€â”€â”€ VALUE STACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ VALUE STACK â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? valueStack : (cmsFailed ? defaultContent.valueStack : null);
 
@@ -1264,7 +1264,7 @@ function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
 
         {/* Left */}
         <RevealOnScroll className="lg:sticky lg:top-28">
-          <div className="section-label mb-8">05 â€” THE VALUE</div>
+          <div className="section-label mb-8">05 - THE VALUE</div>
           <h2
             className="font-display font-black leading-[1.01] tracking-tight uppercase"
             style={{ fontSize: 'clamp(36px, 5vw, 64px)' }}
@@ -2191,7 +2191,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
   );
 }
 
-// â”€â”€â”€ WHATSAPP FLOAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ WHATSAPP FLOAT â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
   if (!cmsLoaded && !cmsFailed) return null;
   const number = whatsapp || (cmsFailed ? '+91 62605 82852' : '');
@@ -2215,7 +2215,7 @@ function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
   );
 }
 
-// â”€â”€â”€ MOBILE STICKY CTA BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ MOBILE STICKY CTA BAR â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function MobileStickyCTA({ onReserve }) {
   return (
     <button
@@ -2230,7 +2230,7 @@ function MobileStickyCTA({ onReserve }) {
   );
 }
 
-// â”€â”€â”€ HOME PAGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ HOME PAGE â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 const getInitialCmsData = () => {
   if (typeof window !== 'undefined' && window.__INITIAL_CMS_DATA__) {
     return mergeContent(defaultContent, window.__INITIAL_CMS_DATA__);
@@ -2480,7 +2480,7 @@ function Home() {
   );
 }
 
-// â”€â”€â”€ ROUTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ ROUTING â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function Router() {
   return (
     <Switch>

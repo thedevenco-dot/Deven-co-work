@@ -16,7 +16,7 @@ import AdminCalculatorConfig from '@/components/admin-calculator-config';
 import AdminCalculatorLeads from '@/components/admin-calculator-leads';
 
 
-// â”€â”€â”€ HELPER COMPONENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ HELPER COMPONENTS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 
 function formatSize(bytes) {
   if (!bytes || bytes === 0) return '';
@@ -79,7 +79,7 @@ function SectionCard({ title, children }) {
   );
 }
 
-// â”€â”€â”€ MEDIA LIBRARY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ MEDIA LIBRARY â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function MediaLibraryPanel({ onSelect, selectMode = false }) {
   const { toast } = useToast();
   const [media, setMedia] = useState([]);
@@ -288,7 +288,7 @@ function MediaLibraryPanel({ onSelect, selectMode = false }) {
   );
 }
 
-// â”€â”€â”€ NAVIGATION EDITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ NAVIGATION EDITOR â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange, onUpload }) {
   if (!cmsDraft) return null;
   const nav = cmsDraft.navigation || {};
@@ -400,7 +400,7 @@ function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange, onUpload })
   );
 }
 
-// â”€â”€â”€ SEO EDITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ SEO EDITOR â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function SEOEditor({ cmsDraft, onFieldChange, onUpload }) {
   if (!cmsDraft) return null;
   const seo = cmsDraft.seo || {};
@@ -452,7 +452,7 @@ function SEOEditor({ cmsDraft, onFieldChange, onUpload }) {
   );
 }
 
-// â”€â”€â”€ GLOBAL SETTINGS EDITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ GLOBAL SETTINGS EDITOR â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function GlobalSettingsEditor({ cmsDraft, onFieldChange, onUpload }) {
   if (!cmsDraft) return null;
   const gs = cmsDraft.globalSettings || {};
@@ -533,7 +533,7 @@ function GlobalSettingsEditor({ cmsDraft, onFieldChange, onUpload }) {
         </Field>
       </SectionCard>
 
-      <SectionCard title="Analytics (Measurement IDs only â€” no secrets)">
+      <SectionCard title="Analytics (Measurement IDs only - no secrets)">
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Google Analytics ID (G-XXXXXXXXXX)">
             <TextInput value={gs.gaId} onChange={e => onFieldChange('globalSettings', 'gaId', e.target.value)} placeholder="G-XXXXXXXXXX" />
@@ -556,23 +556,23 @@ function GlobalSettingsEditor({ cmsDraft, onFieldChange, onUpload }) {
   );
 }
 
-// â”€â”€â”€ SECTION VISIBILITY MANAGER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ SECTION VISIBILITY MANAGER â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function SectionManager({ cmsDraft, onChange }) {
   if (!cmsDraft) return null;
 
   const SECTION_LABELS = {
-    hero: 'Hero â€” Headline, CTA, Background Media',
-    calculator: 'Calculator â€” Office Cost Calculator',
-    problem: 'Problem â€” Pain points & image',
-    guide: 'Guide â€” Brand story & gallery',
-    plan: 'Plan â€” 3-step process',
-    offerStack: "Founder's OS â€” Offer tiers",
-    valueStack: 'Value Stack â€” Value comparison table',
-    guarantee: 'Guarantee â€” Risk-free entry',
-    socialProof: 'Social Proof â€” Testimonials',
-    pricing: 'Pricing â€” Plans & scarcity',
-    faq: 'FAQ â€” Questions & answers',
-    finalCTA: 'Final CTA â€” Reservation form',
+    hero: 'Hero - Headline, CTA, Background Media',
+    calculator: 'Calculator - Office Cost Calculator',
+    problem: 'Problem - Pain points & image',
+    guide: 'Guide - Brand story & gallery',
+    plan: 'Plan - 3-step process',
+    offerStack: "Founder's OS - Offer tiers",
+    valueStack: 'Value Stack - Value comparison table',
+    guarantee: 'Guarantee - Risk-free entry',
+    socialProof: 'Social Proof - Testimonials',
+    pricing: 'Pricing - Plans & scarcity',
+    faq: 'FAQ - Questions & answers',
+    finalCTA: 'Final CTA - Reservation form',
   };
 
   const baseOrder = cmsDraft.sectionOrder || [];
@@ -620,7 +620,7 @@ function SectionManager({ cmsDraft, onChange }) {
   );
 }
 
-// â”€â”€â”€ PLANS & PRICING MANAGER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ PLANS & PRICING MANAGER â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function PlansManager() {
   const { toast } = useToast();
   const [plans, setPlans] = useState([]);
@@ -1145,7 +1145,7 @@ function PlansManager() {
   );
 }
 
-// â”€â”€â”€ MAIN ADMIN DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â"€â"€â"€ MAIN ADMIN DASHBOARD â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -1204,7 +1204,7 @@ export default function AdminDashboard() {
   const [seatOverrideStatus, setSeatOverrideStatus] = useState('Available');
   const [updatingSeat, setUpdatingSeat] = useState(false);
 
-  // â”€â”€ Data fetching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Data fetching â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const fetchDashboardData = async () => {
     setLoading(true);
     setError('');
@@ -1313,7 +1313,7 @@ export default function AdminDashboard() {
     setLocation('/admin/login');
   };
 
-  // â”€â”€ CMS Change Handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ CMS Change Handlers â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const handleCMSFieldChange = (section, field, value) => {
     setIsDirty(true);
     setCmsDraft(prev => ({
@@ -1401,7 +1401,7 @@ export default function AdminDashboard() {
     });
   };
 
-  // Duplicate item â€” deep-clone and insert immediately after the source index
+  // Duplicate item - deep-clone and insert immediately after the source index
   const handleDuplicateItem = (section, field, index) => {
     setIsDirty(true);
     setCmsDraft(prev => {
@@ -1492,7 +1492,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // â”€â”€ Leads actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Leads actions â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const openLeadDetails = (lead) => {
     setSelectedLead(lead);
     setModalNotes(lead.notes || '');
@@ -1542,7 +1542,7 @@ export default function AdminDashboard() {
     return matchesSearch && matchesStatus && matchesPayment;
   });
 
-  // â”€â”€ Seat Inventory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Seat Inventory â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const openSeatOverride = (seat) => {
     setSelectedSeat(seat);
     setSeatOverrideStatus(seat.status === 'blocked' || seat.status === 'maintenance' ? 'blocked' : 'available');
@@ -1620,12 +1620,12 @@ export default function AdminDashboard() {
     }
   };
 
-  // â”€â”€ Computed Stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Computed Stats â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const totalBookings = reservations.length;
   const totalSeatsReserved = seats.filter(s => s.status === 'reserved' && !s.isStaff).length;
   const seatsRemaining = Math.max(0, 50 - totalSeatsReserved);
 
-  // â”€â”€ Sidebar items config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ Sidebar items config â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const sidebarGroups = [
     {
       label: 'Overview',
@@ -1664,7 +1664,7 @@ export default function AdminDashboard() {
     },
   ];
 
-  // â”€â”€ CMS Toolbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â"€â"€ CMS Toolbar â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
   const showCMSToolbar = CMS_PANELS.includes(activePanel);
 
   return (
@@ -1762,7 +1762,7 @@ export default function AdminDashboard() {
         <main className="flex-1 overflow-y-auto">
           <div className="p-6 max-w-6xl mx-auto space-y-8">
 
-            {/* â”€â”€ BOOKING MANAGEMENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ BOOKING MANAGEMENT â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'bookings' && (
               <div className="space-y-8">
                 <div>
@@ -1775,7 +1775,7 @@ export default function AdminDashboard() {
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
                     <span className="eyebrow">Total Capacity</span>
-                    <p className="mt-4 font-display text-5xl text-[#F1F1F1]">{loading || !capacityStats ? 'â€”' : capacityStats.totalCapacity}</p>
+                    <p className="mt-4 font-display text-5xl text-[#F1F1F1]">{loading || !capacityStats ? ' - ' : capacityStats.totalCapacity}</p>
                   </div>
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
                     <span className="eyebrow">Active Bookings</span>
@@ -1803,7 +1803,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ CAPACITY SETTINGS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ CAPACITY SETTINGS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'capacity' && capacityConfig && (
               <div className="space-y-8">
                  <div>
@@ -1845,7 +1845,7 @@ export default function AdminDashboard() {
                </div>
              )}
 
-             {/* â”€â”€ AMOUNT MANAGEMENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+             {/* â"€â"€ AMOUNT MANAGEMENT â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
              {activePanel === 'amount' && (
                <div className="space-y-8">
                  <div>
@@ -1879,7 +1879,7 @@ export default function AdminDashboard() {
                </div>
              )}
 
-            {/* â”€â”€ DASHBOARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ DASHBOARD â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'dashboard' && (
               <div className="space-y-8">
                 <div>
@@ -1896,7 +1896,7 @@ export default function AdminDashboard() {
                       <span className="eyebrow">Total Bookings</span>
                       <Calendar size={18} className="text-[#04B8BB]" />
                     </div>
-                    <p className="mt-4 font-display text-5xl text-[#F1F1F1]">{loading ? 'â€”' : totalBookings}</p>
+                    <p className="mt-4 font-display text-5xl text-[#F1F1F1]">{loading ? ' - ' : totalBookings}</p>
                     <p className="mt-2 text-xs text-[#A3A3A3] uppercase tracking-wider">Leads & enquiries submitted</p>
                   </div>
                   <div className="border border-[#242424] bg-[#0A0A0A] p-6">
@@ -1905,7 +1905,7 @@ export default function AdminDashboard() {
                       <Users size={18} className="text-[#04B8BB]" />
                     </div>
                     <p className="mt-4 font-display text-5xl text-[#F1F1F1]">
-                      {loading ? 'â€”' : totalSeatsReserved} <span className="text-xl text-[#A3A3A3]">/ 50</span>
+                      {loading ? ' - ' : totalSeatsReserved} <span className="text-xl text-[#A3A3A3]">/ 50</span>
                     </p>
                     <p className="mt-2 text-xs text-[#A3A3A3] uppercase tracking-wider">Founding batch locked seats</p>
                   </div>
@@ -1914,7 +1914,7 @@ export default function AdminDashboard() {
                       <span className="eyebrow">Open Capacity</span>
                       <Award size={18} className="text-[#04B8BB]" />
                     </div>
-                    <p className="mt-4 font-display text-5xl text-[#04B8BB]">{loading ? 'â€”' : seatsRemaining}</p>
+                    <p className="mt-4 font-display text-5xl text-[#04B8BB]">{loading ? ' - ' : seatsRemaining}</p>
                     <p className="mt-2 text-xs text-[#A3A3A3] uppercase tracking-wider">Seats still available to lock</p>
                   </div>
                 </div>
@@ -1946,22 +1946,22 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ CALCULATOR CONFIGURATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ CALCULATOR CONFIGURATION â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'calculator_config' && (
               <AdminCalculatorConfig />
             )}
 
-            {/* â”€â”€ CALCULATOR LEADS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ CALCULATOR LEADS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'calculator_leads' && (
               <AdminCalculatorLeads />
             )}
 
-            {/* â”€â”€ PLANS & PRICING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ PLANS & PRICING â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'plans' && (
               <PlansManager />
             )}
 
-            {/* â”€â”€ SECTION MANAGER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ SECTION MANAGER â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'sections' && (
               <div className="space-y-6">
                 <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">Section Manager</h2>
@@ -1976,7 +1976,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ HOMEPAGE CMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ HOMEPAGE CMS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'homepage' && (
               <div className="space-y-6">
                 <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">Homepage Content</h2>
@@ -2002,7 +2002,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ NAVIGATION â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'navigation' && (
               <div className="space-y-6">
                 <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">Navigation</h2>
@@ -2021,7 +2021,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ GLOBAL SETTINGS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ GLOBAL SETTINGS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'global' && (
               <div className="space-y-6">
                 <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">Global Settings</h2>
@@ -2040,7 +2040,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ SEO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ SEO â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'seo' && (
               <div className="space-y-6">
                 <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">SEO Settings</h2>
@@ -2059,7 +2059,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ MEDIA LIBRARY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ MEDIA LIBRARY â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'media' && (
               <div className="space-y-6">
                 <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">Media Library</h2>
@@ -2068,7 +2068,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ LEADS & PAYMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ LEADS & PAYMENTS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'leads' && (
               <div className="space-y-6">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -2190,7 +2190,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* â”€â”€ SEAT INVENTORY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+            {/* â"€â"€ SEAT INVENTORY â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'seats' && (
               <div className="space-y-6">
                 <h2 className="font-display text-2xl font-semibold text-[#F1F1F1] uppercase">Seat Inventory</h2>
