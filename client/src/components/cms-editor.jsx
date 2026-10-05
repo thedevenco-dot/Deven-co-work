@@ -495,7 +495,7 @@ export default function CmsEditor({
               <TextInput
                 value={cmsDraft.navigation?.ctaLabel}
                 onChange={(e) => onFieldChange('navigation', 'ctaLabel', e.target.value)}
-                placeholder="Book Free Trial"
+                placeholder="Book Your Tour"
               />
             </Field>
             <Field label="CTA Button Target URL">
@@ -833,7 +833,7 @@ export default function CmsEditor({
                   const cta = { ...(cmsDraft.problem?.cta || {}), label: e.target.value };
                   onFieldChange('problem', 'cta', cta);
                 }}
-                placeholder="Book Your Free 2-Day Trial"
+                placeholder="Book Your Free Tour"
               />
             </Field>
             <Field label="CTA URL">
@@ -980,7 +980,7 @@ export default function CmsEditor({
               <TextInput
                 value={cmsDraft.plan?.ctaLabel}
                 onChange={(e) => onFieldChange('plan', 'ctaLabel', e.target.value)}
-                placeholder="Start With Your Free Trial"
+                placeholder="Book Your Free Tour"
               />
             </Field>
           </div>
@@ -1227,7 +1227,7 @@ export default function CmsEditor({
             <TextInput
               value={cmsDraft.riskReversal?.ctaLabel}
               onChange={(e) => onFieldChange('riskReversal', 'ctaLabel', e.target.value)}
-              placeholder="Book My Free 2-Day Trial"
+              placeholder="Book Your Free Tour"
             />
           </Field>
         </FieldGroup>

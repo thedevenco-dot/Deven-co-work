@@ -539,7 +539,7 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
               className="button-small"
               testId="button-header-reserve"
             >
-              {nav.ctaLabel || 'Book Free Trial'}
+              {nav.ctaLabel || 'Book Your Tour'}
             </Button>
           )}
         </div>
@@ -704,7 +704,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
                 href={data.primaryCtaUrl?.startsWith('#') ? undefined : data.primaryCtaUrl}
                 testId="button-hero-reserve"
               >
-                {data.primaryCtaLabel || 'Book Your Free 2-Day Trial'}
+                {data.primaryCtaLabel || 'Book Your Free Tour'}
               </Button>
               <a
                 href={data.secondaryCtaUrl || '#pricing'}
@@ -725,7 +725,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               data-testid="hero-trust-bar"
             >
               {[
-                { icon: <Check size={10} strokeWidth={3} />, text: '2-Day Free Trial â€” No card required' },
+                { icon: <Check size={10} strokeWidth={3} />, text: 'Free Tour â€” No card required' },
                 { icon: <Wifi size={10} strokeWidth={2.5} />, text: '500 Mbps WiFi' },
                 { icon: <MapPin size={10} strokeWidth={2.5} />, text: 'Raipur City Centre' },
               ].map((item, i) => (
@@ -754,7 +754,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
                 <div>
                   <div className="text-[9px] font-black uppercase tracking-[0.18em] text-[#04B8BB]">Risk-Free Guarantee</div>
                   <div className="text-[10px] font-semibold text-[#FCFAF9]/90 leading-tight mt-0.5">
-                    2-Day Free Trial &middot; Love It or Leave It
+                    Free Tour &middot; Love It or Leave It
                   </div>
                 </div>
               </div>
@@ -875,7 +875,7 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
               <p>{data.body2}</p>
             </div>
             <button onClick={onReserve} className="button button-primary self-start" data-testid="button-guide-tour">
-              Book Free Trial <ArrowUpRight size={15} />
+              Book Your Tour <ArrowUpRight size={15} />
             </button>
           </RevealOnScroll>
         </div>
@@ -943,7 +943,7 @@ function Problems({ problem, onReserve, cmsLoaded, cmsFailed }) {
   const imgSrc = getMediaUrl(data.imageUrl) || 'https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=800&q=80';
   const showCta = data.cta?.enabled !== false;
   const ctaUrl = data.cta?.url || '#reservation';
-  const ctaLabel = data.cta?.label || 'Book Your Free 2-Day Trial';
+  const ctaLabel = data.cta?.label || 'Book Your Free Tour';
   const quoteText = data.quoteText || "You're not lazy. Your environment is holding you back.";
 
   return (
@@ -1091,7 +1091,7 @@ function Plan({ plan, onReserve, cmsLoaded, cmsFailed }) {
             className="button button-primary px-8 py-4 text-base font-bold shadow-lg"
             data-testid="button-plan-cta"
           >
-            {data.ctaLabel || 'Start With Your Free Trial'} &rarr;
+            {data.ctaLabel || 'Book Your Free Tour'} &rarr;
           </button>
         </div>
       </div>
@@ -1343,7 +1343,7 @@ function Guarantee({ guarantee, onReserve, cmsLoaded, cmsFailed }) {
   }
 
   const blocks = data.blocks || [];
-  const ctaLabel = data.ctaLabel || 'Book My Free 2-Day Trial';
+  const ctaLabel = data.ctaLabel || 'Book Your Free Tour';
   const closingText = data.closingText || "We can offer this guarantee because we've built something we're genuinely proud of. We want you to feel that the moment you walk in.";
 
   return (
@@ -1795,7 +1795,7 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
             {sectionData?.subheadline || 'Everything you need to know about memberships, pricing, rules, and billing details.'}
           </p>
           <div className="mt-10">
-            <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Trial</Button>
+            <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Tour</Button>
           </div>
         </RevealOnScroll>
 

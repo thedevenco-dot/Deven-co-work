@@ -388,7 +388,7 @@ function NavigationEditor({ cmsDraft, onFieldChange, onNestedChange, onUpload })
       <SectionCard title="Header CTA Button">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="CTA Button Text">
-            <TextInput value={nav.ctaLabel} onChange={e => onFieldChange('navigation', 'ctaLabel', e.target.value)} placeholder="Book Free Trial" />
+            <TextInput value={nav.ctaLabel} onChange={e => onFieldChange('navigation', 'ctaLabel', e.target.value)} placeholder="Book Your Tour" />
           </Field>
           <Field label="CTA Button Target URL">
             <TextInput value={nav.ctaUrl} onChange={e => onFieldChange('navigation', 'ctaUrl', e.target.value)} placeholder="#reservation" />

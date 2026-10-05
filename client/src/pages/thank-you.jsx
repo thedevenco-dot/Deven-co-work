@@ -69,10 +69,10 @@ export default function ThankYou() {
           <div className="space-y-3">
             <div className="eyebrow flex items-center gap-3 text-[#04B8BB] uppercase text-[10px] tracking-widest font-bold">
               <span className="h-px w-8 bg-[#04B8BB]" /> 
-              {isTour ? 'Free Tour Request Received' : isFreeTrial ? 'Free Trial Registered' : 'Founding Member Seat Reserved'}
+              {isTour ? 'Free Tour Request Received' : isFreeTrial ? 'Free Tour Registered' : 'Founding Member Seat Reserved'}
             </div>
             <h1 className="font-display text-3xl md:text-[40px] font-bold leading-[1.05] tracking-wider text-[#0C0C0C] uppercase">
-              {isTour ? 'YOUR TOUR IS BOOKED.' : isFreeTrial ? 'Your Free Trial is Booked.' : 'Reservation Confirmed'}
+              {isTour ? 'YOUR TOUR IS BOOKED.' : isFreeTrial ? 'Your Free Tour is Booked.' : 'Reservation Confirmed'}
             </h1>
           </div>
 
@@ -173,7 +173,7 @@ export default function ThankYou() {
 
                 <div className="space-y-4">
                   <p className="text-sm leading-6 text-[#0C0C0C]/70">
-                    Thanks for booking your free trial. Our team will call you shortly to confirm your visit and guide you through the next steps.
+                    Thanks for booking your free tour. Our team will call you shortly to confirm your visit and guide you through the next steps.
                   </p>
                   <button
                     onClick={() => setLocation('/')}
