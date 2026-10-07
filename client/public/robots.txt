@@ -3,4 +3,88 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
+# ── AI / LLM Crawlers ──────────────────────────────────────────────────────
+
+# OpenAI (ChatGPT, SearchGPT)
+User-agent: GPTBot
+Allow: /
+
+# OpenAI preview crawler
+User-agent: ChatGPT-User
+Allow: /
+
+# Google AI (Gemini, AI Overviews, SGE)
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic (Claude)
+User-agent: ClaudeBot
+Allow: /
+
+# Anthropic browser assistant
+User-agent: Claude-Web
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Meta AI
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# Meta link preview agent
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# Amazon Alexa / Amazon AI
+User-agent: Amazonbot
+Allow: /
+
+# Apple (Siri, Apple Intelligence)
+User-agent: Applebot
+Allow: /
+
+# Apple extended crawler
+User-agent: Applebot-Extended
+Allow: /
+
+# Microsoft Bing / Copilot
+User-agent: bingbot
+Allow: /
+
+# Microsoft Copilot
+User-agent: msnbot
+Allow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+
+# You.com AI search
+User-agent: YouBot
+Allow: /
+
+# Mistral AI
+User-agent: MistralAI
+Allow: /
+
+# Bytedance / Doubao
+User-agent: Bytespider
+Allow: /
+
+# DuckDuckGo AI
+User-agent: DuckAssistBot
+Allow: /
+
+# Diffbot (AI knowledge graph)
+User-agent: Diffbot
+Allow: /
+
+# Common Crawl (used by many AI training datasets)
+User-agent: CCBot
+Allow: /
+
+# ───────────────────────────────────────────────────────────────────────────
+
 Sitemap: https://www.devencowork.com/sitemap.xml
