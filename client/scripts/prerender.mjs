@@ -34,6 +34,144 @@ function escapeJsonForScript(jsonStr) {
     .replace(/\u2029/g, '\\u2029');
 }
 
+function mediaUrl(val) {
+  if (typeof val === 'string') return val;
+  if (val && typeof val === 'object' && typeof val.url === 'string') return val.url;
+  return '';
+}
+
+function absUrl(u) {
+  if (!u || typeof u !== 'string') return '';
+  const trimmed = u.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://www.devencowork.com${trimmed.startsWith('/') ? '' : '/'}${trimmed}`;
+}
+
+function escAttr(s) {
+  if (!s || typeof s !== 'string') return '';
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function setTag(html, regex, replacementString) {
+  return html.replace(regex, () => replacementString);
+}
+
+function updateHeadFromCms(html, cmsData) {
+  const updatedItems = [];
+
+  // Favicon
+  const favUrl = absUrl(mediaUrl(cmsData.globalSettings?.favicon));
+  if (favUrl) {
+    let typeAttr = '';
+    const path = favUrl.split(/[?#]/)[0].toLowerCase();
+    if (path.endsWith('.png')) typeAttr = ' type="image/png"';
+    else if (path.endsWith('.svg')) typeAttr = ' type="image/svg+xml"';
+    else if (path.endsWith('.ico')) typeAttr = ' type="image/x-icon"';
+    else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) typeAttr = ' type="image/jpeg"';
+    else if (path.endsWith('.webp')) typeAttr = ' type="image/webp"';
+
+    const favTag = `<link rel="icon"${typeAttr} href="${escAttr(favUrl)}" />`;
+    const iconRegex = /<link\s+[^>]*rel=["'](?:shortcut )?icon["'][^>]*\/?>/i;
+    if (iconRegex.test(html)) {
+      html = setTag(html, iconRegex, favTag);
+      updatedItems.push('favicon');
+    }
+  }
+
+  // Title
+  if (typeof cmsData.seo?.title === 'string' && cmsData.seo.title.trim()) {
+    const titleVal = cmsData.seo.title.trim();
+    const titleRegex = /<title>[\s\S]*?<\/title>/i;
+    if (titleRegex.test(html)) {
+      html = setTag(html, titleRegex, `<title>${escAttr(titleVal)}</title>`);
+      updatedItems.push('title');
+    }
+  }
+
+  // Description
+  if (typeof cmsData.seo?.description === 'string' && cmsData.seo.description.trim()) {
+    const descVal = cmsData.seo.description.trim();
+    const descRegex = /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i;
+    if (descRegex.test(html)) {
+      html = setTag(html, descRegex, `<meta name="description" content="${escAttr(descVal)}" />`);
+      updatedItems.push('description');
+    }
+  }
+
+  // Open Graph / Twitter
+  const seo = cmsData.seo || {};
+
+  const ogTitleVal = (typeof seo.ogTitle === 'string' && seo.ogTitle.trim())
+    || (typeof seo.title === 'string' && seo.title.trim())
+    || '';
+  if (ogTitleVal) {
+    const ogTitleRegex = /<meta\s+[^>]*property=["']og:title["'][^>]*\/?>/i;
+    if (ogTitleRegex.test(html)) {
+      html = setTag(html, ogTitleRegex, `<meta property="og:title" content="${escAttr(ogTitleVal)}" />`);
+      updatedItems.push('og:title');
+    }
+  }
+
+  const ogDescVal = (typeof seo.ogDescription === 'string' && seo.ogDescription.trim())
+    || (typeof seo.description === 'string' && seo.description.trim())
+    || '';
+  if (ogDescVal) {
+    const ogDescRegex = /<meta\s+[^>]*property=["']og:description["'][^>]*\/?>/i;
+    if (ogDescRegex.test(html)) {
+      html = setTag(html, ogDescRegex, `<meta property="og:description" content="${escAttr(ogDescVal)}" />`);
+      updatedItems.push('og:description');
+    }
+  }
+
+  const twitterTitleVal = (typeof seo.twitterTitle === 'string' && seo.twitterTitle.trim())
+    || ogTitleVal
+    || '';
+  if (twitterTitleVal) {
+    const twitterTitleRegex = /<meta\s+[^>]*name=["']twitter:title["'][^>]*\/?>/i;
+    if (twitterTitleRegex.test(html)) {
+      html = setTag(html, twitterTitleRegex, `<meta name="twitter:title" content="${escAttr(twitterTitleVal)}" />`);
+      updatedItems.push('twitter:title');
+    }
+  }
+
+  const twitterDescVal = (typeof seo.twitterDescription === 'string' && seo.twitterDescription.trim())
+    || ogDescVal
+    || '';
+  if (twitterDescVal) {
+    const twitterDescRegex = /<meta\s+[^>]*name=["']twitter:description["'][^>]*\/?>/i;
+    if (twitterDescRegex.test(html)) {
+      html = setTag(html, twitterDescRegex, `<meta name="twitter:description" content="${escAttr(twitterDescVal)}" />`);
+      updatedItems.push('twitter:description');
+    }
+  }
+
+  // Share image
+  const ogImg = absUrl(mediaUrl(seo.ogImage)) || absUrl(mediaUrl(cmsData.globalSettings?.ogImage));
+  if (ogImg) {
+    const ogImageRegex = /<meta\s+[^>]*property=["']og:image["'][^>]*\/?>/i;
+    if (ogImageRegex.test(html)) {
+      html = setTag(html, ogImageRegex, `<meta property="og:image" content="${escAttr(ogImg)}" />`);
+      updatedItems.push('og:image');
+    }
+    const twitterImageRegex = /<meta\s+[^>]*name=["']twitter:image["'][^>]*\/?>/i;
+    if (twitterImageRegex.test(html)) {
+      html = setTag(html, twitterImageRegex, `<meta name="twitter:image" content="${escAttr(ogImg)}" />`);
+      updatedItems.push('twitter:image');
+    }
+  }
+
+  if (updatedItems.length > 0) {
+    console.log(`  ✅  Head: ${updatedItems.join(', ')} updated from CMS`);
+  }
+
+  return html;
+}
+
 async function fetchPublishedContent(root) {
   try {
     const env = loadEnv('production', root, 'VITE_');
@@ -180,6 +318,12 @@ async function main() {
     if (url === '/' && cmsData) {
       const scriptTag = `<script>window.__INITIAL_CMS_DATA__=${escapeJsonForScript(JSON.stringify(cmsData))};</script>`;
       html = html.replace('</head>', () => `${scriptTag}</head>`);
+
+      try {
+        html = updateHeadFromCms(html, cmsData);
+      } catch (err) {
+        console.warn(`  ⚠️  Failed to rewrite head tags from CMS: ${err.message}`);
+      }
     }
 
     // Write output file
