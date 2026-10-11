@@ -179,7 +179,7 @@ async function main() {
     // also inject inline script immediately before </head> if cmsData was fetched
     if (url === '/' && cmsData) {
       const scriptTag = `<script>window.__INITIAL_CMS_DATA__=${escapeJsonForScript(JSON.stringify(cmsData))};</script>`;
-      html = html.replace('</head>', `${scriptTag}</head>`);
+      html = html.replace('</head>', () => `${scriptTag}</head>`);
     }
 
     // Write output file
