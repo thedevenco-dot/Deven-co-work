@@ -2241,7 +2241,7 @@ const getInitialCmsData = () => {
 function Home() {
   const initialData = getInitialCmsData();
   const [content, setContent] = useState(() => initialData || defaultContent);
-  const [cmsLoaded, setCmsLoaded] = useState(!!initialData);
+  const [cmsLoaded, setCmsLoaded] = useState(!!initialData || typeof window === 'undefined');
   const [cmsFailed, setCmsFailed] = useState(false);
   const [utm, setUtm] = useState({ source: '', medium: '', campaign: '' });
   const [reserveOpen, setReserveOpen] = useState(false);
