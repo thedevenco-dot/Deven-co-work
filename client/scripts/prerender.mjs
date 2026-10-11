@@ -13,7 +13,7 @@
  * (called automatically from `npm run build`)
  */
 
-import { build } from 'vite';
+import { build, loadEnv } from 'vite';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
@@ -24,6 +24,61 @@ const distDir    = resolve(clientRoot, 'dist');
 
 // Routes to prerender.  Admin routes are excluded (private pages).
 const routes = ['/', '/thank-you'];
+
+function escapeJsonForScript(jsonStr) {
+  return jsonStr
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
+async function fetchPublishedContent(root) {
+  try {
+    const env = loadEnv('production', root, 'VITE_');
+    const rawUrl = (process.env.VITE_API_URL || env.VITE_API_URL || '').trim();
+    if (!rawUrl) {
+      console.warn('⚠️  No VITE_API_URL found. Continuing with no CMS data.');
+      return null;
+    }
+    const base = rawUrl.replace(/\/+$/, '');
+    const url = `${base}/api/content/published`;
+    console.log(`📡  Fetching published CMS content from ${url} (60s timeout)…`);
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+
+    let res;
+    try {
+      res = await fetch(url, { signal: controller.signal });
+    } finally {
+      clearTimeout(timer);
+    }
+
+    if (!res.ok) {
+      console.warn(`⚠️  CMS fetch failed (HTTP ${res.status} ${res.statusText}). Continuing with no CMS data.`);
+      return null;
+    }
+
+    const json = await res.json();
+    if (json && json.success && json.data) {
+      const cmsData = JSON.parse(JSON.stringify(json.data));
+      delete cmsData._id;
+      delete cmsData.__v;
+      delete cmsData.key;
+      console.log('✅  Published CMS content loaded successfully.');
+      return cmsData;
+    }
+
+    console.warn('⚠️  CMS response missing valid success/data payload. Continuing with no CMS data.');
+    return null;
+  } catch (err) {
+    const isTimeout = err.name === 'AbortError';
+    console.warn(`⚠️  CMS fetch error (${isTimeout ? 'timed out after 60s' : err.message}). Continuing with no CMS data.`);
+    return null;
+  }
+}
 
 async function main() {
   console.log('\n🔧  Building SSR bundle…');
@@ -70,6 +125,11 @@ async function main() {
   // pathToFileURL is required on Windows: bare C:\... paths are not valid ESM URLs
   const { render } = await import(pathToFileURL(ssrBundlePath).href);
 
+  // Fetch published CMS content before rendering routes
+  const cmsData = await fetchPublishedContent(clientRoot);
+  if (cmsData) {
+    globalThis.__SSR_CMS_DATA__ = cmsData;
+  }
 
   // ── 4. Render each route ──────────────────────────────────────────────────
   for (const url of routes) {
@@ -113,6 +173,13 @@ async function main() {
           + appHtml
           + template.slice(i);
       }
+    }
+
+    // For the '/' route only (not '/thank-you'), after the app HTML is injected,
+    // also inject inline script immediately before </head> if cmsData was fetched
+    if (url === '/' && cmsData) {
+      const scriptTag = `<script>window.__INITIAL_CMS_DATA__=${escapeJsonForScript(JSON.stringify(cmsData))};</script>`;
+      html = html.replace('</head>', `${scriptTag}</head>`);
     }
 
     // Write output file

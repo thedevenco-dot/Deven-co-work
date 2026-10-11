@@ -2235,6 +2235,9 @@ const getInitialCmsData = () => {
   if (typeof window !== 'undefined' && window.__INITIAL_CMS_DATA__) {
     return mergeContent(defaultContent, window.__INITIAL_CMS_DATA__);
   }
+  if (typeof window === 'undefined' && globalThis.__SSR_CMS_DATA__) {
+    return mergeContent(defaultContent, globalThis.__SSR_CMS_DATA__);
+  }
   return null;
 };
 

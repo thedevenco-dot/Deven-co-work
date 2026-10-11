@@ -259,6 +259,32 @@ export async function saveDraftContent(req, res) {
   }
 }
 
+// Module-level debounce timer for Vercel deploy hook
+let deployHookTimer = null;
+
+function triggerDeployHook() {
+  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
+  if (!hookUrl || !hookUrl.trim()) {
+    return;
+  }
+
+  if (deployHookTimer) {
+    clearTimeout(deployHookTimer);
+  }
+
+  deployHookTimer = setTimeout(async () => {
+    deployHookTimer = null;
+    try {
+      const res = await fetch(hookUrl, { method: 'POST' });
+      if (!res.ok) {
+        console.error(`Vercel deploy hook request failed with status: ${res.status}`);
+      }
+    } catch (err) {
+      console.error(`Vercel deploy hook request failed: ${err.message}`);
+    }
+  }, 15000);
+}
+
 /**
  * @desc    Publish draft content to published state
  * @route   POST /api/content/publish
@@ -285,6 +311,13 @@ export async function publishContent(req, res) {
     Object.assign(published, draftObj);
     Object.keys(draftObj).forEach((key) => published.markModified(key));
     await published.save();
+
+    // Trigger Vercel deploy hook (debounced, unawaited)
+    try {
+      triggerDeployHook();
+    } catch (hookErr) {
+      console.error(`Vercel deploy hook trigger error: ${hookErr.message}`);
+    }
 
     res.json({
       success: true,
