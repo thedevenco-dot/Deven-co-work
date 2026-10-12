@@ -84,8 +84,8 @@ const defaultContent = {
     secondaryCtaLabel: 'See Founding Member Pricing',
     secondaryCtaUrl: '#pricing',
     foundingPriceNote: 'Founding plan from ₹5,999 / month · Rate locked for founding batch',
-    videoUrl: '/assets/hero-workspace.mp4',
-    imageUrl: '/assets/hero-fallback.png',
+    videoUrl: '/assets/hero-workspace.mov',
+    imageUrl: '/assets/hero-fallback.webp',
     highlightWords: 'beautiful',
     floatingStats: [
       { value: '50', label: 'Founding Seats' },

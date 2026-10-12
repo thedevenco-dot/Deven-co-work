@@ -181,8 +181,8 @@ const contentSchema = new mongoose.Schema(
       secondaryCtaLabel: { type: String, default: 'See Founding Member Pricing ↓' },
       secondaryCtaUrl: { type: String, default: '#pricing' },
       foundingPriceNote: { type: String, default: 'Founding plan from ₹5,999 / month · Rate locked for founding batch' },
-      videoUrl: { type: mongoose.Schema.Types.Mixed, default: '/assets/hero-workspace.mp4' },
-      imageUrl: { type: mongoose.Schema.Types.Mixed, default: '/assets/hero-fallback.png' },
+      videoUrl: { type: mongoose.Schema.Types.Mixed, default: '/assets/hero-workspace.mov' },
+      imageUrl: { type: mongoose.Schema.Types.Mixed, default: '/assets/hero-fallback.webp' },
       stats: {
         type: [statSchema],
         default: [
