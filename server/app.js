@@ -139,7 +139,7 @@ const serveDynamicHtml = async (req, res, next) => {
     let ogImageUrl =
       resolveMediaUrl(published?.seo?.ogImage) ||
       resolveMediaUrl(published?.globalSettings?.ogImage) ||
-      'https://www.devencowork.com/og-image.png';
+      'https://www.devencowork.com/favicon.png';
     ogImageUrl = makeAbsolute(ogImageUrl);
 
     // Append cache-busting version param based on last publish timestamp
