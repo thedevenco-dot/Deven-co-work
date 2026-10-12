@@ -36,7 +36,7 @@ const defaultContent = {
     address: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001',
     phone: '+91 62605 82852',
     whatsapp: '+91 62605 82852',
-    email: 'bookings@devencowork.com',
+    email: 'hellodevencowork@gmail.com',
     mapsEmbedSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3718.5284307521743!2d81.6731683!3d21.2595151!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a28ddb73efa82a7%3A0xb99b968caba2d846!2sDeven+Co-Work%2C+VIP+Estate%2C+A1%2C+VIP+Colony%2C+Raipur%2C+Chhattisgarh+492001!5e0!3m2!1sen!2sin!4v1717800000000!5m2!1sen!2sin',
     mapsUrl: 'https://www.google.com/maps/dir/22.510398,82.552375/Deven+Co-Work,+VIP+Estate,+A1,+VIP+Colony,+Raipur,+Chhattisgarh+492001',
     instagram: 'https://instagram.com/',
@@ -307,7 +307,7 @@ const defaultContent = {
     address: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001',
     phone: '+91 62605 82852',
     whatsapp: '+91 62605 82852',
-    email: 'bookings@devencowork.com',
+    email: 'hellodevencowork@gmail.com',
     copyright: '',
     ctaLabel: '',
     ctaUrl: '',
@@ -2108,7 +2108,7 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
   }
 
   const phone = data.phone || settings.phone || '+91 62605 82852';
-  const email = data.email || settings.email || 'bookings@devencowork.com';
+  const email = data.email || settings.email || 'hellodevencowork@gmail.com';
   const address = data.address || settings.address || '';
   const mapsEmbedSrc = settings.mapsEmbedSrc || '';
   const mapsUrl = settings.mapsUrl || '';
