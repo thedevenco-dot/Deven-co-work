@@ -64,22 +64,24 @@ function setTag(html, regex, replacementString) {
 function updateHeadFromCms(html, cmsData) {
   const updatedItems = [];
 
-  // Favicon
-  const favUrl = absUrl(mediaUrl(cmsData.globalSettings?.favicon));
-  if (favUrl) {
-    let typeAttr = '';
-    const path = favUrl.split(/[?#]/)[0].toLowerCase();
-    if (path.endsWith('.png')) typeAttr = ' type="image/png"';
-    else if (path.endsWith('.svg')) typeAttr = ' type="image/svg+xml"';
-    else if (path.endsWith('.ico')) typeAttr = ' type="image/x-icon"';
-    else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) typeAttr = ' type="image/jpeg"';
-    else if (path.endsWith('.webp')) typeAttr = ' type="image/webp"';
+  // Favicon (disabled so self-hosted favicons are never rewritten from CMS)
+  if (false) {
+    const favUrl = absUrl(mediaUrl(cmsData.globalSettings?.favicon));
+    if (favUrl) {
+      let typeAttr = '';
+      const path = favUrl.split(/[?#]/)[0].toLowerCase();
+      if (path.endsWith('.png')) typeAttr = ' type="image/png"';
+      else if (path.endsWith('.svg')) typeAttr = ' type="image/svg+xml"';
+      else if (path.endsWith('.ico')) typeAttr = ' type="image/x-icon"';
+      else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) typeAttr = ' type="image/jpeg"';
+      else if (path.endsWith('.webp')) typeAttr = ' type="image/webp"';
 
-    const favTag = `<link rel="icon"${typeAttr} href="${escAttr(favUrl)}" />`;
-    const iconRegex = /<link\s+[^>]*rel=["'](?:shortcut )?icon["'][^>]*\/?>/i;
-    if (iconRegex.test(html)) {
-      html = setTag(html, iconRegex, favTag);
-      updatedItems.push('favicon');
+      const favTag = `<link rel="icon"${typeAttr} href="${escAttr(favUrl)}" />`;
+      const iconRegex = /<link\s+[^>]*rel=["'](?:shortcut )?icon["'][^>]*\/?>/i;
+      if (iconRegex.test(html)) {
+        html = setTag(html, iconRegex, favTag);
+        updatedItems.push('favicon');
+      }
     }
   }
 
