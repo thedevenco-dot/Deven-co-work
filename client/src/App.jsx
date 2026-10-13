@@ -21,7 +21,7 @@ import SeatSelection from '@/components/seat-selection';
 import OfficeCostCalculator from '@/components/OfficeCostCalculator';
 import TourBookingModal from '@/components/TourBookingModal';
 import { api } from '@/services/api';
-import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon } from '@/lib/utils';
+import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon, optimizeImageUrl } from '@/lib/utils';
 import { trackPixelEvent } from '@/lib/metaPixel';
 export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 
@@ -409,7 +409,7 @@ function Logo({ logoUrl }) {
   return (
     <Link href="/" className="logo text-[#F1F1F1]" data-testid="link-logo">
       {logoUrl ? (
-        <img src={logoUrl} alt="Deven Co-Work" className="h-8 object-contain" />
+        <img src={optimizeImageUrl(logoUrl, 320)} alt="Deven Co-Work" className="h-8 object-contain" />
       ) : (
         <>
           <span className="logo-mark" aria-hidden="true"><span /><span /></span>
@@ -427,7 +427,7 @@ function SafeImage({ src, alt = '', className = '', style }) {
   if (!src || failed) return null;
   return (
     <img
-      src={src}
+      src={optimizeImageUrl(src, 1000)}
       alt={alt}
       className={className}
       style={style}
@@ -642,7 +642,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
       {currentImageUrl && (
         <img
           ref={imgRef}
-          src={getMediaUrl(currentImageUrl)}
+          src={optimizeImageUrl(getMediaUrl(currentImageUrl), 1200)}
           alt="Deven Cowork space"
           className="absolute inset-0 w-full h-full object-cover z-0"
           onLoad={handleMediaReady}
@@ -1440,10 +1440,10 @@ function TestimonialAvatar({ photo, name }) {
   // Render photo if available, otherwise show initials fallback
   const initials = (name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
   if (photo && typeof photo === 'object' && photo.url) {
-    return <img src={photo.url} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#04B8BB]/40" loading="lazy" />;
+    return <img src={optimizeImageUrl(photo.url, 120)} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#04B8BB]/40" loading="lazy" />;
   }
   if (photo && typeof photo === 'string' && photo.startsWith('http')) {
-    return <img src={photo} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#04B8BB]/40" loading="lazy" />;
+    return <img src={optimizeImageUrl(photo, 120)} alt={name || 'Member'} className="w-12 h-12 rounded-full object-cover border-2 border-[#04B8BB]/40" loading="lazy" />;
   }
   return (
     <div className="w-12 h-12 rounded-full bg-[#04B8BB]/20 border-2 border-[#04B8BB]/30 flex items-center justify-center flex-shrink-0">
@@ -1656,7 +1656,7 @@ function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSettings, c
                 {plan.imageUrl ? (
                   <div className="w-full overflow-hidden border-b border-[rgba(12,12,12,0.08)] bg-[#f4f4f4]" style={{ aspectRatio: '16/9' }}>
                     <img
-                      src={getMediaUrl(plan.imageUrl)}
+                      src={optimizeImageUrl(getMediaUrl(plan.imageUrl), 800)}
                       alt={`${plan.name} at Deven Co-Work`}
                       loading={index < 3 ? 'eager' : 'lazy'}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"

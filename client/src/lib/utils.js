@@ -12,6 +12,15 @@ export function getMediaUrl(val) {
   return '';
 }
 
+export function optimizeImageUrl(url, width) {
+  if (typeof url !== 'string') return url;
+  const marker = '/image/upload/';
+  if (!url.includes('res.cloudinary.com') || !url.includes(marker)) return url;
+  if (/\/image\/upload\/[^/]*(f_auto|q_auto|w_\d+)/.test(url)) return url;
+  const t = `f_auto,q_auto${width ? `,w_${width},c_limit` : ''}`;
+  return url.replace(marker, `${marker}${t}/`);
+}
+
 export function getAbsoluteMediaUrl(val, fallback = '/favicon-96x96.png') {
   let url = getMediaUrl(val);
   if (!url) url = fallback;
