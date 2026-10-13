@@ -32,21 +32,30 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"></noscript>
     <!-- Meta Pixel Code -->
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
       if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '1623233692533027');
-      fbq('track', 'PageView');
+      n.queue=[];
+      f.__loadFbPixel=function(){
+        if(f.__fbPixelLoading)return;f.__fbPixelLoading=true;
+        t=b.createElement(e);t.async=!0;t.src=v;
+        s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s);
+      };
+      }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init','1623233692533027');
+      fbq('track','PageView');
+      (function(){
+        var done=false;
+        function go(){if(done)return;done=true;window.__loadFbPixel&&window.__loadFbPixel();}
+        ['pointerdown','keydown','scroll','touchstart'].forEach(function(ev){window.addEventListener(ev,go,{once:true,passive:true});});
+        window.addEventListener('load',function(){setTimeout(go,6000);});
+      })();
     </script>
     <!-- End Meta Pixel Code -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",

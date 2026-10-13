@@ -657,7 +657,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
         {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="section-label mb-8"
@@ -671,7 +671,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           {/* Left: Headline + CTAs */}
           <div className="max-w-[820px]">
             <motion.h1
-              initial={{ opacity: 0, y: 18 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
               className="font-display font-black leading-[1.0] tracking-[-0.03em] text-[#FCFAF9] uppercase"
@@ -685,7 +685,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 14 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
               className="mt-8 max-w-[520px] text-[15px] leading-[1.75] text-[#FCFAF9]/80"
@@ -694,7 +694,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.28 }}
               className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center"
@@ -718,7 +718,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
             {/* Trust bar - factual, from existing content */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.38 }}
               className="mt-7 flex flex-wrap gap-x-6 gap-y-2"
@@ -741,7 +741,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
             {/* Guarantee hero badge */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.41 }}
               className="mt-7"
@@ -762,7 +762,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
             {data.foundingPriceNote && (
               <motion.p
-                initial={{ opacity: 0 }}
+                initial={false}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.45, duration: 0.5 }}
                 className="mt-5 text-[10px] text-[#FCFAF9]/60 uppercase tracking-[0.16em] font-bold"
@@ -774,7 +774,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
           {/* Right: Floating stat cards */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={false}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.32 }}
             className="hidden lg:flex flex-col gap-3 mb-4"
@@ -794,7 +794,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
         {/* Stats bar */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="mt-20 grid grid-cols-2 sm:grid-cols-4 border-t border-[rgba(252,250,249,0.14)] pt-8 gap-6 max-w-[900px]"
