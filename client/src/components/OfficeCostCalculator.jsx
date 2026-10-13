@@ -321,8 +321,9 @@ export default function OfficeCostCalculator() {
                       <form onSubmit={handleUnlock} className="space-y-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#0C0C0C]">Name <span className="text-red-500">*</span></label>
+                            <label htmlFor="calc-name" className="block text-sm font-medium mb-1 text-[#0C0C0C]">Name <span className="text-red-500">*</span></label>
                             <input 
+                              id="calc-name"
                               type="text" required 
                               value={form.name} onChange={e => setForm({...form, name: e.target.value})}
                               className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
@@ -330,8 +331,9 @@ export default function OfficeCostCalculator() {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#0C0C0C]">WhatsApp / Phone <span className="text-red-500">*</span></label>
+                            <label htmlFor="calc-phone" className="block text-sm font-medium mb-1 text-[#0C0C0C]">WhatsApp / Phone <span className="text-red-500">*</span></label>
                             <input 
+                              id="calc-phone"
                               type="tel" required 
                               value={form.phone} onChange={e => setForm({...form, phone: e.target.value})}
                               className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
@@ -341,8 +343,9 @@ export default function OfficeCostCalculator() {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#0C0C0C]">Email <span className="text-red-500">*</span></label>
+                            <label htmlFor="calc-email" className="block text-sm font-medium mb-1 text-[#0C0C0C]">Email <span className="text-red-500">*</span></label>
                             <input 
+                              id="calc-email"
                               type="email" required 
                               value={form.email} onChange={e => setForm({...form, email: e.target.value})}
                               className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"
@@ -350,8 +353,9 @@ export default function OfficeCostCalculator() {
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#0C0C0C]">Company / Project</label>
+                            <label htmlFor="calc-company" className="block text-sm font-medium mb-1 text-[#0C0C0C]">Company / Project</label>
                             <input 
+                              id="calc-company"
                               type="text" 
                               value={form.companyProjectName} onChange={e => setForm({...form, companyProjectName: e.target.value})}
                               className="w-full px-4 py-2.5 rounded-lg border border-[#0C0C0C]/20 focus:outline-none focus:border-[#04B8BB] focus:ring-1 focus:ring-[#04B8BB] bg-white text-[#0C0C0C] placeholder:text-[#0C0C0C]/40"

@@ -1971,38 +1971,39 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="tour-form-name" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                     Full Name *
                   </label>
-                  <input type="text" placeholder="Rahul Sharma" value={form.name}
+                  <input id="tour-form-name" type="text" placeholder="Rahul Sharma" value={form.name}
                     onChange={(e) => update('name', e.target.value)} required disabled={loading}
                     className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="tour-form-phone" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                     Phone Number *
                   </label>
-                  <input type="tel" placeholder="+91 98765 43210" value={form.phone}
+                  <input id="tour-form-phone" type="tel" placeholder="+91 98765 43210" value={form.phone}
                     onChange={(e) => update('phone', e.target.value)} required disabled={loading}
                     className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                <label htmlFor="tour-form-email" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                   Email Address *
                 </label>
-                <input type="email" placeholder="rahul@company.com" value={form.email}
+                <input id="tour-form-email" type="email" placeholder="rahul@company.com" value={form.email}
                   onChange={(e) => update('email', e.target.value)} required disabled={loading}
                   className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="tour-form-date" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                     Preferred Date
                   </label>
                   <input
+                    id="tour-form-date"
                     type="date"
                     value={form.preferredDate}
                     onChange={(e) => update('preferredDate', e.target.value)}
@@ -2013,10 +2014,11 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="tour-form-time" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                     Preferred Time Slot
                   </label>
                   <select
+                    id="tour-form-time"
                     value={form.preferredTime}
                     onChange={(e) => update('preferredTime', e.target.value)}
                     disabled={loading}
@@ -2031,19 +2033,20 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="tour-form-company" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                     Company / Project (Optional)
                   </label>
-                  <input type="text" placeholder="Your Startup / Project" value={form.company}
+                  <input id="tour-form-company" type="text" placeholder="Your Startup / Project" value={form.company}
                     onChange={(e) => update('company', e.target.value)} disabled={loading}
                     className="w-full bg-[#1A1A1C] border border-[#2B2B2E] text-white placeholder-neutral-500 px-3.5 py-2.5 text-xs rounded-lg focus:outline-none focus:border-[#04B8BB] transition-all" />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="tour-form-people" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                     Number of People
                   </label>
                   <select
+                    id="tour-form-people"
                     value={form.numberOfPeople}
                     onChange={(e) => update('numberOfPeople', e.target.value)}
                     disabled={loading}
@@ -2058,10 +2061,11 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                <label htmlFor="tour-form-message" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                   Specific Requirements (Optional)
                 </label>
                 <textarea
+                  id="tour-form-message"
                   rows={2}
                   placeholder="e.g. Private cabin enquiry, podcast studio tour..."
                   value={form.message}

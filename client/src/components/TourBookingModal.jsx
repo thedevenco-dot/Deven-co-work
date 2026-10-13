@@ -137,12 +137,13 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
           {/* Name & Phone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="tour-modal-name" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                 Full Name *
               </label>
               <div className="relative">
                 <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" />
                 <input
+                  id="tour-modal-name"
                   type="text"
                   placeholder="Rahul Sharma"
                   value={form.name}
@@ -155,12 +156,13 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="tour-modal-phone" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                 Phone Number *
               </label>
               <div className="relative">
                 <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" />
                 <input
+                  id="tour-modal-phone"
                   type="tel"
                   placeholder="+91 98765 43210"
                   value={form.phone}
@@ -176,12 +178,13 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
           {/* Email & Team Size */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="tour-modal-email" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                 Email Address *
               </label>
               <div className="relative">
                 <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" />
                 <input
+                  id="tour-modal-email"
                   type="email"
                   placeholder="rahul@company.com"
                   value={form.email}
@@ -194,12 +197,13 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="tour-modal-people" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                 Number of People
               </label>
               <div className="relative">
                 <Users size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" />
                 <select
+                  id="tour-modal-people"
                   value={form.numberOfPeople}
                   onChange={(e) => updateField('numberOfPeople', e.target.value)}
                   disabled={loading}
@@ -217,12 +221,13 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
           {/* Date & Time Slot */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="tour-modal-date" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                 Preferred Date
               </label>
               <div className="relative">
                 <Calendar size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
                 <input
+                  id="tour-modal-date"
                   type="date"
                   value={form.preferredDate}
                   onChange={(e) => updateField('preferredDate', e.target.value)}
@@ -234,12 +239,13 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="tour-modal-time" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                 Preferred Slot
               </label>
               <div className="relative">
                 <Clock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
                 <select
+                  id="tour-modal-time"
                   value={form.preferredTime}
                   onChange={(e) => updateField('preferredTime', e.target.value)}
                   disabled={loading}
@@ -268,10 +274,11 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
           {showOptional && (
             <div className="space-y-3.5 pt-1 animate-fadeIn">
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                <label htmlFor="tour-modal-company" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                   Company / Project Name
                 </label>
                 <input
+                  id="tour-modal-company"
                   type="text"
                   placeholder="Acme Corp / Tech Studio"
                   value={form.company}
@@ -282,10 +289,11 @@ export default function TourBookingModal({ isOpen, onClose, utm = {} }) {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                <label htmlFor="tour-modal-message" className="block text-[11px] font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                   Specific Requirements
                 </label>
                 <textarea
+                  id="tour-modal-message"
                   rows={2}
                   placeholder="e.g. Private cabin enquiry, podcast studio tour..."
                   value={form.message}
