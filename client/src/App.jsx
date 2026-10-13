@@ -84,7 +84,7 @@ const defaultContent = {
     secondaryCtaLabel: 'See Founding Member Pricing',
     secondaryCtaUrl: '#pricing',
     foundingPriceNote: 'Founding plan from ₹5,999 / month · Rate locked for founding batch',
-    videoUrl: '/assets/hero-workspace.mov',
+    videoUrl: '/assets/hero-workspace.mp4',
     imageUrl: '/assets/hero-fallback.webp',
     highlightWords: 'beautiful',
     floatingStats: [
@@ -2283,8 +2283,8 @@ function Home() {
       const twitterDescription = seo?.twitterDescription || defaultContent.seo.twitterDescription || ogDescription;
 
       // Single source of truth for both browser favicon and social preview image (WhatsApp og:image)
-      const faviconUrl = getMediaUrl(settings?.favicon) || '/favicon.svg';
-      const absoluteSocialImage = getAbsoluteMediaUrl(settings?.favicon || seo?.ogImage, '/favicon.svg');
+      const faviconUrl = getMediaUrl(settings?.favicon) || '/favicon-96x96.png';
+      const absoluteSocialImage = getAbsoluteMediaUrl(settings?.favicon || seo?.ogImage, '/favicon-96x96.png');
 
       document.title = title;
 

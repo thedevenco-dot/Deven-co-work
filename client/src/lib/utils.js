@@ -12,7 +12,7 @@ export function getMediaUrl(val) {
   return '';
 }
 
-export function getAbsoluteMediaUrl(val, fallback = '/favicon.svg') {
+export function getAbsoluteMediaUrl(val, fallback = '/favicon-96x96.png') {
   let url = getMediaUrl(val);
   if (!url) url = fallback;
   if (url.startsWith('http://') || url.startsWith('https://')) {

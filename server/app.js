@@ -131,7 +131,7 @@ const serveDynamicHtml = async (req, res, next) => {
 
     // ── Favicon (browser tab icon) ────────────────────────────────────────────
     let faviconUrl = resolveMediaUrl(published?.globalSettings?.favicon);
-    if (!faviconUrl) faviconUrl = 'https://www.devencowork.com/favicon.svg';
+    if (!faviconUrl) faviconUrl = 'https://www.devencowork.com/favicon-96x96.png';
     faviconUrl = makeAbsolute(faviconUrl);
 
     // ── OG / Social Image (used in Google Search, WhatsApp, Facebook, Twitter)
