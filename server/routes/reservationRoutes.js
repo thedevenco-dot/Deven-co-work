@@ -1,8 +1,5 @@
 import express from 'express';
 import {
-  createReservation,
-  confirmReservation,
-  failReservation,
   getReservations,
   updateReservation,
   updateSeatStatus,
@@ -15,9 +12,6 @@ import { protect } from '../middleware/auth.js';
 const router = express.Router();
 
 // Public routes
-router.post('/', createReservation);
-router.post('/confirm', confirmReservation);
-router.post('/fail', failReservation);
 router.post('/free-trial', createFreeTrial);
 router.post('/whatsapp-lead', createWhatsAppLead);
 router.post('/tour', createTourBooking);

@@ -8,7 +8,6 @@ import fs from 'fs';
 import authRoutes from './routes/authRoutes.js';
 import reservationRoutes from './routes/reservationRoutes.js';
 import contentRoutes from './routes/contentRoutes.js';
-import webhookRoutes from './routes/webhookRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import planRoutes from './routes/planRoutes.js';
 import calculatorRoutes from './routes/calculatorRoutes.js';
@@ -87,7 +86,6 @@ app.use('/api/reservations', reservationRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/calculator', calculatorRoutes);
-app.use('/api/webhooks', webhookRoutes);
 app.use('/api/admin', adminRoutes);
 app.get('/api/seats', getSeats);
 

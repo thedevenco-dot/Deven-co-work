@@ -42,15 +42,6 @@ export const api = {
   },
 
   // ── Reservations ───────────────────────────────────────────────────────────
-  async submitReservation(formData) {
-    const res = await fetch(`${API_BASE}/reservations`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify(formData),
-    });
-    return handleResponse(res);
-  },
-
   async bookTour(formData) {
     const res = await fetch(`${API_BASE}/reservations/tour`, {
       method: 'POST',
@@ -74,24 +65,6 @@ export const api = {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(formData),
-    });
-    return handleResponse(res);
-  },
-
-  async confirmReservation(confirmData) {
-    const res = await fetch(`${API_BASE}/reservations/confirm`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify(confirmData),
-    });
-    return handleResponse(res);
-  },
-
-  async failReservation(reservationId) {
-    const res = await fetch(`${API_BASE}/reservations/fail`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ reservationId }),
     });
     return handleResponse(res);
   },
