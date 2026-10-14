@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronDown,
@@ -14,8 +14,6 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
-import AdminLogin from '@/pages/admin-login';
-import AdminDashboard from '@/pages/admin-dashboard';
 import ThankYou from '@/pages/thank-you';
 import SeatSelection from '@/components/seat-selection';
 import OfficeCostCalculator from '@/components/OfficeCostCalculator';
@@ -24,6 +22,9 @@ import { api } from '@/services/api';
 import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon, optimizeImageUrl } from '@/lib/utils';
 import { trackPixelEvent } from '@/lib/metaPixel';
 export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
+
+const AdminLogin = lazy(() => import('@/pages/admin-login'));
+const AdminDashboard = lazy(() => import('@/pages/admin-dashboard'));
 
 
 const queryClient = new QueryClient();
@@ -2502,13 +2503,15 @@ function Home() {
 // â"€â"€â"€ ROUTING â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/admin/login" component={AdminLogin} />
-      <Route path="/admin" component={AdminDashboard} />
-      <Route path="/thank-you" component={ThankYou} />
-      <Route component={NotFound} />
-    </Switch>
+    <Suspense fallback={null}>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/admin/login" component={AdminLogin} />
+        <Route path="/admin" component={AdminDashboard} />
+        <Route path="/thank-you" component={ThankYou} />
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 }
 
