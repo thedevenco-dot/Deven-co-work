@@ -737,7 +737,7 @@
     }
 
     function resolveInitialApiBase() {
-      if (typeof window === 'undefined') return 'https://deven-co-work.onrender.com/api';
+      if (typeof window === 'undefined') return 'https://deven-co-work-1tfk.onrender.com/api';
 
       const queryApi = new URLSearchParams(window.location.search).get('api');
       if (queryApi) return queryApi;
@@ -758,7 +758,7 @@
         return `http://${host}:5000/api`;
       }
       // Public production (e.g. spin.devencowork.com, *.vercel.app): NEVER touch localhost
-      return 'https://deven-co-work.onrender.com/api';
+      return 'https://deven-co-work-1tfk.onrender.com/api';
     }
 
     function getAlternativeApiBase(currentBase) {
@@ -778,7 +778,7 @@
       if (currentBase && currentBase.includes('onrender.com')) {
         return localTarget;
       }
-      return 'https://deven-co-work.onrender.com/api';
+      return 'https://deven-co-work-1tfk.onrender.com/api';
     }
 
     let API_BASE = resolveInitialApiBase();

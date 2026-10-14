@@ -32,6 +32,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5000',
   'https://deven-co-work.onrender.com',
+  'https://deven-co-work-1tfk.onrender.com',
   'https://spin.devencowork.com'
 ];
 if (process.env.CORS_ALLOWED_ORIGIN) {
