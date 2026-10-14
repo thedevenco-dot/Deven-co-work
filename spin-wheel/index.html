@@ -724,6 +724,18 @@
     // ═════════════════════════════════════════════════════════════════════════
     // CONFIGURATION & INITIAL STATE
     // ═════════════════════════════════════════════════════════════════════════
+    function isLocalEnvironment() {
+      if (typeof window === 'undefined') return false;
+      const host = window.location.hostname || '';
+      const isFile = window.location.protocol === 'file:' || !host;
+      const isLoopback = host === 'localhost' || host === '127.0.0.1';
+      const isLanIp = host.startsWith('192.168.') ||
+                      host.startsWith('10.') ||
+                      host.endsWith('.local') ||
+                      /^172\.(1[6-9]|2\d|3[01])\./.test(host);
+      return isFile || isLoopback || isLanIp;
+    }
+
     function resolveInitialApiBase() {
       if (typeof window === 'undefined') return 'https://deven-co-work.onrender.com/api';
 
@@ -745,10 +757,16 @@
         // Mobile phone or secondary device browsing host computer via local Wi-Fi IP
         return `http://${host}:5000/api`;
       }
+      // Public production (e.g. spin.devencowork.com, *.vercel.app): NEVER touch localhost
       return 'https://deven-co-work.onrender.com/api';
     }
 
     function getAlternativeApiBase(currentBase) {
+      // ONLY allow local network fallback when running in a genuine local dev environment.
+      // NEVER request private localhost/LAN IPs from a public HTTPS domain (avoids Chrome PNA permission prompt).
+      if (!isLocalEnvironment()) {
+        return null;
+      }
       const host = (typeof window !== 'undefined' && window.location.hostname) || '';
       const isLanIp = host.startsWith('192.168.') ||
                       host.startsWith('10.') ||
@@ -767,16 +785,29 @@
 
     const STORAGE_KEY = 'deven_spin_claim';
 
-    // Fallback offers matching server specification
-    let offers = [
-      { id: 'free-tour', label: 'Free Tour', short: 'Free Tour', color: '#04B8BB', textColor: '#0A0A0A' },
-      { id: 'trial-2d', label: '2 Days Free Trial', short: '2 Days Free', color: '#151518', textColor: '#F1F1F1' },
-      { id: 'trial-7d', label: '7 Days Free Trial', short: '7 Days Free', color: '#03A5A8', textColor: '#0A0A0A' },
-      { id: 'pro-shoot', label: 'Free Professional Shot in our Studio', short: 'Free Pro Shoot', color: '#1B1B1E', textColor: '#F1F1F1' },
-      { id: 'off-20', label: '20% Discount on Booking Amount', short: '20% Off', color: '#04B8BB', textColor: '#0A0A0A' },
-      { id: 'off-30-team', label: '30% Discount on Booking Amount for Team Booking', short: '30% Team Off', color: '#151518', textColor: '#F1F1F1' },
-      { id: 'event-pass', label: 'Passes to our Free Startup Workshops & Events', short: 'Event Passes', color: '#028588', textColor: '#FFFFFF' }
+    // Official offers and backend-calibrated reward weights
+    const DEFAULT_OFFERS = [
+      { id: 'free-tour', label: 'Free Tour', short: 'Free Tour', weight: 25, color: '#04B8BB', textColor: '#0A0A0A' },
+      { id: 'trial-2d', label: '2 Days Free Trial', short: '2 Days Free', weight: 20, color: '#151518', textColor: '#F1F1F1' },
+      { id: 'trial-7d', label: '7 Days Free Trial', short: '7 Days Free', weight: 5, color: '#03A5A8', textColor: '#0A0A0A' },
+      { id: 'pro-shoot', label: 'Free Professional Shot in our Studio', short: 'Free Pro Shoot', weight: 10, color: '#1B1B1E', textColor: '#F1F1F1' },
+      { id: 'off-20', label: '20% Discount on Booking Amount', short: '20% Off', weight: 15, color: '#04B8BB', textColor: '#0A0A0A' },
+      { id: 'off-30-team', label: '30% Discount on Booking Amount for Team Booking', short: '30% Team Off', weight: 5, color: '#151518', textColor: '#F1F1F1' },
+      { id: 'event-pass', label: 'Passes to our Free Startup Workshops & Events', short: 'Event Passes', weight: 20, color: '#028588', textColor: '#FFFFFF' }
     ];
+
+    let offers = DEFAULT_OFFERS.map(o => ({ ...o }));
+
+    function pickWeightedIndex() {
+      const weights = offers.map(o => (typeof o.weight === 'number' && o.weight > 0) ? o.weight : 10);
+      const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+      let rand = Math.random() * totalWeight;
+      for (let i = 0; i < weights.length; i++) {
+        if (rand < weights[i]) return i;
+        rand -= weights[i];
+      }
+      return 0;
+    }
 
     let currentRotation = 0; // in radians
     let isSpinning = false;
@@ -858,13 +889,20 @@
 
     async function fetchConfig() {
       try {
-        let res = await fetch(`${API_BASE}/spin-wheel/config`).catch(() => null);
-        if (!res || !res.ok) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+        let res = await fetch(`${API_BASE}/spin-wheel/config`, { signal: controller.signal }).catch(() => null);
+        clearTimeout(timeoutId);
+
+        if ((!res || !res.ok) && isLocalEnvironment()) {
           const altBase = getAlternativeApiBase(API_BASE);
-          const altRes = await fetch(`${altBase}/spin-wheel/config`).catch(() => null);
-          if (altRes && altRes.ok) {
-            res = altRes;
-            API_BASE = altBase;
+          if (altBase) {
+            const altRes = await fetch(`${altBase}/spin-wheel/config`).catch(() => null);
+            if (altRes && altRes.ok) {
+              res = altRes;
+              API_BASE = altBase;
+            }
           }
         }
         if (res && res.ok) {
@@ -976,55 +1014,70 @@
       mainSpinBtn.disabled = true;
       mainSpinBtn.textContent = 'SPINNING...';
 
+      let spinData = null;
+
+      // 1. Try to fetch official spin from backend (short 2.5s timeout)
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+
         let res = await fetch(`${API_BASE}/spin-wheel/spin`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal
         }).catch(() => null);
 
-        if (!res || !res.ok) {
-          const altBase = getAlternativeApiBase(API_BASE);
-          const altRes = await fetch(`${altBase}/spin-wheel/spin`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          }).catch(() => null);
+        clearTimeout(timeoutId);
 
-          if (altRes && altRes.ok) {
-            res = altRes;
-            API_BASE = altBase;
+        if ((!res || !res.ok) && isLocalEnvironment()) {
+          const altBase = getAlternativeApiBase(API_BASE);
+          if (altBase) {
+            const altRes = await fetch(`${altBase}/spin-wheel/spin`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            }).catch(() => null);
+
+            if (altRes && altRes.ok) {
+              res = altRes;
+              API_BASE = altBase;
+            }
           }
         }
 
-        if (!res) {
-          throw new Error('Unable to connect to the backend server. Make sure the local server is running on port 5000.');
+        if (res && res.ok) {
+          const data = await res.json().catch(() => null);
+          if (data && data.success && typeof data.index === 'number') {
+            spinData = data;
+          }
         }
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          throw new Error(data.message || 'Failed to start spin. Please try again.');
-        }
-
-        if (!data.success || typeof data.index !== 'number') {
-          throw new Error(data.message || 'Invalid spin response from server.');
-        }
-
-        spinSession = data; // { index, offerId, label, token }
-
-        // Animate wheel to the winning segment index
-        animateToSegment(data.index, () => {
-          isSpinning = false;
-          showFormScreen(data);
-        });
-
       } catch (err) {
-        console.error('Spin error:', err);
-        showAlert(err.message || 'Network error while spinning. Please try again.');
-        isSpinning = false;
-        centerSpinBtn.disabled = false;
-        mainSpinBtn.disabled = false;
-        mainSpinBtn.textContent = 'SPIN THE WHEEL';
+        console.warn('Backend spin call bypassed or timed out:', err);
       }
+
+      // 2. Client-side weighted fallback: If backend is cold-starting, returning 404, or network drops,
+      // smoothly spin using the calibrated odds so the user NEVER sees an error or browser permission prompt!
+      if (!spinData) {
+        const winningIndex = pickWeightedIndex();
+        const winningOffer = offers[winningIndex] || offers[0];
+        const clientToken = 'cli_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+
+        spinData = {
+          success: true,
+          index: winningIndex,
+          offerId: winningOffer.id,
+          label: winningOffer.label,
+          token: clientToken,
+          isClientFallback: true
+        };
+      }
+
+      spinSession = spinData; // { index, offerId, label, token }
+
+      // Animate wheel to the winning segment index
+      animateToSegment(spinData.index, () => {
+        isSpinning = false;
+        showFormScreen(spinData);
+      });
     }
 
     function animateToSegment(targetIndex, onComplete) {
@@ -1125,7 +1178,19 @@
       }
 
       if (claimData.contact) {
-        if (claimData.contact.whatsapp) whatsappLink.href = claimData.contact.whatsapp;
+        let waUrl = claimData.contact.whatsapp || 'https://wa.me/916260582852';
+        if (!waUrl.includes('text=')) {
+          const prefill = encodeURIComponent(
+            `Hi Deven Co-Work! I won "${claimData.offerLabel || 'a reward'}" on the Spin Wheel!\n` +
+            `• Coupon Code: ${claimData.couponCode}\n` +
+            `• Name: ${claimData.name || ''}\n` +
+            `• Phone: ${claimData.phone || ''}\n` +
+            `• Preferred Visit Date: ${claimData.preferredDate || 'N/A'}\n` +
+            `Please confirm my slot!`
+          );
+          waUrl += (waUrl.includes('?') ? '&' : '?') + `text=${prefill}`;
+        }
+        whatsappLink.href = waUrl;
         if (claimData.contact.phoneDisplay) {
           whatsappLink.textContent = `WhatsApp Front Desk (${claimData.contact.phoneDisplay})`;
         }
@@ -1227,7 +1292,12 @@
       submitLeadBtn.disabled = true;
       submitLeadBtn.textContent = 'CLAIMING VOUCHER...';
 
+      let claimData = null;
+
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+
         let res = await fetch(`${API_BASE}/spin-wheel/leads`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1237,54 +1307,136 @@
             preferredDate: dateVal,
             token: spinSession.token,
           }),
+          signal: controller.signal
         }).catch(() => null);
 
-        if (!res || (!res.ok && res.status === 404)) {
-          const altBase = getAlternativeApiBase(API_BASE);
-          const altRes = await fetch(`${altBase}/spin-wheel/leads`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: nameVal,
-              phone: phoneVal,
-              preferredDate: dateVal,
-              token: spinSession.token,
-            }),
-          }).catch(() => null);
+        clearTimeout(timeoutId);
 
-          if (altRes) {
-            res = altRes;
-            API_BASE = altBase;
+        if ((!res || !res.ok) && isLocalEnvironment()) {
+          const altBase = getAlternativeApiBase(API_BASE);
+          if (altBase) {
+            const altRes = await fetch(`${altBase}/spin-wheel/leads`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: nameVal,
+                phone: phoneVal,
+                preferredDate: dateVal,
+                token: spinSession.token,
+              }),
+            }).catch(() => null);
+
+            if (altRes && altRes.ok) {
+              res = altRes;
+              API_BASE = altBase;
+            }
           }
         }
 
-        if (!res) {
-          throw new Error('Unable to connect to server. Please try again.');
+        if (res && res.ok) {
+          const json = await res.json().catch(() => null);
+          if (json && json.success && json.data) {
+            claimData = json.data;
+          }
         }
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          throw new Error(data.message || 'Failed to claim reward.');
-        }
-
-        // Save to localStorage
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.data));
-        } catch (storageErr) {
-          console.warn('Unable to write to localStorage:', storageErr);
-        }
-
-        // Transition to success screen
-        showSuccessScreen(data.data, false);
-
       } catch (err) {
-        console.error('Lead claim error:', err);
-        showAlert(err.message || 'An error occurred while claiming your coupon. Please try again.');
-        submitLeadBtn.disabled = false;
-        submitLeadBtn.textContent = 'CLAIM MY REWARD';
+        console.warn('Backend lead submission bypassed, generating local coupon:', err);
       }
+
+      // If backend is asleep or returns 404, generate authentic voucher locally and queue for background sync
+      if (!claimData) {
+        const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const couponCode = `DEVEN-${randomCode}`;
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+        claimData = {
+          name: nameVal,
+          phone: phoneVal,
+          preferredDate: dateVal,
+          offerId: spinSession.offerId,
+          offerLabel: spinSession.label,
+          couponCode: couponCode,
+          couponExpiresAt: expiresAt,
+          instructions: [
+            'Take a screenshot or note down your coupon code.',
+            'Visit us on your preferred date, or WhatsApp us to confirm your slot.',
+            'Show this coupon at the Deven Co-Work front desk to redeem your reward.',
+            'One coupon per person. It cannot be combined with other offers or exchanged for cash.'
+          ],
+          contact: {
+            phone: '916260582852',
+            phoneDisplay: '+91 62605 82852',
+            whatsapp: 'https://wa.me/916260582852'
+          },
+          address: {
+            name: 'Deven Co-Work',
+            line: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001',
+            mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Deven+Co-Work+VIP+Estate+Shankar+Nagar+Raipur'
+          }
+        };
+
+        // Queue lead for auto-sync once server wakes up
+        queuePendingLead({
+          name: nameVal,
+          phone: phoneVal,
+          preferredDate: dateVal,
+          offerId: spinSession.offerId,
+          offerLabel: spinSession.label,
+          couponCode: couponCode,
+          couponExpiresAt: expiresAt,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      // Save to localStorage
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(claimData));
+      } catch (storageErr) {
+        console.warn('Unable to write to localStorage:', storageErr);
+      }
+
+      // Transition to success screen
+      showSuccessScreen(claimData, false);
+      submitLeadBtn.disabled = false;
+      submitLeadBtn.textContent = 'CLAIM MY REWARD';
     });
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // OFFLINE LEAD QUEUE & BACKGROUND SYNC
+    // ═════════════════════════════════════════════════════════════════════════
+    function queuePendingLead(lead) {
+      try {
+        const queue = JSON.parse(localStorage.getItem('deven_pending_spin_leads') || '[]');
+        queue.push(lead);
+        localStorage.setItem('deven_pending_spin_leads', JSON.stringify(queue));
+      } catch (e) {
+        console.warn('Failed to queue pending lead:', e);
+      }
+    }
+
+    async function syncPendingLeads() {
+      try {
+        const raw = localStorage.getItem('deven_pending_spin_leads');
+        if (!raw) return;
+        const queue = JSON.parse(raw);
+        if (!Array.isArray(queue) || queue.length === 0) return;
+
+        const lead = queue[0];
+        const res = await fetch(`${API_BASE}/spin-wheel/leads`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lead),
+        }).catch(() => null);
+
+        if (res && res.ok) {
+          queue.shift();
+          localStorage.setItem('deven_pending_spin_leads', JSON.stringify(queue));
+          if (queue.length > 0) setTimeout(syncPendingLeads, 1500);
+        }
+      } catch (e) {
+        // Silently retry later
+      }
+    }
 
     // ═════════════════════════════════════════════════════════════════════════
     // CLIPBOARD COPY
@@ -1387,6 +1539,8 @@
       resizeCanvas();
       fetchConfig();
     }
+    syncPendingLeads();
+    window.addEventListener('online', syncPendingLeads);
   </script>
 </body>
 </html>
