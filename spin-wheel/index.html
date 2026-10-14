@@ -723,7 +723,18 @@
     // ═════════════════════════════════════════════════════════════════════════
     // CONFIGURATION & INITIAL STATE
     // ═════════════════════════════════════════════════════════════════════════
-    const API_BASE = 'https://deven-co-work.onrender.com/api'; // easy to change
+    const isLocal = typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === '0.0.0.0' ||
+      window.location.hostname.startsWith('192.168.') ||
+      window.location.hostname.startsWith('10.') ||
+      window.location.hostname.endsWith('.local') ||
+      window.location.protocol === 'file:' ||
+      !window.location.hostname
+    );
+    let API_BASE = (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('api')) ||
+                   (isLocal ? 'http://localhost:5000/api' : 'https://deven-co-work.onrender.com/api');
 
     const STORAGE_KEY = 'deven_spin_claim';
 
@@ -818,8 +829,18 @@
 
     async function fetchConfig() {
       try {
-        const res = await fetch(`${API_BASE}/spin-wheel/config`);
-        if (res.ok) {
+        let res = await fetch(`${API_BASE}/spin-wheel/config`).catch(() => null);
+        if (!res || !res.ok) {
+          const altBase = API_BASE.includes('localhost')
+            ? 'https://deven-co-work.onrender.com/api'
+            : 'http://localhost:5000/api';
+          const altRes = await fetch(`${altBase}/spin-wheel/config`).catch(() => null);
+          if (altRes && altRes.ok) {
+            res = altRes;
+            API_BASE = altBase;
+          }
+        }
+        if (res && res.ok) {
           const json = await res.json();
           if (json.success && json.data) {
             if (Array.isArray(json.data.offers) && json.data.offers.length > 0) {
@@ -929,19 +950,38 @@
       mainSpinBtn.textContent = 'SPINNING...';
 
       try {
-        const res = await fetch(`${API_BASE}/spin-wheel/spin`, {
+        let res = await fetch(`${API_BASE}/spin-wheel/spin`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-        });
+        }).catch(() => null);
 
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.message || 'Failed to start spin. Please try again.');
+        if (!res || !res.ok) {
+          const altBase = API_BASE.includes('localhost')
+            ? 'https://deven-co-work.onrender.com/api'
+            : 'http://localhost:5000/api';
+          const altRes = await fetch(`${altBase}/spin-wheel/spin`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          }).catch(() => null);
+
+          if (altRes && altRes.ok) {
+            res = altRes;
+            API_BASE = altBase;
+          }
         }
 
-        const data = await res.json();
+        if (!res) {
+          throw new Error('Unable to connect to the backend server. Make sure the local server is running on port 5000.');
+        }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to start spin. Please try again.');
+        }
+
         if (!data.success || typeof data.index !== 'number') {
-          throw new Error(data.message || 'Invalid spin response.');
+          throw new Error(data.message || 'Invalid spin response from server.');
         }
 
         spinSession = data; // { index, offerId, label, token }
@@ -1163,7 +1203,7 @@
       submitLeadBtn.textContent = 'CLAIMING VOUCHER...';
 
       try {
-        const res = await fetch(`${API_BASE}/spin-wheel/leads`, {
+        let res = await fetch(`${API_BASE}/spin-wheel/leads`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1172,9 +1212,34 @@
             preferredDate: dateVal,
             token: spinSession.token,
           }),
-        });
+        }).catch(() => null);
 
-        const data = await res.json();
+        if (!res || (!res.ok && res.status === 404)) {
+          const altBase = API_BASE.includes('localhost')
+            ? 'https://deven-co-work.onrender.com/api'
+            : 'http://localhost:5000/api';
+          const altRes = await fetch(`${altBase}/spin-wheel/leads`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: nameVal,
+              phone: phoneVal,
+              preferredDate: dateVal,
+              token: spinSession.token,
+            }),
+          }).catch(() => null);
+
+          if (altRes) {
+            res = altRes;
+            API_BASE = altBase;
+          }
+        }
+
+        if (!res) {
+          throw new Error('Unable to connect to server. Please try again.');
+        }
+
+        const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
           throw new Error(data.message || 'Failed to claim reward.');
