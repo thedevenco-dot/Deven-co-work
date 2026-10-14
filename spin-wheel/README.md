@@ -1,149 +1,98 @@
-# Spin the Wheel — Lead Generation Feature
+# Spin the Wheel — Setup & Deployment Guide
 
-Standalone, mobile-first "Spin the Wheel" promotion and lead-generation system for **Deven Co-Work** (Raipur).
-
----
-
-## Architecture Overview
-
-1. **Standalone Frontend (`/spin-wheel`)**: Single static HTML/CSS/JS file (`index.html`) using HTML5 canvas, responsive design matching the dark aesthetic of Deven Co-Work, zero external dependencies, deployable directly to Vercel or any static host.
-2. **Backend API (`/server`)**: Node.js + Express API endpoints under `/api/spin-wheel` with cryptographically secure weighted random selection, JWT verification tokens, duplicate phone prevention, anti-abuse rate limiters, and Excel export.
-3. **Database (`MongoDB`)**: Stores leads under `SpinWheelLead` collection with timestamps, visit dates, unique coupon codes, and redemption statuses.
-4. **Admin Panel (`/admin`)**: Operations panel tab **"Spin Wheel Leads"** with live stats, search, filtering, status updates, staff notes, and one-click styled `.xlsx` spreadsheet download.
-5. **Google Sheets Sync (`google-apps-script.gs`)**: Real-time webhook appending leads into a Google Sheet spreadsheet.
+Standalone, mobile-first "Spin the Wheel" promotion and lead-generation feature for **Deven Co-Work**.
 
 ---
 
-## 1. Server Setup & Dependencies
+## 1. Environment Variables
 
-Excel export uses `exceljs`. Install dependencies in the server directory:
+| Variable | Platform | Status | Description |
+| :--- | :--- | :--- | :--- |
+| *(None)* | **Vercel** (`spin-wheel` project) | *Not needed* | The frontend is a static web app; no environment variables are needed on Vercel. |
+| `JWT_SECRET` | **Render** (Backend Host) | **Required** | Used for cryptographically signing short-lived spin verification tokens. (Already configured on Render). |
+| `SPIN_SHEET_WEBHOOK_URL` | **Render** (Backend Host) | *Optional* | The Google Apps Script Web App URL where new lead rows are automatically appended. |
+| `SPIN_SHEET_SECRET` | **Render** (Backend Host) | *Optional* | Shared secret between the Express backend and the Apps Script webhook. Must match `SPIN_SHEET_SECRET` in Google Apps Script Script Properties. |
+| `CORS_ALLOWED_ORIGIN` | **Render** (Backend Host) | *Optional* | Extra allowed origin. Note: `https://spin.devencowork.com` is already permanently allowed in backend code. |
+
+---
+
+## 2. Generate a Strong Shared Secret
+
+To generate a secure 48-character random hex token for `SPIN_SHEET_SECRET`, run:
 
 ```bash
-npm install --prefix server
+node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"
 ```
 
-Restart the server:
-
-```bash
-# In development (root):
-npm run dev
-
-# Or in production on Render:
-npm start --prefix server
-```
+Save this value: it will be pasted into **both** Render and Google Apps Script.
 
 ---
 
-## 2. Setting Up Google Sheets Auto-Sync
+## 3. Google Sheet Setup (Automatic Lead Sync)
 
-Every spin wheel lead can automatically sync to a live Google Sheet:
-
-1. Open [Google Sheets](https://sheets.new) and create a new blank spreadsheet. Name it **"Deven Co-Work — Spin Wheel Leads"**.
-2. In the top menu, go to **Extensions** → **Apps Script**.
-3. Replace all code in `Code.gs` with the contents of [`spin-wheel/google-apps-script.gs`](google-apps-script.gs).
-4. (Optional) Set your secret token:
+1. Open [Google Sheets](https://sheets.new) and create a new blank spreadsheet (e.g. **"Deven Co-Work — Spin Wheel Leads"**).
+2. In the top navigation bar, click **Extensions** → **Apps Script**.
+3. Clear out any default code in the editor, and paste the entire contents of [`spin-wheel/google-apps-script.gs`](google-apps-script.gs).
+4. Configure the shared secret:
    - Click the gear icon (**Project Settings** ⚙️) on the left sidebar.
-   - Under **Script Properties**, add:
-     - **Property**: `SPIN_SHEET_SECRET`
-     - **Value**: Any secure random string (e.g. `deven_spin_secret_928374`)
-5. Click **Deploy** → **New deployment**:
-   - Click the gear next to "Select type" and choose **Web app**.
+   - Scroll down to the **Script Properties** section.
+   - Click **Edit script properties** → **Add script property**.
+   - **Property**: `SPIN_SHEET_SECRET`
+   - **Value**: (Paste the exact same secret generated in step 2).
+   - Click **Save script properties**.
+5. Deploy as Web App:
+   - Click **Deploy** (top right) → **New deployment**.
+   - Click the gear icon next to "Select type" and select **Web app**.
    - **Description**: `Spin Wheel Leads Webhook`
    - **Execute as**: `Me`
    - **Who has access**: `Anyone`
-   - Click **Deploy** and authorize the script permissions.
-6. Copy the **Web App URL** (ends in `/exec`).
-7. In your backend host (e.g., Render Dashboard):
-   - Set `SPIN_SHEET_WEBHOOK_URL` to your copied Web App URL.
-   - Set `SPIN_SHEET_SECRET` to the same secret string chosen in step 4.
+   - Click **Deploy** and grant standard Google authorization permissions.
+6. Copy the generated **Web App URL** (ends in `/exec`).
+7. In your **Render Dashboard** (for the backend service):
+   - Add `SPIN_SHEET_WEBHOOK_URL` = `<your copied /exec URL>`.
+   - Add `SPIN_SHEET_SECRET` = `<your secret string from step 2>`.
 
-The sheet will automatically create the styled header (`Date | Name | Phone | Preferred Date | Reward | Coupon Code | Valid Till`) on the first incoming lead and append each lead as text.
+> [!IMPORTANT]
+> Whenever you edit `google-apps-script.gs` in the future, you must click **Deploy** → **Manage deployments** → **Edit** and deploy as a **NEW VERSION** for changes to take effect.
 
 ---
 
-## 3. Deploying `/spin-wheel` to Vercel
+## 4. Redeploying / Restarting on Render
 
-The `/spin-wheel` folder is designed to be deployed as an independent project on Vercel:
+After adding or updating environment variables (`SPIN_SHEET_WEBHOOK_URL`, `SPIN_SHEET_SECRET`, etc.) in the Render dashboard:
+- Render will usually trigger an automatic redeploy. If not, click **Manual Deploy** → **Deploy latest commit** or **Restart Service** so the running process picks up the new environment variables.
+
+---
+
+## 5. Vercel Deployment
+
+Deploy `/spin-wheel` as a separate static project on Vercel:
 
 1. Go to your [Vercel Dashboard](https://vercel.com/new).
-2. Import the `Deven-co-work` repository.
-3. In the project setup screen:
+2. Select your repository: `Deven-co-work`.
+3. In the project configuration:
    - **Project Name**: `deven-cowork-spin`
    - **Framework Preset**: `Other`
    - **Root Directory**: Click "Edit" and choose `spin-wheel`
-   - **Build Command**: Leave empty / disabled (no build step needed)
-   - **Output Directory**: Leave empty
+   - **Build Command**: *Leave blank / disabled* (pure static HTML/CSS/JS)
+   - **Output Directory**: *Leave blank*
 4. Click **Deploy**.
-5. Add Custom Domain:
-   - In project **Settings** → **Domains**, add `spin.devencowork.com`.
-   - In your DNS provider (Cloudflare, GoDaddy, Namecheap, etc.), add a CNAME record:
+5. Custom Domain Configuration:
+   - Go to Project **Settings** → **Domains**.
+   - Add `spin.devencowork.com`.
+   - In your DNS provider (Cloudflare, GoDaddy, Namecheap), add the DNS record:
      - **Type**: `CNAME`
-     - **Name / Host**: `spin`
+     - **Name**: `spin`
      - **Value**: `cname.vercel-dns.com`
 
 ---
 
-## 4. CORS & Backend Configuration
+## 6. Quick Test Checklist
 
-The Express backend in `server/app.js` is pre-configured to allow requests from:
-- `https://spin.devencowork.com`
-- `http://localhost:3000`
-- `http://localhost:5000`
-- Custom origins configured via `CORS_ALLOWED_ORIGIN` environment variable.
-
-If testing locally on a different port, pass the query param `?api=http://localhost:5000/api` to `spin-wheel/index.html`.
-
----
-
-## 5. Editing Offers, Chances, & Validity
-
-All rewards, probability weights, and validity settings are centrally managed in a single editable file:
-
-📂 [`server/config/spinWheelConfig.js`](../server/config/spinWheelConfig.js)
-
-```javascript
-export const spinWheelConfig = {
-  couponPrefix: 'DEVEN',
-  couponValidDays: 7,   // How many days coupons stay valid
-  tokenTtl: '30m',       // JWT lifetime for claiming spin
-  offers: [
-    { id: 'free-tour',   label: 'Free Tour',                             short: 'Free Tour',     weight: 25, color: '#04B8BB', textColor: '#0A0A0A' },
-    { id: 'trial-2d',    label: '2 Days Free Trial',                     short: '2 Days Free',   weight: 20, color: '#141416', textColor: '#F1F1F1' },
-    { id: 'trial-7d',    label: '7 Days Free Trial',                     short: '7 Days Free',   weight: 5,  color: '#039DA0', textColor: '#0A0A0A' },
-    { id: 'pro-shoot',   label: 'Free Professional Shot in our Studio',  short: 'Free Pro Shoot',weight: 10, color: '#1C1C20', textColor: '#F1F1F1' },
-    { id: 'off-20',      label: '20% Discount on Booking Amount',        short: '20% Off',       weight: 15, color: '#04B8BB', textColor: '#0A0A0A' },
-    { id: 'off-30-team', label: '30% Discount on Team Booking',          short: '30% Team Off',  weight: 5,  color: '#141416', textColor: '#F1F1F1' },
-    { id: 'event-pass',  label: 'Passes to Free Workshops & Events',     short: 'Event Passes',  weight: 20, color: '#028588', textColor: '#FFFFFF' },
-  ],
-  instructions: [ ... ],
-  contact: { ... },
-  address: { ... }
-};
-```
-
-- **Weights**: Relative chances (e.g. weight 25 out of 100 = 25% probability). The client never sees weights.
-- Changes take effect as soon as the server restarts.
-
----
-
-## 6. Verification & Test Checklist
-
-- [x] **GET /api/spin-wheel/config**: Returns offers with colors & labels, instructions, contact, address (no weights).
-- [x] **POST /api/spin-wheel/spin**: Returns segment index, offer label, and signed JWT session token. Rate-limited to 10 spins/hour per IP.
-- [x] **POST /api/spin-wheel/leads**:
-  - Validates name (>= 2 chars), Indian mobile number (normalised to 10 digits starting with 6–9), and visit date (within 60 days).
-  - Enforces single reward per mobile number (returns HTTP 409 if already claimed).
-  - Enforces single claim per spin session ID.
-  - Generates coupon code `DEVEN-XXXXXX` valid for 7 days.
-- [x] **Frontend Flow (`/spin-wheel/index.html`)**:
-  - Smooth 5.2s canvas animation resting on the winning segment with safe middle-70% segment offset.
-  - Form validation with inline error feedback.
-  - Voucher screen with copy-to-clipboard, WhatsApp link, and Google Maps directions link.
-  - LocalStorage check (`deven_spin_claim`): Returning visitors see their claimed voucher directly.
-- [x] **Admin Panel (`/admin`)**:
-  - Sidebar item: **Spin Wheel Leads** under Operations group.
-  - Stat cards: Total Leads, Redeemed Count, Reward breakdown.
-  - Search by name, phone, coupon code; filter by status and reward.
-  - View modal: Edit status (`ISSUED`, `CONTACTED`, `REDEEMED`) and add internal staff notes.
-  - Export to Excel: Downloads styled `.xlsx` file with teal bold header, frozen top row, and text-formatted phone numbers.
-- [x] **Google Sheet Sync**: Automatically posts row payload to `SPIN_SHEET_WEBHOOK_URL` without blocking user response.
+- [ ] **Spin**: Click SPIN on the wheel; the wheel spins for ~5.2 seconds and rests smoothly on the winning segment.
+- [ ] **Form**: Fill in Full Name, 10-digit mobile number, and visit date; click "Claim My Reward".
+- [ ] **Coupon**: The voucher screen displays `DEVEN-XXXXXX` with the 7-day expiry date and copy-to-clipboard functionality.
+- [ ] **Admin Panel**: Log into `https://devencowork.com/admin` (or `http://localhost:3000/admin`), click **Operations → Spin Wheel Leads**, and confirm the lead is listed with status `ISSUED`.
+- [ ] **Excel Export**: Click "Export to Excel" in the admin panel and confirm a styled `.xlsx` file downloads.
+- [ ] **Google Sheet**: If `SPIN_SHEET_WEBHOOK_URL` is set, confirm a new row appears in the "Spin Wheel Leads" tab.
+- [ ] **Anti-Abuse / Duplicate Prevention**: Attempt to claim again with the same mobile number; verify it is rejected with "This mobile number has already claimed a reward coupon."
