@@ -1016,10 +1016,10 @@
 
       let spinData = null;
 
-      // 1. Try to fetch official spin from backend (short 2.5s timeout)
+      // 1. Try to fetch official spin from backend (4.5s timeout)
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const timeoutId = setTimeout(() => controller.abort(), 4500);
 
         let res = await fetch(`${API_BASE}/spin-wheel/spin`, {
           method: 'POST',
@@ -1294,19 +1294,23 @@
 
       let claimData = null;
 
+      const payload = {
+        name: nameVal,
+        phone: phoneVal,
+        preferredDate: dateVal,
+        token: spinSession.token,
+        offerId: spinSession.offerId,
+        offerLabel: spinSession.label,
+      };
+
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
 
         let res = await fetch(`${API_BASE}/spin-wheel/leads`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: nameVal,
-            phone: phoneVal,
-            preferredDate: dateVal,
-            token: spinSession.token,
-          }),
+          body: JSON.stringify(payload),
           signal: controller.signal
         }).catch(() => null);
 
@@ -1318,19 +1322,30 @@
             const altRes = await fetch(`${altBase}/spin-wheel/leads`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                name: nameVal,
-                phone: phoneVal,
-                preferredDate: dateVal,
-                token: spinSession.token,
-              }),
+              body: JSON.stringify(payload),
             }).catch(() => null);
 
             if (altRes && altRes.ok) {
               res = altRes;
               API_BASE = altBase;
+            } else if (altRes && altRes.status === 409) {
+              res = altRes;
             }
           }
+        }
+
+        // Handle duplicate mobile number claim
+        if (res && res.status === 409) {
+          const json = await res.json().catch(() => null);
+          showAlert(json?.message || 'This mobile number has already claimed a reward coupon.');
+          submitLeadBtn.disabled = false;
+          submitLeadBtn.textContent = 'CLAIM MY REWARD';
+          if (json?.data) {
+            setTimeout(() => {
+              showSuccessScreen(json.data, true);
+            }, 1200);
+          }
+          return;
         }
 
         if (res && res.ok) {
@@ -1380,6 +1395,7 @@
           name: nameVal,
           phone: phoneVal,
           preferredDate: dateVal,
+          token: spinSession.token || 'cli_offline',
           offerId: spinSession.offerId,
           offerLabel: spinSession.label,
           couponCode: couponCode,
@@ -1422,16 +1438,33 @@
         if (!Array.isArray(queue) || queue.length === 0) return;
 
         const lead = queue[0];
-        const res = await fetch(`${API_BASE}/spin-wheel/leads`, {
+        let res = await fetch(`${API_BASE}/spin-wheel/leads`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(lead),
         }).catch(() => null);
 
-        if (res && res.ok) {
+        if ((!res || !res.ok) && isLocalEnvironment()) {
+          const altBase = getAlternativeApiBase(API_BASE);
+          if (altBase) {
+            const altRes = await fetch(`${altBase}/spin-wheel/leads`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(lead),
+            }).catch(() => null);
+            if (altRes && altRes.ok) {
+              res = altRes;
+              API_BASE = altBase;
+            } else if (altRes && altRes.status === 409) {
+              res = altRes;
+            }
+          }
+        }
+
+        if (res && (res.ok || res.status === 409)) {
           queue.shift();
           localStorage.setItem('deven_pending_spin_leads', JSON.stringify(queue));
-          if (queue.length > 0) setTimeout(syncPendingLeads, 1500);
+          if (queue.length > 0) setTimeout(syncPendingLeads, 1200);
         }
       } catch (e) {
         // Silently retry later

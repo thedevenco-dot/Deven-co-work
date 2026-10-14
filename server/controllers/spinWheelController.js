@@ -92,24 +92,40 @@ export const spin = async (req, res) => {
 // Public: Submit Lead and claim coupon code
 export const createLead = async (req, res) => {
   try {
-    const { name, phone, preferredDate, token } = req.body;
+    const {
+      name,
+      phone,
+      preferredDate,
+      token,
+      offerId: reqOfferId,
+      offerLabel: reqOfferLabel,
+      couponCode: reqCouponCode,
+      couponExpiresAt: reqCouponExpiresAt,
+    } = req.body || {};
 
-    // 1. Verify token
-    if (!token) {
-      return res.status(400).json({ success: false, message: 'Missing spin session token. Please spin again.' });
+    // 1. Resolve spinId and offerId (supporting JWT, client fallback tokens, and offline sync)
+    let spinId = null;
+    let resolvedOfferId = reqOfferId || null;
+
+    if (token && typeof token === 'string') {
+      if (token.startsWith('cli_') || token.startsWith('offline_')) {
+        spinId = token;
+      } else {
+        const jwtSecret = process.env.JWT_SECRET || 'deven_cowork_local_jwt_secret_982347';
+        try {
+          const decoded = jwt.verify(token, jwtSecret, { audience: 'spin-wheel' });
+          spinId = decoded.spinId;
+          resolvedOfferId = decoded.offerId || resolvedOfferId;
+        } catch (jwtErr) {
+          // Token is invalid/expired/client-generated, gracefully accept as fallback
+          console.warn('Spin token verification fallback:', jwtErr.message);
+          spinId = token;
+        }
+      }
     }
 
-    const jwtSecret = process.env.JWT_SECRET || 'deven_cowork_local_jwt_secret_982347';
-    let decoded;
-    try {
-      decoded = jwt.verify(token, jwtSecret, { audience: 'spin-wheel' });
-    } catch (err) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired spin session. Please spin again.' });
-    }
-
-    const { spinId, offerId } = decoded;
-    if (!spinId || !offerId) {
-      return res.status(400).json({ success: false, message: 'Corrupted spin session token.' });
+    if (!spinId) {
+      spinId = `lead_${crypto.randomUUID()}`;
     }
 
     // 2. Validate inputs
@@ -146,44 +162,69 @@ export const createLead = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Preferred visit date must be within 60 days.' });
     }
 
-    // 3. Resolve reward strictly from token
-    const offer = spinWheelConfig.offers.find((o) => o.id === offerId);
+    // 3. Resolve reward
+    let offer = spinWheelConfig.offers.find((o) => o.id === resolvedOfferId);
+    if (!offer && reqOfferLabel) {
+      offer = spinWheelConfig.offers.find((o) => o.label.toLowerCase() === String(reqOfferLabel).toLowerCase());
+    }
     if (!offer) {
-      return res.status(400).json({ success: false, message: 'Reward specified in token is no longer available.' });
+      offer = spinWheelConfig.offers[0];
     }
 
-    // 4. Check for duplicate phone or reused spinId
+    // 4. Check for duplicate phone
     const existingPhone = await SpinWheelLead.findOne({ phone: rawDigits });
     if (existingPhone) {
       return res.status(409).json({
         success: false,
         message: 'This mobile number has already claimed a reward coupon.',
+        data: {
+          name: existingPhone.name,
+          offerLabel: existingPhone.offerLabel,
+          couponCode: existingPhone.couponCode,
+          couponExpiresAt: existingPhone.couponExpiresAt,
+          preferredDate: existingPhone.preferredDate,
+          instructions: spinWheelConfig.instructions,
+          contact: spinWheelConfig.contact,
+          address: spinWheelConfig.address,
+        },
       });
     }
 
-    const existingSpin = await SpinWheelLead.findOne({ spinId });
-    if (existingSpin) {
-      return res.status(409).json({
-        success: false,
-        message: 'This spin session has already been claimed.',
-      });
-    }
-
-    // 5. Generate unique coupon code DEVEN-XXXXXX
-    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let couponCode = '';
-    const prefix = spinWheelConfig.couponPrefix || 'DEVEN';
-
-    for (let attempt = 0; attempt < 5; attempt++) {
-      let code = '';
-      for (let i = 0; i < 6; i++) {
-        code += alphabet[crypto.randomInt(0, alphabet.length)];
+    // Check duplicate spinId if spinId was server-generated
+    if (spinId && !spinId.startsWith('lead_') && !spinId.startsWith('offline_')) {
+      const existingSpin = await SpinWheelLead.findOne({ spinId });
+      if (existingSpin) {
+        return res.status(409).json({
+          success: false,
+          message: 'This spin session has already been claimed.',
+        });
       }
-      const candidate = `${prefix}-${code}`;
-      const conflict = await SpinWheelLead.findOne({ couponCode: candidate });
-      if (!conflict) {
-        couponCode = candidate;
-        break;
+    }
+
+    // 5. Generate or use unique coupon code DEVEN-XXXXXX
+    const prefix = spinWheelConfig.couponPrefix || 'DEVEN';
+    let couponCode = reqCouponCode ? String(reqCouponCode).trim().toUpperCase() : '';
+
+    if (couponCode) {
+      const conflict = await SpinWheelLead.findOne({ couponCode });
+      if (conflict) {
+        couponCode = '';
+      }
+    }
+
+    if (!couponCode) {
+      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      for (let attempt = 0; attempt < 5; attempt++) {
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+          code += alphabet[crypto.randomInt(0, alphabet.length)];
+        }
+        const candidate = `${prefix}-${code}`;
+        const conflict = await SpinWheelLead.findOne({ couponCode: candidate });
+        if (!conflict) {
+          couponCode = candidate;
+          break;
+        }
       }
     }
 
@@ -192,7 +233,10 @@ export const createLead = async (req, res) => {
     }
 
     const validDays = spinWheelConfig.couponValidDays || 7;
-    const couponExpiresAt = new Date(Date.now() + validDays * 24 * 60 * 60 * 1000);
+    let couponExpiresAt = reqCouponExpiresAt ? new Date(reqCouponExpiresAt) : null;
+    if (!couponExpiresAt || isNaN(couponExpiresAt.getTime())) {
+      couponExpiresAt = new Date(Date.now() + validDays * 24 * 60 * 60 * 1000);
+    }
 
     // 6. Save to Database
     const lead = await SpinWheelLead.create({
