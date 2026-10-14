@@ -40,7 +40,15 @@ if (process.env.CORS_ALLOWED_ORIGIN) {
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true); // Allow server/curl/postman
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    const isAllowed =
+      allowedOrigins.indexOf(origin) !== -1 ||
+      origin.endsWith('.vercel.app') ||
+      origin.endsWith('.devencowork.com') ||
+      /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/.test(origin) ||
+      /^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/.test(origin) ||
+      /^http:\/\/172\.(1[6-9]|2\d|3[01])\.\d+\.\d+(:\d+)?$/.test(origin) ||
+      process.env.NODE_ENV !== 'production';
+    if (isAllowed) {
       return callback(null, true);
     }
     return callback(new Error('Blocked by CORS security policy'));

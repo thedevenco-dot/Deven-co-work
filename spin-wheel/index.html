@@ -721,20 +721,49 @@
 
   <script>
     // ═════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     // CONFIGURATION & INITIAL STATE
     // ═════════════════════════════════════════════════════════════════════════
-    const isLocal = typeof window !== 'undefined' && (
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname === '0.0.0.0' ||
-      window.location.hostname.startsWith('192.168.') ||
-      window.location.hostname.startsWith('10.') ||
-      window.location.hostname.endsWith('.local') ||
-      window.location.protocol === 'file:' ||
-      !window.location.hostname
-    );
-    let API_BASE = (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('api')) ||
-                   (isLocal ? 'http://localhost:5000/api' : 'https://deven-co-work.onrender.com/api');
+    function resolveInitialApiBase() {
+      if (typeof window === 'undefined') return 'https://deven-co-work.onrender.com/api';
+
+      const queryApi = new URLSearchParams(window.location.search).get('api');
+      if (queryApi) return queryApi;
+
+      const host = window.location.hostname || '';
+      const isFile = window.location.protocol === 'file:' || !host;
+      const isLoopback = host === 'localhost' || host === '127.0.0.1';
+      const isLanIp = host.startsWith('192.168.') ||
+                      host.startsWith('10.') ||
+                      host.endsWith('.local') ||
+                      /^172\.(1[6-9]|2\d|3[01])\./.test(host);
+
+      if (isFile || isLoopback) {
+        return 'http://localhost:5000/api';
+      }
+      if (isLanIp) {
+        // Mobile phone or secondary device browsing host computer via local Wi-Fi IP
+        return `http://${host}:5000/api`;
+      }
+      return 'https://deven-co-work.onrender.com/api';
+    }
+
+    function getAlternativeApiBase(currentBase) {
+      const host = (typeof window !== 'undefined' && window.location.hostname) || '';
+      const isLanIp = host.startsWith('192.168.') ||
+                      host.startsWith('10.') ||
+                      host.endsWith('.local') ||
+                      /^172\.(1[6-9]|2\d|3[01])\./.test(host);
+
+      const localTarget = isLanIp ? `http://${host}:5000/api` : 'http://localhost:5000/api';
+
+      if (currentBase && currentBase.includes('onrender.com')) {
+        return localTarget;
+      }
+      return 'https://deven-co-work.onrender.com/api';
+    }
+
+    let API_BASE = resolveInitialApiBase();
 
     const STORAGE_KEY = 'deven_spin_claim';
 
@@ -831,9 +860,7 @@
       try {
         let res = await fetch(`${API_BASE}/spin-wheel/config`).catch(() => null);
         if (!res || !res.ok) {
-          const altBase = API_BASE.includes('localhost')
-            ? 'https://deven-co-work.onrender.com/api'
-            : 'http://localhost:5000/api';
+          const altBase = getAlternativeApiBase(API_BASE);
           const altRes = await fetch(`${altBase}/spin-wheel/config`).catch(() => null);
           if (altRes && altRes.ok) {
             res = altRes;
@@ -956,9 +983,7 @@
         }).catch(() => null);
 
         if (!res || !res.ok) {
-          const altBase = API_BASE.includes('localhost')
-            ? 'https://deven-co-work.onrender.com/api'
-            : 'http://localhost:5000/api';
+          const altBase = getAlternativeApiBase(API_BASE);
           const altRes = await fetch(`${altBase}/spin-wheel/spin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1215,9 +1240,7 @@
         }).catch(() => null);
 
         if (!res || (!res.ok && res.status === 404)) {
-          const altBase = API_BASE.includes('localhost')
-            ? 'https://deven-co-work.onrender.com/api'
-            : 'http://localhost:5000/api';
+          const altBase = getAlternativeApiBase(API_BASE);
           const altRes = await fetch(`${altBase}/spin-wheel/leads`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
