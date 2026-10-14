@@ -112,6 +112,44 @@ export const api = {
     return handleResponse(res);
   },
 
+  async fetchSpinWheelLeads(params = {}) {
+    const query = new URLSearchParams();
+    if (params.search) query.set('search', params.search);
+    if (params.status) query.set('status', params.status);
+    if (params.offerId) query.set('offerId', params.offerId);
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    const res = await fetch(`${API_BASE}/admin/spin-wheel/leads${queryString}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async updateSpinWheelLead(id, data) {
+    const res = await fetch(`${API_BASE}/admin/spin-wheel/leads/${id}`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  async downloadSpinWheelLeadsExcel(params = {}) {
+    const query = new URLSearchParams();
+    if (params.search) query.set('search', params.search);
+    if (params.status) query.set('status', params.status);
+    if (params.offerId) query.set('offerId', params.offerId);
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    const res = await fetch(`${API_BASE}/admin/spin-wheel/leads/export${queryString}`, {
+      method: 'GET',
+      headers: getHeaders(null),
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to export: ${res.statusText}`);
+    }
+    return res.blob();
+  },
+
   // ── Auth ───────────────────────────────────────────────────────────────────
   async login(username, password) {
     const res = await fetch(`${API_BASE}/auth/login`, {

@@ -20,6 +20,11 @@ import {
   updateConfig,
   getLeads,
 } from '../controllers/calculatorController.js';
+import {
+  getAdminSpinWheelLeads,
+  exportSpinWheelLeadsExcel,
+  updateSpinWheelLeadStatus,
+} from '../controllers/spinWheelController.js';
 
 const router = express.Router();
 
@@ -47,6 +52,11 @@ router.post('/test-email', authorize('SUPER_ADMIN', 'ADMIN'), sendTestEmail);
 router.get('/calculator/config', authorize('SUPER_ADMIN', 'ADMIN'), getAdminConfig);
 router.put('/calculator/config', authorize('SUPER_ADMIN', 'ADMIN'), updateConfig);
 router.get('/calculator/leads', authorize('SUPER_ADMIN', 'ADMIN'), getLeads);
+
+// Spin Wheel Admin Routes
+router.get('/spin-wheel/leads', authorize('SUPER_ADMIN', 'ADMIN'), getAdminSpinWheelLeads);
+router.get('/spin-wheel/leads/export', authorize('SUPER_ADMIN', 'ADMIN'), exportSpinWheelLeadsExcel);
+router.patch('/spin-wheel/leads/:id', authorize('SUPER_ADMIN', 'ADMIN'), updateSpinWheelLeadStatus);
 
 export default router;
 

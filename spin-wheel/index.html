@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
+  <title>Spin & Win | Deven Co-Work</title>
+  <meta name="description" content="Spin the wheel at Deven Co-Work and win exclusive coworking day passes, free trial days, discounts, and studio access." />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/png" href="https://www.devencowork.com/favicon-96x96.png" />
+
+  <style>
+    :root {
+      --bg: #000000;
+      --card-bg: #0A0A0A;
+      --border: #242424;
+      --accent: #04B8BB;
+      --accent-hover: #039da0;
+      --accent-glow: rgba(4, 184, 187, 0.25);
+      --text: #F1F1F1;
+      --muted: #A3A3A3;
+      --danger: #ef4444;
+      --font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-stack);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1.5rem 1rem 3rem;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+      width: 100%;
+    }
+
+    .wordmark {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .wordmark span.accent {
+      color: var(--accent);
+    }
+
+    .tagline {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* Screen Wrappers */
+    .screen {
+      width: 100%;
+      display: none;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Wheel Container */
+    .wheel-wrapper {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      max-width: 88vw;
+      max-height: 88vw;
+      margin: 0.5rem auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas#wheel-canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 0 35px rgba(4, 184, 187, 0.15), 0 0 0 4px #1A1A1C;
+      touch-action: none;
+    }
+
+    /* Pointer (12 o'clock top arrow) */
+    .wheel-pointer {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px;
+      height: 32px;
+      z-index: 10;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+    }
+
+    .wheel-pointer svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--accent);
+    }
+
+    /* Center Spin Button */
+    .center-spin-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #0A0A0A;
+      border: 3px solid var(--accent);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      z-index: 12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px var(--accent-glow), inset 0 0 10px rgba(0, 0, 0, 0.8);
+      transition: all 0.2s ease;
+      outline: none;
+      user-select: none;
+    }
+
+    .center-spin-btn:hover:not(:disabled) {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 25px rgba(4, 184, 187, 0.5);
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+
+    .center-spin-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    /* Main Big Spin Button below wheel */
+    .spin-cta-btn {
+      width: 100%;
+      max-width: 320px;
+      padding: 0.95rem 1.5rem;
+      background: var(--accent);
+      color: #0A0A0A;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 20px var(--accent-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .spin-cta-btn:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(4, 184, 187, 0.4);
+    }
+
+    .spin-cta-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Card Box */
+    .card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Celebration Banner */
+    .win-banner {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .win-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(4, 184, 187, 0.12);
+      border: 1px solid rgba(4, 184, 187, 0.3);
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      margin-bottom: 0.6rem;
+    }
+
+    .win-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #FFF;
+      line-height: 1.3;
+    }
+
+    .win-reward-highlight {
+      color: var(--accent);
+      display: block;
+      margin-top: 0.25rem;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.15rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem 0.95rem;
+      background: #121214;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .phone-field-wrap {
+      display: flex;
+      align-items: stretch;
+      background: #121214;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .phone-field-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .phone-prefix {
+      display: flex;
+      align-items: center;
+      padding: 0 0.85rem;
+      background: #18181B;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-right: 1px solid var(--border);
+      user-select: none;
+    }
+
+    .phone-field-wrap input {
+      flex: 1;
+      padding: 0.8rem 0.95rem;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .field-error {
+      color: var(--danger);
+      font-size: 0.75rem;
+      margin-top: 0.35rem;
+      display: none;
+    }
+
+    .alert-box {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      margin-bottom: 1rem;
+      display: none;
+      text-align: left;
+    }
+
+    .alert-box.info {
+      background: rgba(4, 184, 187, 0.1);
+      border-color: rgba(4, 184, 187, 0.3);
+      color: var(--accent);
+    }
+
+    /* Coupon Box (Success Screen) */
+    .coupon-box {
+      background: #121214;
+      border: 2px dashed var(--accent);
+      border-radius: 10px;
+      padding: 1.25rem 1rem;
+      margin: 1.25rem 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .coupon-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .coupon-code {
+      font-family: monospace, ui-monospace, SFMono-Regular;
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      user-select: all;
+    }
+
+    .copy-btn {
+      padding: 0.45rem 1rem;
+      background: #1F1F23;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .validity-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .visit-date-note {
+      font-size: 0.85rem;
+      color: #FFF;
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+
+    /* Instructions & Address */
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin: 1.5rem 0 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .instruction-list {
+      list-style: none;
+      text-align: left;
+      font-size: 0.825rem;
+      color: var(--muted);
+      space-y: 0.6rem;
+    }
+
+    .instruction-list li {
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      line-height: 1.45;
+    }
+
+    .instruction-list li span.step-num {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.8rem;
+      min-width: 18px;
+    }
+
+    .address-card {
+      background: #121214;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.825rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      line-height: 1.5;
+    }
+
+    .address-card strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .action-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
+      width: 100%;
+    }
+
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: #141416;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.825rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(4, 184, 187, 0.05);
+    }
+
+    .btn-whatsapp {
+      background: #25D366;
+      border-color: #25D366;
+      color: #0A0A0A;
+    }
+
+    .btn-whatsapp:hover {
+      background: #1EBE5B;
+      color: #000;
+    }
+
+    /* Confetti Canvas overlay */
+    canvas#confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .screen {
+        animation: none;
+      }
+      .center-spin-btn:hover {
+        transform: translate(-50%, -50%);
+      }
+      .spin-cta-btn:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas Confetti Overlay -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="wordmark">
+        DEVEN <span class="accent">CO-WORK</span>
+      </div>
+      <p class="tagline">Spin the wheel. Win a reward.</p>
+    </header>
+
+    <!-- Global Alert Box -->
+    <div id="global-alert" class="alert-box"></div>
+
+    <!-- ════════ SCREEN 1: WHEEL LANDING ════════ -->
+    <section id="screen-wheel" class="screen active">
+      <div class="wheel-wrapper">
+        <div class="wheel-pointer">
+          <svg viewBox="0 0 24 28">
+            <path d="M12 26 L2 4 A2 2 0 0 1 4 2 L20 2 A2 2 0 0 1 22 4 Z" />
+          </svg>
+        </div>
+        <canvas id="wheel-canvas" width="680" height="680"></canvas>
+        <button id="center-spin-btn" class="center-spin-btn" aria-label="Spin the wheel">
+          SPIN
+        </button>
+      </div>
+
+      <button id="main-spin-btn" class="spin-cta-btn">
+        SPIN THE WHEEL
+      </button>
+
+      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 1rem; text-align: center;">
+        Every spin wins! 1 spin per person.
+      </p>
+    </section>
+
+    <!-- ════════ SCREEN 2: WIN & LEAD CLAIM FORM ════════ -->
+    <section id="screen-form" class="screen">
+      <div class="card">
+        <div class="win-banner">
+          <span class="win-badge">Congratulations!</span>
+          <h2 class="win-title">
+            You won:
+            <span id="win-reward-text" class="win-reward-highlight">Free Tour</span>
+          </h2>
+          <p style="font-size: 0.8rem; color: var(--muted); margin-top: 0.35rem;">
+            Claim your voucher code below to redeem.
+          </p>
+        </div>
+
+        <form id="lead-form" novalidate>
+          <!-- Full Name -->
+          <div class="form-group">
+            <label class="form-label" for="lead-name">Full Name *</label>
+            <input
+              type="text"
+              id="lead-name"
+              class="form-input"
+              placeholder="e.g. Rahul Sharma"
+              autocomplete="name"
+              required
+            />
+            <div id="name-error" class="field-error">Please enter your full name (at least 2 characters).</div>
+          </div>
+
+          <!-- Mobile Number -->
+          <div class="form-group">
+            <label class="form-label" for="lead-phone">Mobile Number *</label>
+            <div class="phone-field-wrap">
+              <span class="phone-prefix">+91</span>
+              <input
+                type="tel"
+                id="lead-phone"
+                placeholder="98765 43210"
+                maxlength="14"
+                autocomplete="tel-national"
+                required
+              />
+            </div>
+            <div id="phone-error" class="field-error">Please enter a valid 10-digit Indian mobile number (starts with 6–9).</div>
+          </div>
+
+          <!-- Preferred Visit Date -->
+          <div class="form-group">
+            <label class="form-label" for="lead-date">Preferred Visit Date *</label>
+            <input
+              type="date"
+              id="lead-date"
+              class="form-input"
+              required
+            />
+            <div id="date-error" class="field-error">Please select a valid visit date within the next 60 days.</div>
+          </div>
+
+          <button type="submit" id="submit-lead-btn" class="spin-cta-btn" style="width: 100%; margin-top: 0.5rem;">
+            CLAIM MY REWARD
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ════════ SCREEN 3: SUCCESS & COUPON VOUCHER ════════ -->
+    <section id="screen-success" class="screen">
+      <div class="card">
+        <div style="text-align: center;">
+          <span class="win-badge">Claim Confirmed 🎉</span>
+          <h2 id="success-name-title" class="win-title" style="margin-top: 0.2rem;">
+            Thank you!
+          </h2>
+          <p id="success-reward-subtitle" style="font-size: 0.9rem; color: var(--accent); font-weight: 700; margin-top: 0.25rem;">
+            Reward Claimed
+          </p>
+        </div>
+
+        <!-- Coupon Code Display -->
+        <div class="coupon-box">
+          <div class="coupon-label">YOUR EXCLUSIVE COUPON CODE</div>
+          <div id="coupon-display" class="coupon-code">DEVEN-XXXXXX</div>
+          <button id="copy-code-btn" type="button" class="copy-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copy-btn-text">Copy Code</span>
+          </button>
+          <div id="validity-note-text" class="validity-note">
+            Use this coupon within 7 days.
+          </div>
+          <div id="preferred-date-note" class="visit-date-note">
+            Visit Date: -
+          </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="section-title">How to Redeem</div>
+        <ul id="instructions-list" class="instruction-list">
+          <li><span class="step-num">1.</span> <span>Take a screenshot or note down your coupon code.</span></li>
+          <li><span class="step-num">2.</span> <span>Visit us on your preferred date, or WhatsApp us to confirm your slot.</span></li>
+          <li><span class="step-num">3.</span> <span>Show this coupon at the Deven Co-Work front desk to redeem your reward.</span></li>
+          <li><span class="step-num">4.</span> <span>One coupon per person. It cannot be combined with other offers or exchanged for cash.</span></li>
+        </ul>
+
+        <!-- Address Block -->
+        <div class="section-title">Our Location</div>
+        <div class="address-card">
+          <strong id="address-name">Deven Co-Work</strong>
+          <span id="address-line">VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-links">
+          <a
+            id="whatsapp-link"
+            href="https://wa.me/916260582852"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary btn-whatsapp"
+          >
+            WhatsApp Front Desk (+91 62605 82852)
+          </a>
+          <a
+            id="directions-link"
+            href="https://www.google.com/maps/search/?api=1&query=Deven+Co-Work+VIP+Estate+Shankar+Nagar+Raipur"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary"
+          >
+            Get Directions on Google Maps
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ═════════════════════════════════════════════════════════════════════════
+    // CONFIGURATION & INITIAL STATE
+    // ═════════════════════════════════════════════════════════════════════════
+    const API_BASE = new URLSearchParams(window.location.search).get('api') || 'https://deven-co-work.onrender.com/api'; // easy to change
+
+    const STORAGE_KEY = 'deven_spin_claim';
+
+    // Fallback offers matching server specification
+    let offers = [
+      { id: 'free-tour', label: 'Free Tour', short: 'Free Tour', color: '#04B8BB', textColor: '#0A0A0A' },
+      { id: 'trial-2d', label: '2 Days Free Trial', short: '2 Days Free', color: '#151518', textColor: '#F1F1F1' },
+      { id: 'trial-7d', label: '7 Days Free Trial', short: '7 Days Free', color: '#03A5A8', textColor: '#0A0A0A' },
+      { id: 'pro-shoot', label: 'Free Professional Shot in our Studio', short: 'Free Pro Shoot', color: '#1B1B1E', textColor: '#F1F1F1' },
+      { id: 'off-20', label: '20% Discount on Booking Amount', short: '20% Off', color: '#04B8BB', textColor: '#0A0A0A' },
+      { id: 'off-30-team', label: '30% Discount on Booking Amount for Team Booking', short: '30% Team Off', color: '#151518', textColor: '#F1F1F1' },
+      { id: 'event-pass', label: 'Passes to our Free Startup Workshops & Events', short: 'Event Passes', color: '#028588', textColor: '#FFFFFF' }
+    ];
+
+    let currentRotation = 0; // in radians
+    let isSpinning = false;
+    let spinSession = null; // { index, offerId, label, token }
+
+    // DOM Elements
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+    const centerSpinBtn = document.getElementById('center-spin-btn');
+    const mainSpinBtn = document.getElementById('main-spin-btn');
+    const globalAlert = document.getElementById('global-alert');
+
+    // Screens
+    const screenWheel = document.getElementById('screen-wheel');
+    const screenForm = document.getElementById('screen-form');
+    const screenSuccess = document.getElementById('screen-success');
+
+    // Form elements
+    const leadForm = document.getElementById('lead-form');
+    const leadName = document.getElementById('lead-name');
+    const leadPhone = document.getElementById('lead-phone');
+    const leadDate = document.getElementById('lead-date');
+    const submitLeadBtn = document.getElementById('submit-lead-btn');
+    const nameError = document.getElementById('name-error');
+    const phoneError = document.getElementById('phone-error');
+    const dateError = document.getElementById('date-error');
+    const winRewardText = document.getElementById('win-reward-text');
+
+    // Success elements
+    const successNameTitle = document.getElementById('success-name-title');
+    const successRewardSubtitle = document.getElementById('success-reward-subtitle');
+    const couponDisplay = document.getElementById('coupon-display');
+    const copyCodeBtn = document.getElementById('copy-code-btn');
+    const copyBtnText = document.getElementById('copy-btn-text');
+    const validityNoteText = document.getElementById('validity-note-text');
+    const preferredDateNote = document.getElementById('preferred-date-note');
+    const instructionsList = document.getElementById('instructions-list');
+    const addressName = document.getElementById('address-name');
+    const addressLine = document.getElementById('address-line');
+    const whatsappLink = document.getElementById('whatsapp-link');
+    const directionsLink = document.getElementById('directions-link');
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // INITIALIZATION & CHECK SAVED CLAIM
+    // ═════════════════════════════════════════════════════════════════════════
+    function checkSavedClaim() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const data = JSON.parse(saved);
+          if (data && data.couponCode) {
+            showSuccessScreen(data, true);
+            return true;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not read localStorage:', e);
+      }
+      return false;
+    }
+
+    function setupDateBounds() {
+      const now = new Date();
+      // Format YYYY-MM-DD
+      const toISO = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      };
+      const minStr = toISO(now);
+      const maxDate = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+      const maxStr = toISO(maxDate);
+
+      leadDate.min = minStr;
+      leadDate.max = maxStr;
+      leadDate.value = minStr;
+    }
+
+    async function fetchConfig() {
+      try {
+        const res = await fetch(`${API_BASE}/spin-wheel/config`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            if (Array.isArray(json.data.offers) && json.data.offers.length > 0) {
+              offers = json.data.offers;
+              drawWheel(currentRotation);
+            }
+            if (json.data.instructions && Array.isArray(json.data.instructions)) {
+              renderInstructions(json.data.instructions);
+            }
+            if (json.data.contact) {
+              if (json.data.contact.whatsapp) whatsappLink.href = json.data.contact.whatsapp;
+              if (json.data.contact.phoneDisplay) {
+                whatsappLink.textContent = `WhatsApp Front Desk (${json.data.contact.phoneDisplay})`;
+              }
+            }
+            if (json.data.address) {
+              if (json.data.address.name) addressName.textContent = json.data.address.name;
+              if (json.data.address.line) addressLine.textContent = json.data.address.line;
+              if (json.data.address.mapsUrl) directionsLink.href = json.data.address.mapsUrl;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Using default spin wheel config (API unreachable):', e);
+      }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // WHEEL DRAWING (DEVICE PIXEL RATIO AWARE)
+    // ═════════════════════════════════════════════════════════════════════════
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const size = rect.width || 340;
+      canvas.width = Math.round(size * dpr);
+      canvas.height = Math.round(size * dpr);
+      drawWheel(currentRotation);
+    }
+
+    function drawWheel(rotationAngle) {
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = cx - (8 * dpr);
+
+      ctx.clearRect(0, 0, w, h);
+
+      const numSegments = offers.length;
+      const arc = (2 * Math.PI) / numSegments;
+
+      for (let i = 0; i < numSegments; i++) {
+        const angle = rotationAngle + (i * arc);
+        const offer = offers[i];
+
+        // Draw Wedge
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, angle, angle + arc, false);
+        ctx.closePath();
+        ctx.fillStyle = offer.color || (i % 2 === 0 ? '#04B8BB' : '#141416');
+        ctx.fill();
+
+        // Wedge Border
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2 * dpr;
+        ctx.stroke();
+
+        // Draw Wedge Label
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle + arc / 2);
+
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = offer.textColor || (i % 2 === 0 ? '#0A0A0A' : '#F1F1F1');
+        ctx.font = `bold ${Math.round(13 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+
+        // Truncate or fit text
+        const textRadius = radius - (24 * dpr);
+        const text = offer.short || offer.label;
+        ctx.fillText(text, textRadius, 0);
+
+        ctx.restore();
+      }
+
+      // Outer Ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#242424';
+      ctx.lineWidth = 4 * dpr;
+      ctx.stroke();
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // SPIN ANIMATION & CONTROLLER
+    // ═════════════════════════════════════════════════════════════════════════
+    async function startSpin() {
+      if (isSpinning) return;
+      hideAlert();
+
+      // Disable buttons
+      isSpinning = true;
+      centerSpinBtn.disabled = true;
+      mainSpinBtn.disabled = true;
+      mainSpinBtn.textContent = 'SPINNING...';
+
+      try {
+        const res = await fetch(`${API_BASE}/spin-wheel/spin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || 'Failed to start spin. Please try again.');
+        }
+
+        const data = await res.json();
+        if (!data.success || typeof data.index !== 'number') {
+          throw new Error(data.message || 'Invalid spin response.');
+        }
+
+        spinSession = data; // { index, offerId, label, token }
+
+        // Animate wheel to the winning segment index
+        animateToSegment(data.index, () => {
+          isSpinning = false;
+          showFormScreen(data);
+        });
+
+      } catch (err) {
+        console.error('Spin error:', err);
+        showAlert(err.message || 'Network error while spinning. Please try again.');
+        isSpinning = false;
+        centerSpinBtn.disabled = false;
+        mainSpinBtn.disabled = false;
+        mainSpinBtn.textContent = 'SPIN THE WHEEL';
+      }
+    }
+
+    function animateToSegment(targetIndex, onComplete) {
+      const numSegments = offers.length;
+      const arc = (2 * Math.PI) / numSegments;
+
+      // Pointer is at the top: angle -PI/2 (or 3*PI/2)
+      // Segment targetIndex spans from targetIndex*arc to (targetIndex+1)*arc
+      // To center segment targetIndex at -PI/2:
+      // targetRotation + (targetIndex + 0.5)*arc = -PI/2
+      // targetRotation = -PI/2 - (targetIndex + 0.5)*arc
+      // Random offset within the middle 70% of the segment:
+      const safeMarginFactor = 0.7; // middle 70%
+      const randomOffset = (Math.random() - 0.5) * (arc * safeMarginFactor);
+
+      const targetNominalAngle = (-Math.PI / 2) - ((targetIndex + 0.5) * arc) + randomOffset;
+      const normalizedTarget = ((targetNominalAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+      const startAngle = currentRotation;
+      const normalizedStart = ((startAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+      // Several full rotations (5 full rotations = 10*PI)
+      const fullRotations = 6 * (2 * Math.PI);
+      const angleDelta = ((normalizedTarget - normalizedStart) + 2 * Math.PI) % (2 * Math.PI);
+      const totalRotationNeeded = fullRotations + angleDelta;
+      const finalAngle = startAngle + totalRotationNeeded;
+
+      // Check prefers-reduced-motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const duration = prefersReducedMotion ? 600 : 5200; // ms
+      const startTime = performance.now();
+
+      function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+      }
+
+      function step(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutQuart(progress);
+
+        currentRotation = startAngle + (totalRotationNeeded * eased);
+        drawWheel(currentRotation);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          currentRotation = finalAngle;
+          drawWheel(currentRotation);
+          triggerConfetti();
+          setTimeout(() => {
+            if (onComplete) onComplete();
+          }, 600);
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // SCREEN NAVIGATION & CONFETTI
+    // ═════════════════════════════════════════════════════════════════════════
+    function switchScreen(targetScreen) {
+      [screenWheel, screenForm, screenSuccess].forEach((s) => s.classList.remove('active'));
+      targetScreen.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showFormScreen(spinData) {
+      winRewardText.textContent = spinData.label || 'Special Reward';
+      switchScreen(screenForm);
+      leadName.focus();
+    }
+
+    function showSuccessScreen(claimData, isReturningUser = false) {
+      successNameTitle.textContent = `Thank you, ${claimData.name || 'Friend'}! 🎉`;
+      successRewardSubtitle.textContent = `Reward: ${claimData.offerLabel || 'Exclusive Reward'}`;
+      couponDisplay.textContent = claimData.couponCode || 'DEVEN-COUPON';
+
+      if (claimData.couponExpiresAt) {
+        const d = new Date(claimData.couponExpiresAt);
+        const dateFormatted = d.toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        validityNoteText.textContent = `Use this coupon within 7 days — valid till ${dateFormatted}.`;
+      }
+
+      if (claimData.preferredDate) {
+        preferredDateNote.textContent = `Preferred Visit Date: ${claimData.preferredDate}`;
+      } else {
+        preferredDateNote.style.display = 'none';
+      }
+
+      if (claimData.instructions && Array.isArray(claimData.instructions)) {
+        renderInstructions(claimData.instructions);
+      }
+
+      if (claimData.contact) {
+        if (claimData.contact.whatsapp) whatsappLink.href = claimData.contact.whatsapp;
+        if (claimData.contact.phoneDisplay) {
+          whatsappLink.textContent = `WhatsApp Front Desk (${claimData.contact.phoneDisplay})`;
+        }
+      }
+
+      if (claimData.address) {
+        if (claimData.address.name) addressName.textContent = claimData.address.name;
+        if (claimData.address.line) addressLine.textContent = claimData.address.line;
+        if (claimData.address.mapsUrl) directionsLink.href = claimData.address.mapsUrl;
+      }
+
+      if (isReturningUser) {
+        showAlert('You have already claimed your reward coupon! Here are your voucher details.', 'info');
+      }
+
+      switchScreen(screenSuccess);
+    }
+
+    function renderInstructions(list) {
+      instructionsList.innerHTML = '';
+      list.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="step-num">${idx + 1}.</span> <span>${escapeHtml(item)}</span>`;
+        instructionsList.appendChild(li);
+      });
+    }
+
+    function showAlert(msg, type = 'error') {
+      globalAlert.textContent = msg;
+      globalAlert.className = `alert-box ${type === 'info' ? 'info' : ''}`;
+      globalAlert.style.display = 'block';
+    }
+
+    function hideAlert() {
+      globalAlert.style.display = 'none';
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // FORM SUBMISSION & VALIDATION
+    // ═════════════════════════════════════════════════════════════════════════
+    leadPhone.addEventListener('input', (e) => {
+      // Clean non-digits
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length === 12 && val.startsWith('91')) val = val.slice(2);
+      else if (val.length === 11 && val.startsWith('0')) val = val.slice(1);
+      e.target.value = val;
+    });
+
+    leadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      let valid = true;
+
+      // 1. Name validation
+      const nameVal = leadName.value.trim();
+      if (!nameVal || nameVal.length < 2) {
+        nameError.style.display = 'block';
+        valid = false;
+      } else {
+        nameError.style.display = 'none';
+      }
+
+      // 2. Phone validation
+      let phoneVal = leadPhone.value.replace(/\D/g, '');
+      if (phoneVal.length === 12 && phoneVal.startsWith('91')) phoneVal = phoneVal.slice(2);
+      else if (phoneVal.length === 11 && phoneVal.startsWith('0')) phoneVal = phoneVal.slice(1);
+
+      if (!/^[6-9]\d{9}$/.test(phoneVal)) {
+        phoneError.style.display = 'block';
+        valid = false;
+      } else {
+        phoneError.style.display = 'none';
+      }
+
+      // 3. Date validation
+      const dateVal = leadDate.value;
+      if (!dateVal || !/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
+        dateError.style.display = 'block';
+        valid = false;
+      } else {
+        dateError.style.display = 'none';
+      }
+
+      if (!valid) return;
+
+      if (!spinSession || !spinSession.token) {
+        showAlert('Spin session expired or missing. Please refresh and spin again.');
+        return;
+      }
+
+      // Submit lead to backend
+      submitLeadBtn.disabled = true;
+      submitLeadBtn.textContent = 'CLAIMING VOUCHER...';
+
+      try {
+        const res = await fetch(`${API_BASE}/spin-wheel/leads`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nameVal,
+            phone: phoneVal,
+            preferredDate: dateVal,
+            token: spinSession.token,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to claim reward.');
+        }
+
+        // Save to localStorage
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.data));
+        } catch (storageErr) {
+          console.warn('Unable to write to localStorage:', storageErr);
+        }
+
+        // Transition to success screen
+        showSuccessScreen(data.data, false);
+
+      } catch (err) {
+        console.error('Lead claim error:', err);
+        showAlert(err.message || 'An error occurred while claiming your coupon. Please try again.');
+        submitLeadBtn.disabled = false;
+        submitLeadBtn.textContent = 'CLAIM MY REWARD';
+      }
+    });
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // CLIPBOARD COPY
+    // ═════════════════════════════════════════════════════════════════════════
+    copyCodeBtn.addEventListener('click', async () => {
+      const code = couponDisplay.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(code);
+        copyBtnText.textContent = 'COPIED!';
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy Code';
+        }, 2200);
+      } catch (err) {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = code;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        copyBtnText.textContent = 'COPIED!';
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy Code';
+        }, 2200);
+      }
+    });
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // LIGHTWEIGHT CONFETTI BURST
+    // ═════════════════════════════════════════════════════════════════════════
+    function triggerConfetti() {
+      const confettiCanvas = document.getElementById('confetti-canvas');
+      const cctx = confettiCanvas.getContext('2d');
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#04B8BB', '#028588', '#F1F1F1', '#FFD700', '#FFFFFF'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: confettiCanvas.width / 2,
+          y: confettiCanvas.height / 3,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.8) * 14,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vrot: (Math.random() - 0.5) * 10,
+          opacity: 1,
+        });
+      }
+
+      let animId;
+      function renderConfetti() {
+        cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        let active = false;
+
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35; // gravity
+          p.rotation += p.vrot;
+          p.opacity -= 0.012;
+
+          if (p.opacity > 0) {
+            active = true;
+            cctx.save();
+            cctx.globalAlpha = Math.max(p.opacity, 0);
+            cctx.translate(p.x, p.y);
+            cctx.rotate((p.rotation * Math.PI) / 180);
+            cctx.fillStyle = p.color;
+            cctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            cctx.restore();
+          }
+        });
+
+        if (active) {
+          animId = requestAnimationFrame(renderConfetti);
+        } else {
+          cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+          cancelAnimationFrame(animId);
+        }
+      }
+
+      renderConfetti();
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // BOOTSTRAP EVENT LISTENERS
+    // ═════════════════════════════════════════════════════════════════════════
+    centerSpinBtn.addEventListener('click', startSpin);
+    mainSpinBtn.addEventListener('click', startSpin);
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initial setup
+    setupDateBounds();
+    const hasExistingClaim = checkSavedClaim();
+    if (!hasExistingClaim) {
+      resizeCanvas();
+      fetchConfig();
+    }
+  </script>
+</body>
+</html>

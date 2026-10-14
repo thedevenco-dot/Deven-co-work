@@ -1,0 +1,81 @@
+export const spinWheelConfig = {
+  couponPrefix: 'DEVEN',
+  couponValidDays: 7,
+  tokenTtl: '30m',
+  offers: [
+    {
+      id: 'free-tour',
+      label: 'Free Tour',
+      short: 'Free Tour',
+      weight: 25,
+      color: '#04B8BB',
+      textColor: '#0A0A0A',
+    },
+    {
+      id: 'trial-2d',
+      label: '2 Days Free Trial',
+      short: '2 Days Free',
+      weight: 20,
+      color: '#141416',
+      textColor: '#F1F1F1',
+    },
+    {
+      id: 'trial-7d',
+      label: '7 Days Free Trial',
+      short: '7 Days Free',
+      weight: 5,
+      color: '#039DA0',
+      textColor: '#0A0A0A',
+    },
+    {
+      id: 'pro-shoot',
+      label: 'Free Professional Shot in our Studio',
+      short: 'Free Pro Shoot',
+      weight: 10,
+      color: '#1C1C20',
+      textColor: '#F1F1F1',
+    },
+    {
+      id: 'off-20',
+      label: '20% Discount on Booking Amount',
+      short: '20% Off',
+      weight: 15,
+      color: '#04B8BB',
+      textColor: '#0A0A0A',
+    },
+    {
+      id: 'off-30-team',
+      label: '30% Discount on Booking Amount for Team Booking',
+      short: '30% Team Off',
+      weight: 5,
+      color: '#141416',
+      textColor: '#F1F1F1',
+    },
+    {
+      id: 'event-pass',
+      label: 'Passes to our Free Startup Workshops & Events',
+      short: 'Event Passes',
+      weight: 20,
+      color: '#028588',
+      textColor: '#FFFFFF',
+    },
+  ],
+  instructions: [
+    'Take a screenshot or note down your coupon code.',
+    'Visit us on your preferred date, or WhatsApp us to confirm your slot.',
+    'Show this coupon at the Deven Co-Work front desk to redeem your reward.',
+    'One coupon per person. It cannot be combined with other offers or exchanged for cash.',
+    'For more details, WhatsApp us: +91 62605 82852',
+  ],
+  contact: {
+    whatsapp: 'https://wa.me/916260582852',
+    phoneDisplay: '+91 62605 82852',
+  },
+  address: {
+    name: 'Deven Co-Work',
+    line: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001',
+    mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Deven+Co-Work+VIP+Estate+Shankar+Nagar+Raipur',
+  },
+};
+
+export default spinWheelConfig;

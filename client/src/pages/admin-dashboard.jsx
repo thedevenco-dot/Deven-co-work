@@ -6,7 +6,7 @@ import {
   CheckCircle2, AlertCircle, X, LayoutDashboard, Globe, Settings, BookOpen,
   DollarSign, MessageSquare, Layers, Upload, Trash2, Eye, EyeOff, GripVertical,
   Save, Send, RotateCcw, ChevronDown, ChevronUp, Plus, Link, Instagram,
-  MapPin, Phone, Mail, Wifi, Tag, PanelLeft
+  MapPin, Phone, Mail, Wifi, Tag, PanelLeft, Gift
 } from 'lucide-react';
 import { api } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
@@ -14,6 +14,7 @@ import { useBranding } from '@/hooks/useBranding';
 import CmsEditor, { MediaField } from '@/components/cms-editor';
 import AdminCalculatorConfig from '@/components/admin-calculator-config';
 import AdminCalculatorLeads from '@/components/admin-calculator-leads';
+import AdminSpinWheelLeads from '@/components/admin-spinwheel-leads';
 
 
 // â"€â"€â"€ HELPER COMPONENTS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
@@ -1657,6 +1658,7 @@ export default function AdminDashboard() {
         { id: 'bookings', label: 'Booking Management', icon: Calendar },
         { id: 'leads', label: 'Leads & Payments', icon: Users },
         { id: 'calculator_leads', label: 'Calculator Leads', icon: Users },
+        { id: 'spin_leads', label: 'Spin Wheel Leads', icon: Gift },
         { id: 'capacity', label: 'Capacity Settings', icon: Settings },
         { id: 'amount', label: 'Amount Management', icon: DollarSign },
         { id: 'seats', label: 'Seat Inventory', icon: Database },
@@ -1954,6 +1956,10 @@ export default function AdminDashboard() {
             {/* â"€â"€ CALCULATOR LEADS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}
             {activePanel === 'calculator_leads' && (
               <AdminCalculatorLeads />
+            )}
+
+            {activePanel === 'spin_leads' && (
+              <AdminSpinWheelLeads />
             )}
 
             {/* â"€â"€ PLANS & PRICING â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}

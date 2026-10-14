@@ -11,6 +11,7 @@ import contentRoutes from './routes/contentRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import planRoutes from './routes/planRoutes.js';
 import calculatorRoutes from './routes/calculatorRoutes.js';
+import spinWheelRoutes from './routes/spinWheelRoutes.js';
 import { getSeats } from './controllers/reservationController.js';
 import Content from './models/Content.js';
 
@@ -30,7 +31,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
   'http://localhost:5000',
-  'https://deven-co-work.onrender.com'
+  'https://deven-co-work.onrender.com',
+  'https://spin.devencowork.com'
 ];
 if (process.env.CORS_ALLOWED_ORIGIN) {
   allowedOrigins.push(process.env.CORS_ALLOWED_ORIGIN);
@@ -63,9 +65,19 @@ const strictLimiter = rateLimit({
   legacyHeaders: false
 });
 
+const spinLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 spins per hour
+  message: { success: false, message: 'Too many spin attempts. Please try again after an hour.' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // Mount Rate Limiters
 app.use(globalLimiter);
 app.use('/api/auth/login', strictLimiter);
+app.use('/api/spin-wheel/spin', spinLimiter);
+app.use('/api/spin-wheel/leads', strictLimiter);
 app.use('/api/reservations', (req, res, next) => {
   if (req.method === 'POST') {
     return strictLimiter(req, res, next);
@@ -86,6 +98,7 @@ app.use('/api/reservations', reservationRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/calculator', calculatorRoutes);
+app.use('/api/spin-wheel', spinWheelRoutes);
 app.use('/api/admin', adminRoutes);
 app.get('/api/seats', getSeats);
 
