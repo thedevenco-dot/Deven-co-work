@@ -241,12 +241,11 @@ const contentSchema = new mongoose.Schema(
       gallery: {
         type: [galleryItemSchema],
         default: [
-          { image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80', label: 'MAIN AREA', caption: 'The main workspace floor', size: 'large' },
-          { image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=400&q=80', label: 'PODCAST DESK', caption: 'Content studio setup', size: 'small' },
-          { image: 'https://images.unsplash.com/photo-1517502884422-41eaaced0168?auto=format&fit=crop&w=400&q=80', label: 'MEETING ROOM', caption: 'Private meeting space', size: 'small' },
-          { image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80', label: 'CAFE LOBBY', caption: 'Coffee bar & lounge', size: 'medium' },
-          { image: 'https://images.unsplash.com/photo-1530745342582-0795f23ec976?auto=format&fit=crop&w=600&q=80', label: 'GREEN ZONE', caption: 'Natural light workspace', size: 'medium' },
-          { image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80', label: 'TECH LOUNGE', caption: 'Tech & collaboration zone', size: 'medium' },
+          { image: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1791190574/deven_cowork/bal8rx1brctx4uxirgdy.jpg', label: 'MAIN AREA', caption: '', size: 'medium' },
+          { image: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1791190563/deven_cowork/v9xcnxv8oyxlkfiz2jyr.jpg', label: 'Studio', caption: '', size: 'medium' },
+          { image: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1791190554/deven_cowork/ab9rdnxpyhiosjym6fya.webp', label: 'MEETING ROOM', caption: '', size: 'medium' },
+          { image: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1787305754/deven_cowork/ik2bo3j2ymgyvl4ewu6w.webp', label: 'GREEN ZONE', caption: '', size: 'medium' },
+          { image: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1791190534/deven_cowork/uusxjpnowumjwznp4dmx.jpg', label: 'TECH LOUNGE', caption: '', size: 'medium' },
         ],
       },
       blocks: {
