@@ -552,6 +552,16 @@ function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
 function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [videoFailed, setVideoFailed] = useState(false);
   const [mediaReady, setMediaReady] = useState(false);
+  const [videoAllowed, setVideoAllowed] = useState(false);
+
+  useEffect(() => {
+    const conn = typeof navigator !== 'undefined' ? navigator.connection : null;
+    if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return;
+    const start = () => setTimeout(() => setVideoAllowed(true), 800);
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+  }, []);
+
   const data = cmsLoaded ? hero : (cmsFailed ? defaultContent.hero : null);
 
   const videoRef = useRef(null);
@@ -566,6 +576,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
 
   const currentVideoUrl = showCmsVideo ? data?.videoUrl : (showFallbackVideo ? defaultContent.hero.videoUrl : null);
   const currentImageUrl = showCmsImage ? data?.imageUrl : (showFallbackImage ? defaultContent.hero.imageUrl : null);
+  const baseImageUrl = data?.imageUrl || defaultContent.hero.imageUrl;
 
   // Reset ready state when URLs change
   useEffect(() => {
@@ -620,7 +631,7 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
       data-testid="section-hero"
     >
       {/* Background Video */}
-      {currentVideoUrl && (
+      {videoAllowed && currentVideoUrl && (
         <video
           ref={videoRef}
           key={getMediaUrl(currentVideoUrl)}
@@ -639,15 +650,16 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
       )}
 
       {/* Background Image */}
-      {currentImageUrl && (
+      {baseImageUrl && (
         <img
           ref={imgRef}
-          src={optimizeImageUrl(getMediaUrl(currentImageUrl), 1200)}
+          src={optimizeImageUrl(getMediaUrl(baseImageUrl), 1200)}
           alt="Deven Cowork space"
           className="absolute inset-0 w-full h-full object-cover z-0"
-          onLoad={handleMediaReady}
+          fetchPriority="high"
+          decoding="async"
           style={{
-            opacity: mediaReady ? 0.35 : 0,
+            opacity: (videoAllowed && currentVideoUrl && mediaReady) ? 0 : 0.35,
             transition: 'opacity 0.4s ease-in-out',
           }}
         />
