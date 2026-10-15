@@ -1,16 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ShieldCheck, Users, Briefcase, Zap, AlertCircle } from 'lucide-react';
+import { Link } from 'wouter';
+import { Check, ShieldCheck, Users, Briefcase, Zap, AlertCircle, ArrowUpRight } from 'lucide-react';
 import { api } from '../services/api';
 import { trackPixelEvent } from '../lib/metaPixel';
 
-export default function OfficeCostCalculator() {
+const defaultCalculatorConfig = {
+  active: true,
+  sectionEyebrow: 'DEVEN CO-WORK, RAIPUR',
+  mainHeading: 'THE ULTIMATE OFFICE SETUP COST CALCULATOR',
+  description: 'See, in real numbers, what setting up your own private office in Raipur actually costs in capital and time — compared to moving into Deven Co-Work today.',
+  teamSizes: [
+    { label: '1-3 People', description: 'Solopreneurs & micro-teams', minPeople: 1, maxPeople: 3, midpoint: 2, estimatedMoveInTime: '2-3 months', active: true, order: 1 },
+    { label: '4-7 People', description: 'Growing startup teams', minPeople: 4, maxPeople: 7, midpoint: 5, estimatedMoveInTime: '3-4 months', active: true, order: 2 },
+    { label: '8-15 People', description: 'Established teams & agencies', minPeople: 8, maxPeople: 15, midpoint: 10, estimatedMoveInTime: '4-6 months', active: true, order: 3 },
+    { label: '16+ People', description: 'Enterprise branches & scaling firms', minPeople: 16, maxPeople: 30, midpoint: 20, estimatedMoveInTime: '6+ months', active: true, order: 4 }
+  ],
+  fitoutTiers: [
+    { name: 'Standard Grade', description: 'Functional, practical office setup', active: true, order: 1, securityDepositPerPerson: 15000, brokerCommissionPerPerson: 5000, legalStampDutyPerPerson: 2000, interiorFitoutPerPerson: 35000, furniturePerPerson: 18000, acFansLightingPerPerson: 12000, wifiPrinterEquipmentPerPerson: 8000, securitySystemPerPerson: 3000, govtApprovalsLicensesPerPerson: 2000 },
+    { name: 'Premium Grade', description: 'High-end ergonomic desks & architectural finish', active: true, order: 2, securityDepositPerPerson: 25000, brokerCommissionPerPerson: 8000, legalStampDutyPerPerson: 3000, interiorFitoutPerPerson: 65000, furniturePerPerson: 32000, acFansLightingPerPerson: 22000, wifiPrinterEquipmentPerPerson: 15000, securitySystemPerPerson: 6000, govtApprovalsLicensesPerPerson: 4000 }
+  ],
+  rentPerPersonMonth: 5000,
+  maintenanceAdminPerPersonMonth: 1500,
+  devenPriceSource: 'manual',
+  devenManualPricePerSeatMonth: 8499,
+  savingsHeading: 'Total you save in Year 1 by choosing Deven Co-Work',
+  savingsDescription: 'A smart choice for smart founders.',
+  capitalSavingsMessage: 'Keep your capital for growth, not furniture.',
+  moveInTimeLabelOffice: 'Typical time to move in',
+  moveInTimeLabelDeven: 'Time to move into Deven',
+  moveInTimeDevenValue: 'Today',
+  fullBreakdownHeading: 'Your Complete Cost Breakdown',
+  fullBreakdownDescription: 'See every line item side by side.',
+  ctaHeading: 'Ready to skip the hassle?',
+  ctaButtonLabel: 'Book Your Free Trial',
+  whatsappCtaText: 'Chat on WhatsApp',
+  freeTrialCtaText: 'Start Free Trial',
+  disclaimerText: '* Estimates are based on current Raipur market rates.',
+  formHeading: 'Unlock Your Full Cost Breakdown',
+  formDescription: "Enter your details and we'll unlock the complete line-by-line comparison.",
+  buttonText: 'Unlock My Report',
+  privacyMessage: 'We respect your privacy. No spam.'
+};
+
+export default function OfficeCostCalculator({ isStandalone = false }) {
   useEffect(() => {
     trackPixelEvent('ViewContent', { content_name: 'Calculator' });
   }, []);
 
-  const [config, setConfig] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [config, setConfig] = useState(defaultCalculatorConfig);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Selections
@@ -27,7 +66,6 @@ export default function OfficeCostCalculator() {
   const [results, setResults] = useState(null);
 
   const loadConfig = () => {
-    setLoading(true);
     setError(null);
     api.fetchCalculatorConfig()
       .then(res => {
@@ -35,15 +73,10 @@ export default function OfficeCostCalculator() {
           setConfig(res.data);
         } else if (res.success && !res.data?.active) {
           setConfig(null);
-        } else {
-          setError(res.message || 'Failed to load calculator config');
         }
       })
       .catch(err => {
-        setError(err.message || 'Failed to load calculator config');
-      })
-      .finally(() => {
-        setLoading(false);
+        console.warn('Using default calculator config:', err.message);
       });
   };
 
@@ -166,8 +199,8 @@ export default function OfficeCostCalculator() {
     }).format(val || 0);
   };
 
-  if (loading) return null;
-  if (error) {
+  if (loading && !config) return null;
+  if (error && !config) {
     return (
       <section className="bg-[#FCFAF9] py-16 border-b border-[rgba(12,12,12,0.08)] office-cost-calculator">
         <div className="container-wide text-center py-10">
@@ -201,6 +234,18 @@ export default function OfficeCostCalculator() {
           <p className="text-lg text-[#0C0C0C]/70">
             {config.description}
           </p>
+          {!isStandalone && (
+            <div className="mt-4">
+              <Link
+                href="/cost-calculator"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-[#024E5C] hover:text-[#04B8BB] transition-colors underline decoration-[#04B8BB] underline-offset-4"
+                data-testid="link-open-full-calculator"
+              >
+                <span>Open Full Calculator & View Cost Methodology</span>
+                <ArrowUpRight size={15} />
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="grid lg:grid-cols-12 gap-10">

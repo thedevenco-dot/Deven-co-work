@@ -885,9 +885,38 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
               <p>{data.body1}</p>
               <p>{data.body2}</p>
             </div>
-            <button onClick={onReserve} className="button button-primary self-start" data-testid="button-guide-tour">
-              Book Your Tour <ArrowUpRight size={15} />
-            </button>
+            <div className="flex flex-col gap-4">
+              <button onClick={onReserve} className="button button-primary self-start" data-testid="button-guide-tour">
+                Book Your Tour <ArrowUpRight size={15} />
+              </button>
+              <div className="flex flex-wrap gap-2 items-center pt-1">
+                <span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#FCFAF9]/50 mr-1 block sm:inline">Explore Spaces:</span>
+                <Link
+                  href="/private-cabins"
+                  className="text-[11px] font-bold text-[#FCFAF9] hover:text-[#04B8BB] bg-[rgba(252,250,249,0.08)] hover:bg-[rgba(4,184,187,0.12)] px-3 py-1.5 border border-[rgba(252,250,249,0.15)] hover:border-[#04B8BB] transition-colors inline-flex items-center gap-1"
+                  data-testid="link-guide-private-cabins"
+                >
+                  <span>Private Cabins</span>
+                  <span className="text-[#04B8BB]">→</span>
+                </Link>
+                <Link
+                  href="/meeting-room"
+                  className="text-[11px] font-bold text-[#FCFAF9] hover:text-[#04B8BB] bg-[rgba(252,250,249,0.08)] hover:bg-[rgba(4,184,187,0.12)] px-3 py-1.5 border border-[rgba(252,250,249,0.15)] hover:border-[#04B8BB] transition-colors inline-flex items-center gap-1"
+                  data-testid="link-guide-meeting-room"
+                >
+                  <span>Meeting Room</span>
+                  <span className="text-[#04B8BB]">→</span>
+                </Link>
+                <Link
+                  href="/podcast-studio"
+                  className="text-[11px] font-bold text-[#FCFAF9] hover:text-[#04B8BB] bg-[rgba(252,250,249,0.08)] hover:bg-[rgba(4,184,187,0.12)] px-3 py-1.5 border border-[rgba(252,250,249,0.15)] hover:border-[#04B8BB] transition-colors inline-flex items-center gap-1"
+                  data-testid="link-guide-podcast-studio"
+                >
+                  <span>Podcast Studio</span>
+                  <span className="text-[#04B8BB]">→</span>
+                </Link>
+              </div>
+            </div>
           </RevealOnScroll>
         </div>
 
@@ -1190,14 +1219,40 @@ function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed })
                   </div>
 
                   {tier.items && tier.items.length > 4 && (
-                    <div className="mt-5 pt-3 border-t border-[rgba(12,12,12,0.06)] text-[10px] font-bold text-[#024E5C]/70 uppercase tracking-wider">
-                      + {tier.items.length - 4} more benefits included
+                    <div className="mt-5 pt-3 border-t border-[rgba(12,12,12,0.06)] flex items-center justify-between text-[11px] font-bold text-[#024E5C] uppercase tracking-wider">
+                      <Link
+                        href="/amenities"
+                        className="hover:text-[#04B8BB] transition-colors inline-flex items-center gap-1 group/link"
+                        data-testid={`link-amenities-card-${index}`}
+                      >
+                        <span>+ {tier.items.length - 4} more benefits included</span>
+                        <span className="text-[#04B8BB] font-mono group-hover/link:translate-x-0.5 transition-transform">→</span>
+                      </Link>
+                      <Link
+                        href="/amenities"
+                        className="text-[10px] text-[#04B8BB] font-bold hover:underline"
+                        data-testid={`link-view-all-amenities-${index}`}
+                      >
+                        View All Amenities
+                      </Link>
                     </div>
                   )}
                 </div>
               </RevealOnScroll>
             );
           })}
+        </div>
+
+        {/* Contextual CTA for Amenities */}
+        <div className="mt-8 text-center">
+          <Link
+            href="/amenities"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#024E5C] hover:text-[#04B8BB] py-2.5 px-5 border border-[#024E5C]/20 hover:border-[#04B8BB] bg-white transition-all shadow-sm rounded-sm"
+            data-testid="link-view-all-amenities-section"
+          >
+            <span>View All Workspace Amenities & Facilities</span>
+            <ArrowRight size={13} />
+          </Link>
         </div>
 
         {/* Dramatic Value Reveal Block */}
@@ -1728,8 +1783,20 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
                     </ul>
                   )}
 
+                  {/* Contextual Link */}
+                  <div className="mt-4 pt-3 border-t border-[rgba(12,12,12,0.06)] text-center">
+                    <Link
+                      href={cabin ? '/private-cabins' : '/pricing'}
+                      className="text-[11px] font-bold text-[#024E5C] hover:text-[#04B8BB] transition-colors inline-flex items-center gap-1 group/link"
+                      data-testid={`link-plan-details-${index}`}
+                    >
+                      <span>{cabin ? 'View Cabin Details' : 'View Plan Details'}</span>
+                      <span className="text-[#04B8BB] font-mono group-hover/link:translate-x-0.5 transition-transform">→</span>
+                    </Link>
+                  </div>
+
                   {/* CTA */}
-                  <div className="mt-auto pt-7">
+                  <div className="mt-auto pt-3">
                     {cabin ? (
                       <a
                         href={waLink}
@@ -1757,6 +1824,34 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
             );
           })}
         </div>
+
+        {/* Contextual CTAs for Pricing & Cost Comparison */}
+        <RevealOnScroll delay={0.12} className="mt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 p-6 bg-[#FCFAF9] border border-[rgba(12,12,12,0.1)] rounded-sm">
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#04B8BB] block">COMPARE & EXPLORE PLANS</span>
+            <p className="text-[13px] text-[#0C0C0C]/80 font-medium mt-1">
+              Want a comprehensive feature breakdown or to calculate your team's workspace savings vs an independent office in Raipur?
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 shrink-0">
+            <Link
+              href="/pricing"
+              className="button button-dark text-xs px-5 py-2.5 font-bold uppercase tracking-wider inline-flex items-center gap-1.5"
+              data-testid="link-pricing-view-plan-details"
+            >
+              <span>View Plan Details</span>
+              <ArrowUpRight size={13} />
+            </Link>
+            <Link
+              href="/cost-calculator"
+              className="button button-outline text-xs px-5 py-2.5 font-bold uppercase tracking-wider text-[#0C0C0C] border-[#0C0C0C]/25 hover:border-[#04B8BB] inline-flex items-center gap-1.5"
+              data-testid="link-pricing-compare-costs"
+            >
+              <span>Compare Workspace Costs</span>
+              <ArrowUpRight size={13} />
+            </Link>
+          </div>
+        </RevealOnScroll>
 
         {/* Scarcity note below plans */}
         {remaining !== null && remaining > 0 && (
@@ -1805,8 +1900,15 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
           <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[380px]">
             {sectionData?.subheadline || 'Everything you need to know about memberships, pricing, rules, and billing details.'}
           </p>
-          <div className="mt-10">
+          <div className="mt-10 flex flex-wrap gap-4 items-center">
             <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Tour</Button>
+            <Link
+              href="/faq"
+              className="button button-outline"
+              data-testid="link-faq-view-all"
+            >
+              View All FAQs <ArrowUpRight size={14} />
+            </Link>
           </div>
         </RevealOnScroll>
 
@@ -1859,6 +1961,18 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
                 </AnimatePresence>
               </div>
             ))}
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-[rgba(252,250,249,0.16)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[12px] text-[#FCFAF9]/70">
+            <span>Have questions about pricing, cabins, or trial access?</span>
+            <Link
+              href="/faq"
+              className="text-[#04B8BB] hover:underline font-bold inline-flex items-center gap-1"
+              data-testid="link-faq-view-all-bottom"
+            >
+              <span>View All FAQs</span>
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </div>
@@ -1970,6 +2084,20 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
               <span className="text-[#0C0C0C]/75 text-[11px] mt-1">
                 No payment or credit card required. Experience Raipur's most inspiring work environment first-hand.
               </span>
+            </div>
+
+            <div className="pt-3 border-t border-[rgba(12,12,12,0.08)]">
+              <p className="text-[12px] text-[#0C0C0C]/65 mb-2 font-medium">
+                Prefer to call our team directly, chat on WhatsApp, or get map directions?
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#024E5C] hover:text-[#04B8BB] transition-colors underline decoration-[#04B8BB] underline-offset-4"
+                data-testid="link-reservation-contact-our-team"
+              >
+                <span>Contact Our Team</span>
+                <ArrowUpRight size={13} />
+              </Link>
             </div>
           </RevealOnScroll>
 
@@ -2153,6 +2281,9 @@ export function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
               <Link href="/free-trial" className="hover:text-[#04B8BB] transition-colors">Free Trial</Link>
               <Link href="/pricing" className="hover:text-[#04B8BB] transition-colors">Pricing</Link>
               <Link href="/amenities" className="hover:text-[#04B8BB] transition-colors">Amenities</Link>
+              <Link href="/faq" className="hover:text-[#04B8BB] transition-colors">FAQ</Link>
+              <Link href="/cost-calculator" className="hover:text-[#04B8BB] transition-colors">Cost Calculator</Link>
+              <Link href="/contact" className="hover:text-[#04B8BB] transition-colors">Contact</Link>
             </div>
           </div>
         </div>

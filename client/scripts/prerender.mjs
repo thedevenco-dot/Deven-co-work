@@ -400,7 +400,7 @@ async function main() {
           {
             "@type": "ListItem",
             "position": 2,
-            "name": page.h1,
+            "name": page.breadcrumb || page.h1,
             "item": canonicalUrl
           }
         ]

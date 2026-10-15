@@ -13,10 +13,22 @@ export const SITE = {
   "email": "hellodevencowork@gmail.com",
   "hours": "Monday to Saturday, 9 AM to 9 PM",
   "googleBusinessProfile": "https://share.google/2bBhooQl0vnvONiNz",
-  "instagram": "https://www.instagram.com/deven_cowork/"
+  "instagram": "https://www.instagram.com/deven_cowork/",
+  "mapsEmbedSrc": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3718.5284307521743!2d81.6731683!3d21.2595151!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a28ddb73efa82a7%3A0xb99b968caba2d846!2sDeven+Co-Work%2C+VIP+Estate%2C+A1%2C+VIP+Colony%2C+Raipur%2C+Chhattisgarh+492001!5e0!3m2!1sen!2sin!4v1717800000000!5m2!1sen!2sin",
+  "mapsUrl": "https://www.google.com/maps/dir/?api=1&destination=Deven+Co-Work,+VIP+Estate,+A1,+VIP+Colony,+Raipur,+Chhattisgarh+492001"
 };
 
-export const PAGE_ORDER = ["private-cabins", "meeting-room", "podcast-studio", "free-trial", "pricing", "amenities"];
+export const PAGE_ORDER = [
+  "private-cabins",
+  "meeting-room",
+  "podcast-studio",
+  "free-trial",
+  "pricing",
+  "amenities",
+  "faq",
+  "cost-calculator",
+  "contact"
+];
 
 export const PAGES = {
   "private-cabins": {
@@ -25,6 +37,7 @@ export const PAGES = {
     "description": "Three private office cabins for founders in Raipur at Deven Co-Work, Shankar Nagar. 500 Mbps Wi-Fi, power backup, community. Book a free 2-day trial.",
     "h1": "Private Office Cabins for Founders in Raipur",
     "eyebrow": "PRIVATE CABINS · RAIPUR",
+    "breadcrumb": "Private Cabins",
     "intro": [
       "Deven Co-Work has three private cabins for founders who want a separate cabin of their own, inside a coworking community in Shankar Nagar, Raipur.",
       "Your cabin gives you the focus of your own office together with the shared facilities, events and people of a coworking space. You do not have to set up or maintain an office of your own."
@@ -115,6 +128,7 @@ export const PAGES = {
       "/meeting-room",
       "/amenities",
       "/pricing",
+      "/cost-calculator",
       "/free-trial"
     ],
     "image": {
@@ -130,6 +144,7 @@ export const PAGES = {
     "description": "Meeting room in Raipur for 10 to 15 people with an interactive digital panel and 500 Mbps Wi-Fi at Deven Co-Work, Shankar Nagar. Ask us about booking.",
     "h1": "Meeting Room with Interactive Panel in Raipur",
     "eyebrow": "MEETING ROOM · RAIPUR",
+    "breadcrumb": "Meeting Room",
     "intro": [
       "Deven Co-Work has a team meeting room that seats 10 to 15 people and comes with an interactive panel (a digital board), at Shankar Nagar in Raipur.",
       "It is a good room for team meetings, client presentations, planning sessions and workshops, in a space that already has fast internet and everything a working day needs."
@@ -197,7 +212,8 @@ export const PAGES = {
       "/private-cabins",
       "/amenities",
       "/free-trial",
-      "/pricing"
+      "/pricing",
+      "/contact"
     ],
     "image": {
       "url": "",
@@ -212,6 +228,7 @@ export const PAGES = {
     "description": "Content studio at Deven Co-Work, Raipur. Members get a founder podcast episode, a founder photoshoot every 6 months and a monthly Instagram collaboration.",
     "h1": "Content and Podcast Studio in Raipur",
     "eyebrow": "CONTENT STUDIO · RAIPUR",
+    "breadcrumb": "Podcast Studio",
     "intro": [
       "Deven Co-Work has its own content studio, so founders can record, shoot and share their story without leaving the building.",
       "Our members do not just get a desk. They get help to be seen: a professional founder podcast episode, regular photoshoots and an Instagram collaboration every month."
@@ -275,7 +292,8 @@ export const PAGES = {
       "/amenities",
       "/private-cabins",
       "/free-trial",
-      "/pricing"
+      "/pricing",
+      "/contact"
     ],
     "image": {
       "url": "",
@@ -290,6 +308,7 @@ export const PAGES = {
     "description": "Try Deven Co-Work free for 2 days. No credit card required. 500 Mbps Wi-Fi, meeting room, coffee bar and a founder community in Shankar Nagar, Raipur.",
     "h1": "Try Deven Co-Work Free for 2 Days",
     "eyebrow": "FREE 2-DAY TRIAL · RAIPUR",
+    "breadcrumb": "Free Trial",
     "intro": [
       "The best way to choose a coworking space is to work from it. Deven Co-Work offers a free 2-day trial, and no credit card is required.",
       "Come in, plug in and see how your team works in the space before you decide on a plan."
@@ -352,24 +371,35 @@ export const PAGES = {
       }
     ],
     "related": [
+      "/pricing",
       "/private-cabins",
       "/amenities",
-      "/pricing",
-      "/meeting-room"
+      "/meeting-room",
+      "/contact"
     ],
     "image": null
   },
   "pricing": {
     "path": "/pricing",
-    "title": "Coworking Plans & Pricing in Raipur | Deven Co-Work",
-    "description": "See Deven Co-Work plans and pricing in Raipur. Every plan includes 500 Mbps Wi-Fi, a meeting room, a coffee bar, events and a free 2-day trial.",
-    "h1": "Deven Co-Work Plans and Pricing",
+    "title": "Coworking Price in Raipur: Plans from ₹5,999 | Deven Co-Work",
+    "description": "Explore Deven Co-Work's workspace plans in Raipur. Compare available options, understand what's included and book a tour to find your fit.",
+    "h1": "Coworking Plans & Pricing in Raipur",
     "eyebrow": "PLANS & PRICING · RAIPUR",
+    "breadcrumb": "Pricing",
     "intro": [
-      "Choose the plan that fits how you work. The prices below are our current prices, the same as on our homepage.",
-      "Every membership comes with the same community, events and facilities, and you can try the space free for 2 days first."
+      "Explore Deven Co-Work's workspace plans in Shankar Nagar, Raipur. Whether you need a flexible hot desk, an assigned dedicated desk, or a private office cabin for your team, every plan includes high-speed 500 Mbps Wi-Fi, meeting room access, tea, coffee, and an active founder community.",
+      "Our current prices are shown below, dynamically connected to our live plans. Every membership comes with a completely free 2-day trial so you can experience the space first-hand before deciding."
     ],
     "sections": [
+      {
+        "heading": "Comparing workspace plans to find your fit",
+        "paragraphs": [
+          "Different workflows require different workspace configurations. Here is how our membership options compare:",
+          "• Hot Desk: Flexible unassigned seating in our quiet productivity zone. Ideal for freelancers, remote consultants, and independent creators who want an inspiring workspace without fixed seat overhead.",
+          "• Dedicated Desk: Your own permanent, reserved desk with an ergonomic chair, personal lockable storage drawer, dedicated power outlets, and meeting room credits. Ideal for daily full-time professionals and growing teams.",
+          "• Private Office Cabin: Fully furnished, lockable private suite for 3 to 4 team members with private acoustic insulation, custom company signage options, and bundled premium amenities. Ideal for startup founders and client-facing advisory firms."
+        ]
+      },
       {
         "heading": "What every membership includes",
         "bullets": [
@@ -386,35 +416,41 @@ export const PAGES = {
         ]
       },
       {
-        "heading": "How to choose",
+        "heading": "Transparent pricing & membership terms",
         "paragraphs": [
-          "Think about how much privacy you need and how many people are in your team. If you want a room of your own, look at our private cabins. If you want to try the space first, book the free 2-day trial and decide after you have worked from Deven."
+          "We believe in 100% honest, predictable pricing. Founding member rates are locked for 12 months from your join date, protecting you against unexpected price increases.",
+          "There are zero hidden maintenance charges, zero common area utility surcharges, and no long-term lease lock-ins. Our fair cancellation policy requires only 30 days' advance notice."
         ]
       },
       {
-        "heading": "Not sure yet?",
+        "heading": "Calculate your savings versus a traditional lease",
         "paragraphs": [
-          "Message us on WhatsApp or call us and we will help you pick a plan. You can also book a free tour and see the space."
+          "Setting up and furnishing an independent office in Raipur involves substantial capital expenditure — security deposits, brokerage, interior fit-outs, AC units, and ongoing maintenance staff.",
+          "Use our interactive Cost Calculator to model your team's exact savings when choosing Deven Co-Work over a traditional commercial rental."
         ]
       }
     ],
     "showPricing": true,
     "faqs": [
       {
-        "q": "Is there a free trial?",
-        "a": "Yes. You can try Deven Co-Work free for 2 days, and no credit card is required."
+        "q": "Is there a free trial before paying?",
+        "a": "Yes. You can try Deven Co-Work completely free for 2 full days with zero payment or credit card required."
       },
       {
-        "q": "What is included in a membership?",
-        "a": "Membership includes 500 Mbps Wi-Fi, a meeting room, a content studio, a coffee bar, monthly events and workshops, parking and more. The full list is on our amenities page."
+        "q": "What is the difference between Hot Desk and Dedicated Desk?",
+        "a": "A Hot Desk offers flexible seating in our shared productivity hall. A Dedicated Desk is your permanent assigned desk with your personal locker, drawer, and 2 charging sockets."
       },
       {
-        "q": "Do prices include tea and coffee?",
-        "a": "Membership includes 2 cups of tea or coffee per day."
+        "q": "Are there private office cabins?",
+        "a": "Yes, Deven Co-Work has three private, lockable office cabins suitable for founders and small teams of 3 to 4 people."
       },
       {
-        "q": "Are there private cabins?",
-        "a": "Yes. Deven Co-Work has three private cabins."
+        "q": "Are tea, coffee, and utilities included in the price?",
+        "a": "Yes. Members receive 2 complimentary cups of coffee or tea daily from our coffee bar. High-speed 500 Mbps Wi-Fi, electricity, AC, cleaning, and RO water are all included."
+      },
+      {
+        "q": "What is your cancellation policy?",
+        "a": "We require 30 days' advance notice for cancellations, with no exit fees or penalty charges."
       },
       {
         "q": "What are your opening hours?",
@@ -422,10 +458,11 @@ export const PAGES = {
       }
     ],
     "related": [
+      "/cost-calculator",
       "/private-cabins",
       "/free-trial",
-      "/amenities",
-      "/meeting-room"
+      "/faq",
+      "/contact"
     ],
     "image": null
   },
@@ -435,6 +472,7 @@ export const PAGES = {
     "description": "Deven Co-Work amenities in Raipur: 500 Mbps Wi-Fi, power backup, meeting room, content studio, coffee bar, library, monthly events and dedicated parking.",
     "h1": "Everything Included at Deven Co-Work",
     "eyebrow": "AMENITIES · RAIPUR",
+    "breadcrumb": "Amenities",
     "intro": [
       "Deven Co-Work is a premium coworking space in Shankar Nagar, Raipur. Here is what comes with it, from the Wi-Fi at your desk to the events that bring the community together."
     ],
@@ -539,7 +577,262 @@ export const PAGES = {
       "/private-cabins",
       "/meeting-room",
       "/podcast-studio",
-      "/free-trial"
+      "/free-trial",
+      "/pricing"
+    ],
+    "image": null
+  },
+  "faq": {
+    "path": "/faq",
+    "title": "Coworking FAQs: Pricing, Trial & Access | Deven Co-Work",
+    "description": "Find answers about Deven Co-Work in Raipur, including plans, private cabins, meeting rooms, facilities and the free 2-day trial.",
+    "h1": "Frequently Asked Questions About Deven Co-Work",
+    "eyebrow": "HELP & KNOWLEDGE BASE · RAIPUR",
+    "breadcrumb": "FAQ",
+    "intro": [
+      "Find clear, comprehensive answers about Deven Co-Work in Shankar Nagar, Raipur.",
+      "Browse common questions regarding our coworking plans, pricing, free 2-day trial, private office cabins, meeting room bookings, internet speeds, and location details."
+    ],
+    "sections": [
+      {
+        "heading": "Answers to help you choose the right workspace",
+        "paragraphs": [
+          "Deven Co-Work is designed for solo freelancers, startup founders, consultants, remote professionals, and small teams who want an inspiring, productive space without the expense or hassle of setting up their own commercial office.",
+          "Our questions below are categorized to help you quickly find details on memberships, free trial visits, amenities, meeting room panels, and workspace policies."
+        ]
+      }
+    ],
+    "showPricing": false,
+    "faqs": [
+      {
+        "category": "Membership and pricing",
+        "q": "How much does a coworking membership cost at Deven Co-Work?",
+        "a": "Founding plans start from ₹5,999 per month for Hot Desk and ₹7,999 per month for Dedicated Desk. All rates are locked for 12 months for founding members with no hidden maintenance fees."
+      },
+      {
+        "category": "Membership and pricing",
+        "q": "Do I have to sign a long-term agreement?",
+        "a": "No. Month-to-month memberships are available with no long-term lock-in. We also offer an annual plan with 2 months free for members who want to commit long term."
+      },
+      {
+        "category": "Membership and pricing",
+        "q": "What is your cancellation policy?",
+        "a": "We have a transparent 30-day notice cancellation policy with no exit penalties or hidden charges."
+      },
+      {
+        "category": "Internet, amenities and facilities",
+        "q": "Are tea and coffee included in the price?",
+        "a": "Yes, memberships include 2 complimentary cups of tea or coffee daily from our curated coffee bar featuring 20+ varieties of coffee and 5+ varieties of tea."
+      },
+      {
+        "category": "Free trial and tours",
+        "q": "How does the free trial work?",
+        "a": "We offer a 100% free 2-day trial so you and your team can test the space, use the 500 Mbps Wi-Fi, and experience our community before making any financial commitment. No credit card is required."
+      },
+      {
+        "category": "Free trial and tours",
+        "q": "How do I schedule a tour or start my free trial?",
+        "a": "You can book a free tour through our website booking form, send us a message on WhatsApp at +91 62605 82852, or call our team directly."
+      },
+      {
+        "category": "Hot desks and private cabins",
+        "q": "What is the difference between Hot Desk and Dedicated Desk?",
+        "a": "A Hot Desk provides flexible open seating in our quiet productivity zone. A Dedicated Desk gives you an assigned, permanent desk reserved exclusively for you, equipped with a personal locker, drawer, and 2 charging points."
+      },
+      {
+        "category": "Hot desks and private cabins",
+        "q": "Do you have private office cabins?",
+        "a": "Yes, Deven Co-Work features three lockable, fully furnished private cabins for founders and teams seeking privacy for client calls and confidential projects while remaining connected to the coworking community."
+      },
+      {
+        "category": "Meeting room and podcast/content studio",
+        "q": "Can non-members book the team meeting room?",
+        "a": "Yes, our team meeting room seats 10 to 15 people and is equipped with a digital interactive panel (smart board). It is open for hourly booking to both members and external businesses."
+      },
+      {
+        "category": "Meeting room and podcast/content studio",
+        "q": "What is included with the in-house content and podcast studio?",
+        "a": "The content studio is equipped with professional lighting and acoustic treatment. Members receive one professionally produced founder podcast episode with Deven, regular photoshoots every 6 months, and monthly Instagram collaborations."
+      },
+      {
+        "category": "Internet, amenities and facilities",
+        "q": "How fast and reliable is the internet?",
+        "a": "We provide enterprise-grade 500 Mbps Wi-Fi backed by uninterrupted power supply (power backup) to ensure seamless video calls and downloads."
+      },
+      {
+        "category": "Internet, amenities and facilities",
+        "q": "What facilities are available on site?",
+        "a": "Amenities include 500 Mbps Wi-Fi, power backup, meeting room, content studio, curated coffee bar, pantry with food-heating facilities, RO water, library with 100+ books, recreation indoor games, and dedicated parking for two-wheelers and four-wheelers."
+      },
+      {
+        "category": "Location, opening hours and contact",
+        "q": "Where is Deven Co-Work located in Raipur?",
+        "a": "We are located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001, easily accessible from across the city."
+      },
+      {
+        "category": "Location, opening hours and contact",
+        "q": "What are your opening hours?",
+        "a": "We are open Monday to Saturday, from 9 AM to 9 PM."
+      },
+      {
+        "category": "Booking and payment",
+        "q": "What payment methods are supported?",
+        "a": "We accept UPI, online bank transfers, debit and credit cards, and net banking."
+      },
+      {
+        "category": "Booking and payment",
+        "q": "How do I reserve my desk or cabin?",
+        "a": "You can book a free tour on our website, select your desk, or contact our team directly on WhatsApp or phone to reserve your spot."
+      }
+    ],
+    "related": [
+      "/pricing",
+      "/free-trial",
+      "/private-cabins",
+      "/meeting-room",
+      "/cost-calculator",
+      "/contact"
+    ],
+    "image": null
+  },
+  "cost-calculator": {
+    "path": "/cost-calculator",
+    "title": "Coworking vs Office Rent Calculator | Deven Co-Work",
+    "description": "Compare your workspace costs with Deven Co-Work's calculator. Explore coworking plans and estimate potential office expenses in Raipur.",
+    "h1": "Compare Coworking Costs With Renting an Office in Raipur",
+    "eyebrow": "COST COMPARISON CALCULATOR · RAIPUR",
+    "breadcrumb": "Cost Calculator",
+    "intro": [
+      "Planning workspace for your team in Raipur? Use our interactive cost calculator to compare the true total cost of setting up and operating an independent office versus a fully serviced membership at Deven Co-Work.",
+      "See how much you can save on upfront fit-out expenses, commercial security deposits, utility bills, and daily management overhead."
+    ],
+    "showCalculator": true,
+    "sections": [
+      {
+        "heading": "How the workspace cost comparison works",
+        "paragraphs": [
+          "When leasing an independent commercial office, businesses often only account for the base monthly rent. However, traditional leases require substantial upfront Capital Expenditure (CapEx) before move-in, plus complex recurring Operating Expenditure (OpEx).",
+          "Our calculator models the total cost of occupancy over your first 12 months, comparing an independent lease in Raipur with an all-inclusive Deven Co-Work membership for your exact team size."
+        ]
+      },
+      {
+        "heading": "Expense categories in traditional commercial leases",
+        "bullets": [
+          "Commercial Security Deposit: Typically 3 to 6 months of base rent locked up with landlords.",
+          "Brokerage & Real Estate Commissions: Usually 1 to 2 months of rental value paid upfront.",
+          "Legal, Stamp Duty & Registration: Drafting, notary, and municipal lease registration expenses.",
+          "Interior Architectural Fit-out: Civil demolition, drywall partitions, ceiling acoustics, and flooring.",
+          "Office Furniture & Ergonomics: Workstations, ergonomic task chairs, visitor seating, and conference tables.",
+          "Air Conditioning & Electrical Work: Split AC units, wiring, circuit breakers, and lighting fixtures.",
+          "Networking & IT Hardware: Commercial routers, Wi-Fi access points, structured CAT6 cabling, and switchboards.",
+          "Security & Surveillance: CCTV cameras, digital biometric attendance, and fire safety equipment.",
+          "Government Licenses & Approvals: Municipal trade licenses, fire safety NOC, and electrical load upgrades.",
+          "Monthly Commercial Rent & CAM: Base lease rent plus building Common Area Maintenance charges.",
+          "Commercial Utilities: Commercial-rate electricity, water supply, and diesel generator backup fuel.",
+          "Housekeeping & Facility Management: Cleaning staff wages, cleaning materials, pest control, and maintenance.",
+          "Pantry & Refreshments: Coffee machine leasing, tea supplies, water dispenser refills, and kitchen maintenance."
+        ]
+      },
+      {
+        "heading": "Why coworking eliminates upfront capital expenditure",
+        "paragraphs": [
+          "At Deven Co-Work, 100% of these setup, utility, and maintenance expenses are bundled into one straightforward monthly membership. You pay zero security deposit, avoid multi-year lease lock-ins, and start working immediately with furnished infrastructure and 500 Mbps Wi-Fi.",
+          "Your capital remains invested in your business growth, marketing, and team hiring rather than dead capital locked in office furniture, security deposits, and contractor coordination."
+        ]
+      },
+      {
+        "heading": "Transparent estimation methodology & limitations",
+        "paragraphs": [
+          "Calculator figures are modeled using typical commercial lease rates and contractor estimates in prime Raipur commercial districts like Shankar Nagar and VIP Estate.",
+          "Estimates are provided for financial planning and comparative evaluation, not as a contractual warranty. Actual independent commercial office costs vary depending on building age, interior fitout grade, and lease negotiations."
+        ]
+      }
+    ],
+    "showPricing": false,
+    "faqs": [
+      {
+        "q": "How are the independent office costs calculated?",
+        "a": "The model estimates typical capital expenses (fit-out, furniture, AC, security deposit, broker fees) and monthly operating costs (rent, electricity, Wi-Fi, housekeeping) for commercial properties in Raipur based on your selected team size and fit-out quality tier."
+      },
+      {
+        "q": "Is the estimated saving guaranteed?",
+        "a": "The estimate is an illustrative financial comparison based on standard Raipur market rates. Actual independent lease costs vary based on exact location, building condition, and contractor negotiations."
+      },
+      {
+        "q": "Does Deven Co-Work charge a security deposit?",
+        "a": "Our standard coworking memberships operate on a straightforward month-to-month or quarterly basis with zero traditional commercial lease deposit lock-in."
+      },
+      {
+        "q": "Can our team try the space before deciding?",
+        "a": "Yes. We offer a 100% free 2-day trial for teams and founders to experience our workspace in person."
+      }
+    ],
+    "related": [
+      "/pricing",
+      "/amenities",
+      "/private-cabins",
+      "/free-trial",
+      "/contact"
+    ],
+    "image": null
+  },
+  "contact": {
+    "path": "/contact",
+    "title": "Contact & Directions | Deven Co-Work, Raipur",
+    "description": "Contact Deven Co-Work in Shankar Nagar, Raipur. Get directions, call our team or arrange a tour to explore the workspace.",
+    "h1": "Visit Deven Co-Work in Raipur",
+    "eyebrow": "GET IN TOUCH · SHANKAR NAGAR, RAIPUR",
+    "breadcrumb": "Contact",
+    "intro": [
+      "Contact Deven Co-Work in Shankar Nagar, Raipur. Get directions, call our team directly, or arrange a guided tour to explore the workspace.",
+      "We are open Monday to Saturday from 9 AM to 9 PM. Whether you want to book a private cabin, inquire about meeting room availability, or start your free 2-day trial, we are here to help."
+    ],
+    "showContactForm": true,
+    "sections": [
+      {
+        "heading": "How to reach our Shankar Nagar workspace",
+        "paragraphs": [
+          "Deven Co-Work is situated at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001. We are conveniently situated in one of the city's premier commercial and residential hubs, easily accessible from Civil Lines, Pandri, and Telibandha.",
+          "We offer dedicated parking on site for two-wheelers and four-wheelers, ensuring hassle-free access for you, your team, and visiting clients."
+        ]
+      },
+      {
+        "heading": "What to expect during your tour",
+        "paragraphs": [
+          "During your visit, our team will walk you through our hot desk and dedicated desk zones, private office cabins, interactive team meeting room, and content & podcast studio.",
+          "You can test our 500 Mbps Wi-Fi, enjoy a complimentary cup of coffee from our coffee bar, and learn about our founder community events."
+        ]
+      }
+    ],
+    "showPricing": false,
+    "faqs": [
+      {
+        "q": "What are your visiting and operating hours?",
+        "a": "We are open Monday to Saturday, 9 AM to 9 PM."
+      },
+      {
+        "q": "Where is Deven Co-Work located?",
+        "a": "We are located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001. Directions can be found on Google Maps."
+      },
+      {
+        "q": "Is parking available for visitors?",
+        "a": "Yes, dedicated parking is available on site for both two-wheelers and four-wheelers."
+      },
+      {
+        "q": "Do I need an appointment to visit?",
+        "a": "Walk-ins are welcome during operating hours, but we recommend booking a free tour in advance so our team can give you a personalized walkthrough and prepare a desk for your trial."
+      },
+      {
+        "q": "How quickly does your team respond to inquiries?",
+        "a": "Our team typically responds to WhatsApp messages and calls within minutes during business hours (Monday to Saturday, 9 AM to 9 PM)."
+      }
+    ],
+    "related": [
+      "/pricing",
+      "/free-trial",
+      "/faq",
+      "/cost-calculator",
+      "/private-cabins"
     ],
     "image": null
   }
