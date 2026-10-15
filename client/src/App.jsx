@@ -25,12 +25,14 @@ export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 
 const AdminLogin = lazy(() => import('@/pages/admin-login'));
 const AdminDashboard = lazy(() => import('@/pages/admin-dashboard'));
+import ContentPage from '@/pages/content-page';
+import { PAGE_ORDER, PAGES } from '@/content/pages';
 
 
 const queryClient = new QueryClient();
 
 // â"€â"€â"€ DEFAULT CONTENT â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-const defaultContent = {
+export const defaultContent = {
   globalSettings: {
     businessName: 'Deven Co-Work',
     shortDesc: "Raipur's Most Premium Coworking Space",
@@ -317,7 +319,7 @@ const defaultContent = {
 };
 
 // â"€â"€â"€ DEEP MERGE â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-function mergeContent(defaults, fetched) {
+export function mergeContent(defaults, fetched) {
   if (!fetched) return defaults;
   const merged = { ...defaults, ...fetched };
   for (const key in defaults) {
@@ -453,7 +455,7 @@ function FoundingBanner({ scarcity, cmsLoaded, cmsFailed }) {
   );
 }
 
-function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
+export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   const [solid, setSolid] = useState(false);
 
   useEffect(() => {
@@ -1556,7 +1558,7 @@ function SocialProof({ socialProof, onReserve, cmsLoaded, cmsFailed }) {
 }
 
 // ─── PRICING / MEMBERSHIP ───────────────────────────────────────────────────
-function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSettings, cmsLoaded, cmsFailed }) {
+export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSettings, cmsLoaded, cmsFailed }) {
   useEffect(() => {
     trackPixelEvent('ViewContent', { content_name: 'Pricing' });
   }, []);
@@ -2108,7 +2110,7 @@ function Reservation({ utm, finalCTA, reservation, reservedCount, globalSettings
 }
 
 // ────── FOOTER ───────────────────────────────────────────────────────────────
-function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
+export function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? footer : (cmsFailed ? defaultContent.footer : null);
   const settings = cmsLoaded ? globalSettings : (cmsFailed ? defaultContent.globalSettings : null);
 
@@ -2141,6 +2143,17 @@ function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
             {(data.quickLinks || []).map((link, idx) => (
               <a key={idx} href={link.href} className="hover:text-[#04B8BB] transition-colors">{link.label}</a>
             ))}
+          </div>
+          <div className="mt-6">
+            <span className="font-display text-[10px] font-bold text-[#FCFAF9]/40 uppercase tracking-[.15em] block mb-2">Explore</span>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 text-[10.5px] text-[#FCFAF9]/55">
+              <Link href="/private-cabins" className="hover:text-[#04B8BB] transition-colors">Private Cabins</Link>
+              <Link href="/meeting-room" className="hover:text-[#04B8BB] transition-colors">Meeting Room</Link>
+              <Link href="/podcast-studio" className="hover:text-[#04B8BB] transition-colors">Podcast Studio</Link>
+              <Link href="/free-trial" className="hover:text-[#04B8BB] transition-colors">Free Trial</Link>
+              <Link href="/pricing" className="hover:text-[#04B8BB] transition-colors">Pricing</Link>
+              <Link href="/amenities" className="hover:text-[#04B8BB] transition-colors">Amenities</Link>
+            </div>
           </div>
         </div>
 
@@ -2244,7 +2257,7 @@ function MobileStickyCTA({ onReserve }) {
 }
 
 // â"€â"€â"€ HOME PAGE â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-const getInitialCmsData = () => {
+export const getInitialCmsData = () => {
   if (typeof window !== 'undefined' && window.__INITIAL_CMS_DATA__) {
     return mergeContent(defaultContent, window.__INITIAL_CMS_DATA__);
   }
@@ -2505,6 +2518,11 @@ function Router() {
         <Route path="/admin/login" component={AdminLogin} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/thank-you" component={ThankYou} />
+        {PAGE_ORDER.map((slug) => (
+          <Route key={slug} path={PAGES[slug].path}>
+            <ContentPage slug={slug} />
+          </Route>
+        ))}
         <Route component={NotFound} />
       </Switch>
     </Suspense>

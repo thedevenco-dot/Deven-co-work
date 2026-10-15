@@ -265,6 +265,16 @@ async function main() {
   // pathToFileURL is required on Windows: bare C:\... paths are not valid ESM URLs
   const { render } = await import(pathToFileURL(ssrBundlePath).href);
 
+  // Dynamic import of SEO content pages
+  const pagesModulePath = resolve(clientRoot, 'src', 'content', 'pages.js');
+  const { PAGE_ORDER, PAGES, SITE } = await import(pathToFileURL(pagesModulePath).href);
+
+  // Add the 6 SEO content page paths to the routes list
+  const contentRoutes = PAGE_ORDER.map(slug => PAGES[slug].path);
+  for (const p of contentRoutes) {
+    if (!routes.includes(p)) routes.push(p);
+  }
+
   // Fetch published CMS content before rendering routes
   const cmsData = await fetchPublishedContent(clientRoot);
   if (cmsData) {
@@ -328,6 +338,101 @@ async function main() {
       }
     }
 
+    // Handle SEO content page routes
+    const contentSlug = PAGE_ORDER.find(s => PAGES[s].path === url);
+    if (contentSlug) {
+      const page = PAGES[contentSlug];
+
+      // For the new routes, embed window.__INITIAL_CMS_DATA__ exactly as is done for '/' (but NOT for /thank-you)
+      if (cmsData) {
+        const scriptTag = `<script>window.__INITIAL_CMS_DATA__=${escapeJsonForScript(JSON.stringify(cmsData))};</script>`;
+        html = html.replace('</head>', () => `${scriptTag}</head>`);
+      }
+
+      // Do NOT apply updateHeadFromCms to the new routes (it must stay '/' only), because their titles come from pages.js.
+      // For each new route, rewrite in the final HTML using function replacers in html.replace and escAttr:
+      // <title>, meta name="description", <link rel="canonical"> (create it if missing) = SITE.url + path,
+      // og:title, og:description, og:url, twitter:title, twitter:description. Keep og:image and twitter:image as they are.
+      const canonicalUrl = `${SITE.url}${page.path}`;
+
+      // Title
+      html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(page.title)}</title>`);
+
+      // Description
+      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(page.description)}" />`);
+
+      // Canonical
+      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
+      if (canonicalRegex.test(html)) {
+        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
+      } else {
+        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
+      }
+
+      // og:title
+      html = setTag(html, /<meta\s+[^>]*property=["']og:title["'][^>]*\/?>/i, `<meta property="og:title" content="${escAttr(page.title)}" />`);
+
+      // og:description
+      html = setTag(html, /<meta\s+[^>]*property=["']og:description["'][^>]*\/?>/i, `<meta property="og:description" content="${escAttr(page.description)}" />`);
+
+      // og:url
+      html = setTag(html, /<meta\s+[^>]*property=["']og:url["'][^>]*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
+
+      // twitter:title
+      html = setTag(html, /<meta\s+[^>]*name=["']twitter:title["'][^>]*\/?>/i, `<meta name="twitter:title" content="${escAttr(page.title)}" />`);
+
+      // twitter:description
+      html = setTag(html, /<meta\s+[^>]*name=["']twitter:description["'][^>]*\/?>/i, `<meta name="twitter:description" content="${escAttr(page.description)}" />`);
+
+      // Before </head> add two extra <script type="application/ld+json"> blocks per new route:
+      // BreadcrumbList (Home -> this page, with absolute URLs) and FAQPage built from faqs.
+      // Keep existing LocalBusiness block. JSON.parse every generated block to check it.
+      const breadcrumbData = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.devencowork.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": page.h1,
+            "item": canonicalUrl
+          }
+        ]
+      };
+      const breadcrumbStr = JSON.stringify(breadcrumbData, null, 2);
+      JSON.parse(breadcrumbStr);
+
+      const faqData = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": (page.faqs || []).map((faq) => ({
+          "@type": "Question",
+          "name": faq.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.a
+          }
+        }))
+      };
+      const faqStr = JSON.stringify(faqData, null, 2);
+      JSON.parse(faqStr);
+
+      const extraJsonLd = `<script type="application/ld+json">\n${breadcrumbStr}\n</script>\n<script type="application/ld+json">\n${faqStr}\n</script>\n`;
+      html = html.replace('</head>', () => `${extraJsonLd}</head>`);
+
+      // Ensure all content is visible in prerendered HTML (no inline opacity:0)
+      html = html.replace(/style="([^"]*?)opacity\s*:\s*0\s*;?\s*([^"]*?)"/gi, (match, p1, p2) => {
+        const rest = (p1 + p2).replace(/;\s*;/g, ';').trim().replace(/^;|;$/g, '');
+        return rest ? `style="${rest}"` : '';
+      });
+    }
+
     // Write output file
     if (url === '/') {
       writeFileSync(resolve(distDir, 'index.html'), html, 'utf-8');
@@ -340,6 +445,23 @@ async function main() {
     const size = Buffer.byteLength(html, 'utf-8');
     console.log(`  ✅  Written: dist${url === '/' ? '/index.html' : url + '/index.html'} (${(size / 1024).toFixed(1)} kB)`);
   }
+
+  // Generate dist/sitemap.xml listing "/" and the 6 new paths only (NOT /thank-you),
+  // absolute https://www.devencowork.com URLs, <lastmod> = today's date (YYYY-MM-DD).
+  const today = new Date().toISOString().split('T')[0];
+  const sitemapUrls = ['/', ...contentRoutes];
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapUrls.map((u) => `  <url>
+    <loc>${SITE.url}${u === '/' ? '/' : u}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${u === '/' ? 'weekly' : 'monthly'}</changefreq>
+    <priority>${u === '/' ? '1.0' : '0.8'}</priority>
+  </url>`).join('\n')}
+</urlset>\n`;
+
+  writeFileSync(resolve(distDir, 'sitemap.xml'), sitemapXml, 'utf-8');
+  console.log(`  ✅  Written: dist/sitemap.xml (${sitemapUrls.length} URLs, today: ${today})`);
 
   console.log('\n🎉  Prerendering complete.\n');
 }
