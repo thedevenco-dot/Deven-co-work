@@ -2096,19 +2096,19 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
 
   return (
     <section className="bg-[#024E5C] text-[#FCFAF9] py-24 sm:py-36 border-b border-[rgba(252,250,249,0.16)]" id="faq" data-testid="section-faq">
-      <div className="container-wide grid gap-y-14 gap-x-16 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-        <RevealOnScroll>
-          <div className="section-label mb-6 text-[#04B8BB] font-black">COMMON QUESTIONS</div>
+      <div className="container-wide">
+        <RevealOnScroll className="text-center max-w-2xl mx-auto mb-14">
+          <div className="section-label mb-6 text-[#04B8BB] font-black justify-center">COMMON QUESTIONS</div>
           <h2
             className="font-display font-black leading-[1.04] text-[#FCFAF9] uppercase tracking-tight"
             style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
           >
             {sectionData?.headline || 'Everything You Wanted to Ask'}
           </h2>
-          <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[380px]">
+          <p className="mt-6 text-[14px] leading-[1.75] text-[#FCFAF9]/75 max-w-[520px] mx-auto">
             {sectionData?.subheadline || 'Everything you need to know about memberships, pricing, rules, and billing details.'}
           </p>
-          <div className="mt-10 flex flex-wrap gap-4 items-center">
+          <div className="mt-8 flex flex-wrap gap-4 items-center justify-center">
             <Button onClick={onReserve} testId="button-faq-reserve">Book Your Free Tour</Button>
             <Link
               href="/faq"
@@ -2120,7 +2120,7 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
           </div>
         </RevealOnScroll>
 
-        <div className="flex flex-col justify-between">
+        <div className="max-w-3xl mx-auto flex flex-col justify-between">
           <div className="border-t border-[rgba(252,250,249,0.16)]">
             {data.map((item, index) => (
               <div key={index} className="border-b border-[rgba(252,250,249,0.16)]">
@@ -2159,7 +2159,7 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
                       style={{ overflow: 'hidden' }}
                     >
                       <div
-                        className="max-w-[640px] pb-6 pl-9 pr-4 text-[14px] leading-[1.75] text-[#FCFAF9]/80 font-normal"
+                        className="max-w-[700px] pb-6 pl-9 pr-4 text-[14px] leading-[1.75] text-[#FCFAF9]/80 font-normal"
                         data-testid={`text-faq-answer-${index}`}
                       >
                         {item.answer}
@@ -2171,7 +2171,7 @@ function FAQ({ faq, faqSection, globalSettings, onReserve, cmsLoaded, cmsFailed 
             ))}
           </div>
 
-          <div className="mt-8 pt-6 border-t border-[rgba(252,250,249,0.16)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[12px] text-[#FCFAF9]/70">
+          <div className="mt-8 pt-6 border-t border-[rgba(252,250,249,0.16)] flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-[#FCFAF9]/70 text-center sm:text-left">
             <span>Have questions about pricing, cabins, or trial access?</span>
             <Link
               href="/faq"

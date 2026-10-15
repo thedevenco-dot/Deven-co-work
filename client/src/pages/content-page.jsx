@@ -617,14 +617,16 @@ export default function ContentPage({ slug }) {
         {page.faqs && page.faqs.length > 0 && (
           <section className="py-16 sm:py-24 border-b border-[rgba(252,250,249,0.12)]">
             <div className="container-wide">
-              <div className="section-label mb-4 text-[#04B8BB] font-black">QUESTIONS & ANSWERS</div>
-              <h2 className="font-display text-2xl sm:text-4xl font-bold text-[#FCFAF9] uppercase tracking-tight mb-10">
-                Frequently Asked Questions
-              </h2>
+              <div className="text-center max-w-3xl mx-auto mb-12">
+                <div className="section-label mb-4 text-[#04B8BB] font-black justify-center">QUESTIONS & ANSWERS</div>
+                <h2 className="font-display text-2xl sm:text-4xl font-bold text-[#FCFAF9] uppercase tracking-tight">
+                  Frequently Asked Questions
+                </h2>
+              </div>
 
               {groupedFaqs ? (
                 /* Grouped FAQ Sections (used on /faq) */
-                <div className="space-y-8">
+                <div className="max-w-4xl mx-auto space-y-8">
                   {Object.entries(groupedFaqs).map(([category, faqs], catIdx) => (
                     <div key={catIdx} className="border border-[rgba(252,250,249,0.14)] rounded-xl p-6 sm:p-8 bg-[#0F0F10]">
                       <h3 className="font-display text-lg sm:text-xl font-bold text-[#04B8BB] uppercase tracking-wider mb-6 flex items-center gap-2">
@@ -656,7 +658,7 @@ export default function ContentPage({ slug }) {
                 </div>
               ) : (
                 /* Flat FAQ Accordion */
-                <div className="max-w-4xl border-t border-[rgba(252,250,249,0.16)] divide-y divide-[rgba(252,250,249,0.16)]">
+                <div className="max-w-4xl mx-auto border-t border-[rgba(252,250,249,0.16)] divide-y divide-[rgba(252,250,249,0.16)]">
                   {page.faqs.map((faq, fIdx) => (
                     <details key={fIdx} className="group py-6 text-left">
                       <summary className="flex cursor-pointer items-start justify-between gap-4 font-display text-[16px] sm:text-[18px] font-bold text-[#FCFAF9] group-hover:text-[#04B8BB] list-none transition-colors">
