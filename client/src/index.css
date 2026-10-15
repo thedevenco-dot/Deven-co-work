@@ -440,6 +440,26 @@
   color: #0C0C0C;
   flex-shrink: 0;
   text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .value-row {
+    gap: 8px;
+    padding: 14px 0;
+    align-items: flex-start;
+  }
+  .value-row-dots {
+    display: none;
+  }
+  .value-row-title {
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+  .value-row-price {
+    font-size: 12px;
+    padding-left: 6px;
+  }
 }
 
 /* â"€â"€â"€ SECTION REVEAL ANIMATIONS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */

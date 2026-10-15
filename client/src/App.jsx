@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronDown,
-  Clock3, MapPin, MessageCircle, Phone, ShieldCheck, Users, X,
+  Clock3, MapPin, Menu, MessageCircle, Phone, ShieldCheck, Users, X,
   Wifi, Coffee, Briefcase, Home as HomeIcon, Zap, Star,
   BookOpen, Sparkles, TrendingUp
 } from 'lucide-react';
@@ -65,7 +65,7 @@ export const defaultContent = {
       { label: 'Our Space', url: '#space', external: false, visible: true, order: 0 },
       { label: "Founder's OS", url: '#offer-stack', external: false, visible: true, order: 1 },
       { label: 'How It Works', url: '#how-it-works', external: false, visible: true, order: 2 },
-      { label: 'Pricing', url: '#pricing', external: false, visible: true, order: 3 },
+      { label: 'Pricing', url: '/pricing', external: false, visible: true, order: 3 },
       { label: 'FAQ', url: '#faq', external: false, visible: true, order: 4 },
       { label: 'Contact', url: '#reservation', external: false, visible: true, order: 5 },
     ],
@@ -85,7 +85,7 @@ export const defaultContent = {
     primaryCtaLabel: 'Book Your Free Tour',
     primaryCtaUrl: '#reservation',
     secondaryCtaLabel: 'See Founding Member Pricing',
-    secondaryCtaUrl: '#pricing',
+    secondaryCtaUrl: '/pricing',
     foundingPriceNote: 'Founding plan from ₹5,999 / month · Rate locked for founding batch',
     videoUrl: 'https://res.cloudinary.com/cyxow5rb/video/upload/v1791881113/deven_cowork/t2orrvxnsrid1kg8eh2k.mp4',
     imageUrl: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1791881124/deven_cowork/qwzxar4m5f4zgp3masqb.webp',
@@ -298,7 +298,7 @@ export const defaultContent = {
   footer: {
     tagline: "Raipur's Most Premium Coworking Space",
     quickLinks: [
-      { label: 'Pricing', href: '#pricing' },
+      { label: 'Pricing', href: '/pricing' },
       { label: 'Contact', href: '#reservation' },
       { label: 'Instagram', href: 'https://instagram.com/' },
       { label: 'GMB', href: 'https://www.google.com/maps/' },
@@ -311,10 +311,10 @@ export const defaultContent = {
     ctaLabel: '',
     ctaUrl: '',
   },
-  sectionOrder: ['hero', 'problem', 'guide', 'plan', 'offerStack', 'valueStack', 'guarantee', 'socialProof', 'pricing', 'faq', 'finalCTA'],
+  sectionOrder: ['hero', 'problem', 'guide', 'plan', 'offerStack', 'guarantee', 'socialProof', 'pricing', 'faq', 'finalCTA'],
   sectionVisibility: {
     hero: true, calculator: true, problem: true, guide: true, plan: true, offerStack: true,
-    valueStack: true, guarantee: true, socialProof: true, pricing: true, faq: true, finalCTA: true,
+    valueStack: false, guarantee: true, socialProof: true, pricing: true, faq: true, finalCTA: true,
   },
 };
 
@@ -336,6 +336,32 @@ export function mergeContent(defaults, fetched) {
       }
     }
   }
+
+  // Ensure valueStack is never in homepage sectionOrder
+  if (merged.sectionOrder && Array.isArray(merged.sectionOrder)) {
+    merged.sectionOrder = merged.sectionOrder.filter(key => key !== 'valueStack');
+  }
+
+  // Ensure Pricing in navigation items always routes to /pricing
+  if (merged.navigation && Array.isArray(merged.navigation.items)) {
+    merged.navigation.items = merged.navigation.items.map(item => {
+      if (item.label && item.label.toLowerCase().trim() === 'pricing') {
+        return { ...item, url: '/pricing' };
+      }
+      return item;
+    });
+  }
+
+  // Ensure Pricing in footer quick links always routes to /pricing
+  if (merged.footer && Array.isArray(merged.footer.quickLinks)) {
+    merged.footer.quickLinks = merged.footer.quickLinks.map(link => {
+      if (link.label && link.label.toLowerCase().trim() === 'pricing') {
+        return { ...link, href: '/pricing' };
+      }
+      return link;
+    });
+  }
+
   return merged;
 }
 
@@ -457,6 +483,8 @@ function FoundingBanner({ scarcity, cmsLoaded, cmsFailed }) {
 
 export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   const [solid, setSolid] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [location] = useLocation();
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 24);
@@ -464,10 +492,17 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location]);
+
   const handleNavClick = (e, url) => {
     if (url && url.startsWith('#')) {
-      e.preventDefault();
-      document.getElementById(url.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      if (location === '/') {
+        e.preventDefault();
+        document.getElementById(url.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -506,23 +541,65 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
       <div className="container-wide flex h-[70px] items-center justify-between gap-4">
         <Logo logoUrl={logoUrl} />
 
-        <nav className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[.18em] text-[#FCFAF9]/85">
-          {visibleNav.map((item, idx) => (
-            <a
-              key={idx}
-              href={item.url}
-              target={item.external ? '_blank' : undefined}
-              rel={item.external ? 'noreferrer' : undefined}
-              onClick={(e) => handleNavClick(e, item.url)}
-              className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
-            >
-              {item.label}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
-            </a>
-          ))}
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[.18em]">
+          {visibleNav.map((item, idx) => {
+            const isPricing = item.label?.toLowerCase().trim() === 'pricing';
+            const itemUrl = isPricing ? '/pricing' : item.url;
+            const isHash = itemUrl.startsWith('#');
+            const href = isHash && location !== '/' ? `/${itemUrl}` : itemUrl;
+            const isActive = isPricing ? location === '/pricing' : location === itemUrl;
+
+            if (item.external) {
+              return (
+                <a
+                  key={idx}
+                  href={itemUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
+                </a>
+              );
+            }
+
+            if (isHash && location === '/') {
+              return (
+                <a
+                  key={idx}
+                  href={itemUrl}
+                  onClick={(e) => handleNavClick(e, itemUrl)}
+                  className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
+                </a>
+              );
+            }
+
+            return (
+              <Link
+                key={idx}
+                href={href}
+                className={`transition-colors relative group ${
+                  isActive ? 'text-[#04B8BB] font-black' : 'text-[#FCFAF9]/85 hover:text-[#04B8BB]'
+                }`}
+                data-testid={isPricing ? 'nav-pricing' : `nav-item-${idx}`}
+              >
+                {item.label}
+                <span
+                  className={`absolute -bottom-0.5 left-0 h-px bg-[#04B8BB] transition-all duration-300 ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}
+                />
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3 sm:gap-5">
           <a
             href={cleanPhoneHref}
             onClick={() => trackPixelEvent('Contact')}
@@ -541,8 +618,84 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
               {nav.ctaLabel || 'Book Your Tour'}
             </Button>
           )}
+
+          {/* Mobile hamburger menu toggle */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(prev => !prev)}
+            className="md:hidden p-2 text-[#FCFAF9] hover:text-[#04B8BB] transition-colors focus:outline-none"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+            data-testid="button-mobile-menu"
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Navigation Drawer */}
+      {mobileMenuOpen && (
+        <div
+          className="md:hidden bg-[#024E5C]/98 backdrop-blur-md border-t border-[rgba(252,250,249,0.14)] px-6 py-4 shadow-2xl transition-all"
+          data-testid="nav-mobile-menu"
+        >
+          <nav className="flex flex-col gap-2 text-xs font-bold uppercase tracking-[.18em]">
+            {visibleNav.map((item, idx) => {
+              const isPricing = item.label?.toLowerCase().trim() === 'pricing';
+              const itemUrl = isPricing ? '/pricing' : item.url;
+              const isHash = itemUrl.startsWith('#');
+              const href = isHash && location !== '/' ? `/${itemUrl}` : itemUrl;
+              const isActive = isPricing ? location === '/pricing' : location === itemUrl;
+
+              if (item.external) {
+                return (
+                  <a
+                    key={idx}
+                    href={itemUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-[#FCFAF9]/85 hover:text-[#04B8BB] py-2 transition-colors border-b border-[rgba(252,250,249,0.08)]"
+                  >
+                    {item.label}
+                  </a>
+                );
+              }
+
+              if (isHash && location === '/') {
+                return (
+                  <a
+                    key={idx}
+                    href={itemUrl}
+                    onClick={(e) => {
+                      setMobileMenuOpen(false);
+                      handleNavClick(e, itemUrl);
+                    }}
+                    className="text-[#FCFAF9]/85 hover:text-[#04B8BB] py-2 transition-colors border-b border-[rgba(252,250,249,0.08)]"
+                  >
+                    {item.label}
+                  </a>
+                );
+              }
+
+              return (
+                <Link
+                  key={idx}
+                  href={href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`py-2 transition-colors flex items-center justify-between border-b border-[rgba(252,250,249,0.08)] ${
+                    isActive ? 'text-[#04B8BB] font-black' : 'text-[#FCFAF9]/85 hover:text-[#04B8BB]'
+                  }`}
+                  data-testid={isPricing ? 'mobile-nav-pricing' : `mobile-nav-item-${idx}`}
+                >
+                  <span>{item.label}</span>
+                  {isActive && <span className="text-[10px] text-[#04B8BB]">●</span>}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
@@ -717,14 +870,13 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
               >
                 {data.primaryCtaLabel || 'Book Your Free Tour'}
               </Button>
-              <a
-                href={data.secondaryCtaUrl || '#pricing'}
-                onClick={(e) => handleCtaClick(e, data.secondaryCtaUrl || '#pricing')}
+              <Link
+                href="/pricing"
                 className="text-link"
                 data-testid="link-hero-pricing"
               >
                 {data.secondaryCtaLabel || 'See Founding Member Pricing'}
-              </a>
+              </Link>
             </motion.div>
 
             {/* Trust bar - factual, from existing content */}
@@ -1306,7 +1458,7 @@ function OfferStack({ onReserve, offerStack, valueStack, cmsLoaded, cmsFailed })
 }
 
 // â"€â"€â"€ VALUE STACK â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
+export function ValueStack({ valueStack, onReserve, cmsLoaded, cmsFailed }) {
   const data = cmsLoaded ? valueStack : (cmsFailed ? defaultContent.valueStack : null);
 
   if (!data) {
@@ -1662,10 +1814,49 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
   const total = typeof s?.totalSpots === 'number' ? s.totalSpots : 50;
   const closingDate = s?.closingDate || '';
 
+  const [, setLocation] = useLocation();
+
   // Determine if a plan is the cabin/contact plan
   const isCabin = (plan) => /cabin|private/i.test(plan.name) || plan.isContactPlan;
   // Determine Most Popular
   const isMostPopular = (plan) => /dedicated/i.test(plan.name) || plan.badge === 'MOST POPULAR';
+
+  const getPlanTargetUrl = (p) => {
+    const name = (p.name || '').toLowerCase();
+    const slug = (p.slug || '').toLowerCase();
+    if (name.includes('cabin') || name.includes('private') || slug.includes('cabin') || p.isContactPlan) {
+      return '/private-cabins';
+    }
+    if (name.includes('meeting') || slug.includes('meeting')) {
+      return '/meeting-room';
+    }
+    if (name.includes('studio') || name.includes('podcast') || slug.includes('studio') || slug.includes('podcast')) {
+      return '/podcast-studio';
+    }
+    return '/pricing';
+  };
+
+  const getPlanLinkText = (p) => {
+    const name = (p.name || '').toLowerCase();
+    const slug = (p.slug || '').toLowerCase();
+    if (name.includes('cabin') || name.includes('private') || slug.includes('cabin') || p.isContactPlan) {
+      return 'View Cabin Details';
+    }
+    if (name.includes('meeting') || slug.includes('meeting')) {
+      return 'View Meeting Room Details';
+    }
+    if (name.includes('studio') || name.includes('podcast') || slug.includes('studio') || slug.includes('podcast')) {
+      return 'View Studio Details';
+    }
+    return 'View Plan Details';
+  };
+
+  const handleCardClick = (e, url) => {
+    if (e.target.closest('a, button, input, select, textarea')) return;
+    if (url) {
+      setLocation(url);
+    }
+  };
 
   return (
     <section
@@ -1699,17 +1890,30 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
             const popular = isMostPopular(plan);
             const cabin = isCabin(plan);
             const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent("Hi, I'd like to know more about the Private Cabin at Deven Co-Work.")}`;
+            const targetUrl = getPlanTargetUrl(plan);
+            const linkText = getPlanLinkText(plan);
 
             return (
               <RevealOnScroll
                 key={plan._id || index}
                 delay={index * 0.07}
                 className={[
-                  'relative flex flex-col border bg-white overflow-hidden',
+                  'relative flex flex-col border bg-white overflow-hidden cursor-pointer group transition-all duration-300 hover:shadow-md hover:border-[#04B8BB]/40',
                   popular
                     ? 'border-[#024E5C] shadow-lg ring-1 ring-[#024E5C]/20 -translate-y-2 sm:-translate-y-3'
                     : 'border-[rgba(12,12,12,0.12)]',
                 ].join(' ')}
+                onClick={(e) => handleCardClick(e, targetUrl)}
+                tabIndex={0}
+                role="article"
+                aria-label={`${plan.name} plan card`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.target.closest('a, button')) return;
+                    e.preventDefault();
+                    handleCardClick(e, targetUrl);
+                  }
+                }}
               >
                 {/* Most Popular badge */}
                 {popular && (
@@ -1720,21 +1924,34 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
 
                 {/* Membership Plan Image — Fetched dynamically from Backend/Database Plan model */}
                 {plan.imageUrl ? (
-                  <div className="w-full overflow-hidden border-b border-[rgba(12,12,12,0.08)] bg-[#f4f4f4]" style={{ aspectRatio: '16/9' }}>
+                  <Link
+                    href={targetUrl}
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="w-full overflow-hidden border-b border-[rgba(12,12,12,0.08)] bg-[#f4f4f4] block"
+                    style={{ aspectRatio: '16/9' }}
+                  >
                     <img
                       src={optimizeImageUrl(getMediaUrl(plan.imageUrl), 800)}
                       alt={`${plan.name} at Deven Co-Work`}
                       loading={index < 3 ? 'eager' : 'lazy'}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => { e.currentTarget.style.display = 'none'; if (e.currentTarget.parentElement) e.currentTarget.parentElement.style.display = 'none'; }}
                     />
-                  </div>
+                  </Link>
                 ) : null}
 
                 {/* Card body */}
                 <div className="p-7 flex flex-col flex-1">
                   {/* Plan name */}
-                  <h3 className="font-display text-[14px] font-black uppercase tracking-[0.06em] text-[#0C0C0C]">{plan.name}</h3>
+                  <h3 className="font-display text-[14px] font-black uppercase tracking-[0.06em] text-[#0C0C0C]">
+                    <Link
+                      href={targetUrl}
+                      className="hover:text-[#04B8BB] transition-colors inline-block"
+                    >
+                      {plan.name}
+                    </Link>
+                  </h3>
 
                   {/* Description */}
                   {plan.desc && (
@@ -1783,21 +2000,21 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
                     </ul>
                   )}
 
-                  {/* Contextual Link */}
-                  <div className="mt-4 pt-3 border-t border-[rgba(12,12,12,0.06)] text-center">
+                  {/* Contextual Link to relevant page */}
+                  <div className="mt-auto pt-5 border-t border-[rgba(12,12,12,0.06)] text-center">
                     <Link
-                      href={cabin ? '/private-cabins' : '/pricing'}
+                      href={targetUrl}
                       className="text-[11px] font-bold text-[#024E5C] hover:text-[#04B8BB] transition-colors inline-flex items-center gap-1 group/link"
                       data-testid={`link-plan-details-${index}`}
                     >
-                      <span>{cabin ? 'View Cabin Details' : 'View Plan Details'}</span>
+                      <span>{linkText}</span>
                       <span className="text-[#04B8BB] font-mono group-hover/link:translate-x-0.5 transition-transform">→</span>
                     </Link>
                   </div>
 
-                  {/* CTA */}
-                  <div className="mt-auto pt-3">
-                    {cabin ? (
+                  {/* Retain appropriate plan-related CTA (e.g. cabin WhatsApp CTA), remove tour booking CTA */}
+                  {cabin && (
+                    <div className="pt-3">
                       <a
                         href={waLink}
                         target="_blank"
@@ -1808,17 +2025,8 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
                       >
                         Talk to Us About a Cabin <ArrowUpRight size={13} />
                       </a>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={onReserve}
-                        className={`button w-full text-xs font-bold uppercase tracking-wider ${popular ? 'button-primary' : 'button-dark'}`}
-                        data-testid={`button-plan-${index}`}
-                      >
-                        BOOK YOUR TOUR <ArrowUpRight size={13} />
-                      </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </RevealOnScroll>
             );
@@ -2563,6 +2771,8 @@ function Home() {
   }
 
   let sectionOrder = content?.sectionOrder || defaultContent.sectionOrder;
+  // Move valueStack from homepage to /pricing page
+  sectionOrder = sectionOrder.filter(key => key !== 'valueStack');
   if (!sectionOrder.includes('calculator')) {
     const heroIndex = sectionOrder.indexOf('hero');
     const insertPos = heroIndex !== -1 ? heroIndex + 1 : 1;
@@ -2594,7 +2804,6 @@ function Home() {
     guide: <Guide key="guide" guide={content?.guide} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     plan: <Plan key="plan" plan={content?.plan} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     offerStack: <OfferStack key="offerStack" offerStack={content?.offerStack} valueStack={content?.valueStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
-    valueStack: <ValueStack key="valueStack" valueStack={content?.valueStack} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     guarantee: <Guarantee key="guarantee" guarantee={content?.riskReversal} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     socialProof: <SocialProof key="socialProof" socialProof={content?.socialProof} onReserve={scrollToReservation} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,
     pricing: <Pricing key="pricing" onReserve={scrollToReservation} pricing={content?.pricing} dbPlans={dbPlans} scarcity={content?.scarcity} globalSettings={content?.globalSettings} cmsLoaded={cmsLoaded} cmsFailed={cmsFailed} />,

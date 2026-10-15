@@ -18,6 +18,7 @@ import {
   Header,
   Footer,
   Pricing,
+  ValueStack,
   defaultContent,
   getInitialCmsData,
   mergeContent
@@ -114,7 +115,7 @@ function ContactSection({ utm, mapsEmbedSrc }) {
 
   return (
     <section className="py-14 sm:py-20 border-b border-[rgba(252,250,249,0.12)]">
-      <div className="container-wide max-w-6xl">
+      <div className="container-wide">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* Contact Details Card */}
@@ -480,7 +481,7 @@ export default function ContentPage({ slug }) {
       <main>
         {/* Hero block with Breadcrumbs */}
         <section className="relative pt-12 pb-16 sm:pt-20 sm:pb-24 border-b border-[rgba(252,250,249,0.12)]">
-          <div className="container-wide max-w-4xl">
+          <div className="container-wide">
             {/* Breadcrumb Navigation */}
             <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-[#FCFAF9]/60">
               <Link href="/" className="hover:text-[#04B8BB] transition-colors">
@@ -492,45 +493,47 @@ export default function ContentPage({ slug }) {
               </span>
             </nav>
 
-            {page.eyebrow && (
-              <div className="section-label mb-6 text-[#04B8BB] font-black">
-                {page.eyebrow}
+            <div className="max-w-4xl">
+              {page.eyebrow && (
+                <div className="section-label mb-6 text-[#04B8BB] font-black">
+                  {page.eyebrow}
+                </div>
+              )}
+              <h1 className="editorial-headline text-3xl sm:text-5xl lg:text-6xl font-black mb-8 leading-[1.08] text-[#FCFAF9] uppercase tracking-tight">
+                {page.h1}
+              </h1>
+              <div className="space-y-5">
+                {page.intro?.map((paragraph, idx) => (
+                  <p key={idx} className="text-base sm:text-lg text-[#FCFAF9]/85 leading-relaxed">
+                    {paragraph}
+                  </p>
+                ))}
               </div>
-            )}
-            <h1 className="editorial-headline text-3xl sm:text-5xl lg:text-6xl font-black mb-8 leading-[1.08] text-[#FCFAF9] uppercase tracking-tight">
-              {page.h1}
-            </h1>
-            <div className="space-y-5">
-              {page.intro?.map((paragraph, idx) => (
-                <p key={idx} className="text-base sm:text-lg text-[#FCFAF9]/85 leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-            <div className="mt-10 flex flex-wrap gap-4">
-              <button
-                type="button"
-                onClick={handleOpenTour}
-                className="button button-primary"
-              >
-                Book Free Tour
-              </button>
-              <a
-                href={SITE.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackPixelEvent('Contact', { content_name: 'whatsapp_click' })}
-                className="button button-outline"
-              >
-                Chat on WhatsApp
-              </a>
-              <a
-                href={`tel:${SITE.phoneTel}`}
-                onClick={() => trackPixelEvent('Contact', { content_name: 'call_click' })}
-                className="button button-outline"
-              >
-                Call {SITE.phone}
-              </a>
+              <div className="mt-10 flex flex-wrap gap-4">
+                <button
+                  type="button"
+                  onClick={handleOpenTour}
+                  className="button button-primary"
+                >
+                  Book Free Tour
+                </button>
+                <a
+                  href={SITE.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackPixelEvent('Contact', { content_name: 'whatsapp_click' })}
+                  className="button button-outline"
+                >
+                  Chat on WhatsApp
+                </a>
+                <a
+                  href={`tel:${SITE.phoneTel}`}
+                  onClick={() => trackPixelEvent('Contact', { content_name: 'call_click' })}
+                  className="button button-outline"
+                >
+                  Call {SITE.phone}
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -553,34 +556,36 @@ export default function ContentPage({ slug }) {
         {/* Content sections */}
         {page.sections?.map((sec, idx) => (
           <section key={idx} className="py-14 sm:py-20 border-b border-[rgba(252,250,249,0.12)]">
-            <div className="container-wide max-w-4xl">
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FCFAF9] uppercase tracking-tight mb-6">
-                {sec.heading}
-              </h2>
-              {sec.paragraphs && sec.paragraphs.length > 0 && (
-                <div className="space-y-4 mb-6">
-                  {sec.paragraphs.map((p, pIdx) => (
-                    <p key={pIdx} className="text-base sm:text-lg text-[#FCFAF9]/80 leading-relaxed">
-                      {p}
-                    </p>
-                  ))}
-                </div>
-              )}
-              {sec.bullets && sec.bullets.length > 0 && (
-                <ul className="mb-6 space-y-3">
-                  {sec.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="flex items-start gap-3 text-base text-[#FCFAF9]/85 leading-relaxed">
-                      <span className="text-[#04B8BB] font-bold mt-1 text-sm shrink-0">✦</span>
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {sec.note && (
-                <p className="text-xs sm:text-sm text-[#FCFAF9]/60 italic mt-4 pl-4 border-l-2 border-[#04B8BB]/40">
-                  {sec.note}
-                </p>
-              )}
+            <div className="container-wide">
+              <div className="max-w-4xl">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#FCFAF9] uppercase tracking-tight mb-6">
+                  {sec.heading}
+                </h2>
+                {sec.paragraphs && sec.paragraphs.length > 0 && (
+                  <div className="space-y-4 mb-6">
+                    {sec.paragraphs.map((p, pIdx) => (
+                      <p key={pIdx} className="text-base sm:text-lg text-[#FCFAF9]/80 leading-relaxed">
+                        {p}
+                      </p>
+                    ))}
+                  </div>
+                )}
+                {sec.bullets && sec.bullets.length > 0 && (
+                  <ul className="mb-6 space-y-3">
+                    {sec.bullets.map((bullet, bIdx) => (
+                      <li key={bIdx} className="flex items-start gap-3 text-base text-[#FCFAF9]/85 leading-relaxed">
+                        <span className="text-[#04B8BB] font-bold mt-1 text-sm shrink-0">✦</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {sec.note && (
+                  <p className="text-xs sm:text-sm text-[#FCFAF9]/60 italic mt-4 pl-4 border-l-2 border-[#04B8BB]/40">
+                    {sec.note}
+                  </p>
+                )}
+              </div>
             </div>
           </section>
         ))}
@@ -598,10 +603,20 @@ export default function ContentPage({ slug }) {
           />
         )}
 
+        {/* ValueStack component on /pricing page */}
+        {slug === 'pricing' && (
+          <ValueStack
+            valueStack={content?.valueStack}
+            onReserve={handleOpenTour}
+            cmsLoaded={cmsLoaded}
+            cmsFailed={cmsFailed}
+          />
+        )}
+
         {/* FAQ block */}
         {page.faqs && page.faqs.length > 0 && (
           <section className="py-16 sm:py-24 border-b border-[rgba(252,250,249,0.12)]">
-            <div className="container-wide max-w-4xl">
+            <div className="container-wide">
               <div className="section-label mb-4 text-[#04B8BB] font-black">QUESTIONS & ANSWERS</div>
               <h2 className="font-display text-2xl sm:text-4xl font-bold text-[#FCFAF9] uppercase tracking-tight mb-10">
                 Frequently Asked Questions
@@ -609,7 +624,7 @@ export default function ContentPage({ slug }) {
 
               {groupedFaqs ? (
                 /* Grouped FAQ Sections (used on /faq) */
-                <div className="space-y-12">
+                <div className="space-y-8">
                   {Object.entries(groupedFaqs).map(([category, faqs], catIdx) => (
                     <div key={catIdx} className="border border-[rgba(252,250,249,0.14)] rounded-xl p-6 sm:p-8 bg-[#0F0F10]">
                       <h3 className="font-display text-lg sm:text-xl font-bold text-[#04B8BB] uppercase tracking-wider mb-6 flex items-center gap-2">
@@ -641,7 +656,7 @@ export default function ContentPage({ slug }) {
                 </div>
               ) : (
                 /* Flat FAQ Accordion */
-                <div className="border-t border-[rgba(252,250,249,0.16)] divide-y divide-[rgba(252,250,249,0.16)]">
+                <div className="max-w-4xl border-t border-[rgba(252,250,249,0.16)] divide-y divide-[rgba(252,250,249,0.16)]">
                   {page.faqs.map((faq, fIdx) => (
                     <details key={fIdx} className="group py-6 text-left">
                       <summary className="flex cursor-pointer items-start justify-between gap-4 font-display text-[16px] sm:text-[18px] font-bold text-[#FCFAF9] group-hover:text-[#04B8BB] list-none transition-colors">
@@ -668,63 +683,65 @@ export default function ContentPage({ slug }) {
 
         {/* Call to action block */}
         <section className="py-16 sm:py-24 border-b border-[rgba(252,250,249,0.12)] bg-[#024E5C]/30">
-          <div className="container-wide max-w-4xl text-center">
-            <div className="section-label mb-4 text-[#04B8BB] font-black justify-center">GET IN TOUCH</div>
-            <h2 className="font-display text-2xl sm:text-4xl font-black text-[#FCFAF9] uppercase tracking-tight mb-4">
-              Experience Deven Co-Work In Person
-            </h2>
-            <p className="text-base sm:text-lg text-[#FCFAF9]/80 max-w-2xl mx-auto mb-8">
-              Book a free tour or reach out to our team directly. We are here {SITE.hours}.
-            </p>
-            <div className="flex flex-wrap justify-center items-center gap-4 mb-10">
-              <button
-                type="button"
-                onClick={handleOpenTour}
-                className="button button-primary"
-              >
-                Book Free Tour
-              </button>
-              <a
-                href={SITE.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackPixelEvent('Contact', { content_name: 'whatsapp_click' })}
-                className="button button-outline"
-              >
-                WhatsApp Us
-              </a>
-              <a
-                href={`tel:${SITE.phoneTel}`}
-                onClick={() => trackPixelEvent('Contact', { content_name: 'call_click' })}
-                className="button button-outline"
-              >
-                Call {SITE.phone}
-              </a>
-              <a
-                href={`mailto:${SITE.email}`}
-                className="button button-outline"
-              >
-                Email Us
-              </a>
-            </div>
-            <div className="flex flex-wrap justify-center items-center gap-6 text-xs uppercase tracking-wider text-[#FCFAF9]/60">
-              <a
-                href={SITE.googleBusinessProfile}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[#04B8BB] transition-colors"
-              >
-                Google Business Profile ↗
-              </a>
-              <span>•</span>
-              <a
-                href={SITE.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[#04B8BB] transition-colors"
-              >
-                Instagram ↗
-              </a>
+          <div className="container-wide text-center">
+            <div className="max-w-4xl mx-auto">
+              <div className="section-label mb-4 text-[#04B8BB] font-black justify-center">GET IN TOUCH</div>
+              <h2 className="font-display text-2xl sm:text-4xl font-black text-[#FCFAF9] uppercase tracking-tight mb-4">
+                Experience Deven Co-Work In Person
+              </h2>
+              <p className="text-base sm:text-lg text-[#FCFAF9]/80 max-w-2xl mx-auto mb-8">
+                Book a free tour or reach out to our team directly. We are here {SITE.hours}.
+              </p>
+              <div className="flex flex-wrap justify-center items-center gap-4 mb-10">
+                <button
+                  type="button"
+                  onClick={handleOpenTour}
+                  className="button button-primary"
+                >
+                  Book Free Tour
+                </button>
+                <a
+                  href={SITE.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackPixelEvent('Contact', { content_name: 'whatsapp_click' })}
+                  className="button button-outline"
+                >
+                  WhatsApp Us
+                </a>
+                <a
+                  href={`tel:${SITE.phoneTel}`}
+                  onClick={() => trackPixelEvent('Contact', { content_name: 'call_click' })}
+                  className="button button-outline"
+                >
+                  Call {SITE.phone}
+                </a>
+                <a
+                  href={`mailto:${SITE.email}`}
+                  className="button button-outline"
+                >
+                  Email Us
+                </a>
+              </div>
+              <div className="flex flex-wrap justify-center items-center gap-6 text-xs uppercase tracking-wider text-[#FCFAF9]/60">
+                <a
+                  href={SITE.googleBusinessProfile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#04B8BB] transition-colors"
+                >
+                  Google Business Profile ↗
+                </a>
+                <span>•</span>
+                <a
+                  href={SITE.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#04B8BB] transition-colors"
+                >
+                  Instagram ↗
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -732,12 +749,12 @@ export default function ContentPage({ slug }) {
         {/* Related pages */}
         {page.related && page.related.length > 0 && (
           <section className="py-14 sm:py-20 border-b border-[rgba(252,250,249,0.12)]">
-            <div className="container-wide max-w-4xl">
+            <div className="container-wide">
               <div className="section-label mb-4 text-[#04B8BB] font-black">EXPLORE MORE</div>
               <h2 className="font-display text-xl sm:text-2xl font-bold text-[#FCFAF9] uppercase tracking-tight mb-8">
                 Related Pages
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {page.related.map((relPath, idx) => {
                   const relSlug = relPath.replace(/^\//, '');
                   const relPage = PAGES[relSlug];
