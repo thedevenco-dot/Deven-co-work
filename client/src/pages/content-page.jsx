@@ -149,7 +149,7 @@ function ContactSection({ utm, mapsEmbedSrc }) {
                   <div>
                     <strong className="block text-[#FCFAF9] font-medium mb-1">Operating Hours</strong>
                     <p className="text-[#FCFAF9]/75">Monday to Saturday: 9:00 AM – 9:00 PM</p>
-                    <p className="text-xs text-[#FCFAF9]/50 mt-0.5">Sunday: Closed for routine maintenance</p>
+                    <p className="text-xs text-[#FCFAF9]/50 mt-0.5">Sunday: Closed</p>
                   </div>
                 </div>
 
@@ -375,7 +375,7 @@ function ContactSection({ utm, mapsEmbedSrc }) {
                     )}
                   </button>
                   <p className="text-xs text-center text-[#FCFAF9]/40 mt-3">
-                    No credit card or deposit required. 100% free 2-day workspace trial included.
+                    No credit card required. 100% free 2-day workspace trial included.
                   </p>
                 </div>
               </form>

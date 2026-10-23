@@ -188,7 +188,7 @@ const contentSchema = new mongoose.Schema(
         default: [
           { main: '2-Day Free Trial', sub: 'No card required' },
           { main: '500 Mbps Wifi', sub: 'High Speed' },
-          { main: '9 AM–9 PM, 7 Days', sub: 'Access Hours' },
+          { main: '9 AM–9 PM, Mon–Sat', sub: 'Access Hours' },
           { main: 'Central Raipur Location', sub: 'City Centre' },
         ],
       },
@@ -322,7 +322,7 @@ const contentSchema = new mongoose.Schema(
       rows: {
         type: [rowSchema],
         default: [
-          { inclusion: 'Dedicated Workspace, 9 AM–9 PM, 7 Days', val: '₹6,000/mo' },
+          { inclusion: 'Dedicated Workspace, 9 AM–9 PM, Mon–Sat', val: '₹6,000/mo' },
           { inclusion: '500 Mbps Wifi, Printer, Locker, Charging Points', val: 'Priceless' },
           { inclusion: 'Coffee Bar — 20+ Coffees, 5+ Teas', val: '₹1,500/mo' },
           { inclusion: '2 Events + AI Workshop + Book Workshop/month', val: '₹2,500/mo' },

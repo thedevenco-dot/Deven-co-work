@@ -61,6 +61,11 @@ function setTag(html, regex, replacementString) {
   return html.replace(regex, () => replacementString);
 }
 
+function stripHtml(s) {
+  if (typeof s !== 'string') return '';
+  return s.replace(/<[^>]*>/g, '').trim();
+}
+
 function updateHeadFromCms(html, cmsData) {
   const updatedItems = [];
 
@@ -336,6 +341,54 @@ async function main() {
       } catch (err) {
         console.warn(`  ⚠️  Failed to rewrite head tags from CMS: ${err.message}`);
       }
+
+      // Build FAQPage JSON-LD from published FAQ items of the CMS data
+      const rawFaqs = Array.isArray(cmsData.faq) ? cmsData.faq : [];
+      const publishedFaqs = rawFaqs.filter(item => item && item.published !== false && (item.question || item.answer));
+      if (publishedFaqs.length > 0) {
+        const faqData = {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": publishedFaqs.map(item => ({
+            "@type": "Question",
+            "name": stripHtml(item.question),
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": stripHtml(item.answer)
+            }
+          }))
+        };
+        const faqStr = JSON.stringify(faqData, null, 2);
+        JSON.parse(faqStr);
+        const faqScriptTag = `<script type="application/ld+json">\n${faqStr}\n</script>\n`;
+        html = html.replace('</head>', () => `${faqScriptTag}</head>`);
+      }
+    }
+
+    // Handle '/thank-you' route ONLY
+    if (url === '/thank-you') {
+      // robots meta -> <meta name="robots" content="noindex, nofollow" /> (exactly one robots tag)
+      const robotsRegex = /<meta\s+[^>]*name=["']robots["'][^>]*\/?>/i;
+      if (robotsRegex.test(html)) {
+        html = setTag(html, robotsRegex, '<meta name="robots" content="noindex, nofollow" />');
+      } else {
+        html = html.replace('</head>', () => '<meta name="robots" content="noindex, nofollow" />\n</head>');
+      }
+
+      // <title> -> Thank You | Deven Co-Work
+      html = setTag(html, /<title>[\s\S]*?<\/title>/i, '<title>Thank You | Deven Co-Work</title>');
+
+      // canonical -> https://www.devencowork.com/thank-you
+      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
+      if (canonicalRegex.test(html)) {
+        html = setTag(html, canonicalRegex, '<link rel="canonical" href="https://www.devencowork.com/thank-you" />');
+      } else {
+        html = html.replace('</head>', () => '<link rel="canonical" href="https://www.devencowork.com/thank-you" />\n</head>');
+      }
+
+      // og:title and twitter:title -> Thank You | Deven Co-Work
+      html = setTag(html, /<meta\s+[^>]*property=["']og:title["'][^>]*\/?>/i, '<meta property="og:title" content="Thank You | Deven Co-Work" />');
+      html = setTag(html, /<meta\s+[^>]*name=["']twitter:title["'][^>]*\/?>/i, '<meta name="twitter:title" content="Thank You | Deven Co-Work" />');
     }
 
     // Handle SEO content page routes

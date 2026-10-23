@@ -381,7 +381,7 @@ export const PAGES = {
   },
   "pricing": {
     "path": "/pricing",
-    "title": "Coworking Price in Raipur: Plans from ₹5,999 | Deven Co-Work",
+    "title": "Coworking Plans & Pricing in Raipur | Deven Co-Work",
     "description": "Explore Deven Co-Work's workspace plans in Raipur. Compare available options, understand what's included and book a tour to find your fit.",
     "h1": "Coworking Plans & Pricing in Raipur",
     "eyebrow": "PLANS & PRICING · RAIPUR",
@@ -395,9 +395,9 @@ export const PAGES = {
         "heading": "Comparing workspace plans to find your fit",
         "paragraphs": [
           "Different workflows require different workspace configurations. Here is how our membership options compare:",
-          "• Hot Desk: Flexible unassigned seating in our quiet productivity zone. Ideal for freelancers, remote consultants, and independent creators who want an inspiring workspace without fixed seat overhead.",
-          "• Dedicated Desk: Your own permanent, reserved desk with an ergonomic chair, personal lockable storage drawer, dedicated power outlets, and meeting room credits. Ideal for daily full-time professionals and growing teams.",
-          "• Private Office Cabin: Fully furnished, lockable private suite for 3 to 4 team members with private acoustic insulation, custom company signage options, and bundled premium amenities. Ideal for startup founders and client-facing advisory firms."
+          "• Hot Desk: Flexible access for focused days, with the shared workspace, coffee bar and community.",
+          "• Dedicated Desk: Your own permanent, reserved desk with a locker and drawer and 2 charging points. Ideal for daily full-time professionals.",
+          "• Private Office Cabin: A furnished private cabin with a desk and chairs, for founders who want a separate cabin of their own."
         ]
       },
       {
@@ -442,7 +442,7 @@ export const PAGES = {
       },
       {
         "q": "Are there private office cabins?",
-        "a": "Yes, Deven Co-Work has three private, lockable office cabins suitable for founders and small teams of 3 to 4 people."
+        "a": "Yes. Deven Co-Work has three private cabins for founders who want a separate cabin of their own."
       },
       {
         "q": "Are tea, coffee, and utilities included in the price?",
@@ -607,12 +607,12 @@ export const PAGES = {
       {
         "category": "Membership and pricing",
         "q": "How much does a coworking membership cost at Deven Co-Work?",
-        "a": "Founding plans start from ₹5,999 per month for Hot Desk and ₹7,999 per month for Dedicated Desk. All rates are locked for 12 months for founding members with no hidden maintenance fees."
+        "a": "Plans and current prices are shown in the pricing section of the pricing page. You can try Deven Co-Work free for 2 days before you choose a plan."
       },
       {
         "category": "Membership and pricing",
         "q": "Do I have to sign a long-term agreement?",
-        "a": "No. Month-to-month memberships are available with no long-term lock-in. We also offer an annual plan with 2 months free for members who want to commit long term."
+        "a": "No. Month-to-month membership is available with no long-term lock-in."
       },
       {
         "category": "Membership and pricing",
@@ -642,7 +642,7 @@ export const PAGES = {
       {
         "category": "Hot desks and private cabins",
         "q": "Do you have private office cabins?",
-        "a": "Yes, Deven Co-Work features three lockable, fully furnished private cabins for founders and teams seeking privacy for client calls and confidential projects while remaining connected to the coworking community."
+        "a": "Yes. Deven Co-Work has three private cabins for founders who want a separate cabin of their own."
       },
       {
         "category": "Meeting room and podcast/content studio",
@@ -652,7 +652,7 @@ export const PAGES = {
       {
         "category": "Meeting room and podcast/content studio",
         "q": "What is included with the in-house content and podcast studio?",
-        "a": "The content studio is equipped with professional lighting and acoustic treatment. Members receive one professionally produced founder podcast episode with Deven, regular photoshoots every 6 months, and monthly Instagram collaborations."
+        "a": "The content studio has high-quality lighting. Members get 1 professional founder podcast episode with Deven, 1 professional founder photoshoot every 6 months and 1 Instagram collaboration per month."
       },
       {
         "category": "Internet, amenities and facilities",
@@ -736,7 +736,7 @@ export const PAGES = {
       {
         "heading": "Why coworking eliminates upfront capital expenditure",
         "paragraphs": [
-          "At Deven Co-Work, 100% of these setup, utility, and maintenance expenses are bundled into one straightforward monthly membership. You pay zero security deposit, avoid multi-year lease lock-ins, and start working immediately with furnished infrastructure and 500 Mbps Wi-Fi.",
+          "At Deven Co-Work, 100% of these setup, utility, and maintenance expenses are bundled into one straightforward monthly membership. You avoid multi-year lease lock-ins and start working immediately with furnished infrastructure and 500 Mbps Wi-Fi.",
           "Your capital remains invested in your business growth, marketing, and team hiring rather than dead capital locked in office furniture, security deposits, and contractor coordination."
         ]
       },
@@ -760,7 +760,7 @@ export const PAGES = {
       },
       {
         "q": "Does Deven Co-Work charge a security deposit?",
-        "a": "Our standard coworking memberships operate on a straightforward month-to-month or quarterly basis with zero traditional commercial lease deposit lock-in."
+        "a": "Our memberships are month-to-month with no long-term lock-in."
       },
       {
         "q": "Can our team try the space before deciding?",
@@ -792,7 +792,7 @@ export const PAGES = {
       {
         "heading": "How to reach our Shankar Nagar workspace",
         "paragraphs": [
-          "Deven Co-Work is situated at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001. We are conveniently situated in one of the city's premier commercial and residential hubs, easily accessible from Civil Lines, Pandri, and Telibandha.",
+          "Deven Co-Work is at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
           "We offer dedicated parking on site for two-wheelers and four-wheelers, ensuring hassle-free access for you, your team, and visiting clients."
         ]
       },

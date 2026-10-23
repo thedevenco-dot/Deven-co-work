@@ -235,7 +235,7 @@ function buildBookingConfirmationHtml(booking, logoUrl) {
                   <h3 style="margin: 0 0 10px 0; font-size: 15px; color: #FCFAF9;">What Happens Next?</h3>
                   <ul style="margin: 0 0 24px 0; padding-left: 20px; font-size: 13px; color: #A3A3A3; line-height: 1.7;">
                     <li>Our team will contact you prior to your joining date to assign workspace keys and onboarding documentation.</li>
-                    <li>Access hours are <strong>9:00 AM – 9:00 PM, 7 days a week</strong>.</li>
+                    <li>Access hours are <strong>9:00 AM – 9:00 PM, Monday to Saturday</strong>.</li>
                     <li>High-speed 500 Mbps WiFi & complimentary coffee await your arrival.</li>
                   </ul>
 

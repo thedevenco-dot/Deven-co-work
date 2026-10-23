@@ -97,7 +97,7 @@ export const defaultContent = {
     stats: [
       { main: '2-Day Free Trial', sub: 'No card required' },
       { main: '500 Mbps Wifi', sub: 'High Speed' },
-      { main: '9 AM–9 PM, 7 Days', sub: 'Access Hours' },
+      { main: '9 AM–9 PM, Mon–Sat', sub: 'Access Hours' },
       { main: 'Central Raipur', sub: 'City Centre' },
     ],
   },
@@ -163,7 +163,7 @@ export const defaultContent = {
     headline: "Here's Everything You Actually Get",
     body: 'No inflated comparison price, no hidden bundle. We publish our true market value transparently.',
     rows: [
-      { inclusion: 'Dedicated Workspace, 9 AM–9 PM, 7 Days', val: '₹6,000/mo' },
+      { inclusion: 'Dedicated Workspace, 9 AM–9 PM, Mon–Sat', val: '₹6,000/mo' },
       { inclusion: '500 Mbps Wifi, Printer, Locker, Charging Points', val: 'Priceless' },
       { inclusion: 'Coffee Bar — 20+ Coffees, 5+ Teas', val: '₹1,500/mo' },
       { inclusion: '2 Events + AI Workshop + Book Workshop/month', val: '₹2,500/mo' },
@@ -249,7 +249,7 @@ export const defaultContent = {
   },
   faq: [
     { question: 'Who is Deven Co-Work designed for?', answer: "Solo freelancers, startup founders, consultants, remote employees, and small business teams who've outgrown working from home or a noisy café, and want a professional space without the cost or hassle of setting up their own office.", published: true, order: 0 },
-    { question: 'What are your operating hours?', answer: "We're open 9 AM to 9 PM, all 7 days of the week — so whether you're an early starter or someone who works better in the evening, the space is available on your schedule.", published: true, order: 1 },
+    { question: 'What are your operating hours?', answer: "We're open 9 AM to 9 PM, Monday to Saturday — so whether you're an early starter or someone who works better in the evening, the space is available on your schedule.", published: true, order: 1 },
     { question: 'What is your cancellation policy?', answer: "Simple and fair — just 30 days' notice, with no penalties and no hidden fees. We'd rather earn your membership every month than lock you into something that isn't working for you.", published: true, order: 2 },
     { question: 'Do I need to sign a long-term contract?', answer: 'No. Month-to-month membership is available with no long-term lock-in. If you\'d like to save more, our annual plan gives you 2 months free — but it\'s entirely your choice.', published: true, order: 3 },
     { question: 'Do you have private cabins?', answer: 'Yes, we have a limited number of private, lockable cabins — ideal for founders or small teams who want a dedicated, quiet space of their own within the larger Deven community.', published: true, order: 4 },
