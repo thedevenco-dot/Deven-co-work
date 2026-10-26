@@ -32,6 +32,16 @@ export default function AboutPage() {
   const [tourModalOpen, setTourModalOpen] = useState(false);
 
   useEffect(() => {
+    document.title = "About Deven Co-Work — Raipur's Founder & Startup Workspace";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', "Learn about Deven Co-Work in Shankar Nagar, Raipur. Founded to provide ambitious founders, creators, and teams with world-class workspace infrastructure.");
+    }
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute('href', "https://www.devencowork.com/about");
+    }
+
     if (typeof window !== 'undefined' && window.__INITIAL_CMS_DATA__) {
       setContent(mergeContent(defaultContent, window.__INITIAL_CMS_DATA__));
     } else {

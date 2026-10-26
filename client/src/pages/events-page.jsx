@@ -58,8 +58,18 @@ export default function EventsPage() {
   const [tourModalOpen, setTourModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' | 'past'
 
-  // Load CMS data
+  // Load CMS data & SEO metadata
   useEffect(() => {
+    document.title = "Startup Events in Raipur | Founder Meetups & Workshops | Deven Co-Work";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', "Discover upcoming startup events in Raipur at Deven Co-Work, Shankar Nagar. Connect at founder meetups, networking sessions, AI workshops, and community masterclasses.");
+    }
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute('href', "https://www.devencowork.com/events");
+    }
+
     if (typeof window !== 'undefined' && window.__INITIAL_CMS_DATA__) {
       setContent(mergeContent(defaultContent, window.__INITIAL_CMS_DATA__));
     } else {
@@ -123,7 +133,7 @@ export default function EventsPage() {
                 <span>THE DEVEN COMMUNITY</span>
               </div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#FCFAF9] leading-[1.1] mb-6">
-                Good People. Big Ideas. Real Connections.
+                Startup Events, Founder Meetups & Workshops in Raipur
               </h1>
               <p className="text-base sm:text-lg text-[#FCFAF9]/75 leading-relaxed mb-8">
                 Deven Co-Work hosts workshops, founder roundtables, book reads, and AI sessions in Raipur. We build spaces where ambitious professionals connect, share lessons, and help each other grow.

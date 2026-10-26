@@ -132,6 +132,8 @@ app.get('/sitemap.xml', async (req, res) => {
       { loc: 'https://www.devencowork.com/about', priority: '0.8', changefreq: 'monthly' },
       { loc: 'https://www.devencowork.com/blog', priority: '0.8', changefreq: 'monthly' },
       { loc: 'https://www.devencowork.com/private-cabins', priority: '0.8', changefreq: 'monthly' },
+      { loc: 'https://www.devencowork.com/hot-desk', priority: '0.8', changefreq: 'monthly' },
+      { loc: 'https://www.devencowork.com/dedicated-desk', priority: '0.8', changefreq: 'monthly' },
       { loc: 'https://www.devencowork.com/meeting-room', priority: '0.8', changefreq: 'monthly' },
       { loc: 'https://www.devencowork.com/podcast-studio', priority: '0.8', changefreq: 'monthly' },
       { loc: 'https://www.devencowork.com/free-trial', priority: '0.8', changefreq: 'monthly' },
@@ -326,8 +328,8 @@ const serveDynamicHtml = async (req, res, next) => {
 
     // 2. /events
     else if (reqPath === '/events') {
-      const pageTitle = 'Events & Founder Community Meetups in Raipur | Deven Co-Work';
-      const pageDesc = 'Discover upcoming workshops, founder meetups, and networking events at Deven Co-Work in Shankar Nagar, Raipur. Join our active founder community.';
+      const pageTitle = 'Startup Events in Raipur | Founder Meetups & Workshops | Deven Co-Work';
+      const pageDesc = 'Discover upcoming startup events in Raipur at Deven Co-Work, Shankar Nagar. Connect at founder meetups, networking sessions, AI workshops, and community masterclasses.';
       const canonicalUrl = 'https://www.devencowork.com/events';
 
       html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${pageTitle}</title>`);
@@ -396,7 +398,7 @@ ${eventSchemas.map((s) => `<script type="application/ld+json">${JSON.stringify(s
 
     // 3. /about
     else if (reqPath === '/about') {
-      const pageTitle = published?.about?.seo?.title || 'About Deven Co-Work — Raipur\'s Premier Coworking & Founder Space';
+      const pageTitle = published?.about?.seo?.title || 'About Deven Co-Work — Raipur\'s Founder & Startup Workspace';
       const pageDesc = published?.about?.seo?.description || 'Learn about Deven Co-Work in Shankar Nagar, Raipur. Our story, mission, workspace philosophy, and founder community building what\'s next.';
       const canonicalUrl = 'https://www.devencowork.com/about';
 

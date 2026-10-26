@@ -394,8 +394,8 @@ async function main() {
     // Handle /events route
     if (url === '/events') {
       const canonicalUrl = `${SITE.url}/events`;
-      const title = 'Events & Founder Community Meetups in Raipur | Deven Co-Work';
-      const desc = 'Discover upcoming workshops, founder meetups, and networking events at Deven Co-Work in Shankar Nagar, Raipur. Join our active founder community.';
+      const title = 'Startup Events in Raipur | Founder Meetups & Workshops | Deven Co-Work';
+      const desc = 'Discover upcoming startup events in Raipur at Deven Co-Work, Shankar Nagar. Connect at founder meetups, networking sessions, AI workshops, and community masterclasses.';
 
       html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
       html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);
@@ -426,8 +426,8 @@ async function main() {
     // Handle /about route
     if (url === '/about') {
       const canonicalUrl = `${SITE.url}/about`;
-      const title = 'About Deven Co-Work — Raipur\'s Premier Coworking & Founder Space';
-      const desc = 'Learn about Deven Co-Work in Shankar Nagar, Raipur. Our story, mission, workspace philosophy, and founder community building what\'s next.';
+      const title = 'About Deven Co-Work — Raipur\'s Founder & Startup Workspace';
+      const desc = 'Learn about Deven Co-Work in Shankar Nagar, Raipur. Founded to provide ambitious founders, creators, and teams with world-class workspace infrastructure.';
 
       html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
       html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);

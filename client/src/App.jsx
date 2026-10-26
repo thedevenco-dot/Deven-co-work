@@ -54,14 +54,14 @@ export const defaultContent = {
     ogImage: '',
   },
   seo: {
-    title: 'Deven Co-Work — Co-Working Space in Raipur | Free 2-Day Trial',
-    description: "Raipur's premier co-working space for creators, founders, and teams. 500 Mbps WiFi, podcast studio, 20+ coffees, and high-energy community. Book your free 2-day trial today.",
-    keywords: 'coworking raipur, coworking space raipur, founder workspace raipur, deven cowork',
-    ogTitle: 'Deven Co-Work — Co-Working Space in Raipur | Free 2-Day Trial',
-    ogDescription: "Raipur's premier co-working space for creators, founders, and teams. 500 Mbps WiFi, podcast studio, 20+ coffees, and high-energy community. Book your free 2-day trial today.",
+    title: 'Deven Co-Work — Coworking Space in Raipur | Free 2-Day Trial',
+    description: "Raipur's premier coworking space in Shankar Nagar for startups, founders, and growing teams. 500 Mbps Wi-Fi, private cabins, podcast studio, and founder community. Book your free 2-day trial today.",
+    keywords: 'coworking space in raipur, coworking in raipur, coworking space in raipur for startups, premium coworking space in raipur',
+    ogTitle: 'Deven Co-Work — Coworking Space in Raipur | Free 2-Day Trial',
+    ogDescription: "Raipur's premier coworking space in Shankar Nagar for startups, founders, and growing teams. 500 Mbps Wi-Fi, private cabins, podcast studio, and founder community. Book your free 2-day trial today.",
     ogImage: '',
-    twitterTitle: 'Deven Co-Work | Premium Coworking Space in Raipur',
-    twitterDescription: 'Raipur’s premium coworking space — a content studio, real community, and everything you need to grow, not just work. Only 50 founding seats. Maximum 7 seats per client, founder, or company.',
+    twitterTitle: 'Deven Co-Work — Coworking Space in Raipur',
+    twitterDescription: "Raipur's premier coworking space in Shankar Nagar for startups, founders, and growing teams. 500 Mbps Wi-Fi, private cabins, podcast studio, and founder community.",
     twitterImage: '',
   },
   navigation: {
@@ -75,6 +75,8 @@ export const defaultContent = {
         order: 1,
         items: [
           { label: 'Private Cabins', url: '/private-cabins' },
+          { label: 'Hot Desks', url: '/hot-desk' },
+          { label: 'Dedicated Desks', url: '/dedicated-desk' },
           { label: 'Meeting Room', url: '/meeting-room' },
           { label: 'Podcast Studio', url: '/podcast-studio' },
           { label: 'Amenities', url: '/amenities' },
@@ -607,6 +609,8 @@ function FoundingBanner({ scarcity, cmsLoaded, cmsFailed }) {
 
 export const WORKSPACE_ITEMS = [
   { label: 'Private Cabins', url: '/private-cabins', desc: 'Dedicated private office cabins' },
+  { label: 'Hot Desks', url: '/hot-desk', desc: 'Flexible day passes & shared desks' },
+  { label: 'Dedicated Desks', url: '/dedicated-desk', desc: 'Permanent assigned workstations' },
   { label: 'Meeting Room', url: '/meeting-room', desc: 'Interactive panel & conference room' },
   { label: 'Podcast Studio', url: '/podcast-studio', desc: 'Audio & video recording studio' },
   { label: 'Amenities', url: '/amenities', desc: '500 Mbps Wi-Fi, 20+ coffees & lounge' },
@@ -681,48 +685,42 @@ function WorkspaceDropdown({ location, onNavigate }) {
       </button>
 
       {/* Desktop Dropdown Menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.98 }}
-            transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 mt-1 min-w-[230px] bg-[#024E5C]/98 backdrop-blur-md border border-[rgba(252,250,249,0.16)] rounded-xl shadow-2xl p-2 z-50 text-[11px] font-semibold tracking-normal normal-case"
-            role="menu"
-            aria-label="Workspace submenu"
-          >
-            {WORKSPACE_ITEMS.map((item) => {
-              const isActive = location === item.url;
-              return (
-                <Link
-                  key={item.url}
-                  href={item.url}
-                  onClick={() => {
-                    setOpen(false);
-                    if (onNavigate) onNavigate();
-                  }}
-                  role="menuitem"
-                  className={`flex flex-col gap-0.5 px-3 py-2 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-white/10 text-[#04B8BB] font-bold'
-                      : 'text-[#FCFAF9]/90 hover:bg-white/10 hover:text-[#04B8BB]'
-                  }`}
-                  data-testid={`dropdown-item-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs">{item.label}</span>
-                    {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#04B8BB]" />}
-                  </div>
-                  <span className="text-[10px] text-[#FCFAF9]/55 font-normal tracking-tight">
-                    {item.desc}
-                  </span>
-                </Link>
-              );
-            })}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div
+        className={`absolute top-full left-0 mt-1 min-w-[230px] bg-[#024E5C]/98 backdrop-blur-md border border-[rgba(252,250,249,0.16)] rounded-xl shadow-2xl p-2 z-50 text-[11px] font-semibold tracking-normal normal-case transition-all duration-150 ${
+          open ? 'opacity-100 visible pointer-events-auto translate-y-0' : 'opacity-0 invisible pointer-events-none -translate-y-1'
+        }`}
+        role="menu"
+        aria-label="Workspace submenu"
+      >
+        {WORKSPACE_ITEMS.map((item) => {
+          const isActive = location === item.url;
+          return (
+            <Link
+              key={item.url}
+              href={item.url}
+              onClick={() => {
+                setOpen(false);
+                if (onNavigate) onNavigate();
+              }}
+              role="menuitem"
+              className={`flex flex-col gap-0.5 px-3 py-2 rounded-lg transition-colors ${
+                isActive
+                  ? 'bg-white/10 text-[#04B8BB] font-bold'
+                  : 'text-[#FCFAF9]/90 hover:bg-white/10 hover:text-[#04B8BB]'
+              }`}
+              data-testid={`dropdown-item-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs">{item.label}</span>
+                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#04B8BB]" />}
+              </div>
+              <span className="text-[10px] text-[#FCFAF9]/55 font-normal tracking-tight">
+                {item.desc}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

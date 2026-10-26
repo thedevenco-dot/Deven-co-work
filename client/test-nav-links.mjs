@@ -10,6 +10,8 @@ const routes = [
   '/',
   '/pricing',
   '/private-cabins',
+  '/hot-desk',
+  '/dedicated-desk',
   '/meeting-room',
   '/podcast-studio',
   '/amenities',
@@ -24,6 +26,8 @@ const routes = [
 const requiredDestinations = [
   '/#space',
   '/private-cabins',
+  '/hot-desk',
+  '/dedicated-desk',
   '/meeting-room',
   '/podcast-studio',
   '/amenities',
@@ -75,7 +79,7 @@ for (const route of routes) {
   const hasOutdatedHeaderAnchors = headerHtml.includes('href="#faq"') || headerHtml.includes('href="#reservation"');
 
   if (missing.length === 0 && hasTourCta && !hasOutdatedHeaderAnchors) {
-    console.log(`  ✅ PASS: Route ${route.padEnd(18)} contains all 11 destinations, Workspace dropdown links & Tour CTA`);
+    console.log(`  ✅ PASS: Route ${route.padEnd(18)} contains all 13 destinations, Workspace dropdown links & Tour CTA`);
   } else {
     allPassed = false;
     console.error(`  ❌ FAIL: Route ${route}`);
@@ -87,7 +91,7 @@ for (const route of routes) {
 
 console.log(`\n========================================`);
 if (allPassed) {
-  console.log(`🎉 ALL 12 ROUTES AUDITED SUCCESSFULLY!`);
+  console.log(`🎉 ALL 14 ROUTES AUDITED SUCCESSFULLY!`);
   console.log(`Every page has verified, accessible navigation destinations.`);
 } else {
   console.error(`❌ Some pages failed navigation audit.`);

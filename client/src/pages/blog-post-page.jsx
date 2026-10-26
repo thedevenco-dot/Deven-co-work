@@ -98,6 +98,22 @@ export default function BlogPostPage({ params }) {
       .finally(() => setLoading(false));
   }, [slug, setLocation]);
 
+  // Update head metadata for article
+  useEffect(() => {
+    if (post) {
+      const pageTitle = `${post.seoTitle || post.title} | Deven Co-Work`;
+      document.title = pageTitle;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc && (post.seoDescription || post.excerpt)) {
+        metaDesc.setAttribute('content', post.seoDescription || post.excerpt);
+      }
+      const canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) {
+        canonical.setAttribute('href', `https://www.devencowork.com/blog/${post.slug}`);
+      }
+    }
+  }, [post]);
+
   // Copy article link to clipboard
   const handleCopyLink = () => {
     if (typeof window === 'undefined') return;

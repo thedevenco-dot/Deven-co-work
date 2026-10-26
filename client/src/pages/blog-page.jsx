@@ -43,8 +43,18 @@ export default function BlogPage() {
   const [loading, setLoading] = useState(true);
   const [tourModalOpen, setTourModalOpen] = useState(false);
 
-  // Load CMS data
+  // Load CMS data & SEO metadata
   useEffect(() => {
+    document.title = "The Deven Journal — Ideas & Insights for Founders in Raipur | Deven Co-Work";
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', "Articles, founder stories, productivity playbooks, and business insights from Deven Co-Work, Raipur's premier founder community.");
+    }
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute('href', "https://www.devencowork.com/blog");
+    }
+
     if (typeof window !== 'undefined' && window.__INITIAL_CMS_DATA__) {
       setContent(mergeContent(defaultContent, window.__INITIAL_CMS_DATA__));
     } else {

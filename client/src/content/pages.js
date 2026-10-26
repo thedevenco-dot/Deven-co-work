@@ -20,6 +20,8 @@ export const SITE = {
 
 export const PAGE_ORDER = [
   "private-cabins",
+  "hot-desk",
+  "dedicated-desk",
   "meeting-room",
   "podcast-studio",
   "free-trial",
@@ -34,150 +36,341 @@ export const PAGES = {
   "private-cabins": {
     "path": "/private-cabins",
     "title": "Private Office Cabin on Rent in Raipur | Deven Co-Work",
-    "description": "Three private office cabins for founders in Raipur at Deven Co-Work, Shankar Nagar. 500 Mbps Wi-Fi, power backup, community. Book a free 2-day trial.",
-    "h1": "Private Office Cabins for Founders in Raipur",
-    "eyebrow": "PRIVATE CABINS · RAIPUR",
+    "description": "Furnished private office cabins on rent in Raipur at Deven Co-Work, Shankar Nagar. 3 lockable cabins for teams and founders. 500 Mbps Wi-Fi, meeting room, and power backup.",
+    "h1": "Private Office Cabin on Rent in Raipur",
+    "eyebrow": "PRIVATE OFFICE CABIN · SHANKAR NAGAR, RAIPUR",
     "breadcrumb": "Private Cabins",
     "intro": [
-      "Deven Co-Work has three private cabins for founders who want a separate cabin of their own, inside a coworking community in Shankar Nagar, Raipur.",
-      "Your cabin gives you the focus of your own office together with the shared facilities, events and people of a coworking space. You do not have to set up or maintain an office of your own."
+      "Deven Co-Work has three private cabins for founders and small teams who want a furnished, lockable office cabin on rent in Shankar Nagar, Raipur.",
+      "Your cabin gives you the quiet focus and privacy of an independent office together with high-speed 500 Mbps Wi-Fi, power backup, meeting room credits, and an active founder community — without the expense or hassle of setting up a commercial lease."
     ],
     "sections": [
       {
         "heading": "Who a private cabin is for",
         "paragraphs": [
-          "The cabins are for founders who want a separate cabin for themselves: a room where you can take client calls, handle sensitive work or simply concentrate without interruptions, while staying part of the Deven community.",
-          "If you have been working from home or from a café and need a more professional base, a cabin gives you your own place to work every day."
+          "The cabins are designed for founders and growing teams of 2 to 7 people who need an exclusive, quiet room where they can take confidential client calls, handle sensitive work, or concentrate without distractions.",
+          "If you have outgrown working from home or noisy cafés and need a professional base with a prestigious business address in Raipur, a private cabin gives you your own dedicated corporate base every day."
         ]
       },
       {
-        "heading": "What you get at Deven Co-Work",
+        "heading": "What is included with your private cabin",
         "paragraphs": [
-          "Deven members work in a space built for focus and growth. These are some of the things available across the space:"
+          "Private cabin members enjoy all the amenities of Deven Co-Work's workspace infrastructure:"
         ],
         "bullets": [
-          "A furnished private cabin with a desk and chairs",
-          "500 Mbps Wi-Fi and power backup",
-          "A team meeting room with an interactive panel (digital board)",
-          "A content studio",
-          "Locker and drawer, and 2 charging points at every desk",
-          "A coffee bar with 20+ varieties of coffee and 5+ varieties of tea",
-          "Unlimited RO water, a pantry and a kitchen with food-heating space",
-          "Daily cleaning and maintenance",
-          "Dedicated parking for two-wheelers and four-wheelers"
+          "Furnished private office cabin with premium desks and ergonomic task chairs",
+          "500 Mbps high-speed dual-band Wi-Fi with 100% generator power backup",
+          "Access to our 10–15 person conference room with interactive digital panel (smart board)",
+          "In-house content and podcast studio access with founder recording perks",
+          "Personal lockable drawers, storage cabinets, and 2 dedicated power sockets per seat",
+          "Coffee bar with 20+ coffee and 5+ tea varieties (2 cups daily included for members)",
+          "Unlimited RO water, pantry, and a kitchen equipped with microwave food-heating space",
+          "Daily professional housekeeping, air conditioning, and facility maintenance",
+          "Dedicated on-site parking for two-wheelers and four-wheelers"
         ],
-        "note": "Ask our team which of these come with the cabin plan you choose. The plans on this page show what each one includes."
+        "note": "Private cabin capacity and availability can be confirmed directly during your tour visit or over WhatsApp."
       },
       {
-        "heading": "A community around your cabin",
+        "heading": "An active founder community around your cabin",
         "paragraphs": [
-          "Every month Deven hosts two community events, one for fun and one educational, along with an AI workshop, a book reading workshop and an ask-me-anything session. Members also join the Founder's Growth WhatsApp community.",
-          "It means your team works next to other founders, and the connections that come from that are part of the membership."
+          "Every month, Deven Co-Work hosts 2 community events (1 fun and 1 educational), along with an AI workshop, a book reading workshop, and an ask-me-anything session. Members also join the Founder's Growth WhatsApp community.",
+          "Your team works alongside other ambitious entrepreneurs, creating organic opportunities for partnerships, hiring, and business advice right outside your cabin door."
         ]
       },
       {
-        "heading": "Location and hours",
+        "heading": "Location and operating hours",
         "paragraphs": [
-          "Deven Co-Work is at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
+          "Deven Co-Work is located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
           "We are open Monday to Saturday, 9 AM to 9 PM."
         ]
       },
       {
-        "heading": "How to book",
+        "heading": "How to book a private cabin tour",
         "paragraphs": [
-          "The easiest way to decide is to see the cabins yourself. Book a free tour or start your free 2-day trial, and our team will show you around. You can also message us on WhatsApp or call us."
+          "The best way to evaluate our cabins is to see them in person. Schedule a free tour or request a free 2-day trial, and our team will show you the cabins, test the Wi-Fi speed, and walk you through membership options."
         ]
       }
     ],
     "showPricing": true,
     "faqs": [
       {
-        "q": "Who are the private cabins for?",
-        "a": "The private cabins are for founders who want a separate cabin of their own."
+        "q": "Who are the private office cabins for?",
+        "a": "Our private office cabins are designed for founders, small teams of 2 to 7 people, and consultants who need a quiet, lockable office with meeting room access in Raipur."
       },
       {
         "q": "How many private cabins does Deven Co-Work have?",
-        "a": "Deven Co-Work has three private cabins."
+        "a": "Deven Co-Work has three private cabins in Shankar Nagar, Raipur."
       },
       {
         "q": "What are your opening hours?",
         "a": "We are open Monday to Saturday, 9 AM to 9 PM."
       },
       {
-        "q": "Can I try a cabin before I commit?",
-        "a": "Yes. You can book a free tour and use our free 2-day trial before you decide."
+        "q": "Can I try the space before committing to a cabin?",
+        "a": "Yes. You can book a free tour and use our free 2-day trial before you decide on a plan."
       },
       {
-        "q": "How fast is the internet?",
-        "a": "The space has 500 Mbps Wi-Fi with power backup."
+        "q": "How fast is the internet in private cabins?",
+        "a": "The space is equipped with 500 Mbps dual-band Wi-Fi and 100% generator power backup."
       },
       {
-        "q": "Is there parking?",
-        "a": "Yes. There is dedicated parking for two-wheelers and four-wheelers."
+        "q": "Is parking available for my team and clients?",
+        "a": "Yes. There is dedicated on-site parking for both two-wheelers and four-wheelers."
       },
       {
-        "q": "Where is Deven Co-Work?",
+        "q": "Where is Deven Co-Work located in Raipur?",
         "a": "We are at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
       },
       {
-        "q": "Where can I see the prices?",
-        "a": "Current plans and prices are shown in the pricing section of this page and on our homepage."
+        "q": "Where can I see private cabin prices?",
+        "a": "Current plans and pricing details are displayed in the pricing section below and on our dedicated pricing page."
       }
     ],
     "related": [
+      "/hot-desk",
+      "/dedicated-desk",
       "/meeting-room",
-      "/amenities",
       "/pricing",
-      "/cost-calculator",
-      "/free-trial"
+      "/cost-calculator"
     ],
     "image": {
       "url": "",
-      "alt": "Private cabin at Deven Co-Work in Raipur with a desk, three chairs and a window with greenery",
+      "alt": "Private office cabin at Deven Co-Work in Raipur with desk, ergonomic chairs and greenery view",
       "width": 4032,
       "height": 2268
     }
   },
+  "hot-desk": {
+    "path": "/hot-desk",
+    "title": "Hot Desk in Raipur | Flexible Shared Desk & Day Pass | Deven Co-Work",
+    "description": "Book a flexible hot desk in Raipur at Deven Co-Work, Shankar Nagar. Shared desks with 500 Mbps Wi-Fi, coffee bar, power backup, and day pass options. Free 2-day trial.",
+    "h1": "Flexible Hot Desk & Coworking Day Pass in Raipur",
+    "eyebrow": "HOT DESK & DAY PASS · RAIPUR",
+    "breadcrumb": "Hot Desk",
+    "intro": [
+      "Looking for a flexible hot desk in Raipur? Deven Co-Work provides open, shared desk seating in our quiet productivity zone in Shankar Nagar.",
+      "Whether you need a daily coworking day pass or a flexible monthly shared desk, you get 500 Mbps enterprise Wi-Fi, 100% generator power backup, specialty coffee, and an inspiring community of founders and remote professionals."
+    ],
+    "sections": [
+      {
+        "heading": "Who a hot desk is designed for",
+        "paragraphs": [
+          "A hot desk is ideal for solo freelancers, consultants, remote software developers, and startup founders who need a distraction-free, professional workspace on flexible terms.",
+          "If working from home feels isolating or noisy cafés drain your budget and Wi-Fi speed, our hot desk area provides the structure, speed, and comfort you need to get real work done."
+        ]
+      },
+      {
+        "heading": "What is included with your hot desk",
+        "paragraphs": [
+          "Every hot desk pass and membership at Deven Co-Work comes with full access to our premium workspace amenities:"
+        ],
+        "bullets": [
+          "Flexible desk seating in our quiet, high-productivity zone",
+          "High-speed 500 Mbps dual-band Wi-Fi with uninterrupted power backup",
+          "2 complimentary cups of coffee or tea daily from our 20+ coffee and 5+ tea variety bar",
+          "Unlimited purified RO water and pantry facilities with food-heating space",
+          "Team meeting room access and interactive smart board booking credits",
+          "Free access to our library of 100+ business and startup books",
+          "Access to our monthly AI workshops, founder meetups, and community events",
+          "Dedicated on-site parking for two-wheelers and four-wheelers",
+          "Clean, air-conditioned workspace with daily professional housekeeping"
+        ]
+      },
+      {
+        "heading": "Day pass vs monthly hot desk membership",
+        "paragraphs": [
+          "We offer flexible daily passes for visiting professionals needing high-speed internet for a day, as well as monthly hot desk plans for regular workers seeking a dependable workspace routine without long-term contracts.",
+          "Founding member pricing is locked for 12 months from your join date, with no hidden maintenance fees or unexpected surcharges."
+        ]
+      },
+      {
+        "heading": "Location and operating hours",
+        "paragraphs": [
+          "Deven Co-Work is centrally located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
+          "We are open Monday to Saturday from 9 AM to 9 PM, giving you 12 hours of uninterrupted productive time every working day."
+        ]
+      },
+      {
+        "heading": "How to get started with a free 2-day trial",
+        "paragraphs": [
+          "Experience our hot desks before you commit. Book a free tour through our website, visit for 2 full days without paying a rupee or providing a credit card, and see why founders across Raipur choose Deven Co-Work."
+        ]
+      }
+    ],
+    "showPricing": true,
+    "faqs": [
+      {
+        "q": "What is a hot desk at Deven Co-Work?",
+        "a": "A hot desk is a flexible workspace where you can choose any available desk in our shared productivity hall, plug in your laptop, and start working immediately."
+      },
+      {
+        "q": "Can I get a coworking day pass in Raipur for a single day?",
+        "a": "Yes. We offer flexible day passes for professionals needing workspace, high-speed Wi-Fi, and coffee for a single working day."
+      },
+      {
+        "q": "What is the difference between a hot desk and a dedicated desk?",
+        "a": "A hot desk gives you flexible first-come open seating. A dedicated desk gives you a permanently assigned desk reserved exclusively for you, complete with a lockable drawer, personal locker, and 2 dedicated power sockets."
+      },
+      {
+        "q": "How fast is the internet for hot desk members?",
+        "a": "We provide dual-band 500 Mbps Wi-Fi with enterprise router switches and generator power backup."
+      },
+      {
+        "q": "Can I try a hot desk before paying?",
+        "a": "Yes! We offer a 100% free 2-day trial with no credit card required. Book your tour or contact our team to claim your pass."
+      },
+      {
+        "q": "What are your opening hours and location?",
+        "a": "We are open Monday to Saturday, 9 AM to 9 PM at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
+      }
+    ],
+    "related": [
+      "/dedicated-desk",
+      "/pricing",
+      "/free-trial",
+      "/private-cabins",
+      "/amenities"
+    ],
+    "image": null
+  },
+  "dedicated-desk": {
+    "path": "/dedicated-desk",
+    "title": "Dedicated Desk in Raipur | Fixed Reserved Workspace | Deven Co-Work",
+    "description": "Get your own dedicated desk in Raipur at Deven Co-Work, Shankar Nagar. Permanent assigned desk with personal locker, drawer, 2 power sockets, and 500 Mbps Wi-Fi.",
+    "h1": "Dedicated Desk & Reserved Workspace in Raipur",
+    "eyebrow": "DEDICATED DESK · SHANKAR NAGAR, RAIPUR",
+    "breadcrumb": "Dedicated Desk",
+    "intro": [
+      "Looking for a permanent dedicated desk in Raipur? Deven Co-Work offers fixed, reserved workstations in Shankar Nagar designed for professionals who want their own personal desk every day.",
+      "With your dedicated desk, you get your own assigned seat, lockable personal drawer and cabinet, 2 dedicated charging sockets, ergonomic seating, and full access to our meeting room, podcast studio, and founder community."
+    ],
+    "sections": [
+      {
+        "heading": "Why choose a dedicated desk",
+        "paragraphs": [
+          "Unlike a flexible hot desk where you pack up your monitors and belongings every evening, a dedicated desk belongs exclusively to you.",
+          "You can leave your external monitor, keyboard, paperwork, and personal setup locked safely at your desk, ready for you the moment you arrive each morning."
+        ]
+      },
+      {
+        "heading": "Everything included with your dedicated desk",
+        "paragraphs": [
+          "Your dedicated desk membership includes full access to Deven Co-Work's premier infrastructure and benefits:"
+        ],
+        "bullets": [
+          "A permanently assigned desk reserved 100% for you",
+          "Personal lockable drawer and locker to store your laptop, equipment, and files",
+          "2 dedicated charging points right at your desk",
+          "Ergonomic office task chair engineered for long, comfortable working sessions",
+          "500 Mbps dual-band Wi-Fi with generator power backup",
+          "Meeting room booking credits with interactive digital presentation board",
+          "1 professional founder podcast episode with Deven and photoshoot benefits",
+          "Curated coffee bar with 20+ coffee and 5+ tea varieties (2 cups daily included)",
+          "Access to Founder's Growth WhatsApp group, monthly AI workshops, and founder roundtables",
+          "Dedicated parking for two-wheelers and four-wheelers",
+          "Reception greeting, color printing, and mail handling"
+        ]
+      },
+      {
+        "heading": "Who a dedicated desk is ideal for",
+        "paragraphs": [
+          "Dedicated desks are the preferred choice for full-time founders, software engineers, financial advisors, remote executives, and specialized consultants who work 8+ hours a day and require a consistent, ergonomic workstation.",
+          "It offers the permanence of an independent office at a fraction of the cost, with zero maintenance overhead."
+        ]
+      },
+      {
+        "heading": "Pricing stability and fair terms",
+        "paragraphs": [
+          "We offer transparent monthly billing with founding rates locked for 12 months from your registration date. There are no lease lock-ins, no commercial broker commissions, and no hidden common-area maintenance (CAM) fees.",
+          "Our cancellation policy is straightforward: just 30 days' advance notice."
+        ]
+      },
+      {
+        "heading": "Location and access",
+        "paragraphs": [
+          "Deven Co-Work is located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
+          "Open Monday to Saturday, 9 AM to 9 PM."
+        ]
+      }
+    ],
+    "showPricing": true,
+    "faqs": [
+      {
+        "q": "What is included with a dedicated desk at Deven Co-Work?",
+        "a": "You get a permanent assigned workstation, a lockable drawer and personal locker, 2 dedicated charging sockets, ergonomic chair, 500 Mbps Wi-Fi, 2 daily cups of tea or coffee, meeting room credits, and access to all community events."
+      },
+      {
+        "q": "Can I leave my monitor and equipment on my dedicated desk overnight?",
+        "a": "Yes. Your dedicated desk is exclusively yours, and you can keep your secondary monitor, keyboard, and personal gear at your workstation, with sensitive items stored in your lockable drawer."
+      },
+      {
+        "q": "Do dedicated desk members get meeting room credits?",
+        "a": "Yes. Dedicated desk plans include monthly meeting room credits for our 10–15 person conference room equipped with a digital interactive panel."
+      },
+      {
+        "q": "Is there a long-term agreement or lock-in?",
+        "a": "No. Memberships are flexible month-to-month agreements with a simple 30-day cancellation notice."
+      },
+      {
+        "q": "Can I test a dedicated desk before signing up?",
+        "a": "Yes. We invite you to experience Deven Co-Work with a completely free 2-day trial. Book a tour or message our team to get started."
+      },
+      {
+        "q": "Where is Deven Co-Work located?",
+        "a": "We are located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
+      }
+    ],
+    "related": [
+      "/hot-desk",
+      "/private-cabins",
+      "/pricing",
+      "/cost-calculator",
+      "/free-trial"
+    ],
+    "image": null
+  },
   "meeting-room": {
     "path": "/meeting-room",
-    "title": "Meeting Room in Raipur for 10–15 People | Deven Co-Work",
-    "description": "Meeting room in Raipur for 10 to 15 people with an interactive digital panel and 500 Mbps Wi-Fi at Deven Co-Work, Shankar Nagar. Ask us about booking.",
-    "h1": "Meeting Room with Interactive Panel in Raipur",
-    "eyebrow": "MEETING ROOM · RAIPUR",
+    "title": "Meeting Room in Raipur | Conference Room for Teams | Deven Co-Work",
+    "description": "Book a meeting room in Raipur for 10 to 15 people with an interactive digital board, 500 Mbps Wi-Fi, and power backup at Deven Co-Work, Shankar Nagar.",
+    "h1": "Meeting Room & Conference Room for Teams in Raipur",
+    "eyebrow": "MEETING ROOM · SHANKAR NAGAR, RAIPUR",
     "breadcrumb": "Meeting Room",
     "intro": [
-      "Deven Co-Work has a team meeting room that seats 10 to 15 people and comes with an interactive panel (a digital board), at Shankar Nagar in Raipur.",
-      "It is a good room for team meetings, client presentations, planning sessions and workshops, in a space that already has fast internet and everything a working day needs."
+      "Deven Co-Work has a team meeting room in Shankar Nagar, Raipur that seats 10 to 15 people, equipped with an interactive panel (digital smart board).",
+      "It is an ideal conference venue for client presentations, quarterly planning sessions, team sprints, and workshops, in a professional space with enterprise internet and full support amenities."
     ],
     "sections": [
       {
         "heading": "What the meeting room offers",
         "bullets": [
-          "Seating for 10 to 15 people, with extra chairs brought in for larger meetings",
-          "An interactive panel (digital board) for presentations, brainstorming and screen sharing",
-          "500 Mbps Wi-Fi and power backup",
-          "Reception, a coffee bar and a pantry close by",
-          "Dedicated parking for two-wheelers and four-wheelers"
+          "Comfortable seating for 10 to 15 people with modular seating for larger meetings",
+          "Interactive panel (digital smart board) for screen sharing, presentations, and live digital whiteboarding",
+          "High-speed 500 Mbps Wi-Fi and 100% generator power backup for uninterrupted video conferences",
+          "Front-desk reception greeting for your visiting clients",
+          "Curated coffee bar with 20+ varieties of coffee and 5+ varieties of tea close by",
+          "Dedicated on-site parking for two-wheelers and four-wheelers"
         ]
       },
       {
-        "heading": "When a meeting room helps",
+        "heading": "When a dedicated meeting room helps",
         "paragraphs": [
-          "A café is rarely the right place to present to a client or to run a team meeting. A proper room with a digital board lets you share your screen, draw out ideas and keep everyone on the same page.",
-          "Because the room is part of Deven Co-Work, your visitors arrive at a professional space with a reception, and your team can work from the same building before and after the meeting."
+          "Cafés are rarely suitable for confidential business discussions, client pitches, or deep-focus team planning. Background chatter, unstable Wi-Fi, and lack of presentation screens hurt productivity and professional perception.",
+          "Our meeting room gives your team a private, acoustic space equipped with presentation hardware. Visiting clients arrive at a polished commercial facility, and your team can work before and after the meeting from the same building."
         ]
       },
       {
-        "heading": "Booking the room",
+        "heading": "Booking options for members and guests",
         "paragraphs": [
-          "To ask about availability, message us on WhatsApp, call us, or book a free tour and see the room for yourself. Our team will tell you how booking works for your needs."
+          "Coworking members receive monthly meeting room credits included in their plans. External teams and businesses can also book the meeting room by the hour or for full-day sessions.",
+          "To check availability and reserve slots, contact our team on WhatsApp or phone, or schedule a tour to inspect the room."
         ]
       },
       {
-        "heading": "Location and hours",
+        "heading": "Location and operating hours",
         "paragraphs": [
-          "Deven Co-Work is at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
-          "We are open Monday to Saturday, 9 AM to 9 PM."
+          "Deven Co-Work is located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
+          "Open Monday to Saturday, 9 AM to 9 PM."
         ]
       }
     ],
@@ -185,82 +378,83 @@ export const PAGES = {
     "faqs": [
       {
         "q": "How many people can the meeting room seat?",
-        "a": "The meeting room seats 10 to 15 people. The table is usually set with eight chairs, and we bring in extra chairs for larger meetings."
+        "a": "The meeting room comfortably seats 10 to 15 people. The central conference table is set with eight executive chairs, with additional seating arranged as needed."
       },
       {
         "q": "Does the meeting room have a screen or digital board?",
-        "a": "Yes. It has an interactive panel (a digital board)."
+        "a": "Yes. It has a state-of-the-art interactive digital panel (smart board) for presentations, screen sharing, and video conferences."
       },
       {
-        "q": "What are your opening hours?",
-        "a": "We are open Monday to Saturday, 9 AM to 9 PM."
+        "q": "Can non-members book the meeting room?",
+        "a": "Yes. External companies, founders, and consultants can book the meeting room by the hour or for full-day team offsites."
       },
       {
-        "q": "How do I book the meeting room?",
-        "a": "Message us on WhatsApp, call us or book a free tour, and our team will explain availability and how booking works."
+        "q": "How do I book the meeting room in Raipur?",
+        "a": "Message us on WhatsApp at +91 62605 82852, call our team directly, or schedule a tour to check current room availability."
       },
       {
-        "q": "Is there Wi-Fi and parking?",
-        "a": "Yes. The space has 500 Mbps Wi-Fi and dedicated parking for two-wheelers and four-wheelers."
+        "q": "Is Wi-Fi and parking included with the room booking?",
+        "a": "Yes. 500 Mbps high-speed Wi-Fi, power backup, and dedicated parking for two-wheelers and four-wheelers are included."
       },
       {
-        "q": "Where is the meeting room?",
-        "a": "It is at Deven Co-Work, VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
+        "q": "Where is the meeting room located?",
+        "a": "It is located inside Deven Co-Work, VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
       }
     ],
     "related": [
       "/private-cabins",
+      "/hot-desk",
+      "/dedicated-desk",
       "/amenities",
-      "/free-trial",
-      "/pricing",
       "/contact"
     ],
     "image": {
       "url": "",
-      "alt": "Meeting room at Deven Co-Work in Raipur with a white table and black chairs",
+      "alt": "Meeting room at Deven Co-Work in Raipur with conference table, executive chairs and digital smart board",
       "width": 4032,
       "height": 2268
     }
   },
   "podcast-studio": {
     "path": "/podcast-studio",
-    "title": "Content & Podcast Studio in Raipur | Deven Co-Work",
-    "description": "Content studio at Deven Co-Work, Raipur. Members get a founder podcast episode, a founder photoshoot every 6 months and a monthly Instagram collaboration.",
-    "h1": "Content and Podcast Studio in Raipur",
-    "eyebrow": "CONTENT STUDIO · RAIPUR",
+    "title": "Podcast Studio in Raipur | Video & Content Creation | Deven Co-Work",
+    "description": "Professional podcast studio in Raipur at Deven Co-Work, Shankar Nagar. Video and podcast recording facilities with studio lighting, microphones, and founder shoots.",
+    "h1": "Podcast Studio & Content Creation Space in Raipur",
+    "eyebrow": "PODCAST & CONTENT STUDIO · RAIPUR",
     "breadcrumb": "Podcast Studio",
     "intro": [
-      "Deven Co-Work has its own content studio, so founders can record, shoot and share their story without leaving the building.",
-      "Our members do not just get a desk. They get help to be seen: a professional founder podcast episode, regular photoshoots and an Instagram collaboration every month."
+      "Deven Co-Work features an in-house podcast and content studio in Shankar Nagar, Raipur, allowing founders and creators to record, shoot, and distribute their stories without leaving their workspace.",
+      "Our members don't just get a desk. They get tangible media support to build authority: a professionally produced founder podcast episode, semi-annual photo sessions, and monthly digital collaborations."
     ],
     "sections": [
       {
-        "heading": "What members get from the studio",
+        "heading": "What members receive from the studio",
         "bullets": [
-          "1 professional founder podcast episode with Deven",
-          "1 professional founder photoshoot every 6 months",
-          "1 Instagram collaboration per month",
-          "1 ask-me-anything session per month",
-          "High-quality lighting in the space"
+          "1 professional founder podcast episode produced with Deven",
+          "1 professional founder photo session every 6 months",
+          "1 social media collaboration per month",
+          "1 interactive ask-me-anything session per month",
+          "Sound-treated acoustic room with broadcast-grade studio lighting"
         ]
       },
       {
-        "heading": "Why a content studio matters for founders",
+        "heading": "Why an in-house content studio matters for founders",
         "paragraphs": [
-          "Founders in a growing city like Raipur are building brands, and content is how most of them get noticed. Having a studio next to your desk makes it easier to record a podcast, shoot a profile or create content for your business.",
-          "At Deven Co-Work the studio sits alongside a community of other founders, which means you can also find guests, collaborators and an audience close to home."
+          "In today's market, brand credibility and founder visibility drive business growth. Having a studio right next to your desk makes recording podcasts, shooting founder interviews, or creating video explainers frictionless.",
+          "Because the studio is embedded within the Deven community, you can easily source podcast guests, co-hosts, and early customer feedback from fellow founders in the building."
         ]
       },
       {
-        "heading": "Using the studio",
+        "heading": "Studio access for members and non-members",
         "paragraphs": [
-          "Members can ask the team about the podcast episode, photoshoots and Instagram collaborations included in their membership. If you are not a member yet and want to know about studio availability, message us on WhatsApp or call us, and we will tell you what is possible."
+          "Deven members can coordinate their included podcast episodes and photoshoots directly with our community team. External creators, podcasters, and corporate brands can also inquire about dedicated studio rental slots.",
+          "Reach out via WhatsApp or phone to check studio booking availability and equipment options."
         ]
       },
       {
-        "heading": "Location and hours",
+        "heading": "Location and operating hours",
         "paragraphs": [
-          "Deven Co-Work is at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
+          "Deven Co-Work is located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
           "We are open Monday to Saturday, 9 AM to 9 PM."
         ]
       }
@@ -268,81 +462,82 @@ export const PAGES = {
     "showPricing": false,
     "faqs": [
       {
-        "q": "What is the content studio at Deven Co-Work?",
-        "a": "It is an in-house studio at Deven Co-Work where members can create content such as podcasts and photos."
+        "q": "What is the content and podcast studio at Deven Co-Work?",
+        "a": "It is an in-house media creation space equipped with sound dampening, professional lighting, and recording microphones for video and audio content."
       },
       {
-        "q": "Do members get a podcast episode?",
-        "a": "Yes. Membership includes 1 professional founder podcast episode with Deven."
+        "q": "Do coworking members get a podcast episode?",
+        "a": "Yes. Qualified memberships include 1 professional founder podcast episode produced with Deven Co-Work."
       },
       {
-        "q": "How often are founder photoshoots offered?",
-        "a": "Members get 1 professional founder photoshoot every 6 months."
+        "q": "How often are founder photoshoots held?",
+        "a": "Members receive 1 professional founder photo session every 6 months to keep their LinkedIn and website profiles sharp."
       },
       {
-        "q": "Can people who are not members use the studio?",
-        "a": "Please message us on WhatsApp or call us to ask about studio availability."
+        "q": "Can non-members book the podcast studio in Raipur?",
+        "a": "Yes. External creators and businesses can contact our team via WhatsApp or phone to check hourly studio booking availability."
       },
       {
-        "q": "Where is the studio?",
-        "a": "It is at Deven Co-Work, VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
+        "q": "Where is the podcast studio?",
+        "a": "It is located inside Deven Co-Work, VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
       }
     ],
     "related": [
       "/amenities",
       "/private-cabins",
+      "/hot-desk",
+      "/dedicated-desk",
       "/free-trial",
-      "/pricing",
-      "/contact"
+      "/pricing"
     ],
     "image": {
       "url": "",
-      "alt": "Content studio at Deven Co-Work in Raipur with teal sofas, a yellow armchair and a patterned rug",
+      "alt": "Content and podcast studio at Deven Co-Work in Raipur with studio seating, lighting and recording setup",
       "width": 3120,
       "height": 4160
     }
   },
   "free-trial": {
     "path": "/free-trial",
-    "title": "Free 2-Day Coworking Trial in Raipur | Deven Co-Work",
-    "description": "Try Deven Co-Work free for 2 days. No credit card required. 500 Mbps Wi-Fi, meeting room, coffee bar and a founder community in Shankar Nagar, Raipur.",
-    "h1": "Try Deven Co-Work Free for 2 Days",
-    "eyebrow": "FREE 2-DAY TRIAL · RAIPUR",
+    "title": "Free Coworking Trial in Raipur (2 Days) | Deven Co-Work",
+    "description": "Try Deven Co-Work free for 2 days in Shankar Nagar, Raipur. 100% free coworking trial for founders and teams. 500 Mbps Wi-Fi, hot desks, coffee bar. No credit card required.",
+    "h1": "Free Coworking Trial in Raipur — Try Free for 2 Days",
+    "eyebrow": "FREE COWORKING TRIAL · RAIPUR",
     "breadcrumb": "Free Trial",
     "intro": [
-      "The best way to choose a coworking space is to work from it. Deven Co-Work offers a free 2-day trial, and no credit card is required.",
-      "Come in, plug in and see how your team works in the space before you decide on a plan."
+      "The best way to evaluate a coworking space is to work from it. Deven Co-Work offers a completely free 2-day trial in Shankar Nagar, Raipur — with zero payment or credit card required.",
+      "Come in, choose your desk, test our 500 Mbps Wi-Fi, and experience our productive environment first-hand before making any commitment."
     ],
     "sections": [
       {
-        "heading": "How to start your free trial",
+        "heading": "How to claim your free 2-day trial",
         "bullets": [
-          "Book your free tour using the form on this page.",
-          "Our team will contact you to confirm your visit.",
-          "Visit Deven Co-Work and try the space for 2 days."
+          "Submit your details using the tour booking form on this page or message us on WhatsApp.",
+          "Our team will confirm your preferred visit date and time slot.",
+          "Arrive at Deven Co-Work in Shankar Nagar and enjoy 2 full working days on us."
         ]
       },
       {
-        "heading": "What you can try",
+        "heading": "Everything you can experience during your trial",
         "bullets": [
-          "500 Mbps Wi-Fi and power backup",
-          "Your own desk with a locker, drawer and 2 charging points",
-          "The team meeting room with an interactive panel (digital board)",
-          "The coffee bar with 20+ varieties of coffee and 5+ varieties of tea",
-          "The library with more than 100 books and the recreation space with indoor games",
-          "The community, including monthly events and workshops"
+          "High-speed 500 Mbps Wi-Fi and 100% generator power backup",
+          "Ergonomic desk seating with dual power charging sockets",
+          "Meeting room walkthrough and interactive smart board demonstration",
+          "Complimentary coffee and tea from our 20+ coffee and 5+ tea variety bar",
+          "Quiet reading library with 100+ business books and indoor games recreation space",
+          "Interactions with active founders and community members"
         ]
       },
       {
         "heading": "Who the trial is for",
         "paragraphs": [
-          "The trial is for founders, freelancers, consultants and small teams in Raipur who want to see a coworking space in real conditions before paying for it."
+          "Our free trial is open to startup founders, freelancers, consultants, remote professionals, and small team leaders in Raipur who want to experience premium workspace infrastructure before choosing a plan."
         ]
       },
       {
-        "heading": "Visit us",
+        "heading": "Location and opening hours",
         "paragraphs": [
-          "Deven Co-Work is at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
+          "Deven Co-Work is located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
           "We are open Monday to Saturday, 9 AM to 9 PM."
         ]
       }
@@ -351,67 +546,67 @@ export const PAGES = {
     "faqs": [
       {
         "q": "How long is the free trial?",
-        "a": "The free trial lasts 2 days."
+        "a": "The trial lasts 2 full consecutive working days."
       },
       {
-        "q": "Do I need a credit card?",
-        "a": "No. No credit card is required."
+        "q": "Do I need a credit card or deposit to claim the trial?",
+        "a": "No. The trial is 100% free with no credit card, upfront fee, or payment details required."
       },
       {
-        "q": "How do I book?",
-        "a": "Use the booking form on this page, or message us on WhatsApp or call us."
+        "q": "Can I bring my team members for the trial?",
+        "a": "Yes. Founders and team leaders can bring their core team members. Please specify your team size in the booking form so we can arrange adjacent desks."
       },
       {
-        "q": "What days can I visit?",
-        "a": "We are open Monday to Saturday, 9 AM to 9 PM."
+        "q": "What are your operating hours during the trial?",
+        "a": "You have full access from 9 AM to 9 PM, Monday through Saturday."
       },
       {
-        "q": "Where is Deven Co-Work?",
-        "a": "We are at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
+        "q": "Where is Deven Co-Work located?",
+        "a": "We are located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001."
       }
     ],
     "related": [
       "/pricing",
+      "/hot-desk",
+      "/dedicated-desk",
       "/private-cabins",
-      "/amenities",
-      "/meeting-room",
-      "/contact"
+      "/amenities"
     ],
     "image": null
   },
   "pricing": {
     "path": "/pricing",
-    "title": "Coworking Plans & Pricing in Raipur | Deven Co-Work",
-    "description": "Explore Deven Co-Work's workspace plans in Raipur. Compare available options, understand what's included and book a tour to find your fit.",
-    "h1": "Coworking Plans & Pricing in Raipur",
-    "eyebrow": "PLANS & PRICING · RAIPUR",
+    "title": "Coworking Space Price in Raipur | Desk & Cabin Plans | Deven Co-Work",
+    "description": "Transparent coworking space prices in Raipur at Deven Co-Work. Compare flexible hot desk, dedicated desk, and private cabin plans. Founding member rates locked for 12 months.",
+    "h1": "Coworking Space Price & Membership Plans in Raipur",
+    "eyebrow": "COWORKING PRICING · SHANKAR NAGAR, RAIPUR",
     "breadcrumb": "Pricing",
     "intro": [
-      "Explore Deven Co-Work's workspace plans in Shankar Nagar, Raipur. Whether you need a flexible hot desk, an assigned dedicated desk, or a private office cabin for your team, every plan includes high-speed 500 Mbps Wi-Fi, meeting room access, tea, coffee, and an active founder community.",
-      "Our current prices are shown below, dynamically connected to our live plans. Every membership comes with a completely free 2-day trial so you can experience the space first-hand before deciding."
+      "Explore transparent coworking space pricing in Shankar Nagar, Raipur. Whether you need a flexible hot desk, an assigned dedicated desk, or a private office cabin for your team, every membership includes 500 Mbps Wi-Fi, meeting room credits, coffee, and community events.",
+      "Our current plans and live pricing are displayed below. Every membership begins with a 100% free 2-day trial so you can experience the space first-hand before deciding."
     ],
     "sections": [
       {
         "heading": "Comparing workspace plans to find your fit",
         "paragraphs": [
           "Different workflows require different workspace configurations. Here is how our membership options compare:",
-          "• Hot Desk: Flexible access for focused days, with the shared workspace, coffee bar and community.",
-          "• Dedicated Desk: Your own permanent, reserved desk with a locker and drawer and 2 charging points. Ideal for daily full-time professionals.",
-          "• Private Office Cabin: A furnished private cabin with a desk and chairs, for founders who want a separate cabin of their own."
+          "• Hot Desk: Flexible access for focused days in our open productivity zone, with coffee bar access and community perks.",
+          "• Dedicated Desk: Your own permanent, reserved desk with lockable drawer, personal locker, and 2 charging sockets. Ideal for daily full-time professionals.",
+          "• Private Office Cabin: Furnished, lockable private cabins with desks and executive chairs for founders and teams who need exclusive privacy."
         ]
       },
       {
         "heading": "What every membership includes",
         "bullets": [
-          "500 Mbps Wi-Fi and power backup",
-          "Team meeting room with an interactive panel (digital board)",
-          "Content studio, with a founder podcast episode with Deven",
-          "Locker and drawer, and 2 charging points at every desk",
-          "2 cups of tea or coffee per day, from a coffee bar with 20+ varieties of coffee and 5+ varieties of tea",
-          "Unlimited RO water and healthy snack options in the pantry",
-          "2 community events per month (1 fun, 1 educational), plus an AI workshop, a book reading workshop and an ask-me-anything session",
-          "Founder's Growth WhatsApp community",
-          "Free access to the Deven library with more than 100 books",
+          "500 Mbps enterprise Wi-Fi backed by uninterrupted generator power backup",
+          "Team meeting room with interactive panel (digital smart board)",
+          "Content studio access with founder podcast and photoshoot perks",
+          "Lockable drawer, personal locker, and 2 charging points per desk",
+          "2 complimentary cups of tea or coffee daily from our 20+ coffee and 5+ tea variety bar",
+          "Unlimited RO water and pantry with food-heating kitchen",
+          "2 monthly community events (1 fun, 1 educational), plus AI and book reading workshops",
+          "Founder's Growth WhatsApp community access",
+          "Free access to our library of 100+ business books",
           "Dedicated parking for two-wheelers and four-wheelers"
         ]
       },
@@ -419,13 +614,13 @@ export const PAGES = {
         "heading": "Transparent pricing & membership terms",
         "paragraphs": [
           "We believe in 100% honest, predictable pricing. Founding member rates are locked for 12 months from your join date, protecting you against unexpected price increases.",
-          "There are zero hidden maintenance charges, zero common area utility surcharges, and no long-term lease lock-ins. Our fair cancellation policy requires only 30 days' advance notice."
+          "There are zero hidden maintenance charges, zero common area utility surcharges, and no multi-year commercial lease lock-ins. Our fair cancellation policy requires only 30 days' advance notice."
         ]
       },
       {
         "heading": "Calculate your savings versus a traditional lease",
         "paragraphs": [
-          "Setting up and furnishing an independent office in Raipur involves substantial capital expenditure — security deposits, brokerage, interior fit-outs, AC units, and ongoing maintenance staff.",
+          "Setting up an independent office in Raipur involves heavy upfront capital expenditure — commercial security deposits, broker fees, civil fit-outs, AC units, and monthly housekeeping staff.",
           "Use our interactive Cost Calculator to model your team's exact savings when choosing Deven Co-Work over a traditional commercial rental."
         ]
       }
@@ -433,116 +628,104 @@ export const PAGES = {
     "showPricing": true,
     "faqs": [
       {
+        "q": "How much does a coworking membership cost at Deven Co-Work in Raipur?",
+        "a": "Plans start from affordable founding member rates. Current prices for hot desks, dedicated desks, and private cabins are displayed in the pricing cards below."
+      },
+      {
         "q": "Is there a free trial before paying?",
-        "a": "Yes. You can try Deven Co-Work completely free for 2 full days with zero payment or credit card required."
+        "a": "Yes. You can test Deven Co-Work completely free for 2 full days with zero payment or credit card required."
       },
       {
         "q": "What is the difference between Hot Desk and Dedicated Desk?",
-        "a": "A Hot Desk offers flexible seating in our shared productivity hall. A Dedicated Desk is your permanent assigned desk with your personal locker, drawer, and 2 charging sockets."
+        "a": "A Hot Desk offers flexible seating in our shared productivity hall. A Dedicated Desk is your permanent assigned workstation with your personal locker, drawer, and 2 charging sockets."
       },
       {
-        "q": "Are there private office cabins?",
-        "a": "Yes. Deven Co-Work has three private cabins for founders who want a separate cabin of their own."
-      },
-      {
-        "q": "Are tea, coffee, and utilities included in the price?",
-        "a": "Yes. Members receive 2 complimentary cups of coffee or tea daily from our coffee bar. High-speed 500 Mbps Wi-Fi, electricity, AC, cleaning, and RO water are all included."
+        "q": "Are utilities, internet, and coffee included in the price?",
+        "a": "Yes. Electricity, air conditioning, 500 Mbps Wi-Fi, daily housekeeping, RO water, and 2 daily cups of tea or coffee from our coffee bar are fully included."
       },
       {
         "q": "What is your cancellation policy?",
-        "a": "We require 30 days' advance notice for cancellations, with no exit fees or penalty charges."
+        "a": "We require a standard 30 days' advance notice for cancellations, with no exit penalties or hidden termination charges."
       },
       {
-        "q": "What are your opening hours?",
+        "q": "What are your operating hours?",
         "a": "We are open Monday to Saturday, 9 AM to 9 PM."
       }
     ],
     "related": [
       "/cost-calculator",
+      "/hot-desk",
+      "/dedicated-desk",
       "/private-cabins",
-      "/free-trial",
-      "/faq",
-      "/contact"
+      "/free-trial"
     ],
     "image": null
   },
   "amenities": {
     "path": "/amenities",
-    "title": "Coworking Amenities in Raipur | Deven Co-Work",
-    "description": "Deven Co-Work amenities in Raipur: 500 Mbps Wi-Fi, power backup, meeting room, content studio, coffee bar, library, monthly events and dedicated parking.",
-    "h1": "Everything Included at Deven Co-Work",
-    "eyebrow": "AMENITIES · RAIPUR",
+    "title": "Coworking Space Amenities in Raipur | Workspace Facilities | Deven Co-Work",
+    "description": "Discover all coworking space amenities at Deven Co-Work, Raipur: 500 Mbps Wi-Fi, power backup, meeting room with digital board, podcast studio, coffee bar & parking.",
+    "h1": "Coworking Space Amenities & Facilities in Raipur",
+    "eyebrow": "COWORKING AMENITIES · RAIPUR",
     "breadcrumb": "Amenities",
     "intro": [
-      "Deven Co-Work is a premium coworking space in Shankar Nagar, Raipur. Here is what comes with it, from the Wi-Fi at your desk to the events that bring the community together."
+      "Deven Co-Work is a premium coworking space in Shankar Nagar, Raipur, engineered for founder focus and team productivity. Here is everything included with your workspace, from high-speed internet to our coffee bar and community events."
     ],
     "sections": [
       {
-        "heading": "Workspace and comfort",
+        "heading": "Workspace and comfort infrastructure",
         "bullets": [
-          "500 Mbps Wi-Fi",
-          "Power backup",
-          "2 charging points at every desk",
-          "Locker and drawer",
-          "About 75% natural light and high-quality lighting",
-          "More than 50 plants, for Raipur's most breathable office",
-          "Reception and a color printer",
-          "Daily cleaning and maintenance"
+          "500 Mbps high-speed dual-band fiber Wi-Fi",
+          "100% generator power backup for uninterrupted productivity",
+          "2 dedicated charging points at every desk",
+          "Personal lockable drawer and storage cabinet",
+          "Abundant natural light (approx. 75%) and flicker-free architectural lighting",
+          "Over 50 indoor air-purifying plants for a fresh, breathable office environment",
+          "Front-desk reception greeting and business color printing",
+          "Daily professional housekeeping, sanitization, and maintenance"
         ]
       },
       {
-        "heading": "Meetings and content",
+        "heading": "Meetings and media production",
         "bullets": [
-          "Team meeting room with an interactive panel (digital board)",
-          "Content studio"
+          "10–15 person conference room equipped with digital interactive panel (smart board)",
+          "Acoustic in-house podcast and content creation studio with studio lighting and microphones"
         ]
       },
       {
         "heading": "Food and refreshments",
         "bullets": [
-          "A coffee bar with 20+ varieties of coffee and 5+ varieties of tea",
-          "2 cups of tea or coffee per day",
-          "Unlimited RO water and healthy snack options in the pantry",
-          "A kitchen with food-heating space"
+          "Curated coffee bar featuring 20+ varieties of coffee and 5+ varieties of tea",
+          "2 complimentary cups of coffee or tea included daily for members",
+          "Unlimited purified RO drinking water and pantry with healthy snack options",
+          "Kitchen area with microwave food-heating facilities and refrigerator"
         ]
       },
       {
-        "heading": "Community and events",
+        "heading": "Community, learning and events",
         "bullets": [
-          "2 events per month, 1 fun and 1 educational",
-          "1 AI workshop per month",
-          "1 book reading workshop per month",
-          "1 ask-me-anything session per month",
-          "Founder's Growth WhatsApp community",
-          "Recreation space with indoor games",
-          "The annual Deven Awards Night"
+          "2 monthly community events (1 educational workshop, 1 networking gathering)",
+          "Monthly AI and tech workshops",
+          "Monthly book reading and leadership discussions",
+          "Monthly founder ask-me-anything (AMA) roundtables",
+          "Exclusive Founder's Growth WhatsApp community",
+          "Recreation area with indoor games for quick mental breaks",
+          "Annual Deven Founder Awards Night"
         ]
       },
       {
-        "heading": "Benefits for founders",
+        "heading": "Safety, convenience and operating hours",
         "bullets": [
-          "1 professional founder podcast episode with Deven",
-          "1 Instagram collaboration per month",
-          "1 professional founder photoshoot every 6 months",
-          "Free access to the Deven library with more than 100 books",
-          "Raipur Founder's Workspace Checklist and 20 free business templates",
-          "Welcome kit and 100 Deven business cards",
-          "Founding member badge or certificate"
-        ]
-      },
-      {
-        "heading": "Safety and access",
-        "bullets": [
-          "First-aid and basic wellness kit on site",
-          "Dedicated parking for two-wheelers and four-wheelers",
+          "First-aid and wellness supplies on site",
+          "Dedicated on-site parking for two-wheelers and four-wheelers",
           "Open Monday to Saturday, 9 AM to 9 PM",
-          "2 days free trial"
+          "Free 2-day trial for prospective members"
         ]
       },
       {
-        "heading": "Visit us",
+        "heading": "Visit our workspace",
         "paragraphs": [
-          "Deven Co-Work is at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001. Book a free tour to see the space for yourself."
+          "Deven Co-Work is located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001. Schedule a free tour to inspect all facilities in person."
         ]
       }
     ],
@@ -550,48 +733,48 @@ export const PAGES = {
     "faqs": [
       {
         "q": "How fast is the Wi-Fi at Deven Co-Work?",
-        "a": "The Wi-Fi speed is 500 Mbps, with power backup."
+        "a": "We provide enterprise-grade 500 Mbps dual-band Wi-Fi backed by uninterrupted generator power backup."
       },
       {
-        "q": "Is tea and coffee included?",
-        "a": "Yes. Membership includes 2 cups of tea or coffee per day from our coffee bar."
+        "q": "Is tea and coffee included in the membership?",
+        "a": "Yes. Members receive 2 complimentary cups of tea or coffee daily from our curated coffee bar with 20+ coffee and 5+ tea varieties."
       },
       {
-        "q": "Is there parking?",
-        "a": "Yes. We have dedicated parking for two-wheelers and four-wheelers."
+        "q": "Is there dedicated on-site parking?",
+        "a": "Yes. We offer secure, dedicated on-site parking for two-wheelers and four-wheelers."
       },
       {
-        "q": "Are there events for members?",
-        "a": "Yes. We host 2 events per month, plus an AI workshop, a book reading workshop and an ask-me-anything session."
+        "q": "What community events do you host?",
+        "a": "We host 2 events per month, plus specialized AI masterclasses, book reading sessions, and founder roundtables."
       },
       {
-        "q": "Is there a meeting room?",
-        "a": "Yes. We have a team meeting room with an interactive panel (digital board)."
+        "q": "Does Deven Co-Work have a conference room?",
+        "a": "Yes. We have a 10–15 person meeting room with an interactive digital panel (smart board)."
       },
       {
-        "q": "What are your opening hours?",
+        "q": "What are your operating hours?",
         "a": "We are open Monday to Saturday, 9 AM to 9 PM."
       }
     ],
     "related": [
       "/private-cabins",
+      "/hot-desk",
+      "/dedicated-desk",
       "/meeting-room",
-      "/podcast-studio",
-      "/free-trial",
-      "/pricing"
+      "/podcast-studio"
     ],
     "image": null
   },
   "faq": {
     "path": "/faq",
-    "title": "Coworking FAQs: Pricing, Trial & Access | Deven Co-Work",
-    "description": "Find answers about Deven Co-Work in Raipur, including plans, private cabins, meeting rooms, facilities and the free 2-day trial.",
-    "h1": "Frequently Asked Questions About Deven Co-Work",
-    "eyebrow": "HELP & KNOWLEDGE BASE · RAIPUR",
+    "title": "Deven Co-Work FAQs — Coworking Questions & Answers | Raipur",
+    "description": "Frequently asked questions about Deven Co-Work in Shankar Nagar, Raipur. Clear answers on coworking desk pricing, 2-day free trial, private cabins, and facilities.",
+    "h1": "Deven Co-Work FAQs — Questions & Answers",
+    "eyebrow": "FREQUENTLY ASKED QUESTIONS · RAIPUR",
     "breadcrumb": "FAQ",
     "intro": [
       "Find clear, comprehensive answers about Deven Co-Work in Shankar Nagar, Raipur.",
-      "Browse common questions regarding our coworking plans, pricing, free 2-day trial, private office cabins, meeting room bookings, internet speeds, and location details."
+      "Browse common questions regarding our coworking plans, pricing, free 2-day trial, private office cabins, dedicated desks, hot desks, meeting room bookings, internet speeds, and location details."
     ],
     "sections": [
       {
@@ -607,12 +790,12 @@ export const PAGES = {
       {
         "category": "Membership and pricing",
         "q": "How much does a coworking membership cost at Deven Co-Work?",
-        "a": "Plans and current prices are shown in the pricing section of the pricing page. You can try Deven Co-Work free for 2 days before you choose a plan."
+        "a": "Plans and current prices are shown in the pricing section of our pricing page. You can try Deven Co-Work free for 2 days before you choose a plan."
       },
       {
         "category": "Membership and pricing",
         "q": "Do I have to sign a long-term agreement?",
-        "a": "No. Month-to-month membership is available with no long-term lock-in."
+        "a": "No. Month-to-month membership is available with no long-term lease lock-in."
       },
       {
         "category": "Membership and pricing",
@@ -635,14 +818,14 @@ export const PAGES = {
         "a": "You can book a free tour through our website booking form, send us a message on WhatsApp at +91 62605 82852, or call our team directly."
       },
       {
-        "category": "Hot desks and private cabins",
+        "category": "Hot desks, dedicated desks and private cabins",
         "q": "What is the difference between Hot Desk and Dedicated Desk?",
         "a": "A Hot Desk provides flexible open seating in our quiet productivity zone. A Dedicated Desk gives you an assigned, permanent desk reserved exclusively for you, equipped with a personal locker, drawer, and 2 charging points."
       },
       {
-        "category": "Hot desks and private cabins",
+        "category": "Hot desks, dedicated desks and private cabins",
         "q": "Do you have private office cabins?",
-        "a": "Yes. Deven Co-Work has three private cabins for founders who want a separate cabin of their own."
+        "a": "Yes. Deven Co-Work has three private cabins for founders and small teams of 2 to 7 people who want a separate lockable cabin of their own."
       },
       {
         "category": "Meeting room and podcast/content studio",
@@ -652,12 +835,12 @@ export const PAGES = {
       {
         "category": "Meeting room and podcast/content studio",
         "q": "What is included with the in-house content and podcast studio?",
-        "a": "The content studio has high-quality lighting. Members get 1 professional founder podcast episode with Deven, 1 professional founder photoshoot every 6 months and 1 Instagram collaboration per month."
+        "a": "The content studio has high-quality lighting. Members get 1 professional founder podcast episode with Deven, 1 professional founder photoshoot every 6 months, and 1 Instagram collaboration per month."
       },
       {
         "category": "Internet, amenities and facilities",
         "q": "How fast and reliable is the internet?",
-        "a": "We provide enterprise-grade 500 Mbps Wi-Fi backed by uninterrupted power supply (power backup) to ensure seamless video calls and downloads."
+        "a": "We provide enterprise-grade 500 Mbps Wi-Fi backed by uninterrupted power supply (generator power backup) to ensure seamless video calls and downloads."
       },
       {
         "category": "Internet, amenities and facilities",
@@ -688,23 +871,23 @@ export const PAGES = {
     "related": [
       "/pricing",
       "/free-trial",
+      "/hot-desk",
+      "/dedicated-desk",
       "/private-cabins",
-      "/meeting-room",
-      "/cost-calculator",
       "/contact"
     ],
     "image": null
   },
   "cost-calculator": {
     "path": "/cost-calculator",
-    "title": "Coworking vs Office Rent Calculator | Deven Co-Work",
-    "description": "Compare your workspace costs with Deven Co-Work's calculator. Explore coworking plans and estimate potential office expenses in Raipur.",
-    "h1": "Compare Coworking Costs With Renting an Office in Raipur",
-    "eyebrow": "COST COMPARISON CALCULATOR · RAIPUR",
+    "title": "Office Space Cost Calculator in Raipur | Coworking vs Rent | Deven Co-Work",
+    "description": "Compare commercial office rent vs coworking in Raipur with our office space cost calculator. Estimate fit-out, deposits, utilities, and see how much your team saves at Deven Co-Work.",
+    "h1": "Office Space Cost Calculator in Raipur — Coworking vs Rent",
+    "eyebrow": "COST CALCULATOR · SHANKAR NAGAR, RAIPUR",
     "breadcrumb": "Cost Calculator",
     "intro": [
-      "Planning workspace for your team in Raipur? Use our interactive cost calculator to compare the true total cost of setting up and operating an independent office versus a fully serviced membership at Deven Co-Work.",
-      "See how much you can save on upfront fit-out expenses, commercial security deposits, utility bills, and daily management overhead."
+      "Planning workspace for your team in Raipur? Use our interactive office space cost calculator to compare the true total cost of setting up and operating an independent commercial office versus a fully serviced membership at Deven Co-Work.",
+      "See how much you can save on upfront fit-out expenses, commercial security deposits, utility bills, and daily facility management overhead."
     ],
     "showCalculator": true,
     "sections": [
@@ -769,31 +952,31 @@ export const PAGES = {
     ],
     "related": [
       "/pricing",
-      "/amenities",
       "/private-cabins",
-      "/free-trial",
-      "/contact"
+      "/dedicated-desk",
+      "/hot-desk",
+      "/free-trial"
     ],
     "image": null
   },
   "contact": {
     "path": "/contact",
-    "title": "Contact & Directions | Deven Co-Work, Raipur",
-    "description": "Contact Deven Co-Work in Shankar Nagar, Raipur. Get directions, call our team or arrange a tour to explore the workspace.",
-    "h1": "Visit Deven Co-Work in Raipur",
-    "eyebrow": "GET IN TOUCH · SHANKAR NAGAR, RAIPUR",
+    "title": "Deven Co-Work Raipur Contact, Address & Phone Number",
+    "description": "Contact Deven Co-Work in Shankar Nagar, Raipur. Address: VIP Estate, A1, VIP Colony. Phone: +91 62605 82852. Hours: Mon-Sat 9 AM-9 PM. Directions & booking.",
+    "h1": "Deven Co-Work Raipur Contact, Address & Directions",
+    "eyebrow": "CONTACT & LOCATION · SHANKAR NAGAR, RAIPUR",
     "breadcrumb": "Contact",
     "intro": [
       "Contact Deven Co-Work in Shankar Nagar, Raipur. Get directions, call our team directly, or arrange a guided tour to explore the workspace.",
-      "We are open Monday to Saturday from 9 AM to 9 PM. Whether you want to book a private cabin, inquire about meeting room availability, or start your free 2-day trial, we are here to help."
+      "We are open Monday to Saturday from 9 AM to 9 PM. Whether you want to book a private cabin, inquire about dedicated desk or hot desk availability, or start your free 2-day trial, we are here to help."
     ],
     "showContactForm": true,
     "sections": [
       {
         "heading": "How to reach our Shankar Nagar workspace",
         "paragraphs": [
-          "Deven Co-Work is at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
-          "We offer dedicated parking on site for two-wheelers and four-wheelers, ensuring hassle-free access for you, your team, and visiting clients."
+          "Deven Co-Work is located at VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001.",
+          "We offer dedicated on-site parking for two-wheelers and four-wheelers, ensuring hassle-free access for you, your team, and visiting clients."
         ]
       },
       {
@@ -830,8 +1013,8 @@ export const PAGES = {
     "related": [
       "/pricing",
       "/free-trial",
-      "/faq",
-      "/cost-calculator",
+      "/hot-desk",
+      "/dedicated-desk",
       "/private-cabins"
     ],
     "image": null
