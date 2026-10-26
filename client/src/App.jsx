@@ -66,16 +66,28 @@ export const defaultContent = {
   },
   navigation: {
     items: [
-      { label: 'Our Space', url: '#space', external: false, visible: true, order: 0 },
-      { label: "Founder's OS", url: '#offer-stack', external: false, visible: true, order: 1 },
+      { label: 'Our Space', url: '/#space', external: false, visible: true, order: 0 },
+      {
+        label: 'Workspace',
+        url: '#workspace',
+        isDropdown: true,
+        visible: true,
+        order: 1,
+        items: [
+          { label: 'Private Cabins', url: '/private-cabins' },
+          { label: 'Meeting Room', url: '/meeting-room' },
+          { label: 'Podcast Studio', url: '/podcast-studio' },
+          { label: 'Amenities', url: '/amenities' },
+        ],
+      },
       { label: 'Pricing', url: '/pricing', external: false, visible: true, order: 2 },
       { label: 'Events', url: '/events', external: false, visible: true, order: 3 },
       { label: 'About', url: '/about', external: false, visible: true, order: 4 },
       { label: 'Blog', url: '/blog', external: false, visible: true, order: 5 },
-      { label: 'FAQ', url: '#faq', external: false, visible: true, order: 6 },
-      { label: 'Contact', url: '#reservation', external: false, visible: true, order: 7 },
+      { label: 'FAQ', url: '/faq', external: false, visible: true, order: 6 },
+      { label: 'Contact', url: '/contact', external: false, visible: true, order: 7 },
     ],
-    ctaLabel: 'BOOK FREE TOUR',
+    ctaLabel: 'Book a Tour',
     ctaUrl: '#reservation',
     ctaVisible: true,
   },
@@ -308,7 +320,8 @@ export const defaultContent = {
       { label: 'About Us', href: '/about' },
       { label: 'Events', href: '/events' },
       { label: 'Blog', href: '/blog' },
-      { label: 'Contact', href: '#reservation' },
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Contact', href: '/contact' },
       { label: 'Instagram', href: 'https://instagram.com/' },
       { label: 'GMB', href: 'https://www.google.com/maps/' },
     ],
@@ -389,22 +402,86 @@ export function mergeContent(defaults, fetched) {
     merged.sectionOrder = merged.sectionOrder.filter(key => key !== 'valueStack');
   }
 
-  // Ensure Pricing in navigation items always routes to /pricing
+  // Normalize navigation items to use dedicated pages instead of outdated homepage-only anchors
   if (merged.navigation && Array.isArray(merged.navigation.items)) {
     merged.navigation.items = merged.navigation.items.map(item => {
-      if (item.label && item.label.toLowerCase().trim() === 'pricing') {
+      const label = item.label?.toLowerCase().trim();
+      if (label === 'pricing' || item.url === '#pricing') {
         return { ...item, url: '/pricing' };
+      }
+      if (label === 'faq' || item.url === '#faq') {
+        return { ...item, url: '/faq' };
+      }
+      if (label === 'contact' || item.url === '#reservation' || item.url === '#contact') {
+        return { ...item, url: '/contact' };
+      }
+      if (label === 'events' || item.url === '#events') {
+        return { ...item, url: '/events' };
+      }
+      if (label === 'about' || label === 'about us' || item.url === '#about') {
+        return { ...item, url: '/about' };
+      }
+      if (label === 'blog' || item.url === '#blog') {
+        return { ...item, url: '/blog' };
+      }
+      if (label === 'our space' || item.url === '#space') {
+        return { ...item, url: '/#space' };
+      }
+      if (label === 'workspace') {
+        return {
+          ...item,
+          isDropdown: true,
+          items: [
+            { label: 'Private Cabins', url: '/private-cabins' },
+            { label: 'Meeting Room', url: '/meeting-room' },
+            { label: 'Podcast Studio', url: '/podcast-studio' },
+            { label: 'Amenities', url: '/amenities' },
+          ],
+        };
       }
       return item;
     });
+
+    // Ensure Workspace dropdown is always present between Our Space and Pricing
+    const hasWorkspace = merged.navigation.items.some(
+      item => item.label?.toLowerCase().trim() === 'workspace' || item.isDropdown
+    );
+    if (!hasWorkspace) {
+      const spaceIdx = merged.navigation.items.findIndex(
+        item => item.label?.toLowerCase().trim() === 'our space'
+      );
+      const insertAt = spaceIdx !== -1 ? spaceIdx + 1 : 1;
+      merged.navigation.items.splice(insertAt, 0, {
+        label: 'Workspace',
+        url: '#workspace',
+        isDropdown: true,
+        visible: true,
+        order: 1,
+        items: [
+          { label: 'Private Cabins', url: '/private-cabins' },
+          { label: 'Meeting Room', url: '/meeting-room' },
+          { label: 'Podcast Studio', url: '/podcast-studio' },
+          { label: 'Amenities', url: '/amenities' },
+        ],
+      });
+    }
+
+    // Normalize CTA label to 'Book a Tour'
+    if (!merged.navigation.ctaLabel || merged.navigation.ctaLabel === 'BOOK FREE TOUR') {
+      merged.navigation.ctaLabel = 'Book a Tour';
+    }
   }
 
-  // Ensure Pricing in footer quick links always routes to /pricing
+  // Ensure footer quick links always route to dedicated pages
   if (merged.footer && Array.isArray(merged.footer.quickLinks)) {
     merged.footer.quickLinks = merged.footer.quickLinks.map(link => {
-      if (link.label && link.label.toLowerCase().trim() === 'pricing') {
-        return { ...link, href: '/pricing' };
-      }
+      const label = link.label?.toLowerCase().trim();
+      if (label === 'pricing' || link.href === '#pricing') return { ...link, href: '/pricing' };
+      if (label === 'about' || label === 'about us' || link.href === '#about') return { ...link, href: '/about' };
+      if (label === 'events' || link.href === '#events') return { ...link, href: '/events' };
+      if (label === 'blog' || link.href === '#blog') return { ...link, href: '/blog' };
+      if (label === 'faq' || link.href === '#faq') return { ...link, href: '/faq' };
+      if (label === 'contact' || link.href === '#reservation') return { ...link, href: '/contact' };
       return link;
     });
   }
@@ -528,10 +605,133 @@ function FoundingBanner({ scarcity, cmsLoaded, cmsFailed }) {
   );
 }
 
+export const WORKSPACE_ITEMS = [
+  { label: 'Private Cabins', url: '/private-cabins', desc: 'Dedicated private office cabins' },
+  { label: 'Meeting Room', url: '/meeting-room', desc: 'Interactive panel & conference room' },
+  { label: 'Podcast Studio', url: '/podcast-studio', desc: 'Audio & video recording studio' },
+  { label: 'Amenities', url: '/amenities', desc: '500 Mbps Wi-Fi, 20+ coffees & lounge' },
+];
+
+function WorkspaceDropdown({ location, onNavigate }) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  const isChildActive = WORKSPACE_ITEMS.some(it => location === it.url);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpen(false);
+    }, 150);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={dropdownRef}
+      className="relative"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen(prev => !prev)}
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-label="Workspace pages"
+        className={`flex items-center gap-1.5 transition-colors relative group py-2 uppercase tracking-[.16em] cursor-pointer focus-visible:outline-none focus-visible:text-[#04B8BB] ${
+          isChildActive ? 'text-[#04B8BB] font-black' : 'text-[#FCFAF9]/85 hover:text-[#04B8BB]'
+        }`}
+        data-testid="nav-workspace"
+      >
+        <span>Workspace</span>
+        <ChevronDown
+          size={12}
+          className={`transition-transform duration-200 ${
+            open ? 'rotate-180 text-[#04B8BB]' : 'text-[#FCFAF9]/60 group-hover:text-[#04B8BB]'
+          }`}
+        />
+        <span
+          className={`absolute -bottom-0.5 left-0 h-px bg-[#04B8BB] transition-all duration-300 ${
+            isChildActive ? 'w-full' : 'w-0 group-hover:w-full'
+          }`}
+        />
+      </button>
+
+      {/* Desktop Dropdown Menu */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.98 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-0 mt-1 min-w-[230px] bg-[#024E5C]/98 backdrop-blur-md border border-[rgba(252,250,249,0.16)] rounded-xl shadow-2xl p-2 z-50 text-[11px] font-semibold tracking-normal normal-case"
+            role="menu"
+            aria-label="Workspace submenu"
+          >
+            {WORKSPACE_ITEMS.map((item) => {
+              const isActive = location === item.url;
+              return (
+                <Link
+                  key={item.url}
+                  href={item.url}
+                  onClick={() => {
+                    setOpen(false);
+                    if (onNavigate) onNavigate();
+                  }}
+                  role="menuitem"
+                  className={`flex flex-col gap-0.5 px-3 py-2 rounded-lg transition-colors ${
+                    isActive
+                      ? 'bg-white/10 text-[#04B8BB] font-bold'
+                      : 'text-[#FCFAF9]/90 hover:bg-white/10 hover:text-[#04B8BB]'
+                  }`}
+                  data-testid={`dropdown-item-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs">{item.label}</span>
+                    {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#04B8BB]" />}
+                  </div>
+                  <span className="text-[10px] text-[#FCFAF9]/55 font-normal tracking-tight">
+                    {item.desc}
+                  </span>
+                </Link>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   const [solid, setSolid] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [location] = useLocation();
+  const [mobileWorkspaceOpen, setMobileWorkspaceOpen] = useState(false);
+  const [location, navigate] = useLocation();
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 24);
@@ -542,13 +742,35 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
+    setMobileWorkspaceOpen(false);
   }, [location]);
 
   const handleNavClick = (e, url) => {
-    if (url && url.startsWith('#')) {
+    if (url && (url.startsWith('#') || url.startsWith('/#'))) {
+      const hash = url.startsWith('/#') ? url.slice(2) : url.slice(1);
       if (location === '/') {
-        e.preventDefault();
-        document.getElementById(url.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+        if (e) e.preventDefault();
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          window.history.pushState(null, '', `/#${hash}`);
+        }
+      } else {
+        if (e) e.preventDefault();
+        navigate(`/#${hash}`);
+      }
+    }
+  };
+
+  const handleTourCta = (e) => {
+    if (e) e.preventDefault();
+    if (onReserve) {
+      onReserve();
+    } else {
+      if (location === '/') {
+        document.getElementById('reservation')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/#reservation');
       }
     }
   };
@@ -589,22 +811,29 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
         <Logo logoUrl={logoUrl} />
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[.18em]">
+        <nav className="hidden lg:flex items-center gap-4 xl:gap-7 text-[10.5px] xl:text-[11.5px] font-bold uppercase tracking-[.14em] xl:tracking-[.18em]">
           {visibleNav.map((item, idx) => {
-            const isPricing = item.label?.toLowerCase().trim() === 'pricing';
-            const itemUrl = isPricing ? '/pricing' : item.url;
-            const isHash = itemUrl.startsWith('#');
-            const href = isHash && location !== '/' ? `/${itemUrl}` : itemUrl;
-            const isActive = isPricing ? location === '/pricing' : location === itemUrl;
+            const labelLower = item.label?.toLowerCase().trim();
+            const isWorkspace = labelLower === 'workspace' || item.isDropdown;
 
-            if (item.external) {
+            if (isWorkspace) {
+              return (
+                <WorkspaceDropdown
+                  key="nav-workspace-dropdown"
+                  location={location}
+                />
+              );
+            }
+
+            const isSpace = labelLower === 'our space' || item.url === '#space' || item.url === '/#space';
+            if (isSpace) {
               return (
                 <a
                   key={idx}
-                  href={itemUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
+                  href="/#space"
+                  onClick={(e) => handleNavClick(e, '/#space')}
+                  className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85 py-2 cursor-pointer"
+                  data-testid="nav-space"
                 >
                   {item.label}
                   <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
@@ -612,13 +841,34 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
               );
             }
 
+            if (item.external) {
+              return (
+                <a
+                  key={idx}
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85 py-2"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
+                </a>
+              );
+            }
+
+            const itemUrl = item.url;
+            const isHash = itemUrl.startsWith('#');
+            const href = isHash && location !== '/' ? `/${itemUrl}` : itemUrl;
+            const isActive = location === href || (href === '/blog' && location.startsWith('/blog/'));
+
             if (isHash && location === '/') {
               return (
                 <a
                   key={idx}
                   href={itemUrl}
                   onClick={(e) => handleNavClick(e, itemUrl)}
-                  className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85"
+                  className="hover:text-[#04B8BB] transition-colors relative group text-[#FCFAF9]/85 py-2 cursor-pointer"
+                  data-testid={`nav-item-${idx}`}
                 >
                   {item.label}
                   <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#04B8BB] transition-all duration-300 group-hover:w-full" />
@@ -630,10 +880,10 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
               <Link
                 key={idx}
                 href={href}
-                className={`transition-colors relative group ${
+                className={`transition-colors relative group py-2 ${
                   isActive ? 'text-[#04B8BB] font-black' : 'text-[#FCFAF9]/85 hover:text-[#04B8BB]'
                 }`}
-                data-testid={isPricing ? 'nav-pricing' : `nav-item-${idx}`}
+                data-testid={`nav-item-${labelLower.replace(/\s+/g, '-')}`}
               >
                 {item.label}
                 <span
@@ -650,19 +900,18 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
           <a
             href={cleanPhoneHref}
             onClick={() => trackPixelEvent('Contact')}
-            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#04B8BB] transition-colors hover:text-white sm:inline"
+            className="hidden text-[10px] font-bold uppercase tracking-wider text-[#04B8BB] transition-colors hover:text-white xl:inline"
             data-testid="link-header-phone"
           >
             {phone}
           </a>
           {nav.ctaVisible !== false && (
             <Button
-              onClick={onReserve}
-              href={nav.ctaUrl?.startsWith('#') ? undefined : nav.ctaUrl}
+              onClick={handleTourCta}
               className="button-small"
               testId="button-header-reserve"
             >
-              {nav.ctaLabel || 'Book Your Tour'}
+              {nav.ctaLabel || 'Book a Tour'}
             </Button>
           )}
 
@@ -670,7 +919,7 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(prev => !prev)}
-            className="md:hidden p-2 text-[#FCFAF9] hover:text-[#04B8BB] transition-colors focus:outline-none"
+            className="lg:hidden p-2 text-[#FCFAF9] hover:text-[#04B8BB] transition-colors focus:outline-none"
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={mobileMenuOpen}
             data-testid="button-mobile-menu"
@@ -683,31 +932,97 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
         <div
-          className="md:hidden bg-[#024E5C]/98 backdrop-blur-md border-t border-[rgba(252,250,249,0.14)] px-6 py-4 shadow-2xl transition-all"
+          className="lg:hidden bg-[#024E5C]/98 backdrop-blur-md border-t border-[rgba(252,250,249,0.14)] px-6 py-4 shadow-2xl transition-all"
           data-testid="nav-mobile-menu"
         >
-          <nav className="flex flex-col gap-2 text-xs font-bold uppercase tracking-[.18em]">
+          <nav className="flex flex-col gap-1 text-xs font-bold uppercase tracking-[.18em]">
             {visibleNav.map((item, idx) => {
-              const isPricing = item.label?.toLowerCase().trim() === 'pricing';
-              const itemUrl = isPricing ? '/pricing' : item.url;
-              const isHash = itemUrl.startsWith('#');
-              const href = isHash && location !== '/' ? `/${itemUrl}` : itemUrl;
-              const isActive = isPricing ? location === '/pricing' : location === itemUrl;
+              const labelLower = item.label?.toLowerCase().trim();
+              const isWorkspace = labelLower === 'workspace' || item.isDropdown;
+
+              if (isWorkspace) {
+                const isChildActive = WORKSPACE_ITEMS.some(it => location === it.url);
+                return (
+                  <div key="mobile-workspace" className="border-b border-[rgba(252,250,249,0.08)] py-2">
+                    <button
+                      type="button"
+                      onClick={() => setMobileWorkspaceOpen(prev => !prev)}
+                      className="w-full flex items-center justify-between text-[#FCFAF9]/85 hover:text-[#04B8BB] py-1 text-left uppercase tracking-[.18em] transition-colors cursor-pointer"
+                      aria-expanded={mobileWorkspaceOpen}
+                      data-testid="mobile-workspace-toggle"
+                    >
+                      <span className={isChildActive ? 'text-[#04B8BB] font-black' : ''}>
+                        Workspace
+                      </span>
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-200 text-[#04B8BB] ${
+                          mobileWorkspaceOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {mobileWorkspaceOpen && (
+                      <div className="mt-2 ml-2 pl-3 border-l-2 border-[#04B8BB]/40 flex flex-col gap-2">
+                        {WORKSPACE_ITEMS.map((child) => {
+                          const isSubActive = location === child.url;
+                          return (
+                            <Link
+                              key={child.url}
+                              href={child.url}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className={`py-1.5 transition-colors flex items-center justify-between ${
+                                isSubActive ? 'text-[#04B8BB] font-black' : 'text-[#FCFAF9]/80 hover:text-white'
+                              }`}
+                              data-testid={`mobile-workspace-${child.label.toLowerCase().replace(/\s+/g, '-')}`}
+                            >
+                              <span>{child.label}</span>
+                              {isSubActive && <span className="text-[10px] text-[#04B8BB]">●</span>}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              const isSpace = labelLower === 'our space' || item.url === '#space' || item.url === '/#space';
+              if (isSpace) {
+                return (
+                  <a
+                    key={idx}
+                    href="/#space"
+                    onClick={(e) => {
+                      setMobileMenuOpen(false);
+                      handleNavClick(e, '/#space');
+                    }}
+                    className="text-[#FCFAF9]/85 hover:text-[#04B8BB] py-2.5 transition-colors border-b border-[rgba(252,250,249,0.08)] flex items-center justify-between cursor-pointer"
+                    data-testid="mobile-nav-space"
+                  >
+                    <span>{item.label}</span>
+                  </a>
+                );
+              }
 
               if (item.external) {
                 return (
                   <a
                     key={idx}
-                    href={itemUrl}
+                    href={item.url}
                     target="_blank"
                     rel="noreferrer"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-[#FCFAF9]/85 hover:text-[#04B8BB] py-2 transition-colors border-b border-[rgba(252,250,249,0.08)]"
+                    className="text-[#FCFAF9]/85 hover:text-[#04B8BB] py-2.5 transition-colors border-b border-[rgba(252,250,249,0.08)] flex items-center justify-between"
                   >
-                    {item.label}
+                    <span>{item.label}</span>
                   </a>
                 );
               }
+
+              const itemUrl = item.url;
+              const isHash = itemUrl.startsWith('#');
+              const href = isHash && location !== '/' ? `/${itemUrl}` : itemUrl;
+              const isActive = location === href || (href === '/blog' && location.startsWith('/blog/'));
 
               if (isHash && location === '/') {
                 return (
@@ -718,9 +1033,9 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
                       setMobileMenuOpen(false);
                       handleNavClick(e, itemUrl);
                     }}
-                    className="text-[#FCFAF9]/85 hover:text-[#04B8BB] py-2 transition-colors border-b border-[rgba(252,250,249,0.08)]"
+                    className="text-[#FCFAF9]/85 hover:text-[#04B8BB] py-2.5 transition-colors border-b border-[rgba(252,250,249,0.08)] flex items-center justify-between cursor-pointer"
                   >
-                    {item.label}
+                    <span>{item.label}</span>
                   </a>
                 );
               }
@@ -730,16 +1045,45 @@ export function Header({ onReserve, content, cmsLoaded, cmsFailed }) {
                   key={idx}
                   href={href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`py-2 transition-colors flex items-center justify-between border-b border-[rgba(252,250,249,0.08)] ${
+                  className={`py-2.5 transition-colors flex items-center justify-between border-b border-[rgba(252,250,249,0.08)] ${
                     isActive ? 'text-[#04B8BB] font-black' : 'text-[#FCFAF9]/85 hover:text-[#04B8BB]'
                   }`}
-                  data-testid={isPricing ? 'mobile-nav-pricing' : `mobile-nav-item-${idx}`}
+                  data-testid={`mobile-nav-${labelLower.replace(/\s+/g, '-')}`}
                 >
                   <span>{item.label}</span>
                   {isActive && <span className="text-[10px] text-[#04B8BB]">●</span>}
                 </Link>
               );
             })}
+
+            {/* Mobile Contact Phone */}
+            <div className="pt-3 pb-1">
+              <a
+                href={cleanPhoneHref}
+                className="text-xs font-bold uppercase tracking-wider text-[#04B8BB] hover:text-white flex items-center gap-2"
+                data-testid="mobile-link-phone"
+              >
+                <Phone size={14} />
+                <span>{phone}</span>
+              </a>
+            </div>
+
+            {/* Mobile Book a Tour CTA */}
+            {nav.ctaVisible !== false && (
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    setMobileMenuOpen(false);
+                    handleTourCta(e);
+                  }}
+                  className="w-full button button-primary py-3 text-center text-xs font-bold tracking-wider uppercase justify-center cursor-pointer"
+                  data-testid="button-mobile-reserve"
+                >
+                  {nav.ctaLabel || 'Book a Tour'}
+                </button>
+              </div>
+            )}
           </nav>
         </div>
       )}
@@ -1060,7 +1404,7 @@ function Guide({ guide, onReserve, cmsLoaded, cmsFailed }) {
   const gallery = data.gallery || defaultContent.guide.gallery;
 
   return (
-    <section className="bg-[#024E5C] text-[#FCFAF9] border-y border-[rgba(252,250,249,0.16)] py-24 sm:py-36" id="space" data-testid="section-guide">
+    <section className="bg-[#024E5C] text-[#FCFAF9] border-y border-[rgba(252,250,249,0.16)] py-24 sm:py-36 scroll-mt-20 sm:scroll-mt-24" id="space" data-testid="section-guide">
       <div className="container-wide">
         {/* Top: Brand statement */}
         <div className="grid gap-y-12 gap-x-16 lg:grid-cols-[1fr_1fr] lg:gap-24 items-start">
@@ -2803,6 +3147,39 @@ function Home() {
   const scrollToReservation = () => {
     setTourModalOpen(true);
   };
+
+  // Cross-page & direct hash scroller (e.g. /#space, /#pricing)
+  useEffect(() => {
+    if (!cmsLoaded && !cmsFailed) return;
+    const hash = window.location.hash?.replace(/^#/, '');
+    if (!hash) return;
+
+    let attempts = 0;
+    const maxAttempts = 20;
+    const tryScroll = () => {
+      const el = document.getElementById(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      } else if (attempts < maxAttempts) {
+        attempts++;
+        setTimeout(tryScroll, 100);
+      }
+    };
+    const timer = setTimeout(tryScroll, 150);
+    return () => clearTimeout(timer);
+  }, [cmsLoaded, cmsFailed]);
+
+  // Listen for hash changes while staying on Home
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash?.replace(/^#/, '');
+      if (hash) {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   if (!cmsLoaded && !cmsFailed) {
     return (

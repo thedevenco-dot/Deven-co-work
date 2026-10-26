@@ -390,6 +390,11 @@ export default function CmsEditor({
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-[#04B8BB] font-semibold uppercase">Link {idx + 1}</span>
+                    {(item.isDropdown || item.label?.toLowerCase().trim() === 'workspace') && (
+                      <span className="text-[10px] bg-[#04B8BB]/15 text-[#04B8BB] px-2 py-0.5 rounded font-mono">
+                        Dropdown (Cabins, Meeting, Podcast, Amenities)
+                      </span>
+                    )}
                     <div className="flex items-center gap-1 ml-2">
                       <button
                         type="button"
