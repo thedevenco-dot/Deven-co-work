@@ -26,6 +26,10 @@ export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 const AdminLogin = lazy(() => import('@/pages/admin-login'));
 const AdminDashboard = lazy(() => import('@/pages/admin-dashboard'));
 import ContentPage from '@/pages/content-page';
+import EventsPage from '@/pages/events-page';
+import AboutPage from '@/pages/about-page';
+import BlogPage from '@/pages/blog-page';
+import BlogPostPage from '@/pages/blog-post-page';
 import { PAGE_ORDER, PAGES } from '@/content/pages';
 
 
@@ -64,10 +68,12 @@ export const defaultContent = {
     items: [
       { label: 'Our Space', url: '#space', external: false, visible: true, order: 0 },
       { label: "Founder's OS", url: '#offer-stack', external: false, visible: true, order: 1 },
-      { label: 'How It Works', url: '#how-it-works', external: false, visible: true, order: 2 },
-      { label: 'Pricing', url: '/pricing', external: false, visible: true, order: 3 },
-      { label: 'FAQ', url: '#faq', external: false, visible: true, order: 4 },
-      { label: 'Contact', url: '#reservation', external: false, visible: true, order: 5 },
+      { label: 'Pricing', url: '/pricing', external: false, visible: true, order: 2 },
+      { label: 'Events', url: '/events', external: false, visible: true, order: 3 },
+      { label: 'About', url: '/about', external: false, visible: true, order: 4 },
+      { label: 'Blog', url: '/blog', external: false, visible: true, order: 5 },
+      { label: 'FAQ', url: '#faq', external: false, visible: true, order: 6 },
+      { label: 'Contact', url: '#reservation', external: false, visible: true, order: 7 },
     ],
     ctaLabel: 'BOOK FREE TOUR',
     ctaUrl: '#reservation',
@@ -299,6 +305,9 @@ export const defaultContent = {
     tagline: "Raipur's Most Premium Coworking Space",
     quickLinks: [
       { label: 'Pricing', href: '/pricing' },
+      { label: 'About Us', href: '/about' },
+      { label: 'Events', href: '/events' },
+      { label: 'Blog', href: '/blog' },
       { label: 'Contact', href: '#reservation' },
       { label: 'Instagram', href: 'https://instagram.com/' },
       { label: 'GMB', href: 'https://www.google.com/maps/' },
@@ -310,6 +319,44 @@ export const defaultContent = {
     copyright: '',
     ctaLabel: '',
     ctaUrl: '',
+  },
+  about: {
+    hero: {
+      eyebrow: 'ABOUT DEVEN',
+      headline: 'A Space for People Building What\'s Next.',
+      subheadline: 'Raipur\'s premier coworking space and founder community in Shankar Nagar, built for focused work, meaningful collaboration, and ambitious teams.',
+    },
+    story: {
+      heading: 'Our Story',
+      paragraphs: [
+        'Deven Co-Work was established to solve a pressing challenge for founders and professionals in Raipur: finding a workspace that balances enterprise-grade infrastructure with genuine community.',
+        'Working from home or noisy cafés often leads to distraction and isolation. Renting a traditional office in Raipur comes with long commercial leases, expensive fit-outs, and ongoing facility management headaches.',
+        'We built Deven Co-Work to give professionals and startups a complete operating system: private cabins, dedicated desks, team meeting rooms with digital boards, a high-fidelity podcast studio, and 500 Mbps fiber internet — all anchored by active founder meetups, workshops, and peer collaboration.'
+      ],
+      image: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1787305622/deven_cowork/y6mbwgpiltsde9n3cvhr.webp',
+    },
+    mission: {
+      heading: 'Our Mission',
+      text: 'To empower Raipur\'s entrepreneurs, creators, and professionals with premium workspace infrastructure, productive environments, and an active community that accelerates business growth.',
+    },
+    vision: {
+      heading: 'Our Vision',
+      text: 'To establish Raipur as a leading hub of innovation and modern enterprise in Central India, connecting ambitious founders who build enduring companies.',
+    },
+    audiences: {
+      heading: 'Who Deven Co-Work Is For',
+      items: [
+        { title: 'Startup Founders', description: 'Early-stage and scaling founders building ambitious tech, service, and product businesses in Raipur.' },
+        { title: 'Freelancers & Consultants', description: 'Independent professionals who need ultra-reliable internet, polished client meeting spaces, and professional credibility.' },
+        { title: 'Remote Professionals', description: 'Distributed team members and remote engineers looking to escape home distractions for focused, high-energy work.' },
+        { title: 'Small Teams', description: 'Teams of 2 to 7 people who require private cabins and meeting facilities without long-term commercial lease lock-ins.' },
+        { title: 'Creators & Podcasters', description: 'Content creators, educators, and podcasters leveraging our sound-treated audio and video studio.' },
+      ],
+    },
+    seo: {
+      title: 'About Deven Co-Work — Raipur\'s Premier Coworking & Founder Space',
+      description: 'Discover the story, mission, workspace philosophy, and founder community behind Deven Co-Work in Shankar Nagar, Raipur. Book a free tour.',
+    },
   },
   sectionOrder: ['hero', 'problem', 'guide', 'plan', 'offerStack', 'guarantee', 'socialProof', 'pricing', 'faq', 'finalCTA'],
   sectionVisibility: {
@@ -2557,7 +2604,7 @@ export function Footer({ footer, globalSettings, cmsLoaded, cmsFailed }) {
 }
 
 // â"€â"€â"€ WHATSAPP FLOAT â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
+export function WhatsAppFloat({ whatsapp, message, cmsLoaded, cmsFailed }) {
   if (!cmsLoaded && !cmsFailed) return null;
   const number = whatsapp || (cmsFailed ? '+91 62605 82852' : '');
   if (!number) return null;
@@ -2858,6 +2905,12 @@ function Router() {
         <Route path="/admin/login" component={AdminLogin} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/thank-you" component={ThankYou} />
+        <Route path="/events" component={EventsPage} />
+        <Route path="/about" component={AboutPage} />
+        <Route path="/blog" component={BlogPage} />
+        <Route path="/blog/:slug">
+          {(params) => <BlogPostPage params={params} />}
+        </Route>
         {PAGE_ORDER.map((slug) => (
           <Route key={slug} path={PAGES[slug].path}>
             <ContentPage slug={slug} />

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
+    "test": "node verify-all.mjs",
     "build": "npm run setup --prefix .. && npm run build --prefix ..",
     "dev": "nodemon server.js"
   },

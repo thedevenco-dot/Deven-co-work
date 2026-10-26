@@ -360,4 +360,183 @@ export const api = {
     });
     return handleResponse(res);
   },
+
+  // ── Events (Public) ────────────────────────────────────────────────────────
+  async fetchEvents(params = {}) {
+    const query = new URLSearchParams();
+    if (params.category) query.set('category', params.category);
+    if (params.timeframe) query.set('timeframe', params.timeframe);
+    const qs = query.toString() ? `?${query.toString()}` : '';
+    const res = await fetch(`${API_BASE}/events${qs}`, { method: 'GET', headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  async fetchEventBySlug(slug) {
+    const res = await fetch(`${API_BASE}/events/slug/${encodeURIComponent(slug)}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  // ── Events (Admin) ─────────────────────────────────────────────────────────
+  async fetchAdminEvents(params = {}) {
+    const query = new URLSearchParams();
+    if (params.search) query.set('search', params.search);
+    if (params.status) query.set('status', params.status);
+    if (params.category) query.set('category', params.category);
+    if (params.timeframe) query.set('timeframe', params.timeframe);
+    const qs = query.toString() ? `?${query.toString()}` : '';
+    const res = await fetch(`${API_BASE}/events/admin/all${qs}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async fetchAdminEventById(id) {
+    const res = await fetch(`${API_BASE}/events/admin/${id}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async createEvent(eventData) {
+    const res = await fetch(`${API_BASE}/events/admin`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(eventData),
+    });
+    return handleResponse(res);
+  },
+
+  async updateEvent(id, eventData) {
+    const res = await fetch(`${API_BASE}/events/admin/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(eventData),
+    });
+    return handleResponse(res);
+  },
+
+  async togglePublishEvent(id, status) {
+    const res = await fetch(`${API_BASE}/events/admin/${id}/publish`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ status }),
+    });
+    return handleResponse(res);
+  },
+
+  async deleteEvent(id) {
+    const res = await fetch(`${API_BASE}/events/admin/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  // ── Blog (Public) ──────────────────────────────────────────────────────────
+  async fetchBlogPosts(params = {}) {
+    const query = new URLSearchParams();
+    if (params.category) query.set('category', params.category);
+    if (params.search) query.set('search', params.search);
+    if (params.page) query.set('page', params.page);
+    if (params.limit) query.set('limit', params.limit);
+    const qs = query.toString() ? `?${query.toString()}` : '';
+    const res = await fetch(`${API_BASE}/blog/posts${qs}`, { method: 'GET', headers: getHeaders() });
+    return handleResponse(res);
+  },
+
+  async fetchBlogPostBySlug(slug) {
+    const res = await fetch(`${API_BASE}/blog/posts/${encodeURIComponent(slug)}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async fetchBlogCategories() {
+    const res = await fetch(`${API_BASE}/blog/categories`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  // ── Blog (Admin) ───────────────────────────────────────────────────────────
+  async fetchAdminBlogPosts(params = {}) {
+    const query = new URLSearchParams();
+    if (params.search) query.set('search', params.search);
+    if (params.category) query.set('category', params.category);
+    if (params.status) query.set('status', params.status);
+    if (params.sort) query.set('sort', params.sort);
+    const qs = query.toString() ? `?${query.toString()}` : '';
+    const res = await fetch(`${API_BASE}/blog/admin/posts${qs}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async fetchAdminBlogPostById(id) {
+    const res = await fetch(`${API_BASE}/blog/admin/posts/${id}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async createBlogPost(postData) {
+    const res = await fetch(`${API_BASE}/blog/admin/posts`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(postData),
+    });
+    return handleResponse(res);
+  },
+
+  async updateBlogPost(id, postData) {
+    const res = await fetch(`${API_BASE}/blog/admin/posts/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(postData),
+    });
+    return handleResponse(res);
+  },
+
+  async togglePublishBlogPost(id, status) {
+    const res = await fetch(`${API_BASE}/blog/admin/posts/${id}/publish`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ status }),
+    });
+    return handleResponse(res);
+  },
+
+  async deleteBlogPost(id) {
+    const res = await fetch(`${API_BASE}/blog/admin/posts/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async saveBlogCategory(catData) {
+    const res = await fetch(`${API_BASE}/blog/admin/categories`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(catData),
+    });
+    return handleResponse(res);
+  },
+
+  async deleteBlogCategory(id) {
+    const res = await fetch(`${API_BASE}/blog/admin/categories/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+    return handleResponse(res);
+  },
 };

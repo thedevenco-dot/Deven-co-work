@@ -15,6 +15,9 @@ import CmsEditor, { MediaField } from '@/components/cms-editor';
 import AdminCalculatorConfig from '@/components/admin-calculator-config';
 import AdminCalculatorLeads from '@/components/admin-calculator-leads';
 import AdminSpinWheelLeads from '@/components/admin-spinwheel-leads';
+import AdminEventsCMS from '@/components/admin-events-cms';
+import AdminBlogCMS from '@/components/admin-blog-cms';
+import AdminAboutCMS from '@/components/admin-about-cms';
 
 
 // â"€â"€â"€ HELPER COMPONENTS â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
@@ -1289,7 +1292,7 @@ export default function AdminDashboard() {
   }, []);
 
   // Fetch CMS when switching to a CMS panel
-  const CMS_PANELS = ['homepage', 'navigation', 'footer', 'global', 'seo', 'sections'];
+  const CMS_PANELS = ['homepage', 'navigation', 'footer', 'global', 'seo', 'sections', 'about_cms'];
   useEffect(() => {
     if (CMS_PANELS.includes(activePanel) && !cmsDraft) {
       fetchCMSContent();
@@ -1644,6 +1647,14 @@ export default function AdminDashboard() {
         { id: 'navigation', label: 'Navigation', icon: Link },
         { id: 'global', label: 'Global Settings', icon: Settings },
         { id: 'seo', label: 'SEO', icon: Tag },
+      ]
+    },
+    {
+      label: 'Content & CMS',
+      items: [
+        { id: 'events', label: 'Events CMS', icon: Calendar },
+        { id: 'blog', label: 'Blog CMS', icon: BookOpen },
+        { id: 'about_cms', label: 'About Page CMS', icon: FileText },
       ]
     },
     {
@@ -2063,6 +2074,25 @@ export default function AdminDashboard() {
                   <button onClick={fetchCMSContent} className="button button-primary">Load CMS Data</button>
                 )}
               </div>
+            )}
+
+            {/* ── EVENTS CMS ─────────────────────────────────────────────────── */}
+            {activePanel === 'events' && (
+              <AdminEventsCMS onOpenMediaLibrary={() => setActivePanel('media')} />
+            )}
+
+            {/* ── BLOG CMS ───────────────────────────────────────────────────── */}
+            {activePanel === 'blog' && (
+              <AdminBlogCMS onOpenMediaLibrary={() => setActivePanel('media')} />
+            )}
+
+            {/* ── ABOUT PAGE CMS ─────────────────────────────────────────────── */}
+            {activePanel === 'about_cms' && (
+              <AdminAboutCMS
+                cmsDraft={cmsDraft}
+                onChange={handleCMSFieldChange}
+                onOpenMediaLibrary={() => setActivePanel('media')}
+              />
             )}
 
             {/* â"€â"€ MEDIA LIBRARY â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */}

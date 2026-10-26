@@ -22,8 +22,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const clientRoot = resolve(__dirname, '..');
 const distDir    = resolve(clientRoot, 'dist');
 
-// Routes to prerender.  Admin routes are excluded (private pages).
-const routes = ['/', '/thank-you'];
+// Routes to prerender. Admin routes are excluded (private pages).
+const routes = ['/', '/thank-you', '/events', '/about', '/blog'];
 
 function escapeJsonForScript(jsonStr) {
   return jsonStr
@@ -391,6 +391,102 @@ async function main() {
       html = setTag(html, /<meta\s+[^>]*name=["']twitter:title["'][^>]*\/?>/i, '<meta name="twitter:title" content="Thank You | Deven Co-Work" />');
     }
 
+    // Handle /events route
+    if (url === '/events') {
+      const canonicalUrl = `${SITE.url}/events`;
+      const title = 'Events & Founder Community Meetups in Raipur | Deven Co-Work';
+      const desc = 'Discover upcoming workshops, founder meetups, and networking events at Deven Co-Work in Shankar Nagar, Raipur. Join our active founder community.';
+
+      html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
+      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);
+      html = setTag(html, /<meta property="og:title" content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${escAttr(title)}" />`);
+      html = setTag(html, /<meta property="og:description" content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${escAttr(desc)}" />`);
+      html = setTag(html, /<meta property="og:url" content="[^"]*"\s*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
+      html = setTag(html, /<meta name="twitter:title" content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${escAttr(title)}" />`);
+      html = setTag(html, /<meta name="twitter:description" content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${escAttr(desc)}" />`);
+
+      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
+      if (canonicalRegex.test(html)) {
+        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
+      } else {
+        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
+      }
+
+      const breadcrumbData = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.devencowork.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Events", "item": canonicalUrl }
+        ]
+      };
+      html = html.replace('</head>', () => `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n</head>`);
+    }
+
+    // Handle /about route
+    if (url === '/about') {
+      const canonicalUrl = `${SITE.url}/about`;
+      const title = 'About Deven Co-Work — Raipur\'s Premier Coworking & Founder Space';
+      const desc = 'Learn about Deven Co-Work in Shankar Nagar, Raipur. Our story, mission, workspace philosophy, and founder community building what\'s next.';
+
+      html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
+      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);
+      html = setTag(html, /<meta property="og:title" content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${escAttr(title)}" />`);
+      html = setTag(html, /<meta property="og:description" content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${escAttr(desc)}" />`);
+      html = setTag(html, /<meta property="og:url" content="[^"]*"\s*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
+      html = setTag(html, /<meta name="twitter:title" content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${escAttr(title)}" />`);
+      html = setTag(html, /<meta name="twitter:description" content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${escAttr(desc)}" />`);
+
+      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
+      if (canonicalRegex.test(html)) {
+        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
+      } else {
+        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
+      }
+
+      const breadcrumbData = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.devencowork.com/" },
+          { "@type": "ListItem", "position": 2, "name": "About Us", "item": canonicalUrl }
+        ]
+      };
+      html = html.replace('</head>', () => `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n</head>`);
+    }
+
+    // Handle /blog route
+    if (url === '/blog') {
+      const canonicalUrl = `${SITE.url}/blog`;
+      const title = 'The Deven Journal — Ideas & Insights for Founders in Raipur | Deven Co-Work';
+      const desc = 'Articles, founder stories, productivity playbooks, and business insights from Deven Co-Work, Raipur\'s premier founder community.';
+
+      html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
+      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);
+      html = setTag(html, /<meta property="og:title" content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${escAttr(title)}" />`);
+      html = setTag(html, /<meta property="og:description" content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${escAttr(desc)}" />`);
+      html = setTag(html, /<meta property="og:url" content="[^"]*"\s*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
+      html = setTag(html, /<meta name="twitter:title" content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${escAttr(title)}" />`);
+      html = setTag(html, /<meta name="twitter:description" content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${escAttr(desc)}" />`);
+
+      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
+      if (canonicalRegex.test(html)) {
+        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
+      } else {
+        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
+      }
+
+      const breadcrumbData = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.devencowork.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": canonicalUrl }
+        ]
+      };
+      html = html.replace('</head>', () => `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n</head>`);
+    }
+
     // Handle SEO content page routes
     const contentSlug = PAGE_ORDER.find(s => PAGES[s].path === url);
     if (contentSlug) {
@@ -499,10 +595,30 @@ async function main() {
     console.log(`  ✅  Written: dist${url === '/' ? '/index.html' : url + '/index.html'} (${(size / 1024).toFixed(1)} kB)`);
   }
 
-  // Generate dist/sitemap.xml listing "/" and the 6 new paths only (NOT /thank-you),
+  // Try fetching published blog posts to include in the generated static sitemap
+  let publishedBlogUrls = [];
+  try {
+    const env = loadEnv('production', clientRoot, 'VITE_');
+    const rawUrl = (process.env.VITE_API_URL || env.VITE_API_URL || '').trim();
+    if (rawUrl) {
+      const base = rawUrl.replace(/\/+$/, '');
+      const blogRes = await fetch(`${base}/api/blog?limit=100`, { signal: AbortSignal.timeout(5000) });
+      if (blogRes.ok) {
+        const blogData = await blogRes.json();
+        if (blogData && Array.isArray(blogData.posts)) {
+          publishedBlogUrls = blogData.posts.map(p => `/blog/${p.slug}`);
+          console.log(`  📰  Found ${publishedBlogUrls.length} published blog posts for sitemap.`);
+        }
+      }
+    }
+  } catch (err) {
+    // Graceful fallback to static routes
+  }
+
+  // Generate dist/sitemap.xml listing public indexable pages only (NOT /thank-you),
   // absolute https://www.devencowork.com URLs, <lastmod> = today's date (YYYY-MM-DD).
   const today = new Date().toISOString().split('T')[0];
-  const sitemapUrls = ['/', ...contentRoutes];
+  const sitemapUrls = ['/', '/events', '/about', '/blog', ...contentRoutes, ...publishedBlogUrls];
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemapUrls.map((u) => `  <url>

@@ -520,6 +520,62 @@ const contentSchema = new mongoose.Schema(
       landmarks: { type: [String], default: ['5 mins from Marine Drive', '10 mins from Railway Station', 'Opposite central park'] },
     },
 
+    // ─── ABOUT PAGE CMS ───────────────────────────────────────────────────────
+    about: {
+      hero: {
+        eyebrow: { type: String, default: 'ABOUT DEVEN' },
+        headline: { type: String, default: 'A Space for People Building What\'s Next.' },
+        subheadline: { type: String, default: 'Raipur\'s premier coworking space and founder community in Shankar Nagar, built for focused work, meaningful collaboration, and ambitious teams.' },
+      },
+      story: {
+        heading: { type: String, default: 'Our Story' },
+        paragraphs: {
+          type: [String],
+          default: [
+            'Deven Co-Work was established to solve a pressing challenge for founders and professionals in Raipur: finding a workspace that balances enterprise-grade infrastructure with genuine community.',
+            'Working from home or noisy cafés often leads to distraction and isolation. Renting a traditional office in Raipur comes with long commercial leases, expensive fit-outs, and ongoing facility management headaches.',
+            'We built Deven Co-Work to give professionals and startups a complete operating system: private cabins, dedicated desks, team meeting rooms with digital boards, a high-fidelity podcast studio, and 500 Mbps fiber internet — all anchored by active founder meetups, workshops, and peer collaboration.'
+          ],
+        },
+        image: { type: mongoose.Schema.Types.Mixed, default: 'https://res.cloudinary.com/cyxow5rb/image/upload/v1787305622/deven_cowork/y6mbwgpiltsde9n3cvhr.webp' },
+      },
+      mission: {
+        heading: { type: String, default: 'Our Mission' },
+        text: { type: String, default: 'To empower Raipur\'s entrepreneurs, creators, and professionals with premium workspace infrastructure, productive environments, and an active community that accelerates business growth.' },
+      },
+      vision: {
+        heading: { type: String, default: 'Our Vision' },
+        text: { type: String, default: 'To establish Raipur as a leading hub of innovation and modern enterprise in Central India, connecting ambitious founders who build enduring companies.' },
+      },
+      audiences: {
+        heading: { type: String, default: 'Who Deven Co-Work Is For' },
+        items: {
+          type: [mongoose.Schema.Types.Mixed],
+          default: [
+            { title: 'Startup Founders', description: 'Early-stage and scaling founders building ambitious tech, service, and product businesses in Raipur.' },
+            { title: 'Freelancers & Consultants', description: 'Independent professionals who need ultra-reliable internet, polished client meeting spaces, and professional credibility.' },
+            { title: 'Remote Professionals', description: 'Distributed team members and remote engineers looking to escape home distractions for focused, high-energy work.' },
+            { title: 'Small Teams', description: 'Teams of 2 to 7 people who require private cabins and meeting facilities without long-term commercial lease lock-ins.' },
+            { title: 'Creators & Podcasters', description: 'Content creators, educators, and podcasters leveraging our sound-treated audio and video studio.' },
+          ],
+        },
+      },
+      amenitiesSection: {
+        heading: { type: String, default: 'The Deven Experience' },
+        subheading: { type: String, default: 'Thoughtfully designed spaces and amenities tailored for focus and collaboration.' },
+      },
+      location: {
+        heading: { type: String, default: 'Our Location' },
+        address: { type: String, default: 'VIP Estate, A1, VIP Colony, Shankar Nagar, Raipur, Chhattisgarh 492001' },
+        directionsUrl: { type: String, default: 'https://www.google.com/maps/dir/?api=1&destination=Deven+Co-Work,+VIP+Estate,+A1,+VIP+Colony,+Raipur,+Chhattisgarh+492001' },
+        hours: { type: String, default: 'Monday to Saturday, 9 AM to 9 PM' },
+      },
+      seo: {
+        title: { type: String, default: 'About Deven Co-Work — Raipur\'s Premier Coworking & Founder Space' },
+        description: { type: String, default: 'Discover the story, mission, workspace philosophy, and founder community behind Deven Co-Work in Shankar Nagar, Raipur. Book a free tour.' },
+      },
+    },
+
     // ─── SECTION ORDER & VISIBILITY ───────────────────────────────────────────
     sectionOrder: {
       type: [String],
