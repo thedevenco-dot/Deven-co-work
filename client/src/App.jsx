@@ -577,12 +577,13 @@ function SafeImage({ src, alt = '', className = '', style }) {
   if (!src || failed) return null;
   return (
     <img
-      src={optimizeImageUrl(src, 1000)}
+      src={optimizeImageUrl(src, 800)}
       alt={alt}
       className={className}
       style={style}
       onError={() => setFailed(true)}
       loading="lazy"
+      decoding="async"
     />
   );
 }
@@ -1205,10 +1206,10 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
           alt="Deven Cowork space"
           className="absolute inset-0 w-full h-full object-cover z-0"
           fetchPriority="high"
-          decoding="async"
+          decoding="sync"
           style={{
             opacity: (videoAllowed && currentVideoUrl && mediaReady) ? 0 : 0.35,
-            transition: 'opacity 0.4s ease-in-out',
+            transition: videoAllowed ? 'opacity 0.4s ease-in-out' : 'none',
           }}
         />
       )}
@@ -3144,22 +3145,24 @@ function Home() {
       }
     };
 
+    let fallbackTimer = null;
     const onUserInteraction = () => {
       loadDeferredData();
       window.removeEventListener('scroll', onUserInteraction);
       window.removeEventListener('pointerdown', onUserInteraction);
+      window.removeEventListener('touchstart', onUserInteraction);
+      if (fallbackTimer) clearTimeout(fallbackTimer);
     };
     window.addEventListener('scroll', onUserInteraction, { passive: true, once: true });
     window.addEventListener('pointerdown', onUserInteraction, { passive: true, once: true });
+    window.addEventListener('touchstart', onUserInteraction, { passive: true, once: true });
+    fallbackTimer = setTimeout(loadDeferredData, 12000);
 
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      requestIdleCallback(loadDeferredData, { timeout: 8000 });
-    } else {
-      setTimeout(loadDeferredData, 8000);
-    }
     return () => {
       window.removeEventListener('scroll', onUserInteraction);
       window.removeEventListener('pointerdown', onUserInteraction);
+      window.removeEventListener('touchstart', onUserInteraction);
+      if (fallbackTimer) clearTimeout(fallbackTimer);
       if (ws) ws.close();
     };
   }, []);
