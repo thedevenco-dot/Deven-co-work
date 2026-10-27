@@ -2,9 +2,9 @@ import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, Check, ChevronDown,
-  Clock3, MapPin, Menu, MessageCircle, Phone, ShieldCheck, Users, X,
+  MapPin, Menu, MessageCircle, Phone, ShieldCheck, Users, X,
   Wifi, Coffee, Briefcase, Home as HomeIcon, Zap, Star,
-  BookOpen, Sparkles, TrendingUp
+  BookOpen, Sparkles
 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -15,11 +15,10 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import ThankYou from '@/pages/thank-you';
-import SeatSelection from '@/components/seat-selection';
 import OfficeCostCalculator from '@/components/OfficeCostCalculator';
 import TourBookingModal from '@/components/TourBookingModal';
 import { api } from '@/services/api';
-import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon, optimizeImageUrl } from '@/lib/utils';
+import { getMediaUrl, getAbsoluteMediaUrl, updateFavicon, optimizeImageUrl, optimizeVideoUrl } from '@/lib/utils';
 import { trackPixelEvent } from '@/lib/metaPixel';
 export { getMediaUrl, getAbsoluteMediaUrl, updateFavicon };
 
@@ -1096,9 +1095,13 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
   const [videoAllowed, setVideoAllowed] = useState(false);
 
   useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const conn = typeof navigator !== 'undefined' ? navigator.connection : null;
-    if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''))) return;
-    const start = () => setTimeout(() => setVideoAllowed(true), 800);
+    if (isMobile || prefersReducedMotion || (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')))) {
+      return;
+    }
+    const start = () => setTimeout(() => setVideoAllowed(true), 1000);
     if (document.readyState === 'complete') start();
     else window.addEventListener('load', start, { once: true });
   }, []);
@@ -1171,12 +1174,14 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
       className="relative overflow-hidden border-b border-[rgba(255,255,255,0.06)] pt-[70px] grid-paper"
       data-testid="section-hero"
     >
-      {/* Background Video */}
+      {/* Background Video (Desktop only, deferred and compressed) */}
       {videoAllowed && currentVideoUrl && (
         <video
           ref={videoRef}
           key={getMediaUrl(currentVideoUrl)}
           autoPlay muted loop playsInline
+          poster={baseImageUrl ? optimizeImageUrl(getMediaUrl(baseImageUrl), 1200) : undefined}
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover z-0"
           onError={() => setVideoFailed(true)}
           onLoadedData={handleMediaReady}
@@ -1186,15 +1191,17 @@ function Hero({ onReserve, hero, cmsLoaded = false, cmsFailed = false }) {
             transition: 'opacity 0.4s ease-in-out',
           }}
         >
-          <source src={getMediaUrl(currentVideoUrl)} type="video/mp4" />
+          <source src={optimizeVideoUrl(getMediaUrl(currentVideoUrl))} type="video/mp4" />
         </video>
       )}
 
-      {/* Background Image */}
+      {/* Background Image (Responsive srcset: 800w for mobile, 1200w for desktop) */}
       {baseImageUrl && (
         <img
           ref={imgRef}
-          src={optimizeImageUrl(getMediaUrl(baseImageUrl), 1200)}
+          src={optimizeImageUrl(getMediaUrl(baseImageUrl), 800)}
+          srcSet={`${optimizeImageUrl(getMediaUrl(baseImageUrl), 800)} 800w, ${optimizeImageUrl(getMediaUrl(baseImageUrl), 1200)} 1200w`}
+          sizes="100vw"
           alt="Deven Cowork space"
           className="absolute inset-0 w-full h-full object-cover z-0"
           fetchPriority="high"
@@ -2323,7 +2330,7 @@ export function Pricing({ onReserve, pricing, dbPlans = [], scarcity, globalSett
                     <img
                       src={optimizeImageUrl(getMediaUrl(plan.imageUrl), 800)}
                       alt={`${plan.name} at Deven Co-Work`}
-                      loading={index < 3 ? 'eager' : 'lazy'}
+                      loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => { e.currentTarget.style.display = 'none'; if (e.currentTarget.parentElement) e.currentTarget.parentElement.style.display = 'none'; }}
                     />
@@ -3079,66 +3086,91 @@ function Home() {
       setUtm({ source: utmSource, medium: utmMedium, campaign: utmCampaign });
     }
 
-    api.fetchPublishedContent()
-      .then((res) => {
-        if (res.success && res.data) {
-          const merged = mergeContent(defaultContent, res.data);
-          setContent(merged);
-          applySEO(merged.seo, merged.globalSettings);
-          setCmsLoaded(true);
-        } else {
+    if (!initialData) {
+      api.fetchPublishedContent()
+        .then((res) => {
+          if (res.success && res.data) {
+            const merged = mergeContent(defaultContent, res.data);
+            setContent(merged);
+            applySEO(merged.seo, merged.globalSettings);
+            setCmsLoaded(true);
+          } else {
+            setContent(defaultContent);
+            applySEO(defaultContent.seo, defaultContent.globalSettings);
+            setCmsFailed(true);
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to load published content. Using defaults.', err);
           setContent(defaultContent);
           applySEO(defaultContent.seo, defaultContent.globalSettings);
           setCmsFailed(true);
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to load published content. Using defaults.', err);
-        setContent(defaultContent);
-        applySEO(defaultContent.seo, defaultContent.globalSettings);
-        setCmsFailed(true);
-      });
-
-    api.fetchPlans()
-      .then((res) => {
-        if (res.success && res.data) {
-          setDbPlans(res.data);
-        }
-      })
-      .catch((err) => console.error('Failed to fetch DB plans', err));
-
-    fetchLiveSeatsCount();
+        });
+    } else {
+      applySEO(initialData.seo, initialData.globalSettings);
+    }
 
     let ws = null;
-    try {
-      if (typeof window !== 'undefined' && window.WebSocket) {
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const host = window.location.host;
-        ws = new WebSocket(`${protocol}//${host}`);
-        ws.onmessage = (event) => {
-          try {
-            const message = JSON.parse(event.data);
-            if (message.type === 'SEAT_UPDATE') fetchLiveSeatsCount();
-          } catch (err) {
-            console.error('Error in App.jsx WS message listener', err);
+    let deferredLoaded = false;
+    const loadDeferredData = () => {
+      if (deferredLoaded) return;
+      deferredLoaded = true;
+      api.fetchPlans()
+        .then((res) => {
+          if (res.success && res.data) {
+            setDbPlans(res.data);
           }
-        };
+        })
+        .catch((err) => console.error('Failed to fetch DB plans', err));
+
+      fetchLiveSeatsCount();
+
+      try {
+        if (typeof window !== 'undefined' && window.WebSocket) {
+          const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+          const host = window.location.host;
+          ws = new WebSocket(`${protocol}//${host}`);
+          ws.onmessage = (event) => {
+            try {
+              const message = JSON.parse(event.data);
+              if (message.type === 'SEAT_UPDATE') fetchLiveSeatsCount();
+            } catch (err) {
+              console.error('Error in App.jsx WS message listener', err);
+            }
+          };
+        }
+      } catch (e) {
+        console.warn('WebSocket init skipped or failed in current environment:', e);
       }
-    } catch (e) {
-      console.warn('WebSocket init skipped or failed in current environment:', e);
+    };
+
+    const onUserInteraction = () => {
+      loadDeferredData();
+      window.removeEventListener('scroll', onUserInteraction);
+      window.removeEventListener('pointerdown', onUserInteraction);
+    };
+    window.addEventListener('scroll', onUserInteraction, { passive: true, once: true });
+    window.addEventListener('pointerdown', onUserInteraction, { passive: true, once: true });
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      requestIdleCallback(loadDeferredData, { timeout: 8000 });
+    } else {
+      setTimeout(loadDeferredData, 8000);
     }
     return () => {
+      window.removeEventListener('scroll', onUserInteraction);
+      window.removeEventListener('pointerdown', onUserInteraction);
       if (ws) ws.close();
     };
   }, []);
 
-  // Automatic tour popup delay (~7 seconds)
+  // Automatic tour popup delay (~15 seconds)
   useEffect(() => {
     if (sessionStorage.getItem('tourPopupShown')) return;
     const timer = setTimeout(() => {
       setTourModalOpen(true);
       sessionStorage.setItem('tourPopupShown', 'true');
-    }, 7000);
+    }, 15000);
     return () => clearTimeout(timer);
   }, []);
 

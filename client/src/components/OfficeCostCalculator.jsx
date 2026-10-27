@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'wouter';
 import { Check, ShieldCheck, Users, Briefcase, Zap, AlertCircle, ArrowUpRight } from 'lucide-react';
@@ -65,7 +65,10 @@ export default function OfficeCostCalculator({ isStandalone = false }) {
   // Results
   const [results, setResults] = useState(null);
 
+  const configLoadedRef = useRef(false);
   const loadConfig = () => {
+    if (configLoadedRef.current) return;
+    configLoadedRef.current = true;
     setError(null);
     api.fetchCalculatorConfig()
       .then(res => {
@@ -81,8 +84,22 @@ export default function OfficeCostCalculator({ isStandalone = false }) {
   };
 
   useEffect(() => {
-    loadConfig();
-  }, []);
+    if (isStandalone) {
+      loadConfig();
+      return;
+    }
+    const onUserAction = () => {
+      loadConfig();
+      window.removeEventListener('scroll', onUserAction);
+      window.removeEventListener('pointerdown', onUserAction);
+    };
+    window.addEventListener('scroll', onUserAction, { passive: true, once: true });
+    window.addEventListener('pointerdown', onUserAction, { passive: true, once: true });
+    return () => {
+      window.removeEventListener('scroll', onUserAction);
+      window.removeEventListener('pointerdown', onUserAction);
+    };
+  }, [isStandalone]);
 
   useEffect(() => {
     if (!config || !teamSize || !fitout) {

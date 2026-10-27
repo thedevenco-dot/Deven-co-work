@@ -21,6 +21,14 @@ export function optimizeImageUrl(url, width) {
   return url.replace(marker, `${marker}${t}/`);
 }
 
+export function optimizeVideoUrl(url) {
+  if (typeof url !== 'string') return url;
+  const marker = '/video/upload/';
+  if (!url.includes('res.cloudinary.com') || !url.includes(marker)) return url;
+  if (/\/video\/upload\/[^/]*(q_auto|vc_|w_\d+)/.test(url)) return url;
+  return url.replace(marker, `${marker}q_auto:eco,w_960/`);
+}
+
 export function getAbsoluteMediaUrl(val, fallback = '/favicon-96x96.png') {
   let url = getMediaUrl(val);
   if (!url) url = fallback;
@@ -35,13 +43,14 @@ export function getAbsoluteMediaUrl(val, fallback = '/favicon-96x96.png') {
 
 export function updateFavicon(faviconUrl) {
   if (!faviconUrl) return;
+  const optimizedUrl = optimizeImageUrl(faviconUrl, 96);
   let linkFavicon = document.querySelector('link[rel="icon"]') || document.querySelector('link[rel="shortcut icon"]');
   if (!linkFavicon) {
     linkFavicon = document.createElement('link');
     linkFavicon.setAttribute('rel', 'icon');
     document.head.appendChild(linkFavicon);
   }
-  if (linkFavicon.getAttribute('href') !== faviconUrl) {
-    linkFavicon.setAttribute('href', faviconUrl);
+  if (linkFavicon.getAttribute('href') !== optimizedUrl) {
+    linkFavicon.setAttribute('href', optimizedUrl);
   }
 }

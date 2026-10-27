@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     react(),
     tailwindcss(),
@@ -27,6 +27,25 @@ export default defineConfig({
       },
     },
   },
+  build: !isSsrBuild ? {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion') || id.includes('motion-dom')) {
+              return 'vendor-motion';
+            }
+            if (id.includes('@radix-ui') || id.includes('@floating-ui')) {
+              return 'vendor-radix';
+            }
+            if (id.includes('@tanstack')) {
+              return 'vendor-tanstack';
+            }
+          }
+        },
+      },
+    },
+  } : undefined,
   // When building the SSR bundle, do not bundle packages that
   // must run in Node and/or have no browser equivalent.
   ssr: {
@@ -35,4 +54,4 @@ export default defineConfig({
       'wouter',
     ],
   },
-});
+}));
