@@ -1,14 +1,22 @@
 import { marked } from 'marked';
 
+/**
+ * Configure marked options for GitHub Flavored Markdown (GFM)
+ * Supports tables, strikethrough, autolinks, lists, etc.
+ */
 marked.setOptions({
   gfm: true,
-  breaks: false,
+  breaks: false, // Standard Markdown paragraph behavior
 });
 
+/**
+ * Remove duplicate article title if the content starts with the article's H1 or title
+ */
 function removeLeadingTitle(content, articleTitle) {
   if (!content || !articleTitle) return content;
   const cleanTitle = articleTitle.trim().toLowerCase();
 
+  // 1. If HTML, check for leading <h1>...</h1> or <h2>...</h2>
   const htmlTitleMatch = content.match(/^\s*<h[12][^>]*>([\s\S]*?)<\/h[12]>/i);
   if (htmlTitleMatch) {
     const headingText = htmlTitleMatch[1].replace(/<[^>]*>/g, '').trim().toLowerCase();
@@ -17,6 +25,7 @@ function removeLeadingTitle(content, articleTitle) {
     }
   }
 
+  // 2. If Markdown/Text, check first 1-3 lines
   const lines = content.split(/\r?\n/);
   for (let i = 0; i < Math.min(3, lines.length); i++) {
     const lineTrimmed = lines[i].trim();
@@ -35,6 +44,60 @@ function removeLeadingTitle(content, articleTitle) {
   return content;
 }
 
+/**
+ * Helper to determine if a line represents a heading
+ */
+function detectHeading(trimmed, inFaq) {
+  if (trimmed.endsWith('.') || trimmed.endsWith(',') || trimmed.endsWith(';')) {
+    return null;
+  }
+
+  // 1. FAQ Section Header
+  if (/^(frequently asked questions|faqs?)$/i.test(trimmed)) {
+    return { level: 2, text: trimmed, isFaqSection: true };
+  }
+
+  // 2. Conclusion / Final Thoughts Section
+  if (/^(final thoughts|conclusion|summary|wrapping up|next steps)$/i.test(trimmed)) {
+    return { level: 2, text: trimmed, isConclusion: true };
+  }
+
+  // 3. Numbered Heading e.g. "1. Location and Accessibility", "18. Small Language Shifts"
+  const numberedHeadingMatch = trimmed.match(/^([0-9]+)[\.\)]\s+([A-Z"“][^\n]{2,75})$/);
+  if (numberedHeadingMatch) {
+    const headingBody = numberedHeadingMatch[2];
+    if (!headingBody.endsWith('.') && headingBody.length < 75) {
+      return { level: 3, text: trimmed };
+    }
+  }
+
+  // 4. Standalone question ending in '?'
+  if (trimmed.endsWith('?') && trimmed.length < 100) {
+    return { level: 2, text: trimmed };
+  }
+
+  // 5. Section starters like "9 Things to Check...", "Why Choose...", "How to Compare..."
+  if (/^([0-9]+\s+[A-Za-z]|why|what|how|where|when|who)\b/i.test(trimmed) && trimmed.length < 90) {
+    return { level: 2, text: trimmed };
+  }
+
+  // 6. Short Title Case line (< 60 chars)
+  if (trimmed.length >= 3 && trimmed.length < 60) {
+    const words = trimmed.split(/\s+/).filter(Boolean);
+    if (words.length >= 2 && words.length <= 10) {
+      const capitalizedWords = words.filter(w => /^[A-Z0-9]/.test(w)).length;
+      if (capitalizedWords / words.length >= 0.6) {
+        return { level: 2, text: trimmed };
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Auto-structure plain text or raw ChatGPT-copied text into clean Markdown.
+ */
 export function autoStructureArticle(text, articleTitle = '') {
   if (typeof text !== 'string') return '';
   if (!text.trim()) return '';
@@ -51,12 +114,13 @@ export function autoStructureArticle(text, articleTitle = '') {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
-    const prevTrimmed = i > 0 ? lines[i - 1].trim() : '';
-    const nextTrimmed = i < lines.length - 1 ? lines[i + 1].trim() : '';
 
-    const isStandalone = trimmed.length > 0 && prevTrimmed === '' && (nextTrimmed === '' || i === lines.length - 1);
+    if (!trimmed) {
+      result.push('');
+      continue;
+    }
 
-    const isAlreadyMarkdown =
+    if (
       trimmed.startsWith('#') ||
       trimmed.startsWith('>') ||
       trimmed.startsWith('|') ||
@@ -65,61 +129,68 @@ export function autoStructureArticle(text, articleTitle = '') {
       trimmed.startsWith('+ ') ||
       trimmed.startsWith('```') ||
       trimmed.startsWith('[') ||
-      trimmed.startsWith('!');
+      trimmed.startsWith('!')
+    ) {
+      result.push(line);
+      continue;
+    }
 
-    if (isStandalone && !isAlreadyMarkdown) {
-      if (/^(frequently asked questions|faqs?)$/i.test(trimmed)) {
-        inFaq = true;
-        result.push(`## ${trimmed}`);
-        continue;
-      }
+    // Callouts / Blockquotes
+    const calloutMatch = trimmed.match(/^(important|note|tip|warning|pro tip|remember|key takeaway|example):\s*(.+)$/i);
+    if (calloutMatch) {
+      const label = calloutMatch[1].charAt(0).toUpperCase() + calloutMatch[1].slice(1);
+      const rest = calloutMatch[2];
+      result.push('');
+      result.push(`> **${label}:** ${rest}`);
+      result.push('');
+      continue;
+    }
 
-      if (/^(final thoughts|conclusion|summary|wrapping up|next steps)$/i.test(trimmed)) {
-        inFaq = false;
-        result.push(`## ${trimmed}`);
-        continue;
-      }
+    // Editorial language shifts
+    const speechMatch = trimmed.match(/^(instead of|say):\s*(.+)$/i);
+    if (speechMatch) {
+      const label = speechMatch[1].charAt(0).toUpperCase() + speechMatch[1].slice(1).toLowerCase();
+      const rest = speechMatch[2];
+      result.push('');
+      result.push(`**${label}:** ${rest}`);
+      result.push('');
+      continue;
+    }
 
-      if (!trimmed.endsWith(':') && !trimmed.endsWith(',') && !trimmed.endsWith(';')) {
-        if (/^[0-9]+\.\s+[A-Z]/.test(trimmed) && trimmed.length < 80 && !trimmed.endsWith('.')) {
-          result.push(`### ${trimmed}`);
-          continue;
-        }
+    // Heading detection
+    const heading = detectHeading(trimmed, inFaq);
+    if (heading) {
+      if (heading.isFaqSection) inFaq = true;
+      if (heading.isConclusion) inFaq = false;
 
-        if (/^[0-9]+\.\s+/.test(trimmed) && (inFaq || trimmed.endsWith('?')) && trimmed.length < 120) {
-          result.push(`### ${trimmed}`);
-          continue;
-        }
+      result.push('');
+      result.push(`${'#'.repeat(heading.level)} ${heading.text}`);
+      result.push('');
+      continue;
+    }
 
-        if (trimmed.endsWith('?') && trimmed.length < 100) {
-          result.push(`## ${trimmed}`);
-          continue;
-        }
+    // Bullet points (•, –, —)
+    if (/^[•–—]\s+/.test(trimmed)) {
+      result.push(`- ${trimmed.replace(/^[•–—]\s+/, '')}`);
+      continue;
+    }
 
-        if (/^([0-9]+\s+[A-Za-z]|why|what|how|where|when|who)\b/i.test(trimmed) && trimmed.length < 90 && !trimmed.endsWith('.')) {
-          result.push(`## ${trimmed}`);
-          continue;
-        }
-
-        if (trimmed.length < 60 && !trimmed.endsWith('.')) {
-          const words = trimmed.split(/\s+/).filter(Boolean);
-          if (words.length >= 2 && words.length <= 10) {
-            const capitalizedWords = words.filter(w => /^[A-Z0-9]/.test(w)).length;
-            if (capitalizedWords / words.length >= 0.6) {
-              result.push(`## ${trimmed}`);
-              continue;
-            }
-          }
-        }
-      }
+    // Numbered list item
+    if (/^[0-9]+[\.\)]\s+/.test(trimmed)) {
+      result.push(trimmed);
+      continue;
     }
 
     result.push(line);
   }
 
-  return result.join('\n');
+  return result.join('\n').replace(/\n{3,}/g, '\n\n');
 }
 
+/**
+ * Sanitize HTML markup to prevent XSS attacks while preserving
+ * standard editorial formatting tags, tables, links, images, and classes.
+ */
 export function sanitizeArticleHtml(rawHtml) {
   if (typeof rawHtml !== 'string') return '';
   if (!rawHtml.trim()) return '';
@@ -147,13 +218,54 @@ export function sanitizeArticleHtml(rawHtml) {
   return sanitized.trim();
 }
 
+/**
+ * Wrap tables in an overflow container for responsive horizontal scrolling
+ */
 function wrapTables(html) {
   if (!html || !html.includes('<table')) return html;
-  return html.replace(/(<div[^>]*class="[^"]*article-table-wrapper[^"]*"[^>]*>)?\s*(<table[\s\S]*?<\/table>)\s*(<\/div>)?/gi, (match, openDiv, table, closeDiv) => {
+  return html.replace(/(<div[^>]*class="[^"]*article-table-wrapper[^"]*"[^>]*>)?\s*(<table[\s\S]*?<\/table>)\s*(<\/div>)?/gi, (match, openDiv, table) => {
     return `<div class="article-table-wrapper">${table}</div>`;
   });
 }
 
+/**
+ * Apply dedicated editorial drop-cap and intro classes to the introductory paragraph.
+ */
+export function applyEditorialDropcap(html) {
+  if (!html || typeof html !== 'string') return html;
+
+  const firstHeadingIdx = html.search(/<h[1-6]\b/i);
+  const searchLimit = firstHeadingIdx !== -1 ? firstHeadingIdx : html.length;
+  const beforeHeading = html.slice(0, searchLimit);
+  const afterHeading = html.slice(searchLimit);
+
+  const pMatch = beforeHeading.match(/<p(\s+[^>]*)?>([\s\S]*?)<\/p>/i);
+  if (!pMatch) return html;
+
+  const fullTag = pMatch[0];
+  const attrs = pMatch[1] || '';
+  const innerHtml = pMatch[2];
+  const innerText = innerHtml.replace(/<[^>]*>/g, '').trim();
+
+  const isSuitable = /^[A-Za-z]/.test(innerText) && innerText.length >= 45 && !/^["'“‘0-9]/.test(innerText);
+
+  if (!isSuitable) return html;
+
+  let newAttrs = attrs;
+  if (/class=["']/i.test(newAttrs)) {
+    newAttrs = newAttrs.replace(/class=["']([^"']*)["']/i, (m, c) => `class="${c} article-intro article-dropcap"`);
+  } else {
+    newAttrs = ` class="article-intro article-dropcap"${newAttrs}`;
+  }
+
+  const newP = `<p${newAttrs}>${innerHtml}</p>`;
+  const updatedBefore = beforeHeading.replace(fullTag, newP);
+  return updatedBefore + afterHeading;
+}
+
+/**
+ * Complete rendering pipeline
+ */
 export function renderArticleContent(content, articleTitle = '', format = 'auto') {
   if (typeof content !== 'string') return '';
   if (!content.trim()) return '';
@@ -171,9 +283,13 @@ export function renderArticleContent(content, articleTitle = '', format = 'auto'
   }
 
   const withTableWrappers = wrapTables(rawHtml);
-  return sanitizeArticleHtml(withTableWrappers);
+  const withDropCap = applyEditorialDropcap(withTableWrappers);
+  return sanitizeArticleHtml(withDropCap);
 }
 
+/**
+ * Generate a clean, URL-safe slug from a string.
+ */
 export function slugify(text) {
   if (!text) return '';
   return text
@@ -188,6 +304,9 @@ export function slugify(text) {
     .replace(/-+$/, '');
 }
 
+/**
+ * Estimate reading time in minutes based on word count.
+ */
 export function calculateReadingTime(content) {
   if (!content) return 1;
   const stripped = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
