@@ -28,10 +28,20 @@ import {
   Quote,
   Link as LinkIcon,
   Image as ImageIcon,
-  Code
+  Code,
+  Wand2,
+  Table as TableIcon,
+  HelpCircle,
+  Minus,
+  Columns
 } from 'lucide-react';
 import { api } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import {
+  autoStructureArticle,
+  renderArticleContent,
+  calculateReadingTime
+} from '@/utils/articlePipeline';
 
 export default function AdminBlogCMS({ onOpenMediaLibrary }) {
   const { toast } = useToast();
@@ -70,6 +80,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
     slug: '',
     excerpt: '',
     content: '',
+    contentFormat: 'auto',
     coverImage: '',
     author: 'Deven Co-Work Team',
     category: 'Startups',
@@ -155,6 +166,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
           slug: post.slug || '',
           excerpt: post.excerpt || '',
           content: post.content || '',
+          contentFormat: post.contentFormat || 'auto',
           coverImage: typeof post.coverImage === 'string' ? post.coverImage : post.coverImage?.url || '',
           author: post.author || 'Deven Co-Work Team',
           category: post.category || 'Startups',
@@ -198,24 +210,45 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
   }
 
   // Insert formatting into content textarea
-  const insertFormatting = (prefix, suffix = '') => {
+  const insertFormatting = (prefix, suffix = '', defaultText = 'text') => {
     const textarea = contentTextareaRef.current;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selected = textarea.value.substring(start, end);
-    const replacement = `${prefix}${selected || 'text'}${suffix}`;
+    const textToInsert = selected || defaultText;
+    const replacement = `${prefix}${textToInsert}${suffix}`;
 
     const newContent =
       textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
 
     updateField('content', newContent);
+    updateField('readingTime', calculateReadingTime(newContent));
 
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + prefix.length, start + prefix.length + (selected ? selected.length : 4));
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + textToInsert.length);
     }, 50);
+  };
+
+  // Automatically format pasted raw ChatGPT or plain text into structured Markdown
+  const handleAutoStructure = () => {
+    if (!formData.content || !formData.content.trim()) {
+      toast({
+        title: 'No content to structure',
+        description: 'Please paste or write your article content first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const structured = autoStructureArticle(formData.content, formData.title);
+    updateField('content', structured);
+    updateField('readingTime', calculateReadingTime(structured));
+    toast({
+      title: 'Article Automatically Structured',
+      description: 'Detected headings, numbered sections, FAQ questions, and lists.',
+    });
   };
 
   // Submit Article
@@ -247,6 +280,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
         slug: formData.slug.trim(),
         excerpt: formData.excerpt.trim(),
         content: formData.content,
+        contentFormat: formData.contentFormat || 'auto',
         coverImage: formData.coverImage,
         author: formData.author.trim(),
         category: formData.category,
@@ -586,7 +620,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
       {/* CREATE / EDIT ARTICLE MODAL */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 overflow-y-auto">
-          <div className="bg-[#121212] border border-[#242424] rounded-xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl">
+          <div className="bg-[#121212] border border-[#242424] rounded-xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl">
             {/* Header */}
             <div className="p-5 border-b border-[#242424] flex items-center justify-between">
               <div>
@@ -775,28 +809,40 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
                 </div>
               </div>
 
-              {/* Rich Content Editor with Formatting Toolbar */}
-              <div className="border border-[#242424] bg-[#0A0A0A] rounded-lg overflow-hidden">
-                {/* Editor Tabs & Toolbar */}
-                <div className="p-2 bg-[#151515] border-b border-[#242424] flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-1">
+              {/* Rich Content Editor with Formatting Toolbar & Live Preview */}
+              <div className="border border-[#242424] bg-[#0A0A0A] rounded-xl overflow-hidden shadow-lg">
+                {/* Editor Header: Format Selector, Tips & Tabs */}
+                <div className="p-3 bg-[#161618] border-b border-[#242424] flex flex-wrap items-center justify-between gap-3">
+                  {/* Left: View Tabs */}
+                  <div className="flex items-center gap-1.5 bg-[#0C0C0E] p-1 rounded-lg border border-[#222]">
                     <button
                       type="button"
                       onClick={() => setActiveEditorTab('edit')}
-                      className={`px-3 py-1.5 rounded text-xs font-semibold ${
+                      className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
                         activeEditorTab === 'edit'
-                          ? 'bg-[#04B8BB] text-black'
+                          ? 'bg-[#04B8BB] text-black shadow'
                           : 'text-[#AAA] hover:text-white'
                       }`}
                     >
-                      Write HTML / Content
+                      Write & Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveEditorTab('split')}
+                      className={`px-3 py-1 rounded text-xs font-semibold hidden md:inline-flex items-center gap-1.5 transition-all ${
+                        activeEditorTab === 'split'
+                          ? 'bg-[#04B8BB] text-black shadow'
+                          : 'text-[#AAA] hover:text-white'
+                      }`}
+                    >
+                      <Columns size={12} /> Split View
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveEditorTab('preview')}
-                      className={`px-3 py-1.5 rounded text-xs font-semibold ${
+                      className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
                         activeEditorTab === 'preview'
-                          ? 'bg-[#04B8BB] text-black'
+                          ? 'bg-[#04B8BB] text-black shadow'
                           : 'text-[#AAA] hover:text-white'
                       }`}
                     >
@@ -804,106 +850,317 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
                     </button>
                   </div>
 
-                  {/* Formatting Buttons */}
-                  {activeEditorTab === 'edit' && (
+                  {/* Right: Content Format Selector & Auto-Structure */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center gap-1.5 text-xs">
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-[#777]">
+                        Format:
+                      </label>
+                      <select
+                        value={formData.contentFormat || 'auto'}
+                        onChange={(e) => updateField('contentFormat', e.target.value)}
+                        className="px-2.5 py-1 bg-[#0C0C0E] border border-[#2A2A2A] rounded text-[#DDD] text-xs focus:outline-none focus:border-[#04B8BB]"
+                      >
+                        <option value="auto">Auto-Detect (Markdown / Text / HTML)</option>
+                        <option value="markdown">Markdown / Plain Text</option>
+                        <option value="html">Raw HTML</option>
+                      </select>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleAutoStructure}
+                      title="Automatically detect headings, numbered sections, FAQ questions, and lists from pasted raw text"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#1F1F24] border border-[#04B8BB]/40 hover:border-[#04B8BB] text-[#04B8BB] hover:bg-[#04B8BB]/10 rounded text-xs font-semibold transition-all"
+                    >
+                      <Wand2 size={13} />
+                      <span>Auto-Structure</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Formatting Toolbar */}
+                {(activeEditorTab === 'edit' || activeEditorTab === 'split') && (
+                  <div className="px-3 py-2 bg-[#121214] border-b border-[#242424] flex flex-wrap items-center justify-between gap-2">
                     <div className="flex flex-wrap items-center gap-1">
+                      {/* Heading 2 */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<h2>', '</h2>')}
-                        title="H2 Heading"
-                        className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<h2>' : '\n## ', isHtml ? '</h2>\n' : '\n', 'Section Heading');
+                        }}
+                        title="Heading 2 (Major Section)"
+                        className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white text-xs font-bold"
                       >
                         <Heading2 size={15} />
                       </button>
+
+                      {/* Heading 3 */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<h3>', '</h3>')}
-                        title="H3 Heading"
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<h3>' : '\n### ', isHtml ? '</h3>\n' : '\n', 'Subsection Heading');
+                        }}
+                        title="Heading 3 (Subsection)"
                         className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
                       >
                         <Heading3 size={15} />
                       </button>
+
+                      <div className="w-[1px] h-4 bg-[#262626] mx-1" />
+
+                      {/* Bold */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<strong>', '</strong>')}
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<strong>' : '**', isHtml ? '</strong>' : '**', 'bold text');
+                        }}
                         title="Bold"
                         className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
                       >
                         <Bold size={15} />
                       </button>
+
+                      {/* Italic */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<em>', '</em>')}
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<em>' : '*', isHtml ? '</em>' : '*', 'italic text');
+                        }}
                         title="Italic"
                         className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
                       >
                         <Italic size={15} />
                       </button>
+
+                      <div className="w-[1px] h-4 bg-[#262626] mx-1" />
+
+                      {/* Bullet List */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<ul>\n  <li>', '</li>\n</ul>')}
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<ul>\n  <li>' : '\n- ', isHtml ? '</li>\n</ul>\n' : '\n', 'List item');
+                        }}
                         title="Bullet List"
                         className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
                       >
                         <List size={15} />
                       </button>
+
+                      {/* Numbered List */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<ol>\n  <li>', '</li>\n</ol>')}
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<ol>\n  <li>' : '\n1. ', isHtml ? '</li>\n</ol>\n' : '\n', 'Numbered item');
+                        }}
                         title="Numbered List"
                         className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
                       >
                         <ListOrdered size={15} />
                       </button>
+
+                      {/* Blockquote */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<blockquote>', '</blockquote>')}
-                        title="Quote"
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<blockquote>\n  ' : '\n> ', isHtml ? '\n</blockquote>\n' : '\n', 'Important note or quote');
+                        }}
+                        title="Blockquote / Callout"
                         className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
                       >
                         <Quote size={15} />
                       </button>
+
+                      {/* Link */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<a href="https://">', '</a>')}
-                        title="Link"
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '<a href="https://www.devencowork.com/">' : '[', isHtml ? '</a>' : '](https://www.devencowork.com/)', 'Link text');
+                        }}
+                        title="Hyperlink"
                         className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
                       >
                         <LinkIcon size={15} />
                       </button>
+
+                      <div className="w-[1px] h-4 bg-[#262626] mx-1" />
+
+                      {/* Comparison Table */}
                       <button
                         type="button"
-                        onClick={() => insertFormatting('<p>', '</p>')}
-                        title="Paragraph"
-                        className="px-2 py-1 rounded hover:bg-white/10 text-[11px] font-bold text-[#AAA] hover:text-white"
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          const table = isHtml
+                            ? '\n<table>\n  <thead>\n    <tr><th>Workspace Type</th><th>Best Suited For</th><th>What to Compare</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Hot desk</td><td>Freelancers</td><td>Flexibility & pricing</td></tr>\n    <tr><td>Dedicated desk</td><td>Remote workers</td><td>Storage & hours</td></tr>\n    <tr><td>Private cabin</td><td>Growing teams</td><td>Capacity & privacy</td></tr>\n  </tbody>\n</table>\n'
+                            : '\n| Workspace type | Best suited for | What to compare |\n|---|---|---|\n| Hot desk | Freelancers and occasional users | Flexibility, availability, pricing |\n| Dedicated desk | Regular remote workers | Desk assignment, storage, hours |\n| Private cabin | Individuals or teams needing privacy | Capacity, privacy, facilities |\n| Meeting room | Client meetings and team discussions | Hourly rates, booking availability |\n';
+                          insertFormatting(table, '', '');
+                        }}
+                        title="Insert Comparison Table"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded hover:bg-white/10 text-[#AAA] hover:text-[#04B8BB] text-[11px] font-semibold"
                       >
-                        P
+                        <TableIcon size={14} />
+                        <span>Table</span>
                       </button>
+
+                      {/* FAQ Section Item */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          const faq = isHtml
+                            ? '\n<div class="faq-item">\n  <h3>Which is the best coworking space in Raipur?</h3>\n  <p>The best coworking space depends on your budget, preferred location, working hours, privacy requirements, and the facilities you need.</p>\n</div>\n'
+                            : '\n### Which is the best coworking space in Raipur?\n\nThe best coworking space depends on your budget, preferred location, working hours, privacy requirements, and the facilities you need.\n';
+                          insertFormatting(faq, '', '');
+                        }}
+                        title="Insert FAQ Item"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded hover:bg-white/10 text-[#AAA] hover:text-[#04B8BB] text-[11px] font-semibold"
+                      >
+                        <HelpCircle size={14} />
+                        <span>FAQ</span>
+                      </button>
+
+                      {/* Horizontal Rule */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const isHtml = formData.contentFormat === 'html';
+                          insertFormatting(isHtml ? '\n<hr />\n' : '\n---\n', '', '');
+                        }}
+                        title="Divider (HR)"
+                        className="p-1.5 rounded hover:bg-white/10 text-[#AAA] hover:text-white"
+                      >
+                        <Minus size={15} />
+                      </button>
+                    </div>
+
+                    <div className="text-[11px] text-[#666] hidden sm:block">
+                      {calculateReadingTime(formData.content)} min read · {formData.content.length} chars
+                    </div>
+                  </div>
+                )}
+
+                {/* Editor Body */}
+                <div className="bg-[#050505]">
+                  {/* EDIT MODE (Single view) */}
+                  {activeEditorTab === 'edit' && (
+                    <div className="p-3">
+                      <textarea
+                        ref={contentTextareaRef}
+                        rows={16}
+                        required
+                        value={formData.content}
+                        onChange={(e) => {
+                          updateField('content', e.target.value);
+                          updateField('readingTime', calculateReadingTime(e.target.value));
+                        }}
+                        placeholder={`Paste complete article from ChatGPT, Markdown, or HTML here...\n\nExample:\n## Why Choose Coworking in Raipur?\nFinding the right workspace can improve productivity and focus.\n\n### 1. Location and Accessibility\nChoose a workspace that is convenient to reach.\n\n- Flexible memberships\n- High-speed internet (500 Mbps)\n- Soundproof cabins\n\n| Workspace | Capacity | Pricing |\n|---|---|---|\n| Hot Desk | 1 Person | Daily / Monthly |\n| Private Cabin | 2-12 Persons | Custom |`}
+                        className="w-full p-4 font-mono text-xs sm:text-[13px] bg-[#070708] border border-[#222] rounded-lg text-[#EEE] focus:outline-none focus:border-[#04B8BB] leading-relaxed resize-y min-h-[380px]"
+                      />
+                      <div className="mt-2 flex items-center justify-between text-[11px] text-[#777]">
+                        <p>
+                          Supports Markdown (<code>##</code>, <code>-</code>, <code>**bold**</code>, tables <code>|</code>) and plain text with blank lines.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setActiveEditorTab('preview')}
+                          className="text-[#04B8BB] hover:underline"
+                        >
+                          Check Live Preview →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SPLIT VIEW (Side-by-side) */}
+                  {activeEditorTab === 'split' && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-[#242424]">
+                      {/* Left: Editor */}
+                      <div className="p-3">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#777] mb-1.5 flex items-center justify-between">
+                          <span>Source Editor</span>
+                          <span>{formData.contentFormat || 'auto'}</span>
+                        </div>
+                        <textarea
+                          ref={contentTextareaRef}
+                          rows={20}
+                          required
+                          value={formData.content}
+                          onChange={(e) => {
+                            updateField('content', e.target.value);
+                            updateField('readingTime', calculateReadingTime(e.target.value));
+                          }}
+                          className="w-full p-3 font-mono text-xs bg-[#070708] border border-[#222] rounded-lg text-[#EEE] focus:outline-none focus:border-[#04B8BB] leading-relaxed min-h-[460px]"
+                        />
+                      </div>
+
+                      {/* Right: Live Preview */}
+                      <div className="p-4 bg-[#0A0A0C] max-h-[540px] overflow-y-auto">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-[#04B8BB] mb-3 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#04B8BB]" />
+                          Live Output Preview
+                        </div>
+                        <div
+                          className="article-content text-xs"
+                          dangerouslySetInnerHTML={{
+                            __html: renderArticleContent(formData.content, formData.title, formData.contentFormat || 'auto') ||
+                              '<p class="text-[#555] italic">No content yet. Type on the left to see live preview.</p>',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* FULL LIVE PREVIEW */}
+                  {activeEditorTab === 'preview' && (
+                    <div className="p-6 md:p-8 bg-[#0C0C0E] min-h-[400px] max-h-[650px] overflow-y-auto">
+                      {/* Article Header Preview */}
+                      <div className="article-reading-column mb-6 pb-6 border-b border-white/[0.08]">
+                        <span className="px-2.5 py-1 rounded bg-[#04B8BB]/15 text-[#04B8BB] text-[10px] font-bold uppercase tracking-wider">
+                          {formData.category || 'Article Category'}
+                        </span>
+                        <h2 className="font-display text-2xl sm:text-3xl font-bold text-white mt-3 mb-2 leading-tight">
+                          {formData.title || 'Untitled Article'}
+                        </h2>
+                        {formData.excerpt && (
+                          <p className="text-sm text-[#FCFAF9]/75 leading-relaxed">
+                            {formData.excerpt}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-4 text-xs text-[#FCFAF9]/50 mt-4">
+                          <span>{formData.author || 'Deven Co-Work Team'}</span>
+                          <span>·</span>
+                          <span>{calculateReadingTime(formData.content)} min read</span>
+                        </div>
+                      </div>
+
+                      {/* Cover Image Preview if present */}
+                      {formData.coverImage && (
+                        <div className="article-reading-column mb-8 rounded-xl overflow-hidden border border-white/[0.12] aspect-video max-h-[300px]">
+                          <img src={formData.coverImage} alt="Cover preview" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+
+                      {/* Editorial Article Body */}
+                      <div className="article-reading-column">
+                        <div
+                          className="article-content"
+                          dangerouslySetInnerHTML={{
+                            __html: renderArticleContent(formData.content, formData.title, formData.contentFormat || 'auto') ||
+                              '<p class="text-[#666] italic text-center py-12">No content yet. Switch to "Write & Edit" to write or paste your article.</p>',
+                          }}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
-
-                {/* Editor Content Body */}
-                {activeEditorTab === 'edit' ? (
-                  <div className="p-3">
-                    <textarea
-                      ref={contentTextareaRef}
-                      rows={12}
-                      required
-                      value={formData.content}
-                      onChange={(e) => updateField('content', e.target.value)}
-                      placeholder="Write your article in semantic HTML (<h2>, <p>, <ul>, <blockquote>)..."
-                      className="w-full p-3 font-mono text-xs bg-[#050505] border border-[#222] rounded text-[#EEE] focus:outline-none focus:border-[#04B8BB] leading-relaxed"
-                    />
-                  </div>
-                ) : (
-                  <div className="p-6 bg-[#0E0E10] min-h-[300px]">
-                    <div
-                      className="prose prose-invert prose-emerald max-w-none text-xs sm:text-sm leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: formData.content || '<p className="text-[#555] italic">No content yet. Switch to Edit tab to write.</p>' }}
-                    />
-                  </div>
-                )}
               </div>
 
               {/* Modal Actions */}

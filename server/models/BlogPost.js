@@ -28,6 +28,11 @@ const blogPostSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Main article content is required'],
   },
+  contentFormat: {
+    type: String,
+    enum: ['auto', 'markdown', 'html'],
+    default: 'auto',
+  },
   coverImage: {
     type: mongoose.Schema.Types.Mixed,
     default: '',

@@ -291,6 +291,7 @@ export async function createPost(req, res) {
       socialImage,
       scheduledAt,
       readingTime,
+      contentFormat,
     } = req.body;
 
     if (!title || !title.trim()) {
@@ -320,6 +321,7 @@ export async function createPost(req, res) {
     }
 
     const isPublished = status === 'published';
+    const validFormat = ['auto', 'markdown', 'html'].includes(contentFormat) ? contentFormat : 'auto';
     const cleanContent = sanitizeHtml(content);
     const calculatedReading = Number(readingTime) || calculateReadingTime(cleanContent);
 
@@ -340,6 +342,7 @@ export async function createPost(req, res) {
       slug,
       excerpt: excerpt.trim(),
       content: cleanContent,
+      contentFormat: validFormat,
       coverImage: coverImage || '',
       author: author?.trim() || 'Deven Co-Work Team',
       category: existingCategory ? existingCategory.name : trimmedCategory,
@@ -400,10 +403,14 @@ export async function updatePost(req, res) {
       socialImage,
       scheduledAt,
       readingTime,
+      contentFormat,
     } = req.body;
 
     if (title) post.title = title.trim();
     if (excerpt) post.excerpt = excerpt.trim();
+    if (contentFormat && ['auto', 'markdown', 'html'].includes(contentFormat)) {
+      post.contentFormat = contentFormat;
+    }
     if (content) {
       post.content = sanitizeHtml(content);
       post.readingTime = Number(readingTime) || calculateReadingTime(post.content);

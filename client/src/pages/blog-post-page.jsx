@@ -24,6 +24,7 @@ import {
 import TourBookingModal from '@/components/TourBookingModal';
 import NotFound from '@/pages/not-found';
 import { api } from '@/services/api';
+import { renderArticleContent } from '@/utils/articlePipeline';
 
 function formatPostDate(dateString) {
   if (!dateString) return '';
@@ -223,20 +224,12 @@ export default function BlogPostPage({ params }) {
               )}
 
               {/* Main Article Content */}
-              <div className="max-w-3xl mx-auto">
+              <div className="article-reading-column">
                 <div
-                  className="prose prose-invert prose-emerald max-w-none 
-                    text-[#FCFAF9]/85 text-base sm:text-lg leading-relaxed
-                    prose-headings:font-display prose-headings:text-[#FCFAF9] prose-headings:tracking-tight
-                    prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b prose-h2:border-[rgba(252,250,249,0.1)] prose-h2:pb-3
-                    prose-h3:text-xl sm:prose-h3:text-2xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3
-                    prose-p:mb-6 prose-p:leading-relaxed
-                    prose-ul:my-6 prose-ul:list-disc prose-ul:pl-6 prose-li:mb-2
-                    prose-ol:my-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:mb-2
-                    prose-blockquote:border-l-4 prose-blockquote:border-[#04B8BB] prose-blockquote:pl-5 prose-blockquote:italic prose-blockquote:text-[#FCFAF9]/90 prose-blockquote:my-6
-                    prose-a:text-[#04B8BB] prose-a:underline hover:prose-a:text-[#039e9f]
-                    prose-img:rounded-xl prose-img:border prose-img:border-[rgba(252,250,249,0.1)] prose-img:my-8"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  className="article-content"
+                  dangerouslySetInnerHTML={{
+                    __html: renderArticleContent(post.content, post.title, post.contentFormat || 'auto'),
+                  }}
                 />
 
                 {/* Tags */}
