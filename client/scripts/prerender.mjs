@@ -8,6 +8,9 @@
  * - No headless browser (no Puppeteer / Playwright).
  * - Uses React's renderToString via a separate Vite SSR bundle.
  * - Fully compatible with Vercel's build environment.
+ * - Prerenders all static pages, all content pages, the /blog listing,
+ *   and every individual published blog post with semantic HTML and
+ *   structured data.
  *
  * Usage:  node scripts/prerender.mjs
  * (called automatically from `npm run build`)
@@ -22,8 +25,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const clientRoot = resolve(__dirname, '..');
 const distDir    = resolve(clientRoot, 'dist');
 
-// Routes to prerender. Admin routes are excluded (private pages).
-const routes = ['/', '/thank-you', '/events', '/about', '/blog'];
+// Base routes to prerender. Admin routes are private.
+const baseRoutes = ['/', '/thank-you', '/events', '/about', '/blog'];
 
 function escapeJsonForScript(jsonStr) {
   return jsonStr
@@ -66,29 +69,52 @@ function stripHtml(s) {
   return s.replace(/<[^>]*>/g, '').trim();
 }
 
+function formatPageTitle(rawTitle) {
+  const trimmed = (rawTitle || '').trim();
+  if (!trimmed) return 'Deven Co-Work';
+  if (/[-|•]\s*Deven Co-Work\s*$/i.test(trimmed)) {
+    return trimmed;
+  }
+  return `${trimmed} | Deven Co-Work`;
+}
+
+function setCanonical(html, canonicalUrl) {
+  const canonicalTag = `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`;
+  const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/gi;
+  let replaced = false;
+  html = html.replace(canonicalRegex, () => {
+    if (!replaced) {
+      replaced = true;
+      return canonicalTag;
+    }
+    return '';
+  });
+  if (!replaced) {
+    html = html.replace('</head>', () => `${canonicalTag}\n</head>`);
+  }
+  return html;
+}
+
+function setMetaName(html, name, content) {
+  const tag = `<meta name="${escAttr(name)}" content="${escAttr(content)}" />`;
+  const regex = new RegExp(`<meta\\s+[^>]*name=["']${name}["'][^>]*\\/?>`, 'i');
+  if (regex.test(html)) {
+    return html.replace(regex, () => tag);
+  }
+  return html.replace('</head>', () => `${tag}\n</head>`);
+}
+
+function setMetaProperty(html, property, content) {
+  const tag = `<meta property="${escAttr(property)}" content="${escAttr(content)}" />`;
+  const regex = new RegExp(`<meta\\s+[^>]*property=["']${property}["'][^>]*\\/?>`, 'i');
+  if (regex.test(html)) {
+    return html.replace(regex, () => tag);
+  }
+  return html.replace('</head>', () => `${tag}\n</head>`);
+}
+
 function updateHeadFromCms(html, cmsData) {
   const updatedItems = [];
-
-  // Favicon (disabled so self-hosted favicons are never rewritten from CMS)
-  if (false) {
-    const favUrl = absUrl(mediaUrl(cmsData.globalSettings?.favicon));
-    if (favUrl) {
-      let typeAttr = '';
-      const path = favUrl.split(/[?#]/)[0].toLowerCase();
-      if (path.endsWith('.png')) typeAttr = ' type="image/png"';
-      else if (path.endsWith('.svg')) typeAttr = ' type="image/svg+xml"';
-      else if (path.endsWith('.ico')) typeAttr = ' type="image/x-icon"';
-      else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) typeAttr = ' type="image/jpeg"';
-      else if (path.endsWith('.webp')) typeAttr = ' type="image/webp"';
-
-      const favTag = `<link rel="icon"${typeAttr} href="${escAttr(favUrl)}" />`;
-      const iconRegex = /<link\s+[^>]*rel=["'](?:shortcut )?icon["'][^>]*\/?>/i;
-      if (iconRegex.test(html)) {
-        html = setTag(html, iconRegex, favTag);
-        updatedItems.push('favicon');
-      }
-    }
-  }
 
   // Title
   if (typeof cmsData.seo?.title === 'string' && cmsData.seo.title.trim()) {
@@ -103,11 +129,8 @@ function updateHeadFromCms(html, cmsData) {
   // Description
   if (typeof cmsData.seo?.description === 'string' && cmsData.seo.description.trim()) {
     const descVal = cmsData.seo.description.trim();
-    const descRegex = /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i;
-    if (descRegex.test(html)) {
-      html = setTag(html, descRegex, `<meta name="description" content="${escAttr(descVal)}" />`);
-      updatedItems.push('description');
-    }
+    html = setMetaName(html, 'description', descVal);
+    updatedItems.push('description');
   }
 
   // Open Graph / Twitter
@@ -117,59 +140,40 @@ function updateHeadFromCms(html, cmsData) {
     || (typeof seo.title === 'string' && seo.title.trim())
     || '';
   if (ogTitleVal) {
-    const ogTitleRegex = /<meta\s+[^>]*property=["']og:title["'][^>]*\/?>/i;
-    if (ogTitleRegex.test(html)) {
-      html = setTag(html, ogTitleRegex, `<meta property="og:title" content="${escAttr(ogTitleVal)}" />`);
-      updatedItems.push('og:title');
-    }
+    html = setMetaProperty(html, 'og:title', ogTitleVal);
+    updatedItems.push('og:title');
   }
 
   const ogDescVal = (typeof seo.ogDescription === 'string' && seo.ogDescription.trim())
     || (typeof seo.description === 'string' && seo.description.trim())
     || '';
   if (ogDescVal) {
-    const ogDescRegex = /<meta\s+[^>]*property=["']og:description["'][^>]*\/?>/i;
-    if (ogDescRegex.test(html)) {
-      html = setTag(html, ogDescRegex, `<meta property="og:description" content="${escAttr(ogDescVal)}" />`);
-      updatedItems.push('og:description');
-    }
+    html = setMetaProperty(html, 'og:description', ogDescVal);
+    updatedItems.push('og:description');
   }
 
   const twitterTitleVal = (typeof seo.twitterTitle === 'string' && seo.twitterTitle.trim())
     || ogTitleVal
     || '';
   if (twitterTitleVal) {
-    const twitterTitleRegex = /<meta\s+[^>]*name=["']twitter:title["'][^>]*\/?>/i;
-    if (twitterTitleRegex.test(html)) {
-      html = setTag(html, twitterTitleRegex, `<meta name="twitter:title" content="${escAttr(twitterTitleVal)}" />`);
-      updatedItems.push('twitter:title');
-    }
+    html = setMetaName(html, 'twitter:title', twitterTitleVal);
+    updatedItems.push('twitter:title');
   }
 
   const twitterDescVal = (typeof seo.twitterDescription === 'string' && seo.twitterDescription.trim())
     || ogDescVal
     || '';
   if (twitterDescVal) {
-    const twitterDescRegex = /<meta\s+[^>]*name=["']twitter:description["'][^>]*\/?>/i;
-    if (twitterDescRegex.test(html)) {
-      html = setTag(html, twitterDescRegex, `<meta name="twitter:description" content="${escAttr(twitterDescVal)}" />`);
-      updatedItems.push('twitter:description');
-    }
+    html = setMetaName(html, 'twitter:description', twitterDescVal);
+    updatedItems.push('twitter:description');
   }
 
   // Share image
   const ogImg = absUrl(mediaUrl(seo.ogImage)) || absUrl(mediaUrl(cmsData.globalSettings?.ogImage));
   if (ogImg) {
-    const ogImageRegex = /<meta\s+[^>]*property=["']og:image["'][^>]*\/?>/i;
-    if (ogImageRegex.test(html)) {
-      html = setTag(html, ogImageRegex, `<meta property="og:image" content="${escAttr(ogImg)}" />`);
-      updatedItems.push('og:image');
-    }
-    const twitterImageRegex = /<meta\s+[^>]*name=["']twitter:image["'][^>]*\/?>/i;
-    if (twitterImageRegex.test(html)) {
-      html = setTag(html, twitterImageRegex, `<meta name="twitter:image" content="${escAttr(ogImg)}" />`);
-      updatedItems.push('twitter:image');
-    }
+    html = setMetaProperty(html, 'og:image', ogImg);
+    html = setMetaName(html, 'twitter:image', ogImg);
+    updatedItems.push('og:image');
   }
 
   if (updatedItems.length > 0) {
@@ -225,6 +229,111 @@ async function fetchPublishedContent(root) {
   }
 }
 
+async function fetchPublishedBlogData(root) {
+  const cachePath = resolve(root, 'src', 'content', 'blog-cache.json');
+  let cached = null;
+  if (existsSync(cachePath)) {
+    try {
+      cached = JSON.parse(readFileSync(cachePath, 'utf-8'));
+    } catch (e) {
+      console.warn('⚠️  Error reading blog-cache.json:', e.message);
+    }
+  }
+
+  try {
+    const env = loadEnv('production', root, 'VITE_');
+    const rawUrl = (process.env.VITE_API_URL || env.VITE_API_URL || '').trim();
+    if (!rawUrl) {
+      console.warn('⚠️  No VITE_API_URL found for blog data. Using cache.');
+      return cached || { categories: [], posts: [], featuredPost: null, articles: [] };
+    }
+    const base = rawUrl.replace(/\/+$/, '');
+    console.log(`📡  Fetching published blog posts from ${base}/api/blog (60s timeout)…`);
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+
+    let postsRes, catsRes;
+    try {
+      [postsRes, catsRes] = await Promise.all([
+        fetch(`${base}/api/blog?limit=100`, { signal: controller.signal }),
+        fetch(`${base}/api/blog/categories`, { signal: controller.signal }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+
+    if (!postsRes.ok) {
+      console.warn(`⚠️  Blog posts fetch failed (HTTP ${postsRes.status}). Using cache if available.`);
+      return cached || { categories: [], posts: [], featuredPost: null, articles: [] };
+    }
+
+    const postsJson = await postsRes.json();
+    const catsJson = catsRes.ok ? await catsRes.json() : { data: [] };
+
+    const rawPosts = Array.isArray(postsJson.posts) ? postsJson.posts : [];
+    // Ensure only published posts are included
+    const posts = rawPosts.filter(p => p && p.status === 'published' && p.slug);
+    const categories = Array.isArray(catsJson.data) ? catsJson.data : [];
+    const featuredPost = postsJson.featuredPost || (posts.length > 0 ? posts[0] : null);
+
+    console.log(`  📰  Found ${posts.length} published blog posts from API.`);
+
+    // Fetch full article content for each post in parallel (with timeout)
+    const articles = [];
+    const articlePromises = posts.map(async (p) => {
+      try {
+        const artRes = await fetch(`${base}/api/blog/${p.slug}`, { signal: AbortSignal.timeout(30000) });
+        if (artRes.ok) {
+          const artJson = await artRes.json();
+          if (artJson && artJson.success && artJson.data) {
+            articles.push({
+              post: artJson.data,
+              relatedPosts: artJson.relatedPosts || []
+            });
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn(`⚠️  Failed to fetch full article body for ${p.slug}: ${err.message}`);
+      }
+      // If individual fetch failed, check cache
+      if (cached && Array.isArray(cached.articles)) {
+        const found = cached.articles.find(a => a.post && a.post.slug === p.slug);
+        if (found) {
+          articles.push(found);
+          return;
+        }
+      }
+      // Fallback: use listing post data
+      articles.push({ post: p, relatedPosts: [] });
+    });
+
+    await Promise.all(articlePromises);
+
+    const freshData = {
+      fetchedAt: new Date().toISOString(),
+      categories,
+      featuredPost,
+      posts,
+      articles,
+    };
+
+    // Update local cache file
+    try {
+      writeFileSync(cachePath, JSON.stringify(freshData, null, 2), 'utf-8');
+      console.log(`  💾  Blog cache updated at ${cachePath}`);
+    } catch (e) {
+      console.warn('⚠️  Could not write blog cache:', e.message);
+    }
+
+    return freshData;
+  } catch (err) {
+    console.warn(`⚠️  Blog fetch error: ${err.message}. Using cache if available.`);
+    return cached || { categories: [], posts: [], featuredPost: null, articles: [] };
+  }
+}
+
 async function main() {
   console.log('\n🔧  Building SSR bundle…');
 
@@ -240,8 +349,6 @@ async function main() {
         output: {
           format: 'esm',
         },
-        // Keep everything bundled (including react-dom/server) so there is
-        // exactly ONE React instance with matching internals.
       },
     },
     logLevel: 'warn',
@@ -259,9 +366,6 @@ async function main() {
   }
 
   // Apply shim BEFORE loading the SSR bundle.
-  // The shim patches react via CJS require() — which is the same module
-  // registry that the SSR bundle's inlined React will be resolved from
-  // when Vite SSR mode externalises React by default.
   const shimPath = resolve(clientRoot, 'src', 'ssr-shim.js');
   if (existsSync(shimPath)) {
     await import(pathToFileURL(shimPath).href);
@@ -274,21 +378,53 @@ async function main() {
   const pagesModulePath = resolve(clientRoot, 'src', 'content', 'pages.js');
   const { PAGE_ORDER, PAGES, SITE } = await import(pathToFileURL(pagesModulePath).href);
 
-  // Add the 6 SEO content page paths to the routes list
-  const contentRoutes = PAGE_ORDER.map(slug => PAGES[slug].path);
-  for (const p of contentRoutes) {
-    if (!routes.includes(p)) routes.push(p);
-  }
+  // Fetch CMS data and Blog Data before setting up routes
+  const [cmsData, blogData] = await Promise.all([
+    fetchPublishedContent(clientRoot),
+    fetchPublishedBlogData(clientRoot),
+  ]);
 
-  // Fetch published CMS content before rendering routes
-  const cmsData = await fetchPublishedContent(clientRoot);
   if (cmsData) {
     globalThis.__SSR_CMS_DATA__ = cmsData;
   }
 
+  const publishedPosts = (blogData && Array.isArray(blogData.posts)) ? blogData.posts : [];
+  const articlesMap = new Map();
+  if (blogData && Array.isArray(blogData.articles)) {
+    for (const item of blogData.articles) {
+      if (item && item.post && item.post.slug) {
+        articlesMap.set(item.post.slug, item);
+      }
+    }
+  }
+
+  console.log(`\n📚  Articles available for static prerendering: ${articlesMap.size}`);
+
+  // Compile full list of routes to prerender
+  const contentRoutes = PAGE_ORDER.map(slug => PAGES[slug].path);
+  const blogRoutes = publishedPosts.map(p => `/blog/${p.slug}`);
+  const routes = [...baseRoutes, ...contentRoutes, ...blogRoutes];
+
   // ── 4. Render each route ──────────────────────────────────────────────────
   for (const url of routes) {
     console.log(`  🖊  Prerendering ${url}`);
+
+    // Set appropriate SSR global context for the specific route
+    if (url === '/blog') {
+      globalThis.__SSR_BLOG_DATA__ = {
+        posts: publishedPosts,
+        featuredPost: blogData?.featuredPost || null,
+        categories: blogData?.categories || [],
+      };
+    } else if (url.startsWith('/blog/')) {
+      const slug = url.replace(/^\/blog\//, '').trim();
+      const articleEntry = articlesMap.get(slug);
+      if (articleEntry) {
+        globalThis.__SSR_BLOG_POST__ = articleEntry;
+      } else {
+        globalThis.__SSR_BLOG_POST__ = null;
+      }
+    }
 
     let appHtml = '';
     try {
@@ -298,15 +434,12 @@ async function main() {
       console.warn('      Falling back to static fallback content in #root.');
     }
 
-    // Inject server-rendered HTML into the #root div.
-    // We use a split approach (not regex) to reliably handle any multi-line
-    // fallback content already inside #root.
+    // Inject server-rendered HTML into the #root div
     let html = template;
     if (appHtml) {
       const OPEN_TAG = '<div id="root">';
       const openIdx  = template.indexOf(OPEN_TAG);
       if (openIdx !== -1) {
-        // Find the matching closing </div> by tracking nesting depth
         let depth = 1;
         let i = openIdx + OPEN_TAG.length;
         while (i < template.length && depth > 0) {
@@ -322,19 +455,18 @@ async function main() {
           }
           i++;
         }
-        // i now points to the start of the closing </div>
-        const closeEnd = i + 6; // length of '</div>'
         html = template.slice(0, openIdx + OPEN_TAG.length)
           + appHtml
           + template.slice(i);
       }
     }
 
-    // For the '/' route only (not '/thank-you'), after the app HTML is injected,
-    // also inject inline script immediately before </head> if cmsData was fetched
+    // ── Route-Specific Metadata & Scripts ───────────────────────────────────
+
+    // 1. Home route '/'
     if (url === '/' && cmsData) {
       const scriptTag = `<script>window.__INITIAL_CMS_DATA__=${escapeJsonForScript(JSON.stringify(cmsData))};</script>`;
-      html = html.replace('</head>', () => `${scriptTag}</head>`);
+      html = html.replace('</head>', () => `${scriptTag}\n</head>`);
 
       try {
         html = updateHeadFromCms(html, cmsData);
@@ -342,7 +474,6 @@ async function main() {
         console.warn(`  ⚠️  Failed to rewrite head tags from CMS: ${err.message}`);
       }
 
-      // Build FAQPage JSON-LD from published FAQ items of the CMS data
       const rawFaqs = Array.isArray(cmsData.faq) ? cmsData.faq : [];
       const publishedFaqs = rawFaqs.filter(item => item && item.published !== false && (item.question || item.answer));
       if (publishedFaqs.length > 0) {
@@ -359,58 +490,34 @@ async function main() {
           }))
         };
         const faqStr = JSON.stringify(faqData, null, 2);
-        JSON.parse(faqStr);
         const faqScriptTag = `<script type="application/ld+json">\n${faqStr}\n</script>\n`;
         html = html.replace('</head>', () => `${faqScriptTag}</head>`);
       }
     }
 
-    // Handle '/thank-you' route ONLY
+    // 2. '/thank-you' route
     if (url === '/thank-you') {
-      // robots meta -> <meta name="robots" content="noindex, nofollow" /> (exactly one robots tag)
-      const robotsRegex = /<meta\s+[^>]*name=["']robots["'][^>]*\/?>/i;
-      if (robotsRegex.test(html)) {
-        html = setTag(html, robotsRegex, '<meta name="robots" content="noindex, nofollow" />');
-      } else {
-        html = html.replace('</head>', () => '<meta name="robots" content="noindex, nofollow" />\n</head>');
-      }
-
-      // <title> -> Thank You | Deven Co-Work
+      html = setMetaName(html, 'robots', 'noindex, nofollow');
       html = setTag(html, /<title>[\s\S]*?<\/title>/i, '<title>Thank You | Deven Co-Work</title>');
-
-      // canonical -> https://www.devencowork.com/thank-you
-      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
-      if (canonicalRegex.test(html)) {
-        html = setTag(html, canonicalRegex, '<link rel="canonical" href="https://www.devencowork.com/thank-you" />');
-      } else {
-        html = html.replace('</head>', () => '<link rel="canonical" href="https://www.devencowork.com/thank-you" />\n</head>');
-      }
-
-      // og:title and twitter:title -> Thank You | Deven Co-Work
-      html = setTag(html, /<meta\s+[^>]*property=["']og:title["'][^>]*\/?>/i, '<meta property="og:title" content="Thank You | Deven Co-Work" />');
-      html = setTag(html, /<meta\s+[^>]*name=["']twitter:title["'][^>]*\/?>/i, '<meta name="twitter:title" content="Thank You | Deven Co-Work" />');
+      html = setCanonical(html, 'https://www.devencowork.com/thank-you');
+      html = setMetaProperty(html, 'og:title', 'Thank You | Deven Co-Work');
+      html = setMetaName(html, 'twitter:title', 'Thank You | Deven Co-Work');
     }
 
-    // Handle /events route
+    // 3. '/events' route
     if (url === '/events') {
       const canonicalUrl = `${SITE.url}/events`;
       const title = 'Startup Events in Raipur | Founder Meetups & Workshops | Deven Co-Work';
       const desc = 'Discover upcoming startup events in Raipur at Deven Co-Work, Shankar Nagar. Connect at founder meetups, networking sessions, AI workshops, and community masterclasses.';
 
       html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
-      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);
-      html = setTag(html, /<meta property="og:title" content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${escAttr(title)}" />`);
-      html = setTag(html, /<meta property="og:description" content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${escAttr(desc)}" />`);
-      html = setTag(html, /<meta property="og:url" content="[^"]*"\s*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
-      html = setTag(html, /<meta name="twitter:title" content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${escAttr(title)}" />`);
-      html = setTag(html, /<meta name="twitter:description" content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${escAttr(desc)}" />`);
-
-      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
-      if (canonicalRegex.test(html)) {
-        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
-      } else {
-        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
-      }
+      html = setMetaName(html, 'description', desc);
+      html = setCanonical(html, canonicalUrl);
+      html = setMetaProperty(html, 'og:title', title);
+      html = setMetaProperty(html, 'og:description', desc);
+      html = setMetaProperty(html, 'og:url', canonicalUrl);
+      html = setMetaName(html, 'twitter:title', title);
+      html = setMetaName(html, 'twitter:description', desc);
 
       const breadcrumbData = {
         "@context": "https://schema.org",
@@ -423,26 +530,20 @@ async function main() {
       html = html.replace('</head>', () => `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n</head>`);
     }
 
-    // Handle /about route
+    // 4. '/about' route
     if (url === '/about') {
       const canonicalUrl = `${SITE.url}/about`;
       const title = 'About Deven Co-Work — Raipur\'s Founder & Startup Workspace';
       const desc = 'Learn about Deven Co-Work in Shankar Nagar, Raipur. Founded to provide ambitious founders, creators, and teams with world-class workspace infrastructure.';
 
       html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
-      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);
-      html = setTag(html, /<meta property="og:title" content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${escAttr(title)}" />`);
-      html = setTag(html, /<meta property="og:description" content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${escAttr(desc)}" />`);
-      html = setTag(html, /<meta property="og:url" content="[^"]*"\s*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
-      html = setTag(html, /<meta name="twitter:title" content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${escAttr(title)}" />`);
-      html = setTag(html, /<meta name="twitter:description" content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${escAttr(desc)}" />`);
-
-      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
-      if (canonicalRegex.test(html)) {
-        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
-      } else {
-        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
-      }
+      html = setMetaName(html, 'description', desc);
+      html = setCanonical(html, canonicalUrl);
+      html = setMetaProperty(html, 'og:title', title);
+      html = setMetaProperty(html, 'og:description', desc);
+      html = setMetaProperty(html, 'og:url', canonicalUrl);
+      html = setMetaName(html, 'twitter:title', title);
+      html = setMetaName(html, 'twitter:description', desc);
 
       const breadcrumbData = {
         "@context": "https://schema.org",
@@ -455,26 +556,28 @@ async function main() {
       html = html.replace('</head>', () => `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n</head>`);
     }
 
-    // Handle /blog route
+    // 5. '/blog' listing route
     if (url === '/blog') {
       const canonicalUrl = `${SITE.url}/blog`;
       const title = 'The Deven Journal — Ideas & Insights for Founders in Raipur | Deven Co-Work';
       const desc = 'Articles, founder stories, productivity playbooks, and business insights from Deven Co-Work, Raipur\'s premier founder community.';
 
       html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
-      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(desc)}" />`);
-      html = setTag(html, /<meta property="og:title" content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${escAttr(title)}" />`);
-      html = setTag(html, /<meta property="og:description" content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${escAttr(desc)}" />`);
-      html = setTag(html, /<meta property="og:url" content="[^"]*"\s*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
-      html = setTag(html, /<meta name="twitter:title" content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${escAttr(title)}" />`);
-      html = setTag(html, /<meta name="twitter:description" content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${escAttr(desc)}" />`);
+      html = setMetaName(html, 'description', desc);
+      html = setCanonical(html, canonicalUrl);
+      html = setMetaProperty(html, 'og:title', title);
+      html = setMetaProperty(html, 'og:description', desc);
+      html = setMetaProperty(html, 'og:url', canonicalUrl);
+      html = setMetaName(html, 'twitter:title', title);
+      html = setMetaName(html, 'twitter:description', desc);
 
-      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
-      if (canonicalRegex.test(html)) {
-        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
-      } else {
-        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
-      }
+      // Inject initial blog data for immediate zero-flash hydration
+      const blogInitScript = `<script>window.__INITIAL_BLOG_DATA__=${escapeJsonForScript(JSON.stringify({
+        posts: publishedPosts,
+        featuredPost: blogData?.featuredPost || null,
+        categories: blogData?.categories || [],
+      }))};</script>`;
+      html = html.replace('</head>', () => `${blogInitScript}\n</head>`);
 
       const breadcrumbData = {
         "@context": "https://schema.org",
@@ -487,55 +590,127 @@ async function main() {
       html = html.replace('</head>', () => `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n</head>`);
     }
 
-    // Handle SEO content page routes
+    // 6. Individual Blog Post routes: '/blog/:slug'
+    if (url.startsWith('/blog/')) {
+      const slug = url.replace(/^\/blog\//, '').trim();
+      const articleEntry = articlesMap.get(slug);
+
+      if (articleEntry && articleEntry.post) {
+        const post = articleEntry.post;
+        const related = articleEntry.relatedPosts || [];
+
+        const canonicalUrl = `${SITE.url}/blog/${post.slug}`;
+        const title = formatPageTitle(post.seoTitle || post.title);
+        const desc = post.seoDescription || post.excerpt;
+
+        // Resolve cover / social image
+        const rawCover = post.socialImage || post.coverImage;
+        const coverImg = absUrl(mediaUrl(rawCover)) || 'https://www.devencowork.com/favicon.png';
+
+        // ── Unique Metadata & Canonical ───────────────────────────────────────
+        html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(title)}</title>`);
+        html = setMetaName(html, 'description', desc);
+        html = setCanonical(html, canonicalUrl);
+        html = setMetaName(html, 'robots', 'index, follow');
+
+        html = setMetaProperty(html, 'og:title', title);
+        html = setMetaProperty(html, 'og:description', desc);
+        html = setMetaProperty(html, 'og:url', canonicalUrl);
+        html = setMetaProperty(html, 'og:type', 'article');
+        html = setMetaProperty(html, 'og:image', coverImg);
+
+        html = setMetaName(html, 'twitter:card', 'summary_large_image');
+        html = setMetaName(html, 'twitter:title', title);
+        html = setMetaName(html, 'twitter:description', desc);
+        html = setMetaName(html, 'twitter:image', coverImg);
+
+        // ── Structured Data: BreadcrumbList ───────────────────────────────────
+        const breadcrumbData = {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.devencowork.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Blog",
+              "item": "https://www.devencowork.com/blog"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": post.title,
+              "item": canonicalUrl
+            }
+          ]
+        };
+
+        // ── Structured Data: BlogPosting Schema ───────────────────────────────
+        const blogPostingData = {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": post.title,
+          "description": desc,
+          "image": coverImg ? [coverImg] : undefined,
+          "author": {
+            "@type": "Person",
+            "name": post.author || "Deven Co-Work Team"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Deven Co-Work",
+            "url": "https://www.devencowork.com",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://res.cloudinary.com/cyxow5rb/image/upload/v1790711830/deven_cowork/hupv1daduww9ykgc6t52.png"
+            }
+          },
+          "datePublished": post.publishedAt || post.createdAt,
+          "dateModified": post.updatedAt || post.publishedAt || post.createdAt,
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": canonicalUrl
+          }
+        };
+
+        // Validate JSON-LD
+        JSON.parse(JSON.stringify(breadcrumbData));
+        JSON.parse(JSON.stringify(blogPostingData));
+
+        const structuredDataScript = `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n<script type="application/ld+json">\n${JSON.stringify(blogPostingData, null, 2)}\n</script>\n`;
+        html = html.replace('</head>', () => `${structuredDataScript}</head>`);
+
+        // Inject initial article payload for client hydration
+        const articleInitScript = `<script>window.__INITIAL_BLOG_POST__=${escapeJsonForScript(JSON.stringify(post))};window.__INITIAL_BLOG_RELATED_POSTS__=${escapeJsonForScript(JSON.stringify(related))};</script>`;
+        html = html.replace('</head>', () => `${articleInitScript}\n</head>`);
+      }
+    }
+
+    // 7. SEO content page routes (/private-cabins, /hot-desk, etc.)
     const contentSlug = PAGE_ORDER.find(s => PAGES[s].path === url);
     if (contentSlug) {
       const page = PAGES[contentSlug];
+      const canonicalUrl = `${SITE.url}${page.path}`;
 
-      // For the new routes, embed window.__INITIAL_CMS_DATA__ exactly as is done for '/' (but NOT for /thank-you)
       if (cmsData) {
         const scriptTag = `<script>window.__INITIAL_CMS_DATA__=${escapeJsonForScript(JSON.stringify(cmsData))};</script>`;
         html = html.replace('</head>', () => `${scriptTag}</head>`);
       }
 
-      // Do NOT apply updateHeadFromCms to the new routes (it must stay '/' only), because their titles come from pages.js.
-      // For each new route, rewrite in the final HTML using function replacers in html.replace and escAttr:
-      // <title>, meta name="description", <link rel="canonical"> (create it if missing) = SITE.url + path,
-      // og:title, og:description, og:url, twitter:title, twitter:description. Keep og:image and twitter:image as they are.
-      const canonicalUrl = `${SITE.url}${page.path}`;
-
-      // Title
       html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escAttr(page.title)}</title>`);
+      html = setMetaName(html, 'description', page.description);
+      html = setCanonical(html, canonicalUrl);
+      html = setMetaProperty(html, 'og:title', page.title);
+      html = setMetaProperty(html, 'og:description', page.description);
+      html = setMetaProperty(html, 'og:url', canonicalUrl);
+      html = setMetaName(html, 'twitter:title', page.title);
+      html = setMetaName(html, 'twitter:description', page.description);
 
-      // Description
-      html = setTag(html, /<meta\s+[^>]*name=["']description["'][^>]*\/?>/i, `<meta name="description" content="${escAttr(page.description)}" />`);
-
-      // Canonical
-      const canonicalRegex = /<link\s+[^>]*rel=["']canonical["'][^>]*\/?>/i;
-      if (canonicalRegex.test(html)) {
-        html = setTag(html, canonicalRegex, `<link rel="canonical" href="${escAttr(canonicalUrl)}" />`);
-      } else {
-        html = html.replace('</head>', () => `<link rel="canonical" href="${escAttr(canonicalUrl)}" />\n</head>`);
-      }
-
-      // og:title
-      html = setTag(html, /<meta\s+[^>]*property=["']og:title["'][^>]*\/?>/i, `<meta property="og:title" content="${escAttr(page.title)}" />`);
-
-      // og:description
-      html = setTag(html, /<meta\s+[^>]*property=["']og:description["'][^>]*\/?>/i, `<meta property="og:description" content="${escAttr(page.description)}" />`);
-
-      // og:url
-      html = setTag(html, /<meta\s+[^>]*property=["']og:url["'][^>]*\/?>/i, `<meta property="og:url" content="${escAttr(canonicalUrl)}" />`);
-
-      // twitter:title
-      html = setTag(html, /<meta\s+[^>]*name=["']twitter:title["'][^>]*\/?>/i, `<meta name="twitter:title" content="${escAttr(page.title)}" />`);
-
-      // twitter:description
-      html = setTag(html, /<meta\s+[^>]*name=["']twitter:description["'][^>]*\/?>/i, `<meta name="twitter:description" content="${escAttr(page.description)}" />`);
-
-      // Before </head> add two extra <script type="application/ld+json"> blocks per new route:
-      // BreadcrumbList (Home -> this page, with absolute URLs) and FAQPage built from faqs.
-      // Keep existing LocalBusiness block. JSON.parse every generated block to check it.
       const breadcrumbData = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -554,8 +729,6 @@ async function main() {
           }
         ]
       };
-      const breadcrumbStr = JSON.stringify(breadcrumbData, null, 2);
-      JSON.parse(breadcrumbStr);
 
       const faqData = {
         "@context": "https://schema.org",
@@ -569,18 +742,16 @@ async function main() {
           }
         }))
       };
-      const faqStr = JSON.stringify(faqData, null, 2);
-      JSON.parse(faqStr);
 
-      const extraJsonLd = `<script type="application/ld+json">\n${breadcrumbStr}\n</script>\n<script type="application/ld+json">\n${faqStr}\n</script>\n`;
+      const extraJsonLd = `<script type="application/ld+json">\n${JSON.stringify(breadcrumbData, null, 2)}\n</script>\n<script type="application/ld+json">\n${JSON.stringify(faqData, null, 2)}\n</script>\n`;
       html = html.replace('</head>', () => `${extraJsonLd}</head>`);
-
-      // Ensure all content is visible in prerendered HTML (no inline opacity:0)
-      html = html.replace(/style="([^"]*?)opacity\s*:\s*0\s*;?\s*([^"]*?)"/gi, (match, p1, p2) => {
-        const rest = (p1 + p2).replace(/;\s*;/g, ';').trim().replace(/^;|;$/g, '');
-        return rest ? `style="${rest}"` : '';
-      });
     }
+
+    // Ensure all content is visible in prerendered HTML (no inline opacity:0)
+    html = html.replace(/style="([^"]*?)opacity\s*:\s*0\s*;?\s*([^"]*?)"/gi, (match, p1, p2) => {
+      const rest = (p1 + p2).replace(/;\s*;/g, ';').trim().replace(/^;|;$/g, '');
+      return rest ? `style="${rest}"` : '';
+    });
 
     // Write output file
     if (url === '/') {
@@ -595,42 +766,112 @@ async function main() {
     console.log(`  ✅  Written: dist${url === '/' ? '/index.html' : url + '/index.html'} (${(size / 1024).toFixed(1)} kB)`);
   }
 
-  // Try fetching published blog posts to include in the generated static sitemap
-  let publishedBlogUrls = [];
-  try {
-    const env = loadEnv('production', clientRoot, 'VITE_');
-    const rawUrl = (process.env.VITE_API_URL || env.VITE_API_URL || '').trim();
-    if (rawUrl) {
-      const base = rawUrl.replace(/\/+$/, '');
-      const blogRes = await fetch(`${base}/api/blog?limit=100`, { signal: AbortSignal.timeout(5000) });
-      if (blogRes.ok) {
-        const blogData = await blogRes.json();
-        if (blogData && Array.isArray(blogData.posts)) {
-          publishedBlogUrls = blogData.posts.map(p => `/blog/${p.slug}`);
-          console.log(`  📰  Found ${publishedBlogUrls.length} published blog posts for sitemap.`);
-        }
+  // ── 5. Generate Redirect Stubs for Previous Slugs ──────────────────────────
+  for (const item of articlesMap.values()) {
+    const post = item?.post;
+    if (post && Array.isArray(post.previousSlugs) && post.previousSlugs.length > 0) {
+      for (const oldSlug of post.previousSlugs) {
+        if (!oldSlug || oldSlug === post.slug) continue;
+        const redirectDir = resolve(distDir, 'blog', oldSlug);
+        mkdirSync(redirectDir, { recursive: true });
+        const targetUrl = `https://www.devencowork.com/blog/${post.slug}`;
+        const redirectHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting to ${escAttr(post.title)}...</title>
+  <meta http-equiv="refresh" content="0; url=${escAttr(targetUrl)}">
+  <link rel="canonical" href="${escAttr(targetUrl)}">
+  <meta name="robots" content="noindex, follow">
+</head>
+<body>
+  <p>Redirecting to <a href="${escAttr(targetUrl)}">${escAttr(targetUrl)}</a>...</p>
+</body>
+</html>\n`;
+        writeFileSync(resolve(redirectDir, 'index.html'), redirectHtml, 'utf-8');
+        console.log(`  🔀  Written redirect: dist/blog/${oldSlug}/index.html -> /blog/${post.slug}`);
       }
     }
-  } catch (err) {
-    // Graceful fallback to static routes
   }
 
-  // Generate dist/sitemap.xml listing public indexable pages only (NOT /thank-you),
-  // absolute https://www.devencowork.com URLs, <lastmod> = today's date (YYYY-MM-DD).
+  // ── 6. Prerender 404 Page ──────────────────────────────────────────────────
+  try {
+    let notFoundAppHtml = '';
+    try {
+      notFoundAppHtml = render('/404');
+    } catch (e) {
+      console.warn('⚠️  Could not render /404 component:', e.message);
+    }
+    let notFoundHtml = template;
+    if (notFoundAppHtml) {
+      const OPEN_TAG = '<div id="root">';
+      const openIdx = template.indexOf(OPEN_TAG);
+      if (openIdx !== -1) {
+        notFoundHtml = template.replace(OPEN_TAG, `${OPEN_TAG}${notFoundAppHtml}`);
+      }
+    }
+    notFoundHtml = setTag(notFoundHtml, /<title>[\s\S]*?<\/title>/i, '<title>404 Page Not Found | Deven Co-Work</title>');
+    notFoundHtml = setMetaName(notFoundHtml, 'robots', 'noindex, nofollow');
+    writeFileSync(resolve(distDir, '404.html'), notFoundHtml, 'utf-8');
+    console.log('  ✅  Written: dist/404.html');
+  } catch (err) {
+    console.warn('⚠️  Could not generate 404.html:', err.message);
+  }
+
+  // ── 7. Generate Production Sitemap ─────────────────────────────────────────
+  // Includes all public indexable static pages and every published BlogPost.
+  // Excludes /thank-you (noindex), private admin pages, draft articles, and redirects.
   const today = new Date().toISOString().split('T')[0];
-  const sitemapUrls = ['/', '/events', '/about', '/blog', ...contentRoutes, ...publishedBlogUrls];
+
+  const staticSitemapEntries = [
+    { loc: 'https://www.devencowork.com/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
+    { loc: 'https://www.devencowork.com/events', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+    { loc: 'https://www.devencowork.com/about', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+    { loc: 'https://www.devencowork.com/blog', lastmod: today, changefreq: 'weekly', priority: '0.8' },
+    ...contentRoutes.map((path) => ({
+      loc: `https://www.devencowork.com${path}`,
+      lastmod: today,
+      changefreq: 'monthly',
+      priority: '0.8',
+    })),
+  ];
+
+  const blogSitemapEntries = publishedPosts.map((p) => {
+    const rawDate = p.updatedAt || p.publishedAt || today;
+    const formattedDate = typeof rawDate === 'string'
+      ? rawDate.split('T')[0]
+      : new Date(rawDate).toISOString().split('T')[0];
+    return {
+      loc: `https://www.devencowork.com/blog/${p.slug}`,
+      lastmod: formattedDate,
+      changefreq: 'weekly',
+      priority: '0.7',
+    };
+  });
+
+  const allSitemapEntries = [...staticSitemapEntries, ...blogSitemapEntries];
+  const seenLocs = new Set();
+  const dedupedEntries = [];
+  for (const entry of allSitemapEntries) {
+    if (!seenLocs.has(entry.loc)) {
+      seenLocs.add(entry.loc);
+      dedupedEntries.push(entry);
+    }
+  }
+
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemapUrls.map((u) => `  <url>
-    <loc>${SITE.url}${u === '/' ? '/' : u}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${u === '/' ? 'weekly' : 'monthly'}</changefreq>
-    <priority>${u === '/' ? '1.0' : '0.8'}</priority>
+${dedupedEntries.map((e) => `  <url>
+    <loc>${e.loc}</loc>
+    <lastmod>${e.lastmod}</lastmod>
+    <changefreq>${e.changefreq}</changefreq>
+    <priority>${e.priority}</priority>
   </url>`).join('\n')}
 </urlset>\n`;
 
   writeFileSync(resolve(distDir, 'sitemap.xml'), sitemapXml, 'utf-8');
-  console.log(`  ✅  Written: dist/sitemap.xml (${sitemapUrls.length} URLs, today: ${today})`);
+  writeFileSync(resolve(clientRoot, 'public', 'sitemap.xml'), sitemapXml, 'utf-8');
+  console.log(`  ✅  Written: dist/sitemap.xml & client/public/sitemap.xml (${dedupedEntries.length} URLs, ${blogSitemapEntries.length} blog posts)`);
 
   console.log('\n🎉  Prerendering complete.\n');
 }

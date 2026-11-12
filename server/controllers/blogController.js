@@ -1,6 +1,7 @@
 import BlogPost from '../models/BlogPost.js';
 import BlogCategory from '../models/BlogCategory.js';
 import { sanitizeHtml, slugify, calculateReadingTime } from '../utils/sanitize.js';
+import { triggerDeployHook } from '../utils/deployHook.js';
 
 // Default categories to seed if empty
 const DEFAULT_CATEGORIES = [
@@ -359,6 +360,14 @@ export async function createPost(req, res) {
 
     await post.save();
 
+    if (post.status === 'published') {
+      try {
+        triggerDeployHook();
+      } catch (hookErr) {
+        console.error(`Deploy hook trigger error: ${hookErr.message}`);
+      }
+    }
+
     return res.status(201).json({
       success: true,
       message: 'Article created successfully.',
@@ -460,7 +469,17 @@ export async function updatePost(req, res) {
       }
     }
 
+    const wasPublished = post.status === 'published';
+
     await post.save();
+
+    if (wasPublished || post.status === 'published') {
+      try {
+        triggerDeployHook();
+      } catch (hookErr) {
+        console.error(`Deploy hook trigger error: ${hookErr.message}`);
+      }
+    }
 
     return res.json({
       success: true,
@@ -497,7 +516,17 @@ export async function togglePublishPost(req, res) {
       post.publishedAt = new Date();
     }
 
+    const wasPublished = post.status === 'published';
+
     await post.save();
+
+    if (wasPublished || post.status === 'published') {
+      try {
+        triggerDeployHook();
+      } catch (hookErr) {
+        console.error(`Deploy hook trigger error: ${hookErr.message}`);
+      }
+    }
 
     return res.json({
       success: true,
@@ -526,7 +555,16 @@ export async function deletePost(req, res) {
       return res.status(404).json({ success: false, message: 'Article not found.' });
     }
 
+    const wasPublished = post.status === 'published';
     await BlogPost.findByIdAndDelete(id);
+
+    if (wasPublished) {
+      try {
+        triggerDeployHook();
+      } catch (hookErr) {
+        console.error(`Deploy hook trigger error: ${hookErr.message}`);
+      }
+    }
 
     return res.json({
       success: true,

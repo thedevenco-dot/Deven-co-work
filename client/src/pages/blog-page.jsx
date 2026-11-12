@@ -17,10 +17,21 @@ import {
   Footer,
   WhatsAppFloat,
   defaultContent,
+  getInitialCmsData,
   mergeContent
 } from '@/App';
 import TourBookingModal from '@/components/TourBookingModal';
 import { api } from '@/services/api';
+
+export const getInitialBlogData = () => {
+  if (typeof window !== 'undefined' && window.__INITIAL_BLOG_DATA__) {
+    return window.__INITIAL_BLOG_DATA__;
+  }
+  if (typeof window === 'undefined' && globalThis.__SSR_BLOG_DATA__) {
+    return globalThis.__SSR_BLOG_DATA__;
+  }
+  return null;
+};
 
 function formatPostDate(dateString) {
   if (!dateString) return '';
@@ -34,13 +45,16 @@ function formatPostDate(dateString) {
 }
 
 export default function BlogPage() {
-  const [content, setContent] = useState(defaultContent);
-  const [posts, setPosts] = useState([]);
-  const [featuredPost, setFeaturedPost] = useState(null);
-  const [categories, setCategories] = useState([]);
+  const initialCms = getInitialCmsData();
+  const initialBlog = getInitialBlogData();
+
+  const [content, setContent] = useState(() => initialCms || defaultContent);
+  const [posts, setPosts] = useState(() => initialBlog?.posts || []);
+  const [featuredPost, setFeaturedPost] = useState(() => initialBlog?.featuredPost || (initialBlog?.posts?.length > 0 ? initialBlog.posts[0] : null));
+  const [categories, setCategories] = useState(() => initialBlog?.categories || []);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !initialBlog || !initialBlog.posts || initialBlog.posts.length === 0);
   const [tourModalOpen, setTourModalOpen] = useState(false);
 
   // Load CMS data & SEO metadata
@@ -70,7 +84,9 @@ export default function BlogPage() {
 
   // Fetch published categories and posts
   useEffect(() => {
-    setLoading(true);
+    if (!posts || posts.length === 0) {
+      setLoading(true);
+    }
     Promise.all([
       api.fetchBlogCategories().catch(() => ({ success: false, data: [] })),
       api.fetchBlogPosts({ limit: 50 }).catch(() => ({ success: false, data: [] })),

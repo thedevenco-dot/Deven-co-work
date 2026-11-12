@@ -19,12 +19,35 @@ import {
   Footer,
   WhatsAppFloat,
   defaultContent,
+  getInitialCmsData,
   mergeContent
 } from '@/App';
 import TourBookingModal from '@/components/TourBookingModal';
 import NotFound from '@/pages/not-found';
 import { api } from '@/services/api';
 import { renderArticleContent } from '@/utils/articlePipeline';
+
+export const getInitialBlogPost = (slug) => {
+  if (typeof window !== 'undefined' && window.__INITIAL_BLOG_POST__ && (!slug || window.__INITIAL_BLOG_POST__.slug === slug)) {
+    return {
+      post: window.__INITIAL_BLOG_POST__,
+      relatedPosts: window.__INITIAL_BLOG_RELATED_POSTS__ || []
+    };
+  }
+  if (typeof window === 'undefined' && globalThis.__SSR_BLOG_POST__ && (!slug || globalThis.__SSR_BLOG_POST__.post?.slug === slug)) {
+    return globalThis.__SSR_BLOG_POST__;
+  }
+  return null;
+};
+
+function formatPageTitle(rawTitle) {
+  const trimmed = (rawTitle || '').trim();
+  if (!trimmed) return 'Deven Co-Work';
+  if (/[-|•]\s*Deven Co-Work\s*$/i.test(trimmed)) {
+    return trimmed;
+  }
+  return `${trimmed} | Deven Co-Work`;
+}
 
 function formatPostDate(dateString) {
   if (!dateString) return '';
@@ -41,10 +64,13 @@ export default function BlogPostPage({ params }) {
   const slug = params?.slug;
   const [, setLocation] = useLocation();
 
-  const [content, setContent] = useState(defaultContent);
-  const [post, setPost] = useState(null);
-  const [relatedPosts, setRelatedPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const initialCms = getInitialCmsData();
+  const initialData = getInitialBlogPost(slug);
+
+  const [content, setContent] = useState(() => initialCms || defaultContent);
+  const [post, setPost] = useState(() => initialData?.post || null);
+  const [relatedPosts, setRelatedPosts] = useState(() => initialData?.relatedPosts || []);
+  const [loading, setLoading] = useState(() => !initialData?.post);
   const [notFound, setNotFound] = useState(false);
   const [copied, setCopied] = useState(false);
   const [tourModalOpen, setTourModalOpen] = useState(false);
@@ -68,9 +94,15 @@ export default function BlogPostPage({ params }) {
   useEffect(() => {
     if (!slug) return;
 
+    // If already initialized with matching slug, avoid resetting state
+    if (post && post.slug === slug) {
+      return;
+    }
+
     // Check if initial blog post data was already injected into SSR / HTML
     if (typeof window !== 'undefined' && window.__INITIAL_BLOG_POST__ && window.__INITIAL_BLOG_POST__.slug === slug) {
       setPost(window.__INITIAL_BLOG_POST__);
+      setRelatedPosts(window.__INITIAL_BLOG_RELATED_POSTS__ || []);
       setLoading(false);
       return;
     }
@@ -97,12 +129,12 @@ export default function BlogPostPage({ params }) {
         setNotFound(true);
       })
       .finally(() => setLoading(false));
-  }, [slug, setLocation]);
+  }, [slug, setLocation, post]);
 
-  // Update head metadata for article
+  // Update head metadata for article on client-side navigation
   useEffect(() => {
     if (post) {
-      const pageTitle = `${post.seoTitle || post.title} | Deven Co-Work`;
+      const pageTitle = formatPageTitle(post.seoTitle || post.title);
       document.title = pageTitle;
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc && (post.seoDescription || post.excerpt)) {

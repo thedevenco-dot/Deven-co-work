@@ -259,31 +259,7 @@ export async function saveDraftContent(req, res) {
   }
 }
 
-// Module-level debounce timer for Vercel deploy hook
-let deployHookTimer = null;
-
-function triggerDeployHook() {
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
-  if (!hookUrl || !hookUrl.trim()) {
-    return;
-  }
-
-  if (deployHookTimer) {
-    clearTimeout(deployHookTimer);
-  }
-
-  deployHookTimer = setTimeout(async () => {
-    deployHookTimer = null;
-    try {
-      const res = await fetch(hookUrl, { method: 'POST' });
-      if (!res.ok) {
-        console.error(`Vercel deploy hook request failed with status: ${res.status}`);
-      }
-    } catch (err) {
-      console.error(`Vercel deploy hook request failed: ${err.message}`);
-    }
-  }, 15000);
-}
+import { triggerDeployHook } from '../utils/deployHook.js';
 
 /**
  * @desc    Publish draft content to published state
