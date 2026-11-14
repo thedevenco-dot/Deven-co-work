@@ -36,7 +36,13 @@ export async function getPublishedPosts(req, res) {
     const limitNum = Math.max(1, Math.min(50, parseInt(limit, 10) || 12));
     const skip = (pageNum - 1) * limitNum;
 
-    const query = { status: 'published' };
+    const query = {
+      status: 'published',
+      $or: [
+        { scheduledAt: null },
+        { scheduledAt: { $lte: new Date() } },
+      ],
+    };
 
     if (category && category !== 'All') {
       query.category = { $regex: new RegExp(`^${category.trim()}$`, 'i') };
@@ -61,7 +67,14 @@ export async function getPublishedPosts(req, res) {
         .select('-content') // exclude large HTML body for listing speed
         .lean(),
       BlogPost.countDocuments(query),
-      BlogPost.findOne({ status: 'published', featured: true })
+      BlogPost.findOne({
+        status: 'published',
+        featured: true,
+        $or: [
+          { scheduledAt: null },
+          { scheduledAt: { $lte: new Date() } },
+        ],
+      })
         .sort({ publishedAt: -1 })
         .select('-content')
         .lean(),
@@ -99,13 +112,24 @@ export async function getPublishedPostBySlug(req, res) {
     const slug = req.params.slug.toLowerCase().trim();
 
     // 1. Direct match on current slug
-    let post = await BlogPost.findOne({ slug, status: 'published' }).lean();
+    let post = await BlogPost.findOne({
+      slug,
+      status: 'published',
+      $or: [
+        { scheduledAt: null },
+        { scheduledAt: { $lte: new Date() } },
+      ],
+    }).lean();
 
     // 2. If not found, check previousSlugs to support SEO redirect
     if (!post) {
       const redirectPost = await BlogPost.findOne({
         previousSlugs: slug,
         status: 'published',
+        $or: [
+          { scheduledAt: null },
+          { scheduledAt: { $lte: new Date() } },
+        ],
       }).lean();
 
       if (redirectPost) {
@@ -127,6 +151,10 @@ export async function getPublishedPostBySlug(req, res) {
       status: 'published',
       category: post.category,
       _id: { $ne: post._id },
+      $or: [
+        { scheduledAt: null },
+        { scheduledAt: { $lte: new Date() } },
+      ],
     })
       .sort({ publishedAt: -1 })
       .limit(3)
@@ -215,7 +243,14 @@ export async function getAdminPosts(req, res) {
     }
 
     if (status && status !== 'All') {
-      query.status = status;
+      if (status === 'scheduled') {
+        query.$or = [
+          { status: 'scheduled' },
+          { scheduledAt: { $ne: null, $gt: new Date() } },
+        ];
+      } else {
+        query.status = status;
+      }
     }
 
     const sortOption = sort === 'oldest' ? { createdAt: 1 } : { createdAt: -1 };
@@ -226,7 +261,12 @@ export async function getAdminPosts(req, res) {
       BlogPost.countDocuments({}),
       BlogPost.countDocuments({ status: 'published' }),
       BlogPost.countDocuments({ status: 'draft' }),
-      BlogPost.countDocuments({ scheduledAt: { $ne: null, $gt: new Date() } }),
+      BlogPost.countDocuments({
+        $or: [
+          { status: 'scheduled' },
+          { scheduledAt: { $ne: null, $gt: new Date() } },
+        ],
+      }),
     ]);
 
     return res.json({
@@ -321,7 +361,8 @@ export async function createPost(req, res) {
       });
     }
 
-    const isPublished = status === 'published';
+    const validStatuses = ['published', 'draft', 'scheduled'];
+    const postStatus = validStatuses.includes(status) ? status : (status === 'published' ? 'published' : 'draft');
     const validFormat = ['auto', 'markdown', 'html'].includes(contentFormat) ? contentFormat : 'auto';
     const cleanContent = sanitizeHtml(content);
     const calculatedReading = Number(readingTime) || calculateReadingTime(cleanContent);
@@ -349,12 +390,12 @@ export async function createPost(req, res) {
       category: existingCategory ? existingCategory.name : trimmedCategory,
       tags: Array.isArray(tags) ? tags.map((t) => t.trim()).filter(Boolean) : [],
       featured: Boolean(featured),
-      status: isPublished ? 'published' : 'draft',
+      status: postStatus,
       readingTime: calculatedReading,
       seoTitle: seoTitle?.trim() || '',
       seoDescription: seoDescription?.trim() || '',
       socialImage: socialImage || '',
-      publishedAt: isPublished ? new Date() : null,
+      publishedAt: postStatus === 'published' ? new Date() : null,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
     });
 
@@ -461,9 +502,13 @@ export async function updatePost(req, res) {
     }
 
     if (status) {
-      if (status === 'published' && post.status !== 'published') {
+      if (status === 'published') {
         post.status = 'published';
-        post.publishedAt = post.publishedAt || new Date();
+        if (!post.publishedAt) {
+          post.publishedAt = new Date();
+        }
+      } else if (status === 'scheduled') {
+        post.status = 'scheduled';
       } else if (status === 'draft') {
         post.status = 'draft';
       }

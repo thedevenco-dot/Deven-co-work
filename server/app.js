@@ -144,7 +144,13 @@ app.get('/sitemap.xml', async (req, res) => {
       { loc: 'https://www.devencowork.com/contact', priority: '0.8', changefreq: 'monthly' },
     ];
 
-    const publishedPosts = await BlogPost.find({ status: 'published' }).select('slug updatedAt publishedAt').lean();
+    const publishedPosts = await BlogPost.find({
+      status: 'published',
+      $or: [
+        { scheduledAt: null },
+        { scheduledAt: { $lte: new Date() } },
+      ],
+    }).select('slug updatedAt publishedAt').lean();
     const blogUrls = (publishedPosts || []).map(p => ({
       loc: `https://www.devencowork.com/blog/${p.slug}`,
       priority: '0.7',

@@ -33,7 +33,11 @@ import {
   Table as TableIcon,
   HelpCircle,
   Minus,
-  Columns
+  Columns,
+  MoreVertical,
+  Copy,
+  Check,
+  Globe
 } from 'lucide-react';
 import { api } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
@@ -67,6 +71,17 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
   // Delete Confirmation
   const [deletingPost, setDeletingPost] = useState(null);
   const [deleting, setDeleting] = useState(false);
+
+  // Row Action Dropdown Menu & Copy state
+  const [openActionMenuId, setOpenActionMenuId] = useState(null);
+  const [copiedPostId, setCopiedPostId] = useState(null);
+
+  // Close row dropdown on outside click
+  useEffect(() => {
+    const handleOutsideClick = () => setOpenActionMenuId(null);
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, []);
 
   // Category Manager Modal
   const [catModalOpen, setCatModalOpen] = useState(false);
@@ -342,6 +357,31 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
     }
   };
 
+  // Copy article link to clipboard
+  const handleCopyLink = (post) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.devencowork.com';
+    const url = `${origin}/blog/${post.slug}`;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          setCopiedPostId(post._id);
+          toast({
+            title: 'Link Copied',
+            description: `Copied /blog/${post.slug} to clipboard.`,
+          });
+          setTimeout(() => setCopiedPostId(null), 2500);
+        })
+        .catch(() => {
+          toast({
+            title: 'Failed to copy',
+            description: 'Could not access clipboard.',
+            variant: 'destructive',
+          });
+        });
+    }
+  };
+
   // Save Category
   const handleSaveCategory = async (e) => {
     e.preventDefault();
@@ -450,6 +490,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
             <option value="All">All Statuses</option>
             <option value="published">Published</option>
             <option value="draft">Drafts</option>
+            <option value="scheduled">Scheduled</option>
           </select>
 
           <select
@@ -489,7 +530,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[960px]">
               <thead className="bg-[#121212] text-[#A3A3A3] uppercase tracking-wider border-b border-[#242424] text-[10px]">
                 <tr>
                   <th className="py-3 px-4">Article</th>
@@ -504,6 +545,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
               <tbody className="divide-y divide-[#1F1F1F]">
                 {posts.map((post) => {
                   const coverUrl = typeof post.coverImage === 'string' ? post.coverImage : post.coverImage?.url;
+                  const isScheduled = post.status === 'scheduled' || Boolean(post.scheduledAt && new Date(post.scheduledAt) > new Date() && post.status !== 'published');
 
                   return (
                     <tr key={post._id} className="hover:bg-white/[0.02] transition-colors">
@@ -541,11 +583,18 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
 
                       <td className="py-3 px-4 whitespace-nowrap">
                         {post.status === 'published' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Published
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Published
+                          </span>
+                        ) : isScheduled ? (
+                          <span
+                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 text-[10px] font-bold"
+                            title={post.scheduledAt ? `Scheduled for ${new Date(post.scheduledAt).toLocaleString()}` : 'Scheduled'}
+                          >
+                            <Clock size={11} className="text-purple-400" /> Scheduled
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Draft
                           </span>
                         )}
@@ -562,50 +611,146 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
                       <td className="py-3 px-4 whitespace-nowrap text-[11px] text-[#666]">
                         {post.publishedAt
                           ? new Date(post.publishedAt).toLocaleDateString()
+                          : post.scheduledAt
+                          ? `Sched: ${new Date(post.scheduledAt).toLocaleDateString()}`
                           : 'Unpublished'}
                       </td>
 
                       <td className="py-3 px-4 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-1.5">
-                          {/* Toggle Publish */}
-                          <button
-                            onClick={() => handleTogglePublish(post)}
-                            title={post.status === 'published' ? 'Unpublish Article' : 'Publish Article'}
-                            className="p-1.5 text-[#AAA] hover:text-white hover:bg-white/[0.08] rounded"
-                          >
-                            {post.status === 'published' ? <EyeOff size={14} /> : <Eye size={14} />}
-                          </button>
-
-                          {/* Edit */}
+                        <div className="flex items-center justify-end gap-2 relative">
+                          {/* Direct Action: Edit */}
                           <button
                             onClick={() => openEditModal(post._id)}
-                            title="Edit Article"
-                            className="p-1.5 text-[#AAA] hover:text-[#04B8BB] hover:bg-white/[0.08] rounded"
+                            title="Edit Article & Settings"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold bg-[#161618] border border-[#2D2D32] hover:border-[#04B8BB] text-[#DDD] hover:text-[#04B8BB] rounded transition-colors shadow-sm group"
                           >
-                            <Edit3 size={14} />
+                            <Edit3 size={13} className="text-[#04B8BB] group-hover:scale-110 transition-transform" />
+                            <span>Edit</span>
                           </button>
 
-                          {/* Preview Link */}
-                          {post.status === 'published' && (
-                            <a
-                              href={`/blog/${post.slug}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              title="View Article Live"
-                              className="p-1.5 text-[#AAA] hover:text-white hover:bg-white/[0.08] rounded inline-flex items-center"
-                            >
-                              <ExternalLink size={14} />
-                            </a>
-                          )}
-
-                          {/* Delete */}
+                          {/* Direct Action: Delete */}
                           <button
                             onClick={() => setDeletingPost(post)}
-                            title="Delete Article"
-                            className="p-1.5 text-[#AAA] hover:text-red-400 hover:bg-white/[0.08] rounded"
+                            title="Delete Article Permanently"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold bg-[#161618] border border-[#2D2D32] hover:border-red-500/60 text-[#DDD] hover:text-red-400 rounded transition-colors shadow-sm group"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={13} className="text-red-400/80 group-hover:text-red-400 group-hover:scale-110 transition-transform" />
+                            <span>Delete</span>
                           </button>
+
+                          {/* More Options Dropdown Toggle */}
+                          <div className="relative inline-block text-left">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenActionMenuId(openActionMenuId === post._id ? null : post._id);
+                              }}
+                              title="More article actions"
+                              className={`p-1.5 rounded border transition-colors ${
+                                openActionMenuId === post._id
+                                  ? 'bg-[#222] border-[#04B8BB] text-white'
+                                  : 'bg-[#161618] border-[#2D2D32] text-[#888] hover:text-white hover:border-[#444]'
+                              }`}
+                            >
+                              <MoreVertical size={14} />
+                            </button>
+
+                            {/* Dropdown Menu */}
+                            {openActionMenuId === post._id && (
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute right-0 top-full mt-1.5 w-48 bg-[#141416] border border-[#2D2D32] rounded-lg shadow-2xl py-1 z-30 text-left text-xs divide-y divide-[#242428] animate-in fade-in zoom-in-95 duration-100"
+                              >
+                                <div className="py-1">
+                                  <button
+                                    onClick={() => {
+                                      setOpenActionMenuId(null);
+                                      openEditModal(post._id);
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[#CCC] hover:text-white hover:bg-white/[0.06] text-left"
+                                  >
+                                    <Edit3 size={13} className="text-[#04B8BB]" />
+                                    <span>Edit Article</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => {
+                                      setOpenActionMenuId(null);
+                                      handleTogglePublish(post);
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[#CCC] hover:text-white hover:bg-white/[0.06] text-left"
+                                  >
+                                    {post.status === 'published' ? (
+                                      <>
+                                        <EyeOff size={13} className="text-amber-400" />
+                                        <span>Unpublish to Draft</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Eye size={13} className="text-emerald-400" />
+                                        <span>Publish Live</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                <div className="py-1">
+                                  {post.status === 'published' ? (
+                                    <a
+                                      href={`/blog/${post.slug}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      onClick={() => setOpenActionMenuId(null)}
+                                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[#CCC] hover:text-white hover:bg-white/[0.06]"
+                                    >
+                                      <ExternalLink size={13} className="text-[#04B8BB]" />
+                                      <span>View Live Article</span>
+                                    </a>
+                                  ) : (
+                                    <button
+                                      onClick={() => {
+                                        setOpenActionMenuId(null);
+                                        openEditModal(post._id);
+                                        setActiveEditorTab('preview');
+                                      }}
+                                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[#888] hover:text-[#CCC] hover:bg-white/[0.06] text-left"
+                                    >
+                                      <Eye size={13} />
+                                      <span>Preview Draft</span>
+                                    </button>
+                                  )}
+
+                                  <button
+                                    onClick={() => {
+                                      handleCopyLink(post);
+                                      setOpenActionMenuId(null);
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[#CCC] hover:text-white hover:bg-white/[0.06] text-left"
+                                  >
+                                    {copiedPostId === post._id ? (
+                                      <Check size={13} className="text-emerald-400" />
+                                    ) : (
+                                      <Copy size={13} className="text-[#888]" />
+                                    )}
+                                    <span>{copiedPostId === post._id ? 'Link Copied!' : 'Copy Article Link'}</span>
+                                  </button>
+                                </div>
+
+                                <div className="py-1">
+                                  <button
+                                    onClick={() => {
+                                      setOpenActionMenuId(null);
+                                      setDeletingPost(post);
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 text-left font-medium"
+                                  >
+                                    <Trash2 size={13} />
+                                    <span>Delete Article</span>
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -718,6 +863,7 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
                   >
                     <option value="draft">Draft (Private)</option>
                     <option value="published">Published (Public)</option>
+                    <option value="scheduled">Scheduled (Auto-Publish)</option>
                   </select>
                 </div>
 
@@ -735,6 +881,25 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
                   </label>
                 </div>
               </div>
+
+              {/* Scheduled Date Picker */}
+              {(formData.status === 'scheduled' || formData.scheduledAt) && (
+                <div className="p-3 bg-[#121214] border border-purple-500/30 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-purple-300">
+                    <Calendar size={15} className="shrink-0 text-purple-400" />
+                    <div>
+                      <span className="font-semibold text-xs block">Scheduled Publishing Date & Time</span>
+                      <span className="text-[10px] text-[#888]">Article will automatically go live at this time</span>
+                    </div>
+                  </div>
+                  <input
+                    type="datetime-local"
+                    value={formData.scheduledAt}
+                    onChange={(e) => updateField('scheduledAt', e.target.value)}
+                    className="px-3 py-1.5 bg-[#0A0A0A] border border-[#333] rounded text-white text-xs focus:outline-none focus:border-[#04B8BB]"
+                  />
+                </div>
+              )}
 
               {/* Excerpt */}
               <div>
@@ -806,6 +971,75 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
                       className="w-32 px-3 py-2 bg-[#0A0A0A] border border-[#242424] rounded text-white focus:outline-none focus:border-[#04B8BB]"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* SEO & Social Media Metadata Section */}
+              <div className="border border-[#242424] bg-[#0A0A0C] p-4 rounded-xl space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-[#1E1E22]">
+                  <div className="flex items-center gap-2">
+                    <Globe size={15} className="text-[#04B8BB]" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-white">
+                      SEO & Social Media Metadata
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-[#777]">Optional overrides for Google search & Open Graph tags</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-[11px] font-bold uppercase tracking-wider text-[#AAA]">
+                        SEO Meta Title
+                      </label>
+                      <span className={`text-[10px] ${formData.seoTitle.length > 60 ? 'text-amber-400' : 'text-[#666]'}`}>
+                        {formData.seoTitle.length}/60 chars
+                      </span>
+                    </div>
+                    <input
+                      type="text"
+                      value={formData.seoTitle}
+                      onChange={(e) => updateField('seoTitle', e.target.value)}
+                      placeholder={formData.title ? `${formData.title} | Deven Co-Work` : 'Custom search title...'}
+                      className="w-full px-3 py-2 bg-[#050505] border border-[#242424] rounded text-white focus:outline-none focus:border-[#04B8BB]"
+                    />
+                    <p className="text-[10px] text-[#666] mt-1">Defaults to article title if left empty.</p>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-[11px] font-bold uppercase tracking-wider text-[#AAA]">
+                        Social Share Image (OG / Twitter)
+                      </label>
+                    </div>
+                    <input
+                      type="text"
+                      value={formData.socialImage}
+                      onChange={(e) => updateField('socialImage', e.target.value)}
+                      placeholder="https://... (defaults to cover image)"
+                      className="w-full px-3 py-2 bg-[#050505] border border-[#242424] rounded text-white focus:outline-none focus:border-[#04B8BB]"
+                    />
+                    <p className="text-[10px] text-[#666] mt-1">Defaults to cover image if left empty.</p>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-[#AAA]">
+                      SEO Meta Description
+                    </label>
+                    <span className={`text-[10px] ${formData.seoDescription.length > 160 ? 'text-amber-400' : 'text-[#666]'}`}>
+                      {formData.seoDescription.length}/160 chars
+                    </span>
+                  </div>
+                  <textarea
+                    rows={2}
+                    value={formData.seoDescription}
+                    onChange={(e) => updateField('seoDescription', e.target.value)}
+                    placeholder={formData.excerpt || 'Custom description snippet for Google search results...'}
+                    className="w-full px-3 py-2 bg-[#050505] border border-[#242424] rounded text-white focus:outline-none focus:border-[#04B8BB]"
+                  />
+                  <p className="text-[10px] text-[#666] mt-1">Defaults to article excerpt if left empty.</p>
                 </div>
               </div>
 
@@ -1188,27 +1422,52 @@ export default function AdminBlogCMS({ onOpenMediaLibrary }) {
 
       {/* DELETE CONFIRMATION MODAL */}
       {deletingPost && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="bg-[#121212] border border-red-500/30 rounded-xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="font-display text-lg font-bold text-red-400">
-              Confirm Article Deletion
-            </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm">
+          <div className="bg-[#121214] border border-red-500/40 rounded-xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0">
+                <Trash2 size={20} />
+              </div>
+              <div>
+                <h3 className="font-display text-base font-bold text-white">
+                  Confirm Article Deletion
+                </h3>
+                <span className="text-[11px] text-[#888]">This action cannot be undone</span>
+              </div>
+            </div>
+
+            <div className="p-3 bg-[#0A0A0C] border border-[#222] rounded-lg space-y-1.5">
+              <span className="text-[10px] uppercase font-bold text-[#666] tracking-wider block">Article Title</span>
+              <p className="text-sm font-semibold text-white">
+                "{deletingPost.title}"
+              </p>
+              <div className="flex items-center gap-2 pt-1 text-[11px] text-[#777]">
+                <span>/blog/{deletingPost.slug}</span>
+                <span>·</span>
+                <span className="capitalize">{deletingPost.status}</span>
+              </div>
+            </div>
+
             <p className="text-xs text-[#AAA] leading-relaxed">
-              Are you sure you want to permanently delete <strong className="text-white">"{deletingPost.title}"</strong>? This will remove the article from public view and cannot be undone.
+              Are you sure you want to permanently delete this article? It will be removed from MongoDB, the admin table, and public search engines.
             </p>
-            <div className="flex items-center justify-end gap-3 pt-2">
+
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#222]">
               <button
+                type="button"
                 onClick={() => setDeletingPost(null)}
-                className="px-4 py-2 border border-[#333] text-[#AAA] hover:text-white rounded text-xs"
+                className="px-4 py-2 border border-[#333] hover:border-white text-[#CCC] hover:text-white rounded text-xs transition-colors"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleDelete}
                 disabled={deleting}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded text-xs"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded text-xs transition-colors flex items-center gap-2 disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete Article'}
+                <Trash2 size={13} />
+                {deleting ? 'Deleting...' : 'Delete Permanently'}
               </button>
             </div>
           </div>
